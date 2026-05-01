@@ -222,10 +222,12 @@ resolvidas. Próximas decisões abertas voltam aqui.
 ### Onda 1 · foundation (em andamento)
 - ~~Migration do schema~~ **já existia, reaproveitado**
 - ~~Seed das 4 trilhas + 20 módulos + 100 pílulas placeholder~~ **feito (maio 2026)**
+- ~~Hook `useEletivaProgress` (trilhas + módulos + progresso do aluno)~~ **feito**
+- ~~Card `EletivaCard` no /app (próximo módulo + barra de progresso + empty state)~~ **feito**
+- ~~Landing pública `/` reescrita pra Eletiva Sebrae (foco no aluno EM)~~ **feito**
 - `AdminTrilha` CRUD com edição inline de módulos/pílulas, toggle published,
   campo available_from, edição de body_md das pílulas
-- Hooks `useTrails`, `useModule(number)`, `useMyProgress`, `useDeliverable`
-- Dashboard `/app` com card "próximo módulo" puxando do progresso do aluno
+- Página `/app/modulo/:number` (placeholder funcional pra o card linkar)
 
 ### Decisões fixadas (antes definidas como pendentes na §7)
 1. **Drip configurável via `available_from` por módulo, default null = liberado.**
