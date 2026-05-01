@@ -12,6 +12,7 @@ import { NextActionHero } from "@/components/dashboard/NextActionHero";
 import { JourneyChips } from "@/components/dashboard/JourneyChips";
 import { HubGateway } from "@/components/dashboard/HubGateway";
 import { ArchiveSection } from "@/components/dashboard/ArchiveSection";
+import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
@@ -90,6 +91,9 @@ const AppDashboard = () => {
               }
             />
           )}
+
+          {/* eletiva: card do próximo módulo (produto principal hoje) */}
+          <EletivaCard />
 
           {/* hero único: a próxima ação pendente da jornada pós-evento */}
           <NextActionHero nickname={nickname} status={status} />
