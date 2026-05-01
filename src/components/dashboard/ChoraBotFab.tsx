@@ -1,19 +1,14 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { BotAvatar } from "@/components/chora-bot/BotAvatar";
 
 /**
- * floating action button do chora bot — versão editorial perestroika.
+ * floating action button do tutor IA (mascote joão-de-barro).
  *
- * substitui o avatar redondo genérico (que ficava confuso em 56px e
- * competia com os pretos do dashboard) pela LÁGRIMA oficial perestroika
- * com 2 olhinhos sobrepostos. mantém leitura "é um bot" mas vira marca.
- *
- * label "tira tua dúvida" agora é chip bege com borda preta fina,
- * mesmo idioma visual dos chips de progresso (carta, certificado).
- * pulsa periodicamente no mobile pra chamar atenção, sem ser invasivo.
- *
- * respeita --mobile-nav-h, safe-area iOS e prefers-reduced-motion.
+ * o avatar circular do tutor fica permanente no canto, com label editorial
+ * "tira tua dúvida" pulsando periodicamente no mobile pra chamar atenção
+ * sem ser invasivo. respeita --mobile-nav-h, safe-area iOS e
+ * prefers-reduced-motion.
  */
 export const ChoraBotFab = () => {
   const [breathe, setBreathe] = useState(false);
@@ -50,9 +45,9 @@ export const ChoraBotFab = () => {
 
   return (
     <Link
-      to="/app/chora-bot"
+      to="/app/tutor"
       onClick={handleClick}
-      aria-label="abrir chora bot — tira tua dúvida"
+      aria-label="abrir tutor IA — tira tua dúvida"
       className="group fixed right-4 z-40 flex items-center gap-2.5 sm:right-6 transition-transform duration-150 hover:scale-[1.03] active:scale-90"
       style={{
         bottom: "calc(var(--mobile-nav-h, 0px) + 1rem)",
@@ -88,9 +83,8 @@ export const ChoraBotFab = () => {
         aria-hidden="true"
       />
 
-      {/* lágrima perestroika com micro-rosto */}
+      {/* avatar joão-de-barro com glow sutil + ripple no clique */}
       <div className="relative w-[68px] h-[68px] grid place-items-center shrink-0">
-        {/* glow rosado sutil no hover */}
         <div
           className={`absolute inset-0 rounded-full blur-2xl transition-opacity duration-500 pointer-events-none ${
             pressed ? "opacity-90" : "opacity-0 group-hover:opacity-60"
@@ -102,8 +96,6 @@ export const ChoraBotFab = () => {
           aria-hidden="true"
         />
 
-        {/* ripple no clique — anel rosa que expande e some.
-            usa key dinâmica pra reiniciar a animação a cada clique. */}
         {pressed && (
           <span
             key={Date.now()}
@@ -112,23 +104,8 @@ export const ChoraBotFab = () => {
           />
         )}
 
-        {/* lágrima */}
         <div className="relative drop-shadow-[0_6px_16px_rgba(253,70,68,0.35)]">
-          <LagrimaGradient size={64} />
-
-          {/* olhinhos pretos sobrepostos — mesmo tratamento do avatar do bot */}
-          <svg
-            viewBox="0 0 64 64"
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            aria-hidden="true"
-          >
-            {/* olhos posicionados no terço superior da lágrima, espaçados */}
-            <circle cx="26" cy="38" r="2.4" fill="#090909" />
-            <circle cx="38" cy="38" r="2.4" fill="#090909" />
-            {/* brilhinho (highlight) opcional */}
-            <circle cx="26.7" cy="37.3" r="0.7" fill="#f2e4d8" />
-            <circle cx="38.7" cy="37.3" r="0.7" fill="#f2e4d8" />
-          </svg>
+          <BotAvatar size={64} ring />
         </div>
       </div>
     </Link>
