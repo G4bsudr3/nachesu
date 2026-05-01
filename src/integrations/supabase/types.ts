@@ -1225,6 +1225,203 @@ export type Database = {
         }
         Relationships: []
       }
+      module_deliverables: {
+        Row: {
+          content: Json
+          created_at: string
+          feedback: string | null
+          id: string
+          kind: Database["public"]["Enums"]["deliverable_kind"]
+          module_id: string
+          reviewed_at: string | null
+          reviewer_id: string | null
+          status: Database["public"]["Enums"]["deliverable_status"]
+          submitted_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["deliverable_kind"]
+          module_id: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          status?: Database["public"]["Enums"]["deliverable_status"]
+          submitted_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["deliverable_kind"]
+          module_id?: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          status?: Database["public"]["Enums"]["deliverable_status"]
+          submitted_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_deliverables_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      module_pills: {
+        Row: {
+          attachment_url: string | null
+          body_md: string
+          created_at: string
+          duration_min_high: number | null
+          duration_min_low: number | null
+          id: string
+          kind: Database["public"]["Enums"]["pill_kind"]
+          module_id: string
+          order_index: number
+          required: boolean
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          attachment_url?: string | null
+          body_md?: string
+          created_at?: string
+          duration_min_high?: number | null
+          duration_min_low?: number | null
+          id?: string
+          kind: Database["public"]["Enums"]["pill_kind"]
+          module_id: string
+          order_index?: number
+          required?: boolean
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          attachment_url?: string | null
+          body_md?: string
+          created_at?: string
+          duration_min_high?: number | null
+          duration_min_low?: number | null
+          id?: string
+          kind?: Database["public"]["Enums"]["pill_kind"]
+          module_id?: string
+          order_index?: number
+          required?: boolean
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_pills_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      module_ratings: {
+        Row: {
+          comment: string | null
+          created_at: string
+          module_id: string
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          module_id: string
+          rating: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          module_id?: string
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_ratings_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      modules: {
+        Row: {
+          available_from: string | null
+          created_at: string
+          deliverable_description: string | null
+          id: string
+          number: number
+          objective: string | null
+          order_index: number
+          published: boolean
+          title: string
+          total_minutes: number
+          trail_id: string
+          updated_at: string
+        }
+        Insert: {
+          available_from?: string | null
+          created_at?: string
+          deliverable_description?: string | null
+          id?: string
+          number: number
+          objective?: string | null
+          order_index?: number
+          published?: boolean
+          title: string
+          total_minutes?: number
+          trail_id: string
+          updated_at?: string
+        }
+        Update: {
+          available_from?: string | null
+          created_at?: string
+          deliverable_description?: string | null
+          id?: string
+          number?: number
+          objective?: string | null
+          order_index?: number
+          published?: boolean
+          title?: string
+          total_minutes?: number
+          trail_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modules_trail_id_fkey"
+            columns: ["trail_id"]
+            isOneToOne: false
+            referencedRelation: "trails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prework_items: {
         Row: {
           created_at: string
@@ -1428,6 +1625,61 @@ export type Database = {
         }
         Relationships: []
       }
+      student_module_progress: {
+        Row: {
+          completed_at: string | null
+          module_id: string
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          module_id: string
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          module_id?: string
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_module_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_pill_progress: {
+        Row: {
+          completed_at: string
+          pill_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          pill_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          pill_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_pill_progress_pill_id_fkey"
+            columns: ["pill_id"]
+            isOneToOne: false
+            referencedRelation: "module_pills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -1449,6 +1701,36 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      trails: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          order_index: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_index?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_index?: number
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1728,8 +2010,16 @@ export type Database = {
         | "pragmatico"
         | "narrador"
       builder_card_status: "gerando" | "pronta" | "erro"
+      deliverable_kind: "link" | "text" | "checklist" | "mixed"
+      deliverable_status: "rascunho" | "enviado" | "revisado"
       future_letter_session_status: "draft" | "open" | "closed" | "sent"
       mission_status: "pendente" | "aprovada" | "ajustar"
+      pill_kind:
+        | "pilula_a"
+        | "pilula_b"
+        | "pilula_c"
+        | "exercicio_pbl"
+        | "registro"
       project_voting_session_status: "draft" | "open" | "closed"
     }
     CompositeTypes: {
@@ -1868,8 +2158,17 @@ export const Constants = {
         "narrador",
       ],
       builder_card_status: ["gerando", "pronta", "erro"],
+      deliverable_kind: ["link", "text", "checklist", "mixed"],
+      deliverable_status: ["rascunho", "enviado", "revisado"],
       future_letter_session_status: ["draft", "open", "closed", "sent"],
       mission_status: ["pendente", "aprovada", "ajustar"],
+      pill_kind: [
+        "pilula_a",
+        "pilula_b",
+        "pilula_c",
+        "exercicio_pbl",
+        "registro",
+      ],
       project_voting_session_status: ["draft", "open", "closed"],
     },
   },
