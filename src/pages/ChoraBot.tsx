@@ -27,10 +27,10 @@ const MIN_PROMPT_LENGTH = 2;
 const MAX_PROMPT_LENGTH = 2000;
 
 const SUGGESTIONS = [
-  "como faço deploy de uma edge function?",
-  "qual a diferença entre rpc e edge function?",
-  "como uso o lovable cloud com auth?",
-  "me explica o meu arquétipo de novo",
+  "como começo um projeto no Lovable?",
+  "me explica o que é um prompt bom",
+  "como faço deploy do meu projeto?",
+  "me ajuda a destravar uma ideia",
 ];
 
 const ChoraBot = () => {
@@ -86,9 +86,9 @@ const ChoraBot = () => {
       .then(({ data }) => {
         if (!data) return;
         setWelcome(data.welcome_message);
-        if (!data.enabled) setClosed("o chora bot tá pausado agora.");
+        if (!data.enabled) setClosed("o tutor IA tá pausado agora.");
         else if (new Date(data.cutoff_at).getTime() < Date.now()) {
-          setClosed("o chora bot dormiu. mas tudo do evento continua aqui no hub.");
+          setClosed("o tutor IA dormiu. mas tudo do curso continua aqui no hub.");
         }
       });
   }, []);
@@ -248,7 +248,7 @@ const ChoraBot = () => {
 
       if (resp.status === 410) {
         const body = await resp.json();
-        setClosed(body.message || "o chora bot encerrou.");
+        setClosed(body.message || "o tutor IA encerrou.");
         setStreaming(false);
         return;
       }
@@ -364,7 +364,7 @@ const ChoraBot = () => {
               messages={messages}
               defaultTitle={
                 convs.find((c) => c.id === activeId)?.title ||
-                `chora-bot ${new Date().toLocaleDateString("pt-BR")}`
+                `tutor-ia ${new Date().toLocaleDateString("pt-BR")}`
               }
             />
           )}
@@ -523,7 +523,7 @@ const ChoraBot = () => {
                   placeholder="manda tua dúvida..."
                   rows={1}
                   maxLength={MAX_PROMPT_LENGTH}
-                  aria-label="pergunta pro chora bot"
+                  aria-label="pergunta pro tutor IA"
                   className="resize-none min-h-[44px] max-h-32 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-body text-perestroika-preto placeholder:text-perestroika-preto/40 px-2"
                   disabled={streaming}
                 />

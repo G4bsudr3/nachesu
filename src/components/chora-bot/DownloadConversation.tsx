@@ -29,7 +29,7 @@ const sanitizeFilename = (s: string) =>
     .trim()
     .replace(/\s+/g, "-")
     .toLowerCase()
-    .slice(0, 60) || "chora-bot";
+    .slice(0, 60) || "tutor-ia";
 
 export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
   const [open, setOpen] = useState(false);
@@ -54,11 +54,11 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
     lines.push(t);
     lines.push("=".repeat(Math.min(t.length, 60)));
     lines.push(`exportado em ${date}`);
-    lines.push("chora bot · chora lovable hub");
+    lines.push("tutor IA · sebrae eletiva");
     lines.push("");
     lines.push("");
     messages.forEach((m) => {
-      lines.push(m.role === "user" ? "tu:" : "chora bot:");
+      lines.push(m.role === "user" ? "tu:" : "tutor:");
       lines.push(m.content);
       lines.push("");
     });
@@ -113,7 +113,7 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(120, 120, 120);
-    doc.text(`exportado em ${date}  ·  chora bot`, marginX, y);
+    doc.text(`exportado em ${date}  ·  tutor IA`, marginX, y);
     y += 18;
 
     // separador
@@ -128,7 +128,7 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
       doc.setFontSize(10);
       doc.setTextColor(isUser ? 111 : 254, isUser ? 119 : 123, isUser ? 252 : 2);
       ensureSpace(16);
-      doc.text(isUser ? "tu" : "chora bot", marginX, y);
+      doc.text(isUser ? "tu" : "tutor", marginX, y);
       y += 14;
 
       doc.setFont("helvetica", "normal");

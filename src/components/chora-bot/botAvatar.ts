@@ -1,6 +1,7 @@
-// avatar oficial do chora bot — gerado por IA na estética perestroika
-// (rob\u00f4 que \u00c9 a l\u00e1grima, com olhos pretos, sorriso e bra\u00e7os).
-// import est\u00e1tico pra ser cacheado pelo Vite e n\u00e3o precisar de bucket/migration.
-import botAvatar from "@/assets/chora-bot-avatar.png";
+// avatar oficial do tutor IA — mascote joão-de-barro.
+// representa o pássaro que constrói (referência direta a "vai lá e cria"),
+// adequado pra contexto Sebrae sem perder personalidade.
+// import estático pra ser cacheado pelo Vite.
+import botAvatar from "@/assets/joao-de-barro-tutor.png";
 
 export { botAvatar };
