@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"League Gothic"', "Impact", "sans-serif"],
-        body: ['"Urbanist"', "system-ui", "sans-serif"],
+        display: ['"Barlow Condensed"', "Impact", "sans-serif"],
+        body: ['"Inter"', "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,13 +51,29 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        sebrae: {
+          azul: "hsl(var(--sebrae-azul))",
+          "azul-escuro": "hsl(var(--sebrae-azul-escuro))",
+          "azul-claro": "hsl(var(--sebrae-azul-claro))",
+          amarelo: "hsl(var(--sebrae-amarelo))",
+          verde: "hsl(var(--sebrae-verde))",
+          vermelho: "hsl(var(--sebrae-vermelho))",
+          cinza: "hsl(var(--sebrae-cinza))",
+          "cinza-claro": "hsl(var(--sebrae-cinza-claro))",
+          preto: "hsl(var(--sebrae-preto))",
+        },
+        // alias legado pra componentes ainda não migrados (mapeia perestroika.* → sebrae.*)
         perestroika: {
-          bege: "hsl(var(--perestroika-bege))",
-          laranja: "hsl(var(--perestroika-laranja))",
-          vermelho: "hsl(var(--perestroika-vermelho))",
-          rosa: "hsl(var(--perestroika-rosa))",
-          azul: "hsl(var(--perestroika-azul))",
-          preto: "hsl(var(--perestroika-preto))",
+          bege: "hsl(var(--background))",
+          laranja: "hsl(var(--sebrae-amarelo))",
+          vermelho: "hsl(var(--sebrae-vermelho))",
+          rosa: "hsl(var(--sebrae-azul-claro))",
+          azul: "hsl(var(--sebrae-azul))",
+          preto: "hsl(var(--sebrae-preto))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -71,8 +87,12 @@ export default {
         },
       },
       backgroundImage: {
-        "gradient-small": "var(--gradient-small)",
-        "gradient-screen": "var(--gradient-screen)",
+        "gradient-primary": "var(--gradient-primary)",
+        "gradient-hero": "var(--gradient-hero)",
+        "gradient-accent": "var(--gradient-accent)",
+        // aliases legados
+        "gradient-small": "var(--gradient-primary)",
+        "gradient-screen": "var(--gradient-hero)",
       },
       borderRadius: {
         lg: "var(--radius)",
