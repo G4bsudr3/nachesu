@@ -137,6 +137,15 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              {/* alias novo (eletiva): /app/entregas → mesma página */}
+              <Route
+                path="/app/entregas"
+                element={
+                  <ProtectedRoute>
+                    <Missions />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/app/carta"
                 element={
@@ -178,6 +187,8 @@ const App = () => (
                 <Route path="/app/hub/turma" element={<ExtrasGate><HubTurma /></ExtrasGate>} />
                 <Route path="/app/hub/builder/:slug" element={<ExtrasGate><HubBuilder /></ExtrasGate>} />
                 <Route path="/app/chora-bot" element={<ChoraBot />} />
+                {/* alias novo (eletiva): /app/tutor → tutor IA */}
+                <Route path="/app/tutor" element={<ChoraBot />} />
               </Route>
               <Route
                 path="/app/feedback-final"
