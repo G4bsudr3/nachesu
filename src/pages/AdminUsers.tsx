@@ -1,0 +1,298 @@
+import { useEffect, useMemo, useState } from "react";
+import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { logger } from "@/lib/logger";
+
+type AdminUser = {
+  user_id: string;
+  email: string;
+  display_name: string | null;
+  nickname: string | null;
+  status: string | null;
+  created_at: string | null;
+  roles: string[];
+  is_admin: boolean;
+};
+
+type AdminListUsersRpc = {
+  rpc: (name: "admin_list_users") => Promise<{ data: AdminUser[] | null; error: Error | null }>;
+};
+
+const adminRpc = supabase as unknown as AdminListUsersRpc;
+
+const formatDate = (iso: string | null) => {
+  if (!iso) return "não informado";
+  return new Date(iso).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+  });
+};
+
+const AdminUsers = () => {
+  const { user } = useAuth();
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [busyUserId, setBusyUserId] = useState<string | null>(null);
+
+  const loadUsers = async () => {
+    setLoading(true);
+    const { data, error } = await adminRpc.rpc("admin_list_users");
+
+    if (error) {
+      logger.error("[admin/users] erro:", error);
+      toast.error("não consegui carregar os usuários");
+      setUsers([]);
+    } else {
+      setUsers((data ?? []) as AdminUser[]);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+
+    (async () => {
+      const { data, error } = await adminRpc.rpc("admin_list_users");
+      if (cancelled) return;
+
+      if (error) {
+        logger.error("[admin/users] erro:", error);
+        toast.error("não consegui carregar os usuários");
+        setUsers([]);
+      } else {
+        setUsers((data ?? []) as AdminUser[]);
+      }
+      setLoading(false);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return users;
+
+    return users.filter((item) => {
+      const haystack = [item.email, item.display_name, item.nickname, item.status, item.roles.join(" ")]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [users, search]);
+
+  const grantAdmin = async (target: AdminUser) => {
+    setBusyUserId(target.user_id);
+    const { error } = await supabase
+      .from("user_roles")
+      .insert({ user_id: target.user_id, role: "admin" });
+
+    if (error) {
+      logger.error("[admin/users] dar admin:", error);
+      toast.error("tu precisa ser admin pra mexer nisso");
+    } else {
+      toast.success(`${target.email} agora é admin`);
+      await loadUsers();
+    }
+    setBusyUserId(null);
+  };
+
+  const removeAdmin = async (target: AdminUser) => {
+    if (target.user_id === user?.id) {
+      toast.error("pra não te trancar pra fora, pede outro admin pra remover teu acesso.");
+      return;
+    }
+
+    setBusyUserId(target.user_id);
+    const { error } = await supabase
+      .from("user_roles")
+      .delete()
+      .eq("user_id", target.user_id)
+      .eq("role", "admin");
+
+    if (error) {
+      logger.error("[admin/users] remover admin:", error);
+      toast.error("tu precisa ser admin pra mexer nisso");
+    } else {
+      toast.success(`${target.email} não é mais admin`);
+      await loadUsers();
+    }
+    setBusyUserId(null);
+  };
+
+  const resetPassword = async (target: AdminUser) => {
+    const ok = window.confirm(
+      `redefinir a senha de ${target.email} para "chora2026"?`
+    );
+    if (!ok) return;
+
+    setBusyUserId(target.user_id);
+    const { data, error } = await supabase.functions.invoke("admin-reset-password", {
+      body: { target_user_id: target.user_id, new_password: "chora2026" },
+    });
+
+    if (error || (data as { error?: string })?.error) {
+      logger.error("[admin/users] reset senha:", error ?? data);
+      toast.error("não rolou redefinir a senha");
+    } else {
+      toast.success(`senha de ${target.email} agora é chora2026`);
+    }
+    setBusyUserId(null);
+  };
+
+  return (
+    <section className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto/5 px-3 py-2 text-xs uppercase tracking-wide text-perestroika-preto/70 mb-4">
+            <Shield className="h-4 w-4" />
+            permissões reais
+          </div>
+          <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none">
+            usuários
+          </h1>
+          <p className="mt-3 text-perestroika-preto/70">
+            {loading ? "carregando…" : `${filtered.length} de ${users.length} contas no hub`}
+          </p>
+        </div>
+      </div>
+
+      <div className="relative max-w-xl">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/50" />
+        <Input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="buscar por email, nome, nickname ou papel…"
+          className="pl-9 bg-white/60 border-perestroika-preto/20"
+        />
+      </div>
+
+      <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
+              <TableHead className="uppercase text-xs tracking-wide">usuário</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">status</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">papéis</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">criado</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide text-right">ação</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                  carregando usuários…
+                </TableCell>
+              </TableRow>
+            )}
+
+            {!loading && filtered.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                  nenhum usuário com esse filtro.
+                </TableCell>
+              </TableRow>
+            )}
+
+            {!loading && filtered.map((item) => (
+              <TableRow key={item.user_id} className="hover:bg-perestroika-preto/5">
+                <TableCell className="min-w-64">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege">
+                      <UserRound className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-perestroika-preto">
+                        {item.display_name || item.nickname || item.email}
+                      </p>
+                      <p className="text-xs text-perestroika-preto/60">{item.email}</p>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  <Badge className="bg-perestroika-preto/5 text-perestroika-preto hover:bg-perestroika-preto/10">
+                    {item.status ?? "sem status"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-wrap gap-1.5">
+                    {item.roles.length === 0 ? (
+                      <span className="text-xs text-perestroika-preto/50">sem papel</span>
+                    ) : item.roles.map((role) => (
+                      <Badge
+                        key={role}
+                        className={role === "admin"
+                          ? "bg-gradient-small text-perestroika-preto"
+                          : "bg-perestroika-preto/5 text-perestroika-preto hover:bg-perestroika-preto/10"}
+                      >
+                        {role}
+                      </Badge>
+                    ))}
+                  </div>
+                </TableCell>
+                <TableCell className="text-xs text-perestroika-preto/70 whitespace-nowrap">
+                  {formatDate(item.created_at)}
+                </TableCell>
+                <TableCell className="text-right whitespace-nowrap">
+                  <div className="inline-flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => resetPassword(item)}
+                      disabled={busyUserId === item.user_id}
+                      title="redefinir senha para chora2026"
+                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
+                    >
+                      <KeyRound className="h-4 w-4" />
+                      resetar senha
+                    </button>
+                    {item.is_admin ? (
+                      <button
+                        type="button"
+                        onClick={() => removeAdmin(item)}
+                        disabled={busyUserId === item.user_id}
+                        className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
+                      >
+                        <ShieldMinus className="h-4 w-4" />
+                        remover admin
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => grantAdmin(item)}
+                        disabled={busyUserId === item.user_id}
+                        className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto px-4 py-2 text-xs uppercase tracking-wide text-perestroika-bege hover:opacity-90 disabled:opacity-40 transition-opacity"
+                      >
+                        <ShieldCheck className="h-4 w-4" />
+                        dar admin
+                      </button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </section>
+  );
+};
+
+export default AdminUsers;

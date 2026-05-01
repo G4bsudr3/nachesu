@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Gothic&family=Urbanist:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   chora lovable hub — design system perestroika
+   todas as cores em hsl
+   ============================================ */
+
+@layer base {
+  :root {
+    /* paleta perestroika — valores exatos do gradiente oficial */
+    --perestroika-bege: 39 38% 92%;        /* #f5efe2 */
+    --perestroika-laranja: 27 99% 50%;     /* #fe7b02 */
+    --perestroika-vermelho: 359 97% 63%;   /* #fd4644 */
+    --perestroika-rosa: 327 89% 65%;       /* #f756a6 */
+    --perestroika-rosa-claro: 326 89% 66%; /* #f659b5 */
+    --perestroika-azul: 236 96% 71%;       /* #6f77fc */
+    --perestroika-preto: 0 0% 6%;          /* #0f0f0f */
+
+    /* altura da bottom nav mobile (conteúdo + safe area).
+       desktop sobrescreve pra 0 abaixo. usa pra reservar padding e posicionar FABs. */
+    --mobile-nav-h: calc(56px + env(safe-area-inset-bottom, 0px));
+
+    /* tokens semânticos mapeados para perestroika */
+    --background: var(--perestroika-bege);
+    --foreground: var(--perestroika-preto);
+
+    --card: var(--perestroika-bege);
+    --card-foreground: var(--perestroika-preto);
+
+    --popover: var(--perestroika-bege);
+    --popover-foreground: var(--perestroika-preto);
+
+    --primary: var(--perestroika-preto);
+    --primary-foreground: var(--perestroika-bege);
+
+    --secondary: 39 30% 86%;
+    --secondary-foreground: var(--perestroika-preto);
+
+    --muted: 39 25% 88%;
+    --muted-foreground: 0 0% 30%;
+
+    --accent: var(--perestroika-rosa);
+    --accent-foreground: var(--perestroika-preto);
+
+    --destructive: var(--perestroika-vermelho);
+    --destructive-foreground: var(--perestroika-bege);
+
+    --border: 39 20% 82%;
+    --input: 39 20% 82%;
+    --ring: var(--perestroika-preto);
+
+    --radius: 1rem;
+
+    /* gradientes oficiais perestroika — stops exatos do arquivo de marca */
+    --gradient-small: linear-gradient(
+      90deg,
+      #fe7b02 0%,
+      #fd4644 28%,
+      #f756a6 65%,
+      #f659b5 75%,
+      #6f77fc 100%
+    );
+    --gradient-screen: linear-gradient(
+      180deg,
+      #f756a6 0%,
+      hsl(var(--perestroika-bege)) 100%
+    );
+
+    --sidebar-background: var(--perestroika-bege);
+    --sidebar-foreground: var(--perestroika-preto);
+    --sidebar-primary: var(--perestroika-preto);
+    --sidebar-primary-foreground: var(--perestroika-bege);
+    --sidebar-accent: 39 25% 88%;
+    --sidebar-accent-foreground: var(--perestroika-preto);
+    --sidebar-border: 39 20% 82%;
+    --sidebar-ring: var(--perestroika-preto);
+  }
+
+  /* desktop não tem mobile nav fixa, então zera a reserva */
+  @media (min-width: 640px) {
+    :root {
+      --mobile-nav-h: 0px;
+    }
+  }
+
+  .dark {
+    --background: var(--perestroika-preto);
+    --foreground: var(--perestroika-bege);
+    --card: var(--perestroika-preto);
+    --card-foreground: var(--perestroika-bege);
+    --popover: var(--perestroika-preto);
+    --popover-foreground: var(--perestroika-bege);
+    --primary: var(--perestroika-bege);
+    --primary-foreground: var(--perestroika-preto);
+    --secondary: 0 0% 12%;
+    --secondary-foreground: var(--perestroika-bege);
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+    --accent: var(--perestroika-rosa);
+    --accent-foreground: var(--perestroika-preto);
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: var(--perestroika-bege);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  /* guarda-corpos globais contra overflow horizontal acidental e scrollbar dupla.
+     overflow-x: clip não cria contexto de scroll (não vira ancestral de position: sticky).
+     scrollbar-gutter: stable elimina o "pulo" entre rotas. */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    font-feature-settings: "ss01", "cv11";
+    overflow-x: clip;
+    min-height: 100dvh;
+  }
+
+  ::selection {
+    background: hsl(var(--perestroika-rosa));
+    color: hsl(var(--perestroika-preto));
+  }
+
+  /* touch targets mínimos pra botões icônicos no header */
+  .icon-btn {
+    @apply inline-flex items-center justify-center min-h-11 min-w-11 rounded-full border border-perestroika-preto/20 hover:bg-perestroika-preto/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege;
+  }
+
+  /* foco padrão pra qualquer interativo: ring preto sobre bege */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded;
+  }
+
+  /* link inline sublinhado com touch target mínimo + foco.
+     usar em "esqueci minha senha", "voltar", "reenviar", "editar", etc. */
+  .text-link {
+    @apply inline-flex items-center min-h-11 px-1 underline underline-offset-4 hover:opacity-70 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded;
+  }
+
+  /* chip pequeno (links/botões inline tipo "pegar +10", "copiar", "ir pro doc").
+     padding generoso garante touch target ≥40px sem inflar visualmente. */
+  .chip-action {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-2 min-h-10 text-xs uppercase tracking-wide font-body transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege;
+  }
+
+  /* card padrão do hub: padding/borda/sombra/gap/min-h consistentes em dashboard,
+     prework e missões. variantes: .card-perestroika--lift adiciona hover translate
+     pra cards interativos; .card-perestroika--muted é o estado "concluído". */
+  .card-perestroika {
+    @apply rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/80 backdrop-blur p-5 sm:p-7 gap-4 sm:gap-5 transition-all duration-200;
+    box-shadow: 0 1px 0 hsl(var(--perestroika-preto) / 0.02), 0 8px 24px -16px hsl(var(--perestroika-preto) / 0.08);
+    min-height: 9.5rem;
+  }
+  .card-perestroika--lift {
+    @apply hover:border-perestroika-preto/30 hover:-translate-y-1;
+  }
+  .card-perestroika--lift:hover {
+    box-shadow: 0 1px 0 hsl(var(--perestroika-preto) / 0.04), 0 14px 32px -18px hsl(var(--perestroika-preto) / 0.18);
+  }
+  .card-perestroika--muted {
+    @apply border-perestroika-preto/30 bg-perestroika-preto/[0.04];
+  }
+}
+
+@layer utilities {
+  .text-gradient-perestroika {
+    background: var(--gradient-small);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .bg-gradient-small {
+    background: var(--gradient-small);
+  }
+
+  .bg-gradient-screen {
+    background: var(--gradient-screen);
+  }
+
+  .display-clamp-hero {
+    font-size: clamp(4rem, 14vw, 11rem);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+  }
+
+  .display-clamp-section {
+    font-size: clamp(2.75rem, 8vw, 6rem);
+    line-height: 0.92;
+    letter-spacing: -0.015em;
+  }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}

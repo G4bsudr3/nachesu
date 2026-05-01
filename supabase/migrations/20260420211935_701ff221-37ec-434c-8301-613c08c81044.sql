@@ -1,0 +1,1 @@
+alter table public.builder_cards add column if not exists essence_phrase text;

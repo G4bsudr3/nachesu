@@ -1,0 +1,6 @@
+/* reset mínimo. layout é 100% controlado pelo tailwind nas pages.
+   não adicionar max-width, padding ou text-align global aqui — quebra layouts full-bleed. */
+#root {
+  min-height: 100vh;
+  isolation: isolate;
+}

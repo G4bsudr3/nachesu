@@ -1,0 +1,2 @@
+ALTER TABLE public.hub_insights DROP CONSTRAINT hub_insights_scope_check;
+ALTER TABLE public.hub_insights ADD CONSTRAINT hub_insights_scope_check CHECK (scope = ANY (ARRAY['global'::text, 'user'::text, 'feedback-d1'::text, 'feedback-d2'::text]));

@@ -1,0 +1,2 @@
+ALTER TABLE public.hub_comments DROP CONSTRAINT hub_comments_body_check;
+ALTER TABLE public.hub_comments ADD CONSTRAINT hub_comments_body_check CHECK (length(btrim(body)) <= 280 AND (length(btrim(body)) >= 1 OR gif_url IS NOT NULL));
