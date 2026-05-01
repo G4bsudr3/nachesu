@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Barlow Condensed"', "Impact", "sans-serif"],
-        body: ['"Inter"', "system-ui", "sans-serif"],
+        display: ['"League Gothic"', "Impact", "sans-serif"],
+        body: ['"Urbanist"', "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -66,14 +66,23 @@ export default {
           "cinza-claro": "hsl(var(--sebrae-cinza-claro))",
           preto: "hsl(var(--sebrae-preto))",
         },
-        // alias legado pra componentes ainda não migrados (mapeia perestroika.* → sebrae.*)
+        // paleta perestroika (primária da marca)
         perestroika: {
-          bege: "hsl(var(--background))",
-          laranja: "hsl(var(--sebrae-amarelo))",
-          vermelho: "hsl(var(--sebrae-vermelho))",
-          rosa: "hsl(var(--sebrae-azul-claro))",
-          azul: "hsl(var(--sebrae-azul))",
-          preto: "hsl(var(--sebrae-preto))",
+          bege: "hsl(var(--brand-bege))",
+          laranja: "hsl(var(--brand-laranja))",
+          vermelho: "hsl(var(--brand-vermelho))",
+          rosa: "hsl(var(--brand-rosa))",
+          azul: "hsl(var(--brand-azul))",
+          preto: "hsl(var(--brand-preto))",
+        },
+        // alias semântico curto pra paleta perestroika
+        brand: {
+          bege: "hsl(var(--brand-bege))",
+          laranja: "hsl(var(--brand-laranja))",
+          vermelho: "hsl(var(--brand-vermelho))",
+          rosa: "hsl(var(--brand-rosa))",
+          azul: "hsl(var(--brand-azul))",
+          preto: "hsl(var(--brand-preto))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -90,7 +99,8 @@ export default {
         "gradient-primary": "var(--gradient-primary)",
         "gradient-hero": "var(--gradient-hero)",
         "gradient-accent": "var(--gradient-accent)",
-        // aliases legados
+        "gradient-sebrae": "var(--gradient-sebrae)",
+        // aliases legados (perestroika)
         "gradient-small": "var(--gradient-primary)",
         "gradient-screen": "var(--gradient-hero)",
       },
