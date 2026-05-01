@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { HubLayout } from "@/components/layout/HubLayout";
+import { ExtrasGate } from "@/components/ExtrasGate";
 import { useDashboardDraftPersistence } from "@/hooks/useDashboardDraftPersistence";
 
 // rotas críticas: ficam eager (carregam no bundle inicial)
@@ -169,13 +170,13 @@ const App = () => (
                 }
               >
                 <Route path="/app/hub" element={<HubIndex />} />
-                <Route path="/app/hub/galeria" element={<HubGallery />} />
+                <Route path="/app/hub/galeria" element={<ExtrasGate><HubGallery /></ExtrasGate>} />
                 <Route path="/app/hub/materiais" element={<HubMateriais />} />
-                <Route path="/app/hub/projetos" element={<HubProjetos />} />
-                <Route path="/app/hub/projetos/ranking" element={<HubProjetosRanking />} />
-                <Route path="/app/hub/album" element={<HubAlbum />} />
-                <Route path="/app/hub/turma" element={<HubTurma />} />
-                <Route path="/app/hub/builder/:slug" element={<HubBuilder />} />
+                <Route path="/app/hub/projetos" element={<ExtrasGate><HubProjetos /></ExtrasGate>} />
+                <Route path="/app/hub/projetos/ranking" element={<ExtrasGate><HubProjetosRanking /></ExtrasGate>} />
+                <Route path="/app/hub/album" element={<ExtrasGate><HubAlbum /></ExtrasGate>} />
+                <Route path="/app/hub/turma" element={<ExtrasGate><HubTurma /></ExtrasGate>} />
+                <Route path="/app/hub/builder/:slug" element={<ExtrasGate><HubBuilder /></ExtrasGate>} />
                 <Route path="/app/chora-bot" element={<ChoraBot />} />
               </Route>
               <Route
@@ -198,7 +199,9 @@ const App = () => (
                 path="/app/dinamica/carta-futuro"
                 element={
                   <ProtectedRoute>
-                    <FutureLetter />
+                    <ExtrasGate>
+                      <FutureLetter />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
