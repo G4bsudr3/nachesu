@@ -73,6 +73,22 @@ Tabelas em produção (parcial, foco no que é reusável pela eletiva):
 - `prework_items` + `prework_progress` · pré-curso Chora
 - `materials` · biblioteca de recursos
 - assets, comments, reactions, future_letters, hub_album, etc. (Chora)
+- **schema da eletiva já existe** (criado em onda anterior, vazio até a onda 1):
+  - `trails` (id, order_index, title, description, color)
+  - `modules` (id, trail_id, number UNIQUE, order_index, title, objective,
+    deliverable_description, total_minutes=50, available_from, published)
+  - `module_pills` (id, module_id, order_index, kind `pill_kind`, title,
+    body_md, duration_min_low/high, video_url, attachment_url, required)
+  - `module_deliverables` (user_id, module_id UNIQUE, kind `deliverable_kind`,
+    content jsonb, status `deliverable_status`, feedback)
+  - `module_ratings` (user_id, module_id, rating, comment)
+  - `student_module_progress` (user_id, module_id, started_at, completed_at)
+  - `student_pill_progress` (user_id, pill_id, completed_at)
+  - enums: `pill_kind` (pilula_a/b/c, exercicio_pbl, registro),
+    `deliverable_kind` (link/text/checklist/mixed),
+    `deliverable_status` (rascunho/enviado/revisado)
+  - trigger `recompute_module_progress` já fecha módulo automaticamente
+    quando todas as pílulas required estão done
 
 Edge functions ativas:
 - `generate-builder-card` · texto + classificação de arquétipo
@@ -131,39 +147,38 @@ Estrutura padrão de módulo:
 - **Exercício PBL** 18-30 min
 - **Registro/evidência** 3-10 min
 
-### 6.1 Schema novo a criar (próxima onda)
+### 6.1 Schema da eletiva (já existe, ver §3)
+
+O schema foi criado numa onda anterior e tá pronto. Resumo nomenclatural
+(diferente da proposta original — os nomes reais valem):
 
 ```
-tracks               id, slug, order_index, title, subtitle, color_token, objetivo
-modules              id, track_id, order_index (1-20), slug, title, subtitle,
-                     objetivo, entregavel, available_from?, duration_min=50, published
-module_parts         id, module_id, order_index, kind: pilula|pbl|registro,
-                     label (A/B/C), title, time_min_min, time_min_max,
-                     body_md, video_url?, resources jsonb
-module_progress      user_id, module_id, started_at, completed_at, time_spent_sec
-part_progress        user_id, part_id, completed_at
-submissions          user_id, module_id, part_id,
-                     kind: link|text|image|checklist,
-                     content jsonb, ai_feedback text?, created_at
-projects             user_id, title, problem, user_persona, value_hypothesis,
-                     scope_in jsonb, scope_out jsonb, lovable_url, status,
-                     current_version: v0|v1|v2|v3|final
-project_evidences    project_id, kind, content jsonb, created_at
+trails                    (não "tracks")
+modules                   number 1-20 UNIQUE, sem slug, usar /modulo/:number
+module_pills              (não "module_parts"); kind via enum pill_kind
+module_deliverables       1 entregável por módulo por aluno (UNIQUE)
+module_ratings            avaliação opcional do módulo
+student_module_progress   (não "module_progress")
+student_pill_progress     (não "part_progress")
 ```
 
-RLS: aluno vê só os próprios. Tracks/modules/parts: select público autenticado.
-Write tudo: só `has_role('admin')`.
+RLS: aluno vê módulos `published=true AND (available_from IS NULL OR <= now())`.
+Pílulas filtram pelo módulo. Admin vê tudo via `has_role('admin')`.
+
+**Pendente criar (Onda 3)**: `student_projects` (dossiê do projeto autoral
+atravessando as 4 trilhas) + tabela de feedback IA do PBL.
 
 ### 6.2 Rotas novas (aluno)
 
 ```
-/app                          dashboard reformulado (3 modos hero)
-/app/trilha                   constellation view (signature moment)
-/app/modulo/:slug             página editorial do módulo
-/app/modulo/:slug/parte/:label  player de parte
-/app/projeto                  dossiê vivo do projeto autoral
-/app/carta                    já existe
-/app/conquistas               selos por trilha (brasão de builder)
+/app                              dashboard reformulado (3 modos hero)
+/app/trilha                       constellation view (signature moment)
+/app/modulo/:number               página editorial do módulo (number 1-20)
+/app/modulo/:number/p/:order      player da pílula (order 1-5)
+/app/projeto                      dossiê vivo do projeto autoral
+/app/carta                        já existe
+/app/conquistas                   selos por trilha (brasão de builder)
+/app/admin/trilha                 AdminTrilha (CRUD trails/modules/pills)
 ```
 
 ### 6.3 Signature moments aprovados (workspace knowledge)
@@ -197,22 +212,27 @@ Não é nota, é provocação no tom frattz.
 4 selos Perestroika (1 por trilha) → formam **brasão de builder** completo →
 desbloqueia certificado oficial Sebrae (reusa `CertificateRenderer`).
 
-## 7. Decisões pendentes (perguntar ao frattz antes da onda 1)
+## 7. Decisões fixadas
 
-1. Liberação semanal real (drip) **ou** tudo aberto desde início **ou**
-   configurável por turma via `available_from`? (proposta: configurável,
-   default drip)
-2. Seed automático dos 20 módulos extraídos do docx com placeholders **ou**
-   começar vazio e popular tudo via admin? (proposta: seed)
-3. Feedback IA do PBL: ligado por padrão **ou** opt-in? (proposta: opt-in)
+Movidas pra onda 1 (ver §8). Esta seção fica como histórico de aberturas
+resolvidas. Próximas decisões abertas voltam aqui.
 
 ## 8. Roadmap em ondas
 
-### Onda 1 · foundation (próxima)
-- Migration completa do schema 6.1
-- Seed das 4 trilhas + 20 módulos + ~100 partes (placeholders)
-- `AdminTrilha` CRUD com drag-to-reorder, toggle published, available_from
-- Hooks `useTracks`, `useModule`, `useMyProgress`
+### Onda 1 · foundation (em andamento)
+- ~~Migration do schema~~ **já existia, reaproveitado**
+- ~~Seed das 4 trilhas + 20 módulos + 100 pílulas placeholder~~ **feito (maio 2026)**
+- `AdminTrilha` CRUD com edição inline de módulos/pílulas, toggle published,
+  campo available_from, edição de body_md das pílulas
+- Hooks `useTrails`, `useModule(number)`, `useMyProgress`, `useDeliverable`
+- Dashboard `/app` com card "próximo módulo" puxando do progresso do aluno
+
+### Decisões fixadas (antes definidas como pendentes na §7)
+1. **Drip configurável via `available_from` por módulo, default null = liberado.**
+   Admin pode preencher data por módulo no AdminTrilha pra fazer drip semanal.
+2. **Seed feito com placeholders editáveis.** Conteúdo real entra via admin.
+3. **Feedback IA do PBL: opt-in.** Botão "quero feedback do joão" dentro do
+   exercício, dispara `evaluate-pbl-submission` (Onda 3).
 
 ### Onda 2 · core UX do aluno
 - `/app/trilha` constellation view (signature 1)
