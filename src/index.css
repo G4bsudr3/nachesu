@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=League+Gothic&family=Urbanist:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,80 +6,95 @@
 
 /* ============================================
    eletiva sebrae — design system
-   paleta institucional sebrae + adaptações jovem/escolar
+   paleta primária: perestroika (laranja, vermelho, rosa, azul, bege, preto)
+   assinatura institucional: azul sebrae em accent, footer, selo, certificado
+   tipografia: league gothic (display) + urbanist (body)
    todas as cores em hsl
    ============================================ */
 
 @layer base {
   :root {
-    /* paleta sebrae — referência pública institucional */
+    /* ===== paleta perestroika (primária) ===== */
+    --brand-bege: 28 47% 90%;          /* #f2e4d8 fundo principal */
+    --brand-laranja: 28 99% 50%;       /* #fe7b02 */
+    --brand-vermelho: 1 98% 63%;       /* #fd4644 */
+    --brand-rosa: 329 91% 65%;         /* #f756a6 */
+    --brand-azul: 237 97% 71%;         /* #6f77fc azul perestroika (jovem) */
+    --brand-preto: 0 0% 4%;            /* #090909 */
+
+    /* ===== paleta sebrae (assinatura institucional) ===== */
     --sebrae-azul: 209 100% 36%;          /* #005EB8 azul institucional */
     --sebrae-azul-escuro: 211 100% 25%;   /* #003E7E */
-    --sebrae-azul-claro: 199 89% 48%;     /* #0EA5E9 acento jovem */
-    --sebrae-amarelo: 45 100% 51%;        /* #FFC107 destaque/alerta */
-    --sebrae-verde: 142 71% 45%;          /* #22C55E sucesso */
-    --sebrae-vermelho: 0 84% 60%;         /* #EF4444 erro */
-    --sebrae-cinza-claro: 210 20% 96%;    /* #F1F5F9 fundo */
-    --sebrae-cinza: 215 16% 47%;          /* #64748B texto secundário */
-    --sebrae-preto: 222 47% 11%;          /* #0F172A texto principal */
+    --sebrae-azul-claro: 199 89% 48%;     /* #0EA5E9 */
+    --sebrae-amarelo: 45 100% 51%;        /* #FFC107 */
+    --sebrae-verde: 142 71% 45%;          /* #22C55E */
+    --sebrae-vermelho: 0 84% 60%;         /* #EF4444 */
+    --sebrae-cinza-claro: 210 20% 96%;
+    --sebrae-cinza: 215 16% 47%;
+    --sebrae-preto: 222 47% 11%;
     --sebrae-branco: 0 0% 100%;
 
     /* altura da bottom nav mobile */
     --mobile-nav-h: calc(56px + env(safe-area-inset-bottom, 0px));
 
-    /* tokens semânticos mapeados pra sebrae */
-    --background: var(--sebrae-cinza-claro);
-    --foreground: var(--sebrae-preto);
+    /* ===== tokens semânticos: perestroika no comando, sebrae como accent ===== */
+    --background: var(--brand-bege);
+    --foreground: var(--brand-preto);
 
     --card: 0 0% 100%;
-    --card-foreground: var(--sebrae-preto);
+    --card-foreground: var(--brand-preto);
 
     --popover: 0 0% 100%;
-    --popover-foreground: var(--sebrae-preto);
+    --popover-foreground: var(--brand-preto);
 
-    --primary: var(--sebrae-azul);
+    /* primary = rosa perestroika (cara da marca) */
+    --primary: var(--brand-rosa);
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 30% 92%;
-    --secondary-foreground: var(--sebrae-preto);
+    --secondary: 28 35% 82%;
+    --secondary-foreground: var(--brand-preto);
 
-    --muted: 210 25% 94%;
-    --muted-foreground: var(--sebrae-cinza);
+    --muted: 28 30% 86%;
+    --muted-foreground: 0 0% 30%;
 
-    --accent: var(--sebrae-amarelo);
-    --accent-foreground: var(--sebrae-preto);
+    /* accent = azul sebrae (selo institucional) */
+    --accent: var(--sebrae-azul);
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: var(--sebrae-vermelho);
+    --destructive: var(--brand-vermelho);
     --destructive-foreground: 0 0% 100%;
 
     --success: var(--sebrae-verde);
     --success-foreground: 0 0% 100%;
 
-    --border: 210 20% 88%;
-    --input: 210 20% 88%;
-    --ring: var(--sebrae-azul);
+    --border: 28 25% 78%;
+    --input: 28 25% 78%;
+    --ring: var(--brand-rosa);
 
     --radius: 0.875rem;
 
-    /* gradientes sebrae */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--sebrae-azul)) 0%, hsl(var(--sebrae-azul-escuro)) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(var(--sebrae-azul)) 0%, hsl(var(--sebrae-azul-escuro)) 100%);
+    /* ===== gradientes ===== */
+    /* perestroika: laranja → vermelho → rosa → azul perestroika (assinatura visual) */
+    --gradient-primary: linear-gradient(90deg, hsl(var(--brand-laranja)) 0%, hsl(var(--brand-vermelho)) 30%, hsl(var(--brand-rosa)) 60%, hsl(var(--brand-azul)) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(var(--brand-vermelho)) 0%, hsl(var(--brand-rosa)) 40%, hsl(var(--brand-bege)) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(var(--sebrae-azul-claro)) 0%, hsl(var(--sebrae-azul)) 100%);
+    /* sebrae: azul institucional → escuro (rodapé, selo, auth) */
+    --gradient-sebrae: linear-gradient(135deg, hsl(var(--sebrae-azul)) 0%, hsl(var(--sebrae-azul-escuro)) 100%);
 
     /* sombras com propósito */
-    --shadow-sm: 0 1px 2px 0 hsl(var(--sebrae-preto) / 0.04);
-    --shadow-md: 0 4px 12px -2px hsl(var(--sebrae-preto) / 0.08), 0 2px 4px -2px hsl(var(--sebrae-preto) / 0.04);
-    --shadow-lg: 0 12px 32px -8px hsl(var(--sebrae-preto) / 0.12), 0 4px 12px -4px hsl(var(--sebrae-preto) / 0.06);
-    --shadow-elevated: 0 24px 64px -16px hsl(var(--sebrae-azul) / 0.18);
+    --shadow-sm: 0 1px 2px 0 hsl(var(--brand-preto) / 0.06);
+    --shadow-md: 0 4px 12px -2px hsl(var(--brand-preto) / 0.10), 0 2px 4px -2px hsl(var(--brand-preto) / 0.05);
+    --shadow-lg: 0 12px 32px -8px hsl(var(--brand-preto) / 0.14), 0 4px 12px -4px hsl(var(--brand-preto) / 0.08);
+    --shadow-elevated: 0 24px 64px -16px hsl(var(--brand-rosa) / 0.22);
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: var(--sebrae-preto);
-    --sidebar-primary: var(--sebrae-azul);
+    --sidebar-foreground: var(--brand-preto);
+    --sidebar-primary: var(--brand-rosa);
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 25% 94%;
-    --sidebar-accent-foreground: var(--sebrae-preto);
-    --sidebar-border: 210 20% 88%;
-    --sidebar-ring: var(--sebrae-azul);
+    --sidebar-accent: 28 30% 92%;
+    --sidebar-accent-foreground: var(--brand-preto);
+    --sidebar-border: 28 25% 78%;
+    --sidebar-ring: var(--brand-rosa);
   }
 
   /* desktop não tem mobile nav fixa, então zera a reserva */
@@ -90,23 +105,23 @@
   }
 
   .dark {
-    --background: 222 47% 8%;
-    --foreground: 210 20% 96%;
-    --card: 222 40% 12%;
-    --card-foreground: 210 20% 96%;
-    --popover: 222 40% 12%;
-    --popover-foreground: 210 20% 96%;
-    --primary: var(--sebrae-azul-claro);
-    --primary-foreground: var(--sebrae-preto);
-    --secondary: 222 30% 18%;
-    --secondary-foreground: 210 20% 96%;
-    --muted: 222 30% 18%;
-    --muted-foreground: 215 16% 65%;
-    --accent: var(--sebrae-amarelo);
-    --accent-foreground: var(--sebrae-preto);
-    --border: 222 25% 22%;
-    --input: 222 25% 22%;
-    --ring: var(--sebrae-azul-claro);
+    --background: 0 0% 6%;
+    --foreground: var(--brand-bege);
+    --card: 0 0% 10%;
+    --card-foreground: var(--brand-bege);
+    --popover: 0 0% 10%;
+    --popover-foreground: var(--brand-bege);
+    --primary: var(--brand-rosa);
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: var(--brand-bege);
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 65%;
+    --accent: var(--sebrae-azul-claro);
+    --accent-foreground: 0 0% 100%;
+    --border: 0 0% 22%;
+    --input: 0 0% 22%;
+    --ring: var(--brand-rosa);
   }
 }
 
@@ -125,14 +140,13 @@
 
   body {
     @apply bg-background text-foreground font-body;
-    font-feature-settings: "ss01", "cv11";
     overflow-x: clip;
     min-height: 100dvh;
   }
 
   ::selection {
-    background: hsl(var(--sebrae-azul));
-    color: hsl(var(--sebrae-branco));
+    background: hsl(var(--brand-rosa));
+    color: hsl(var(--brand-bege));
   }
 
   /* touch targets mínimos pra botões icônicos */
@@ -189,6 +203,7 @@
   .bg-gradient-primary { background: var(--gradient-primary); }
   .bg-gradient-hero { background: var(--gradient-hero); }
   .bg-gradient-accent { background: var(--gradient-accent); }
+  .bg-gradient-sebrae { background: var(--gradient-sebrae); }
 
   .shadow-elevated { box-shadow: var(--shadow-elevated); }
 

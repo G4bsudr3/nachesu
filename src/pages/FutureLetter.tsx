@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useActiveFutureLetter, useSealFutureLetter } from "@/features/dinamica/useFutureLetter";
 import { FUTURE_LETTER_ENABLED } from "@/features/dinamica/futureLetterFlag";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";

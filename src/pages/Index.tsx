@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 import { ArrowRight, Clock } from "lucide-react";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";

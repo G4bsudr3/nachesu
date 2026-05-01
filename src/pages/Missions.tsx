@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink, Check, AlertCircle, Clock, LogOut, Loader2, Sparkles, ArrowRight } from "lucide-react";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
 import { useAuth } from "@/contexts/AuthContext";
@@ -360,7 +360,7 @@ const Missions = () => {
 
       <footer className="container max-w-5xl py-10 relative z-10">
         <p className="font-body text-xs text-perestroika-preto/60 text-center">
-          chora lovable 2026 · co-produzido por perestroika + frattz
+          eletiva sebrae · escola sebrae · 1º ano EM
         </p>
       </footer>
     </div>

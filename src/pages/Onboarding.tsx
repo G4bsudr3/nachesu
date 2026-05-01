@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 import { PageShell } from "@/components/layout/PageShell";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { JourneyMilestone, type MilestoneState } from "@/components/onboarding/JourneyMilestone";
 import { JourneyProgress } from "@/components/onboarding/JourneyProgress";

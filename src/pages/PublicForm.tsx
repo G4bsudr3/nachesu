@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { usePublicFbiForm } from "@/features/fbi/usePublicFbiForm";
 import {
@@ -164,7 +164,7 @@ const EmailScreen = ({
     </main>
     <footer className="container max-w-5xl py-6">
       <p className="font-body text-xs text-perestroika-preto/50 text-center">
-        chŏra lovable 2026 · porto alegre
+        eletiva sebrae · escola sebrae · 1º ano EM
       </p>
     </footer>
   </div>

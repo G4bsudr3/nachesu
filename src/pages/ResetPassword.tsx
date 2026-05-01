@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Lock, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { PasswordStrength, evaluatePasswordStrength } from "@/components/PasswordStrength";
@@ -185,7 +185,7 @@ const ResetPassword = () => {
 
       <footer className="container py-8">
         <p className="font-body text-xs text-perestroika-preto/60 text-center">
-          chora lovable 2026 · co-produzido por perestroika + frattz
+          eletiva sebrae · escola sebrae · 1º ano EM
         </p>
       </footer>
     </div>
