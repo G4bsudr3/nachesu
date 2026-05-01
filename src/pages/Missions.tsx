@@ -102,7 +102,7 @@ const MissionCard = ({
           <Sparkles className="h-5 w-5 text-perestroika-azul shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <p className="font-body text-sm font-semibold text-perestroika-preto">
-              essa é a missão do tutorial
+              essa é a entrega do tutorial
             </p>
             <p className="mt-1 font-body text-xs sm:text-sm text-perestroika-preto/75 text-pretty">
               faz a etapa 00 (ideia) e as 5 etapas do tutorial e cola o link aqui. é o mesmo manifesto.
@@ -220,7 +220,7 @@ const MissionCard = ({
               className="inline-flex items-center gap-2 px-5 min-h-11 rounded-full bg-perestroika-preto text-perestroika-bege font-body text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-transform disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
               {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-              {submission ? "reenviar" : "enviar missão"}
+              {submission ? "reenviar" : "enviar entrega"}
             </button>
           </div>
         </div>
@@ -298,7 +298,7 @@ const Missions = () => {
         <p className="font-body text-sm uppercase tracking-wide text-perestroika-preto/60">
           oi, {nickname || "..."}
         </p>
-        <h1 className="mt-2 font-display uppercase display-clamp-section">missões</h1>
+        <h1 className="mt-2 font-display uppercase display-clamp-section">entregas</h1>
         <p className="mt-4 max-w-xl font-body text-base sm:text-lg text-perestroika-preto/75 text-pretty">
           desafios curtos para praticar prompt, pensamento de produto e iteração. envia o link, o facilitador avalia e te dá feedback.
         </p>
@@ -321,7 +321,7 @@ const Missions = () => {
         {loading ? (
           <p className="font-body text-sm text-perestroika-preto/60">carregando…</p>
         ) : missions.length === 0 ? (
-          <p className="font-body text-sm text-perestroika-preto/60">nenhuma missão publicada por enquanto. volta em breve.</p>
+          <p className="font-body text-sm text-perestroika-preto/60">nenhuma entrega publicada por enquanto. volta em breve.</p>
         ) : (
           <div className="flex flex-col gap-4 max-w-3xl">
             {missions.map((m, i) => {
@@ -336,8 +336,8 @@ const Missions = () => {
                   {isM02 && m01Done && !m02HasSub && (
                     <NextStepInline
                       href="#m02"
-                      label="missão 01 fechada · próxima abaixo"
-                      helper="missão 02: 10 min de warmup com prompt."
+                      label="entrega 01 fechada · próxima abaixo"
+                      helper="entrega 02: 10 min de warmup com prompt."
                       tone="success"
                     />
                   )}

@@ -28,7 +28,7 @@ interface HeroState {
 }
 
 const SECONDARY_HUB: CTA = { label: "explorar o hub", to: "/app/hub" };
-const SECONDARY_BOT: CTA = { label: "papear com chora bot", to: "/app/chora-bot" };
+const SECONDARY_BOT: CTA = { label: "papear com tutor IA", to: "/app/tutor" };
 
 const buildState = (status: PostEventStatus, nickname: string): HeroState => {
   // carta pro futuro: só vira ação principal se a sessão tá aberta
@@ -100,7 +100,7 @@ const buildState = (status: PostEventStatus, nickname: string): HeroState => {
   return {
     eyebrow: `oi, ${nickname || "builder"}`,
     title: "ciclo fechado 🤙",
-    copy: "tudo entregue. de hoje em diante, o hub é teu lugar pra revisitar materiais, ver projetos da turma e papear com o chora bot.",
+    copy: "tudo entregue. de hoje em diante, o hub é teu lugar pra revisitar materiais, ver projetos da turma e papear com o tutor IA.",
     primary: SECONDARY_HUB,
     secondary: SECONDARY_BOT,
     icon: <Sparkles className="h-7 w-7" />,
