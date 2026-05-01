@@ -17,7 +17,7 @@ interface ExtrasGateProps {
  */
 export const ExtrasGate = ({ children }: ExtrasGateProps) => {
   const { enabled, isLoading } = useEletivaExtras();
-  const { isAdmin, isLoading: roleLoading } = useUserRole();
+  const { isAdmin, loading: roleLoading } = useUserRole();
 
   if (isLoading || roleLoading) return null;
   if (isAdmin) return <>{children}</>;
