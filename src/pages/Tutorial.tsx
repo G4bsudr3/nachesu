@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Check, Copy, Clock, MapPin, AlertTriangle, Refre
 import { TrailBreadcrumb } from "@/components/hub/TrailBreadcrumb";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
@@ -832,7 +832,7 @@ const Tutorial = () => {
 
       <footer className="container max-w-3xl py-10">
         <p className="font-body text-xs text-perestroika-preto/60 text-center">
-          chora lovable 2026 · vai lá e cria
+          eletiva sebrae · vai lá e cria
         </p>
       </footer>
     </div>

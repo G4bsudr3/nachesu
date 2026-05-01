@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Mail, ArrowRight, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { FirstTimeChecklist } from "@/components/auth/FirstTimeChecklist";
@@ -395,7 +395,7 @@ const Auth = () => {
 
       <footer className="container py-8">
         <p className="font-body text-xs text-perestroika-preto/60 text-center">
-          chora lovable 2026 · co-produzido por perestroika + frattz
+          eletiva sebrae · escola sebrae · 1º ano EM
         </p>
       </footer>
     </div>

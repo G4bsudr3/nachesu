@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 
 const Unsubscribe = () => {
   const [params] = useSearchParams();

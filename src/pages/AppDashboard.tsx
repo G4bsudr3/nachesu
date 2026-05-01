@@ -118,7 +118,7 @@ const AppDashboard = () => {
         style={{ marginBottom: "var(--mobile-nav-h, 0px)" }}
       >
         <p className="text-center font-body text-xs text-perestroika-preto/55">
-          chora lovable 2026 · co-produzido por perestroika + frattz
+          eletiva sebrae · escola sebrae · 1º ano EM
         </p>
       </footer>
     </div>

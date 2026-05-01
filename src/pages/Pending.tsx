@@ -5,7 +5,7 @@ import { LogOut, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfileStatus } from "@/hooks/useProfileStatus";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { PageHeader } from "@/components/layout/PageHeader";
 

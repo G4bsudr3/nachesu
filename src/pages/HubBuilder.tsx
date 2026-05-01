@@ -372,7 +372,7 @@ const HubBuilder = () => {
 
       <footer className="container max-w-5xl py-10">
         <p className="text-center font-body text-xs text-perestroika-preto/60">
-          chora lovable 2026 · co-produzido por perestroika + frattz
+          eletiva sebrae · escola sebrae · 1º ano EM
         </p>
       </footer>
     </div>

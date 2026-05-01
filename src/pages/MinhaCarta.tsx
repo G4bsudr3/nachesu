@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useMyCard } from "@/features/carta/useMyCard";
 import { CartaCompleta, type CartaCompletaData } from "@/components/carta/CartaCompleta";
 import { CartaActions } from "@/components/carta/CartaActions";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { TarotCard } from "@/components/carta/TarotCard";
