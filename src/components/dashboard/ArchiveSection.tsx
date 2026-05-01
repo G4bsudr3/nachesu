@@ -28,8 +28,8 @@ const items: ArchiveLink[] = [
     icon: <Compass className="h-4 w-4" />,
   },
   {
-    to: "/app/missoes",
-    title: "missões",
+    to: "/app/entregas",
+    title: "entregas",
     hint: "5 desafios curtos pra revisitar",
     icon: <Target className="h-4 w-4" />,
   },

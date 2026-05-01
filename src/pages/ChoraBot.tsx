@@ -27,10 +27,10 @@ const MIN_PROMPT_LENGTH = 2;
 const MAX_PROMPT_LENGTH = 2000;
 
 const SUGGESTIONS = [
-  "como faço deploy de uma edge function?",
-  "qual a diferença entre rpc e edge function?",
-  "como uso o lovable cloud com auth?",
-  "me explica o meu arquétipo de novo",
+  "como começo um projeto no Lovable?",
+  "me explica o que é um prompt bom",
+  "como faço deploy do meu projeto?",
+  "me ajuda a destravar uma ideia",
 ];
 
 const ChoraBot = () => {

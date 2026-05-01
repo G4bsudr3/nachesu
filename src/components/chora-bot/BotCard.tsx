@@ -54,7 +54,7 @@ export const BotCard = ({ size = "hero", tilt = false, className = "" }: BotCard
         >
           <img
             src={botAvatar}
-            alt="ilustração do chora bot"
+            alt="ilustração do tutor IA"
             className="absolute inset-0 h-full w-full object-cover"
             draggable={false}
           />

@@ -17,7 +17,7 @@ export const ToneChips = ({ value, onChange }: ToneChipsProps) => {
       </span>
       <div
         role="radiogroup"
-        aria-label="tom da resposta do chora bot"
+        aria-label="tom da resposta do tutor IA"
         className="flex flex-wrap gap-1.5"
       >
         {CHORA_BOT_TONES.map((t) => {
