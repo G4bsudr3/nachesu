@@ -146,7 +146,7 @@ const Certificado = () => {
       const file = new File([blob], `chora-lovable-certificado.png`, { type: blob.type || "image/png" });
       const nav = navigator as Navigator & { canShare?: (data?: ShareData) => boolean };
       if (nav.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: "meu certificado chŏra lovable", text: "fui lá e criei." });
+        await navigator.share({ files: [file], title: "meu certificado · eletiva sebrae", text: "fui lá e criei." });
         return;
       }
       handleDownload();
