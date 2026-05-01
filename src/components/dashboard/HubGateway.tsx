@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Camera, FolderOpen, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 
 interface GatewayLink {
   to: string;
@@ -9,14 +10,27 @@ interface GatewayLink {
   accent: string;
 }
 
-const links: GatewayLink[] = [
+// links sempre visíveis na eletiva sebrae
+const baseLinks: GatewayLink[] = [
   {
     to: "/app/hub/materiais",
     title: "materiais",
-    copy: "leituras, refs e apresentações da imersão",
+    copy: "leituras, refs e apresentações das aulas",
     icon: <BookOpen className="h-5 w-5" />,
     accent: "linear-gradient(135deg, #6f77fc 0%, #f756a6 100%)",
   },
+  {
+    to: "/app/tutor",
+    title: "tutor IA",
+    copy: "tira dúvida das aulas, prompt, código",
+    icon: <Sparkles className="h-5 w-5" />,
+    accent: "linear-gradient(135deg, #fe7b02 0%, #fd4644 100%)",
+  },
+];
+
+// links extras (mural de projetos, galeria, álbum) só aparecem
+// se o admin ativar a flag eletiva_extras_enabled.
+const extrasLinks: GatewayLink[] = [
   {
     to: "/app/hub/galeria",
     title: "galeria",
@@ -28,19 +42,15 @@ const links: GatewayLink[] = [
     to: "/app/hub/projetos",
     title: "projetos",
     copy: "feed da turma. reage, comenta, posta o teu",
-    icon: <FolderOpen className="h-5 w-5" />,
+    icon: <BookOpen className="h-5 w-5" />,
     accent: "linear-gradient(135deg, #fd4644 0%, #fe7b02 100%)",
-  },
-  {
-    to: "/app/hub/album",
-    title: "álbum",
-    copy: "fotos do chora lovable",
-    icon: <Camera className="h-5 w-5" />,
-    accent: "linear-gradient(135deg, #fe7b02 0%, #fd4644 100%)",
   },
 ];
 
 export const HubGateway = () => {
+  const { enabled: extrasEnabled } = useEletivaExtras();
+  const links = extrasEnabled ? [...baseLinks, ...extrasLinks] : baseLinks;
+
   return (
     <section
       aria-labelledby="hub-gateway-title"
@@ -49,7 +59,7 @@ export const HubGateway = () => {
       <header className="mb-5 flex items-end justify-between gap-4">
         <div>
           <p className="mb-1 font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55">
-            hub da turma
+            o que tem por aqui
           </p>
           <h2
             id="hub-gateway-title"
