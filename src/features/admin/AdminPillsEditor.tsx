@@ -713,5 +713,3 @@ const PillFormDialog = ({
   );
 };
 
-// dummy useMemo import suppressor (kept for parity with sibling files)
-void useMemo;
