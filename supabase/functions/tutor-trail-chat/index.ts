@@ -177,6 +177,19 @@ Deno.serve(async (req) => {
 
     const history = (convRes.data?.messages ?? []) as ChatMessage[];
     const trimmedHistory = history.slice(-HISTORY_LIMIT);
+    const existingTitle = (convRes.data as { title?: string | null } | null)?.title ?? null;
+
+    // título curto a partir da primeira mensagem do aluno (gerado uma única vez)
+    const buildTitle = (raw: string): string => {
+      const clean = raw.replace(/\s+/g, " ").trim();
+      if (clean.length <= 60) return clean || "conversa sem título";
+      const cut = clean.slice(0, 60);
+      const lastSpace = cut.lastIndexOf(" ");
+      return (lastSpace > 30 ? cut.slice(0, lastSpace) : cut).trimEnd() + "…";
+    };
+    const titleToPersist = existingTitle && existingTitle.trim().length > 0
+      ? existingTitle
+      : buildTitle(message);
 
     const messagesForAI = [
       { role: "system", content: systemPrompt },
