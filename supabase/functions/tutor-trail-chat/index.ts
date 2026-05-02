@@ -128,7 +128,7 @@ Deno.serve(async (req) => {
         .eq("user_id", userId),
       admin
         .from("tutor_conversations")
-        .select("id, messages")
+        .select("id, messages, title")
         .eq("user_id", userId)
         .eq("trail_id", trailId)
         .maybeSingle(),
@@ -177,6 +177,19 @@ Deno.serve(async (req) => {
 
     const history = (convRes.data?.messages ?? []) as ChatMessage[];
     const trimmedHistory = history.slice(-HISTORY_LIMIT);
+    const existingTitle = (convRes.data as { title?: string | null } | null)?.title ?? null;
+
+    // título curto a partir da primeira mensagem do aluno (gerado uma única vez)
+    const buildTitle = (raw: string): string => {
+      const clean = raw.replace(/\s+/g, " ").trim();
+      if (clean.length <= 60) return clean || "conversa sem título";
+      const cut = clean.slice(0, 60);
+      const lastSpace = cut.lastIndexOf(" ");
+      return (lastSpace > 30 ? cut.slice(0, lastSpace) : cut).trimEnd() + "…";
+    };
+    const titleToPersist = existingTitle && existingTitle.trim().length > 0
+      ? existingTitle
+      : buildTitle(message);
 
     const messagesForAI = [
       { role: "system", content: systemPrompt },
@@ -264,6 +277,7 @@ Deno.serve(async (req) => {
                 user_id: userId,
                 trail_id: trailId,
                 messages: trimmed,
+                title: titleToPersist,
                 updated_at: nowIso,
               },
               { onConflict: "user_id,trail_id" },
