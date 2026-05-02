@@ -306,7 +306,7 @@ const Auth = () => {
                     <p className="font-body text-sm text-perestroika-preto leading-snug">
                       esse email tá vinculado a outro endereço.
                       <br />
-                      tu entra com <span className="font-semibold">{aliasHint}</span>.
+                      você entra com <span className="font-semibold">{aliasHint}</span>.
                     </p>
                     <button
                       type="button"
