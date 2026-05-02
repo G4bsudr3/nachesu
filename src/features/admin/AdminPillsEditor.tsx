@@ -96,6 +96,7 @@ type Pill = {
   duration_min_low: number | null;
   duration_min_high: number | null;
   required: boolean;
+  published: boolean;
   order_index: number;
 };
 
