@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
@@ -287,7 +287,7 @@ export const TutorChat = ({
                 style={{ backgroundColor: trailColor }}
                 aria-hidden="true"
               >
-                <LagrimaGradient size={20} />
+                <EletivaSymbol size={20} />
               </span>
               <div>
                 <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
@@ -413,7 +413,7 @@ export const TutorChat = ({
                           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                           transition={{ repeat: Infinity, duration: 1.2 }}
                         >
-                          <LagrimaGradient size={14} />
+                          <EletivaSymbol size={14} />
                         </motion.span>
                         pensando...
                       </span>

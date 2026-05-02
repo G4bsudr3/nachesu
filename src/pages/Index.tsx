@@ -3,8 +3,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
-import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { EletivaStar } from "@/components/brand/EletivaStar";
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
 
 const trilhas = [
@@ -18,14 +18,14 @@ const trilhas = [
   {
     n: "02",
     titulo: "problema & decisão",
-    desc: "achar uma dor real, escolher a tua, escopar e vender em 60 segundos.",
+    desc: "achar uma dor real, escolher a sua, escopar e vender em 60 segundos.",
     color: "#fd4644",
     range: "módulos 6-10",
   },
   {
     n: "03",
     titulo: "construção no lovable",
-    desc: "do briefing ao mvp, ux que faz sentido, ia dentro do teu app.",
+    desc: "do briefing ao mvp, ux que faz sentido, ia dentro do seu app.",
     color: "#f756a6",
     range: "módulos 11-15",
   },
@@ -97,10 +97,10 @@ const Index = () => {
           aria-hidden="true"
         >
           <span className="block sm:hidden">
-            <LagrimaGradient size={84} rotate={12} />
+            <EletivaSymbol size={84} rotate={12} />
           </span>
           <span className="hidden sm:block">
-            <LagrimaGradient size={140} rotate={12} />
+            <EletivaSymbol size={140} rotate={12} />
           </span>
         </motion.div>
 
@@ -116,7 +116,7 @@ const Index = () => {
             className="font-display uppercase display-clamp-hero"
           >
             <span className="block">ia na prática.</span>
-            <span className="block">teu primeiro app.</span>
+            <span className="block">seu primeiro app.</span>
           </motion.h1>
           <motion.p
             variants={heroItem}
@@ -165,7 +165,7 @@ const Index = () => {
             ideia boa é<br />ideia construída.
           </h2>
           <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
-            durante 20 semanas você escolhe um problema seu, da tua escola, da tua cidade, da tua vida, e constrói um app pra resolver. com ia, com o lovable, e com o joão-de-barro do teu lado.
+            durante 20 semanas você escolhe um problema seu, da sua escola, da sua cidade, da sua vida, e constrói um app pra resolver. com ia, com o lovable, e com o joão-de-barro do seu lado.
           </p>
         </motion.div>
       </section>
@@ -200,10 +200,10 @@ const Index = () => {
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
               <span className="block">esse é o joão.</span>
-              <span className="block">teu tutor de ia.</span>
+              <span className="block">seu tutor de ia.</span>
             </h2>
             <p className="mt-6 max-w-lg font-body text-base sm:text-lg text-perestroika-bege/80 mx-auto md:mx-0">
-              ele tira dúvida quando você empaca, dá ideia quando você trava, e provoca quando você tá no piloto automático. respondendo no teu ritmo, em português.
+              ele tira dúvida quando você empaca, dá ideia quando você trava, e provoca quando você tá no piloto automático. respondendo no seu ritmo, em português.
             </p>
           </motion.div>
         </div>
@@ -225,7 +225,7 @@ const Index = () => {
             4 trilhas, 20 módulos, 1 projeto seu
           </h2>
           <p className="font-body text-base sm:text-lg text-perestroika-preto/75">
-            cada módulo tem 50 minutos, sai um por semana. no fim, teu app no ar.
+            cada módulo tem 50 minutos, sai um por semana. no fim, seu app no ar.
           </p>
         </motion.div>
 
@@ -274,7 +274,7 @@ const Index = () => {
           className="absolute -right-16 top-1/2 -translate-y-1/2 opacity-[0.07] pointer-events-none"
           aria-hidden="true"
         >
-          <EstrelaPerestroika size={420} color="preta" />
+          <EletivaStar size={420} color="preta" />
         </div>
 
         <motion.div
@@ -324,7 +324,7 @@ const Index = () => {
           </motion.div>
 
           <p className="font-body text-xs sm:text-sm text-perestroika-preto/60 max-w-md">
-            já tem conta? o login te leva direto pra tua trilha.
+            já tem conta? o login te leva direto pra sua trilha.
           </p>
         </div>
       </section>

@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 /**
  * feature flag eletiva_extras_enabled em hub_settings.
- * controla se features sociais herdadas do chŏra (mural de projetos, votação,
+ * controla se features sociais legadas (mural de projetos, votação,
  * álbum, carta futuro, perfil de builder ia, galeria, turma) ficam acessíveis.
  *
  * default: false. admin liga em /admin quando fizer sentido reativar pra essa turma.

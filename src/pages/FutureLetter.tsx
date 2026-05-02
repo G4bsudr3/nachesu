@@ -8,7 +8,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useActiveFutureLetter, useSealFutureLetter } from "@/features/dinamica/useFutureLetter";
 import { FUTURE_LETTER_ENABLED } from "@/features/dinamica/futureLetterFlag";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -118,7 +118,7 @@ const FutureLetter = () => {
             className="text-center py-12"
           >
             <div className="flex justify-center mb-6">
-              <LagrimaGradient className="w-16 h-20" />
+              <EletivaSymbol className="w-16 h-20" />
             </div>
             <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none mb-4">
               carta salva.

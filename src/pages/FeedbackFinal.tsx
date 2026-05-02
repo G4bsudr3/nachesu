@@ -7,7 +7,7 @@ import { FeedbackFinalFlow } from "@/components/hub/FeedbackFinalFlow";
 import { useFeedbackFinal } from "@/features/hub/useFeedbackFinal";
 import { FINAL_FEEDBACK_ENABLED } from "@/features/hub/feedbackFinalFlag";
 import { useUserRole } from "@/hooks/useUserRole";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { Award, ArrowLeft, Loader2 } from "lucide-react";
 
 interface ProfileData {
@@ -21,7 +21,7 @@ interface CardData {
 
 const ThanksScreen = () => (
   <div className="flex flex-col items-center text-center py-16 sm:py-24">
-    <LagrimaGradient size={72} />
+    <EletivaSymbol size={72} />
     <p className="mt-8 font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-laranja">
       pesquisa enviada
     </p>

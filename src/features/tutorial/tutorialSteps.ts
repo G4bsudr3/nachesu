@@ -55,7 +55,7 @@ contexto:
 - minha profissão: {trabalho}
 - ideia que quero construir: {ideia_gaveta}
 - maior desafio hoje: {maior_desafio}
-- o que quero sair com no chora lovable: {expectativa_chora}
+- o que quero sair com nessa eletiva: {expectativa_chora}
 
 monta pra mim um BRIEFING COMPLETO pra colar no lovable, com essa estrutura:
 

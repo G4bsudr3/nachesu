@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { CertificateForm } from "@/components/certificate/CertificateForm";
 import { useCertificateDownload } from "@/components/certificate/useCertificateDownload";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { ARCHETYPE_TOKENS, type Archetype } from "@/components/carta/cartaTokens";
 import type { CertificatePreset } from "@/components/certificate/certificatePresets";
 import { detectGender } from "@/lib/gender";
@@ -179,7 +179,7 @@ const Certificado = () => {
         {phase === "generating" && (
           <div className="flex flex-col items-center justify-center text-center py-20 min-h-[60vh]">
             <div className="animate-pulse">
-              <LagrimaGradient size={96} />
+              <EletivaSymbol size={96} />
             </div>
             <h1 className="font-display uppercase text-4xl sm:text-6xl leading-[0.9] mt-8 max-w-2xl text-balance">
               gerando teu certificado

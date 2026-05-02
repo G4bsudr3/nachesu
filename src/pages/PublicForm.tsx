@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { usePublicFbiForm } from "@/features/fbi/usePublicFbiForm";
 import {
   fbiFieldSchemas,
@@ -232,7 +232,7 @@ const DoneScreen = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 220, damping: 18 }}
       >
-        <LagrimaGradient size={120} />
+        <EletivaSymbol size={120} />
       </motion.div>
       <motion.h1
         initial={{ y: 20, opacity: 0 }}
@@ -421,7 +421,7 @@ const PublicFbiFormFlow = ({
       </header>
 
       <main className="flex-1 container max-w-3xl py-10 sm:py-14 pb-32 md:pb-14 relative">
-        <LagrimaGradient
+        <EletivaSymbol
           size={56}
           className="hidden lg:block absolute right-6 top-6 opacity-80"
           rotate={12}

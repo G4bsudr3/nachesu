@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Award, Clock, Mail, MessageCircleHeart, Sparkles } from "lucide-react";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import type { PostEventStatus } from "@/hooks/usePostEventStatus";
 
 interface Props {
@@ -73,8 +73,8 @@ const buildState = (status: PostEventStatus, nickname: string): HeroState => {
   if (!status.certificateIssued) {
     return {
       eyebrow: "última peça",
-      title: "pega teu certificado",
-      copy: "certificado oficial do chŏra lovable, alta resolução, com tua carta de builder. baixa pra postar onde for.",
+      title: "pega seu certificado",
+      copy: "certificado oficial da eletiva, alta resolução, com sua carta de builder. baixa pra postar onde for.",
       primary: { label: "baixar certificado", to: "/app/certificado" },
       secondary: SECONDARY_HUB,
       icon: <Award className="h-7 w-7" />,
@@ -86,8 +86,8 @@ const buildState = (status: PostEventStatus, nickname: string): HeroState => {
   if (!status.futureLetterSessionOpen && !status.futureLetterDone) {
     return {
       eyebrow: `oi, ${nickname || "builder"}`,
-      title: "tu já fez tua parte",
-      copy: "pesquisa e certificado fechados. a carta pro futuro abre em breve, te aviso aqui assim que liberar. enquanto isso, o hub é teu.",
+      title: "você já fez sua parte",
+      copy: "pesquisa e certificado fechados. a carta pro futuro abre em breve, te aviso aqui assim que liberar. enquanto isso, o hub é seu.",
       primary: SECONDARY_HUB,
       secondary: SECONDARY_BOT,
       icon: <Clock className="h-7 w-7" />,
@@ -131,7 +131,7 @@ export const NextActionHero = ({ nickname, status }: Props) => {
         aria-hidden
         className="pointer-events-none absolute -right-12 -top-12 opacity-25"
       >
-        <LagrimaGradient size={180} />
+        <EletivaSymbol size={180} />
       </div>
 
       <div className="relative flex flex-col gap-6">

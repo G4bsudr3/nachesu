@@ -73,7 +73,7 @@ export const AdminEletivaSettings = () => {
       <header className="space-y-2">
         <h2 className="font-display text-3xl uppercase tracking-tight">configurações da eletiva</h2>
         <p className="text-sm text-muted-foreground">
-          ligar e desligar features herdadas do chŏra lovable. admin sempre vê tudo.
+          ligar e desligar features sociais legadas (mural, álbum, carta pro futuro, etc.). admin sempre vê tudo.
         </p>
       </header>
 

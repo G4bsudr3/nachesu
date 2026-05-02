@@ -7,7 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { HubLayout } from "@/components/layout/HubLayout";
 import { ExtrasGate } from "@/components/ExtrasGate";
 import { useDashboardDraftPersistence } from "@/hooks/useDashboardDraftPersistence";
@@ -68,7 +68,7 @@ const queryClient = new QueryClient({
 const RouteFallback = () => (
   <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">
     <div className="flex flex-col items-center gap-4 motion-safe:animate-pulse">
-      <LagrimaGradient size={56} />
+      <EletivaSymbol size={56} />
       <span className="sr-only">carregando</span>
     </div>
   </div>

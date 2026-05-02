@@ -1,23 +1,34 @@
-# próximos passos da eletiva sebrae
+# próximos passos da eletiva ia na prática
 
 ## status
 - ✅ etapa 1 — progresso por pílula
 - ✅ etapa 2 — mapa de trilhas (`/app/trilhas`)
-- ✅ etapa 3 — desbloqueio sequencial entre módulos (com toggle "modo livre" no admin)
-- ✅ etapa 4 — tutor IA por trilha (joão-de-barro, gemini 2.5 flash)
+- ✅ etapa 3 — desbloqueio sequencial entre módulos
+- ✅ etapa 4 — tutor IA por trilha (joão-de-barro)
+- ✅ etapa 5 — rebrand profundo Eletiva (mai/2026)
 
 ---
 
-## etapa 4 — tutor IA por trilha (entregue)
+## etapa 5 — rebrand Eletiva (entregue)
 
 **o que ficou pronto:**
-- migration: coluna `pbl_prompt` em `trails`, tabela `tutor_conversations` (user_id + trail_id unique, jsonb messages, RLS aluno-vê-próprias + admin-lê-todas).
-- edge function `tutor-trail-chat`: streaming SSE via lovable AI gateway (gemini-2.5-flash), sem RAG. system prompt monta contexto da trilha (título, descrição, pbl_prompt) + módulos concluídos pelo aluno + módulo atual. histórico das últimas 20 trocas vai pro modelo, últimas 80 ficam persistidas.
-- componente `<TutorChat />` em `Sheet` lateral (drawer desktop, fullscreen mobile). lágrima pulsando como "pensando", bolha do tutor estilo perestroika, textarea com shift+enter pra quebrar linha. carrega histórico do banco ao abrir.
-- botão "conversar com tutor" aparece no rodapé das pílulas `kind = exercicio_pbl` (cor da trilha).
-- admin: nova seção "tutor IA · problema central" no `AdminTrilha` permite editar o `pbl_prompt` de cada trilha.
+- `<EletivaSymbol />` (mascote joão-de-barro) substituiu `<LagrimaGradient />` em todas as páginas-aluno (~25 arquivos).
+- `<EletivaStar />` substituiu `<EstrelaPerestroika />` em todas as páginas-aluno e no `PageShell`.
+- `index.html`: title, description, og e twitter atualizados pra "eletiva ia na prática · vai lá e cria · escola sebrae".
+- copy limpa: removido "frattz" como pessoa nas páginas-aluno (vira "equipe da escola" / "suporte da escola"); removido "chŏra lovable" do `OnboardingDialog`, `NextActionHero`, `tutorialSteps`, `useEletivaExtras`, `ExtrasGate`, `AdminEletivaSettings`, testes.
+- tom: "tu/teu/tua" trocado por "você/seu/sua" no `Index` e `Auth`.
+- componentes legados (`LagrimaGradient`, `EstrelaPerestroika`, `ChoraLogo`, `PeresLogo`) intactos, ainda usados pelas páginas Chŏra atrás da flag.
 
-**signature moment atual:** lágrima gradient pulsando enquanto o tutor pensa, bolha do user em preto sólido (perestroika preto) vs bolha do tutor em branco translúcido com borda fina. entrada animada das mensagens.
+**o que ficou fora deste ciclo:**
+- certificado co-branding Eletiva + Sebrae no `CertificateEditorial` — depende do asset oficial Sebrae.
+- `feedbackFinalFlag.ts` ainda hardcoda nome/local Chŏra — só relevante se a flag for reativada.
+- "tu/teu" residual em outras páginas legadas Chŏra — preservado intencionalmente.
+
+**critérios de aceite atingidos:**
+- páginas-aluno Eletiva = 0 ocorrências de `LagrimaGradient` e `EstrelaPerestroika`.
+- `<title>` do `index.html` não contém "chora".
+- páginas Chŏra atrás de `ExtrasGate` continuam visualmente intactas.
+- tutor da trilha mostra mascote, não gota.
 
 ---
 
@@ -25,4 +36,5 @@
 
 - conteúdo real nos 20 módulos + PBL prompts populados.
 - analytics: ver no admin quantas trocas o aluno teve com o tutor por trilha.
-- "modo evento ao vivo" pra quando rodar a eletiva presencial em sala.
+- certificado co-branding Eletiva + Sebrae quando o asset oficial chegar.
+- "modo evento ao vivo" pra rodar a eletiva presencial em sala.

@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { Check, ArrowRight } from "lucide-react";
 
 interface OnboardingDialogProps {
@@ -27,16 +27,16 @@ export const OnboardingDialog = ({
       ? "ver minha carta"
       : "ir pro hub";
 
-  const title = noFbi ? "boas-vindas ao chŏra hub" : "bem-vindo ao chŏra hub";
+  const title = noFbi ? "boas-vindas à eletiva" : "bem-vindo à eletiva";
   const subtitle = noFbi
     ? "pra você descobrir o seu arquétipo e abrir a sua própria carta, a gente precisa de uns 10 minutos seus no fbi. abrimos o mapa da trilha pra você ver o que vem pela frente."
-    : "esse é o seu espaço da imersão. é daqui que você prepara, joga e revisita depois.";
+    : "esse é o seu espaço da eletiva. é daqui que você prepara, joga e revisita depois.";
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent className="bg-perestroika-bege border-perestroika-preto/15 sm:rounded-3xl max-w-lg p-0 overflow-hidden">
         <div className="flex flex-col items-center pt-8 pb-2 px-6 sm:px-10">
-          <LagrimaGradient size={56} />
+          <EletivaSymbol size={56} />
           <DialogTitle className="mt-5 font-display uppercase text-4xl sm:text-5xl leading-none text-perestroika-preto text-center text-balance">
             {title}
           </DialogTitle>
@@ -86,7 +86,7 @@ export const OnboardingDialog = ({
                         sua carta de builder
                       </div>
                       <p className="font-body text-sm text-perestroika-preto/70 text-pretty">
-                        o frattz está finalizando. avisamos no whatsapp quando publicar.
+                        a equipe está finalizando. avisamos quando publicar.
                       </p>
                     </div>
                   </li>

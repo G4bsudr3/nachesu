@@ -6,8 +6,8 @@ import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
-import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { EletivaStar } from "@/components/brand/EletivaStar";
 import { TrilhaColumn } from "@/components/eletiva/TrilhaColumn";
 
 const trailColorByOrder: Record<number, string> = {
@@ -26,7 +26,7 @@ const Trilhas = () => {
     return (
       <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">
         <div className="motion-safe:animate-pulse">
-          <LagrimaGradient size={56} />
+          <EletivaSymbol size={56} />
           <span className="sr-only">carregando trilhas</span>
         </div>
       </div>
@@ -38,7 +38,7 @@ const Trilhas = () => {
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <EstrelaPerestroika
+        <EletivaStar
           size={320}
           color="rosa"
           className="absolute -left-24 -bottom-24 opacity-20 motion-safe:animate-spin-slow"

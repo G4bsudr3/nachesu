@@ -22,7 +22,7 @@ import { heroSpacing, heroSizing } from "@/lib/heroTokens";
 const HeroFragment = ({ withHint = false }: { withHint?: boolean }) => (
   <section data-testid="hero">
     <header>
-      <h1 data-testid="hero-title">boas-vindas ao chŏra hub</h1>
+      <h1 data-testid="hero-title">boas-vindas à eletiva</h1>
       <p
         data-testid="hero-subtitle"
         className={`${heroSpacing.subtitleTop} max-w-xl`}

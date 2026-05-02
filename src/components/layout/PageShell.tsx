@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { EletivaStar } from "@/components/brand/EletivaStar";
 
 type Variant = "bege" | "gradient";
 type MaxWidth = "narrow" | "default" | "wide" | "full";
@@ -67,7 +67,7 @@ export const PageShell = ({
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 [overflow:hidden]"
         >
-          <EstrelaPerestroika
+          <EletivaStar
             color={decorStarColor}
             size={360}
             className="absolute -right-32 -bottom-32 opacity-25 motion-safe:animate-spin-slow sm:!w-[480px] lg:!w-[620px]"

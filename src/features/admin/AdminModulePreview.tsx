@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { EletivaStar } from "@/components/brand/EletivaStar";
 
 type Pill = {
   id: string;
@@ -175,7 +175,7 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 overflow-hidden"
               >
-                <EstrelaPerestroika
+                <EletivaStar
                   size={device === "mobile" ? 180 : 260}
                   color="rosa"
                   className="absolute -right-16 -top-12 opacity-15"

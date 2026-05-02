@@ -6,7 +6,7 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import { usePostEventStatus } from "@/hooks/usePostEventStatus";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { EletivaStar } from "@/components/brand/EletivaStar";
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { NextActionHero } from "@/components/dashboard/NextActionHero";
 import { JourneyChips } from "@/components/dashboard/JourneyChips";
@@ -15,7 +15,7 @@ import { ArchiveSection } from "@/components/dashboard/ArchiveSection";
 import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 const AppDashboard = () => {
   const { user, signOut } = useAuth();
@@ -33,7 +33,7 @@ const AppDashboard = () => {
     return (
       <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">
         <div className="motion-safe:animate-pulse">
-          <LagrimaGradient size={56} />
+          <EletivaSymbol size={56} />
           <span className="sr-only">carregando dashboard</span>
         </div>
       </div>
@@ -44,7 +44,7 @@ const AppDashboard = () => {
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
       {/* decoração de fundo */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <EstrelaPerestroika
+        <EletivaStar
           size={360}
           color="rosa"
           className="absolute -right-32 -bottom-32 opacity-25 motion-safe:animate-spin-slow sm:!w-[480px] lg:!w-[620px]"

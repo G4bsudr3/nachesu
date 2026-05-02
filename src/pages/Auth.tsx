@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { FirstTimeChecklist } from "@/components/auth/FirstTimeChecklist";
 
 import { ALLOWED_EMAILS } from "@/lib/access";
@@ -257,7 +257,7 @@ const Auth = () => {
 
       <main className="flex-1 container flex items-center justify-center py-16">
         <div className="w-full max-w-md relative">
-          <LagrimaGradient
+          <EletivaSymbol
             size={64}
             className="absolute -top-20 right-0 animate-pulse-soft"
             rotate={-15}
@@ -306,7 +306,7 @@ const Auth = () => {
                     <p className="font-body text-sm text-perestroika-preto leading-snug">
                       esse email tá vinculado a outro endereço.
                       <br />
-                      tu entra com <span className="font-semibold">{aliasHint}</span>.
+                      você entra com <span className="font-semibold">{aliasHint}</span>.
                     </p>
                     <button
                       type="button"
