@@ -158,7 +158,7 @@ export const AdminPillsEditor = ({
       const { data, error } = await supabase
         .from("module_pills")
         .select(
-          "id, module_id, title, kind, body_md, video_url, attachment_url, duration_min_low, duration_min_high, required, order_index",
+          "id, module_id, title, kind, body_md, video_url, attachment_url, duration_min_low, duration_min_high, required, published, order_index",
         )
         .eq("module_id", moduleId!)
         .order("order_index");
