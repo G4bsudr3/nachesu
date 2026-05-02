@@ -272,7 +272,7 @@ export const AdminTrilha = () => {
                 disponível em
               </TableHead>
               <TableHead className="uppercase text-xs tracking-wide w-24">status</TableHead>
-              <TableHead className="uppercase text-xs tracking-wide w-32 text-right">
+              <TableHead className="uppercase text-xs tracking-wide w-44 text-right">
                 ações
               </TableHead>
             </TableRow>
