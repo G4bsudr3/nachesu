@@ -7,7 +7,6 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import { TrilhaColumn } from "@/components/eletiva/TrilhaColumn";
 
 const trailColorByOrder: Record<number, string> = {
@@ -40,14 +39,6 @@ const Trilhas = () => {
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <EletivaStar
-          size={320}
-          color="rosa"
-          className="absolute -left-24 -bottom-24 opacity-20 motion-safe:animate-spin-slow"
-        />
-      </div>
-
       <PageHeader
         showLogo
         logoLink="/app"

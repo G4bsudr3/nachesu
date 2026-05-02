@@ -191,7 +191,7 @@ const Onboarding = () => {
   })();
 
   return (
-    <PageShell decorStar decorStarColor="rosa">
+    <PageShell>
       <header className="px-4 sm:px-6 lg:px-8 pt-6 pb-4 flex items-center justify-between gap-4">
         <Link
           to="/app"

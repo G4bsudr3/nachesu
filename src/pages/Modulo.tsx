@@ -10,7 +10,6 @@ import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import { TutorChat } from "@/components/eletiva/TutorChat";
 
 type Pill = {
@@ -281,14 +280,6 @@ const Modulo = () => {
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <EletivaStar
-          size={320}
-          color="rosa"
-          className="absolute -right-32 -top-20 opacity-15 motion-safe:animate-spin-slow"
-        />
-      </div>
-
       <PageHeader
         showLogo
         logoLink="/app"
