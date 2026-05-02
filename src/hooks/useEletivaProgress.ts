@@ -26,10 +26,16 @@ export type ModuleProgress = {
   completed_at: string | null;
 };
 
+export type PillProgress = {
+  pill_id: string;
+  completed_at: string;
+};
+
 export type EletivaSnapshot = {
   trails: EletivaTrail[];
   modules: (EletivaModule & { id: string })[];
   progressByModuleId: Record<string, ModuleProgress>;
+  completedPillIds: Set<string>;
   totalPublished: number;
   totalCompleted: number;
   currentModule: (EletivaModule & { id: string }) | null;
