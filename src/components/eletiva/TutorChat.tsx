@@ -221,6 +221,31 @@ export const TutorChat = ({
     await runSend(text);
   };
 
+  const clearConversation = async () => {
+    if (!user || streaming || clearing) return;
+    setClearing(true);
+    try {
+      // só zera se já existir registro; se não existe, nada a fazer
+      const { error } = await supabase
+        .from("tutor_conversations")
+        .update({ messages: [], title: null })
+        .eq("user_id", user.id)
+        .eq("trail_id", trailId);
+      if (error) throw error;
+      setMessages([]);
+      setInput("");
+      setErrorMsg(null);
+      setLastFailedText(null);
+      queryClient.invalidateQueries({ queryKey: ["tutor-conv", user.id, trailId] });
+      toast.success("conversa zerada. contexto do tutor reiniciado.");
+    } catch (e) {
+      console.error("[tutor-chat] clear", e);
+      toast.error("não rolou limpar agora. tenta de novo.");
+    } finally {
+      setClearing(false);
+    }
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
