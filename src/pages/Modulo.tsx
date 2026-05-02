@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, ExternalLink, FileT
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
@@ -44,6 +45,7 @@ const Modulo = () => {
   const { number } = useParams<{ number: string }>();
   const moduleNumber = Number(number);
   const { user } = useAuth();
+  const { isAdmin } = useUserRole();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress();
