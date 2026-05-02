@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock, ExternalLink, FileText, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, ExternalLink, FileText, Play } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -121,6 +121,64 @@ const Modulo = () => {
       queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
     },
     onError: (e: Error) => toast.error(e.message ?? "deu ruim ao concluir"),
+  });
+
+  const completedPillIds = snapshot?.completedPillIds ?? new Set<string>();
+
+  const togglePillMutation = useMutation({
+    mutationFn: async (pill: Pill) => {
+      if (!user) throw new Error("sem contexto");
+      const isDone = completedPillIds.has(pill.id);
+      if (isDone) {
+        const { error } = await supabase
+          .from("student_pill_progress")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("pill_id", pill.id);
+        if (error) throw error;
+        return { wasDone: true };
+      }
+      const { error } = await supabase.from("student_pill_progress").upsert(
+        {
+          user_id: user.id,
+          pill_id: pill.id,
+          completed_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,pill_id" },
+      );
+      if (error) throw error;
+      return { wasDone: false };
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+      // checa se todas as required do módulo agora estão feitas → auto-complete
+      if (!user || !moduleRow || isCompleted || !pills) return;
+      const required = pills.filter((p) => p.required);
+      const fresh = await supabase
+        .from("student_pill_progress")
+        .select("pill_id")
+        .eq("user_id", user.id)
+        .in(
+          "pill_id",
+          required.map((p) => p.id),
+        );
+      const doneCount = fresh.data?.length ?? 0;
+      if (required.length > 0 && doneCount >= required.length) {
+        const now = new Date().toISOString();
+        await supabase.from("student_module_progress").upsert(
+          {
+            user_id: user.id,
+            module_id: moduleRow.id,
+            started_at: progress?.started_at ?? now,
+            completed_at: now,
+          },
+          { onConflict: "user_id,module_id" },
+        );
+        toast.success("rodou todas as pílulas. módulo concluído.");
+        queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+      }
+    },
+    onError: (e: Error) => toast.error(e.message ?? "deu ruim ao salvar"),
   });
 
   // estados
@@ -267,10 +325,16 @@ const Modulo = () => {
             </div>
           )}
 
-          {pills?.map((pill, idx) => (
+          {pills?.map((pill, idx) => {
+            const pillDone = completedPillIds.has(pill.id);
+            return (
             <article
               key={pill.id}
-              className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-6 hover:border-perestroika-preto/40 transition-colors"
+              className={`rounded-2xl border-2 p-5 sm:p-6 transition-colors ${
+                pillDone
+                  ? "border-perestroika-preto/40 bg-perestroika-preto/[0.04]"
+                  : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
+              }`}
             >
               <div className="flex items-center justify-between gap-3 mb-2">
                 <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
@@ -287,7 +351,7 @@ const Modulo = () => {
                 )}
               </div>
 
-              <h3 className="font-display uppercase text-xl sm:text-2xl mb-2 leading-tight">
+              <h3 className={`font-display uppercase text-xl sm:text-2xl mb-2 leading-tight ${pillDone ? "line-through decoration-perestroika-preto/40 decoration-2" : ""}`}>
                 {pill.title}
               </h3>
 
@@ -297,7 +361,7 @@ const Modulo = () => {
                 </p>
               )}
 
-              <div className="flex flex-wrap gap-2 mt-4">
+              <div className="flex flex-wrap items-center gap-2 mt-4">
                 {pill.video_url && (
                   <a
                     href={pill.video_url}
@@ -319,9 +383,31 @@ const Modulo = () => {
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 )}
+                <button
+                  type="button"
+                  onClick={() => togglePillMutation.mutate(pill)}
+                  disabled={togglePillMutation.isPending}
+                  aria-pressed={pillDone}
+                  className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wide transition-colors disabled:opacity-50 ${
+                    pillDone
+                      ? "bg-perestroika-preto text-perestroika-bege"
+                      : "border border-perestroika-preto/30 hover:bg-perestroika-preto hover:text-perestroika-bege"
+                  }`}
+                >
+                  {pillDone ? (
+                    <>
+                      <CheckCircle2 className="h-3.5 w-3.5" /> concluída
+                    </>
+                  ) : (
+                    <>
+                      <Circle className="h-3.5 w-3.5" /> marcar
+                    </>
+                  )}
+                </button>
               </div>
             </article>
-          ))}
+            );
+          })}
         </section>
 
         {/* ação de conclusão */}
