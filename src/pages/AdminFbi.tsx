@@ -46,6 +46,7 @@ import { AdminVotacaoProjetos } from "@/features/admin/AdminVotacaoProjetos";
 import { AdminChoraBot } from "@/features/admin/AdminChoraBot";
 import { AdminEletivaSettings } from "@/features/admin/AdminEletivaSettings";
 import { AdminTrilha } from "@/features/admin/AdminTrilha";
+import { AdminTutor } from "@/features/admin/AdminTutor";
 import AdminUsers from "./AdminUsers";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Database } from "@/integrations/supabase/types";
@@ -78,12 +79,13 @@ const escapeCsv = (val: unknown) => {
   return `"${s}"`;
 };
 
-const VALID_TABS = ["eletiva", "trilha", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletiva", "trilha", "tutor", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
   eletiva: "eletiva · settings",
   trilha: "eletiva · trilha",
+  tutor: "eletiva · tutor IA",
   fbi: "fbi · respostas",
   prework: "pré-work",
   missoes: "missões",
@@ -287,6 +289,7 @@ const AdminFbi = () => {
             <TabsList className="bg-perestroika-preto/5 mb-6 inline-flex flex-wrap h-auto">
               <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">eletiva</TabsTrigger>
               <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
+              <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
               <TabsTrigger value="fbi" className="uppercase tracking-wide text-xs">fbi</TabsTrigger>
               <TabsTrigger value="prework" className="uppercase tracking-wide text-xs">pré-work</TabsTrigger>
               <TabsTrigger value="missoes" className="uppercase tracking-wide text-xs">missões</TabsTrigger>
@@ -483,6 +486,10 @@ const AdminFbi = () => {
 
             <TabsContent value="trilha">
               <AdminTrilha />
+            </TabsContent>
+
+            <TabsContent value="tutor">
+              <AdminTutor />
             </TabsContent>
           </Tabs>
         </motion.div>
