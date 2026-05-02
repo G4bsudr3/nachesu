@@ -40,7 +40,7 @@ export const ChoraBotBanner = () => {
         <div className="flex-1 min-w-0">
           <p className="font-display uppercase text-lg leading-none">tutor IA tá no ar</p>
           <p className="text-sm text-perestroika-bege/70 mt-1">
-            tira tuas dúvidas das aulas. ajuda com prompt, código e ideia.
+            tire suas dúvidas das aulas. ajuda com prompt, código e ideia.
           </p>
         </div>
         <span className="text-perestroika-bege/60 group-hover:translate-x-1 transition">→</span>

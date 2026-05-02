@@ -6,7 +6,7 @@ import { BotAvatar } from "@/components/chora-bot/BotAvatar";
  * floating action button do tutor IA (mascote joão-de-barro).
  *
  * o avatar circular do tutor fica permanente no canto, com label editorial
- * "tira tua dúvida" pulsando periodicamente no mobile pra chamar atenção
+ * "tire sua dúvida" pulsando periodicamente no mobile pra chamar atenção
  * sem ser invasivo. respeita --mobile-nav-h, safe-area iOS e
  * prefers-reduced-motion.
  */
@@ -47,7 +47,7 @@ export const ChoraBotFab = () => {
     <Link
       to="/app/tutor"
       onClick={handleClick}
-      aria-label="abrir tutor IA — tira tua dúvida"
+      aria-label="abrir tutor IA — tire sua dúvida"
       className="group fixed right-4 z-40 flex items-center gap-2.5 sm:right-6 transition-transform duration-150 hover:scale-[1.03] active:scale-90"
       style={{
         bottom: "calc(var(--mobile-nav-h, 0px) + 1rem)",
@@ -60,7 +60,7 @@ export const ChoraBotFab = () => {
         }`}
       >
         <span className="inline-block w-1.5 h-1.5 rounded-full bg-perestroika-rosa" />
-        tira tua dúvida
+        tire sua dúvida
       </span>
 
       {/* mobile: super discreto. em repouso, só um pontinho rosa pulsando no canto da lágrima.
@@ -74,7 +74,7 @@ export const ChoraBotFab = () => {
         }`}
         aria-hidden="true"
       >
-        tira tua dúvida
+        tire sua dúvida
       </span>
 
       {/* indicador permanente mobile: pontinho rosa minúsculo, sempre visível mas discreto */}

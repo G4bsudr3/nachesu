@@ -85,7 +85,7 @@ export const EletivaCard = () => {
           os 20 módulos foram seus
         </h2>
         <p className="font-body text-base text-perestroika-bege/80 mb-6 max-w-lg">
-          agora é hora de soltar teu projeto pro mundo e revisitar o que faz sentido.
+          agora é hora de soltar o seu projeto pro mundo e revisitar o que faz sentido.
         </p>
         <Link
           to="/app/projeto"

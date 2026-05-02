@@ -106,7 +106,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder={editing ? "edita teu comentário…" : "deixa um comentário…"}
+            placeholder={editing ? "edite o seu comentário…" : "deixe um comentário…"}
             maxLength={280}
             rows={2}
             className="w-full resize-none bg-transparent font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none"

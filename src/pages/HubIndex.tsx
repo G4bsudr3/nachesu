@@ -126,7 +126,7 @@ const HubIndex = () => {
     {
       to: "/app/hub/projetos",
       title: "projetos",
-      copy: "o feed da turma. reage, comenta, posta o teu",
+      copy: "o feed da turma. reaja, comente, poste o seu",
       hint: loading ? "carregando…" : `${counts.projects} no feed`,
       icon: <FolderOpen className="h-7 w-7" />,
       accent: "linear-gradient(135deg, #fd4644 0%, #fe7b02 100%)",
@@ -190,7 +190,7 @@ const HubIndex = () => {
                   fotos do chora lovable
                 </h2>
                 <p className="mt-2 max-w-md font-body text-sm text-perestroika-bege/90">
-                  manda tuas fotos e vê o álbum que a turma tá montando 📸
+                  mande as suas fotos e veja o álbum que a turma tá montando 📸
                 </p>
               </div>
             </div>

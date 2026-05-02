@@ -310,7 +310,7 @@ const ChoraBot = () => {
       (meta.nickname as string | undefined) ||
       (meta.display_name as string | undefined) ||
       user?.email?.split("@")[0] ||
-      "tu";
+      "vc";
     const parts = name.trim().split(/\s+/);
     if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toLowerCase();
     return name.slice(0, 2).toLowerCase();
@@ -458,7 +458,7 @@ const ChoraBot = () => {
                       o chŏra bot.
                     </h1>
                     <p className="font-body text-perestroika-preto/80 mb-6 leading-relaxed">
-                      {welcome || "tira tua dúvida sobre o que rolou no chora lovable. tô por aqui até 26 de maio."}
+                      {welcome || "tire suas dúvidas sobre o que rolou nas aulas. tô por aqui sempre."}
                     </p>
                     <div className="space-y-2">
                       <p className="font-display uppercase text-[10px] tracking-[0.25em] text-perestroika-preto/50">
@@ -520,7 +520,7 @@ const ChoraBot = () => {
                       send();
                     }
                   }}
-                  placeholder="manda tua dúvida..."
+                  placeholder="mande sua dúvida..."
                   rows={1}
                   maxLength={MAX_PROMPT_LENGTH}
                   aria-label="pergunta pro tutor IA"

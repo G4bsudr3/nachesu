@@ -59,13 +59,13 @@ export const CertificadoBanner = () => {
             </div>
             <div className="min-w-0 pr-6 sm:pr-0">
               <p className="mb-1 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-laranja">
-                teu certificado tá pronto
+                seu certificado tá pronto
               </p>
               <h3 className="font-display text-3xl uppercase leading-none text-perestroika-preto sm:text-4xl">
-                baixa quando quiser
+                baixe quando quiser
               </h3>
               <p className="mt-2 font-body text-sm text-perestroika-preto/70">
-                certificado oficial do chŏra lovable, com tua carta de builder. baixa em alta resolução pra postar onde for.
+                certificado oficial da eletiva, com a sua carta de builder. baixe em alta resolução pra postar onde for.
               </p>
             </div>
           </div>

@@ -182,7 +182,7 @@ const Certificado = () => {
               <EletivaSymbol size={96} />
             </div>
             <h1 className="font-display uppercase text-4xl sm:text-6xl leading-[0.9] mt-8 max-w-2xl text-balance">
-              gerando teu certificado
+              gerando o seu certificado
             </h1>
             <div className="mt-6 flex items-center gap-2 text-perestroika-preto/60 text-sm">
               <Loader2 className="w-4 h-4 animate-spin" />

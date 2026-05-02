@@ -78,7 +78,7 @@ export const BotCard = ({ size = "hero", tilt = false, className = "" }: BotCard
             className="font-body italic opacity-70"
             style={{ fontSize: sizing.footerTaglineSize }}
           >
-            tira tua dúvida, eu lembro do que rolou.
+            tire sua dúvida, eu lembro do que rolou.
           </p>
         </div>
       </div>
