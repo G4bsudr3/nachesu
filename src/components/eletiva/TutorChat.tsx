@@ -47,6 +47,7 @@ export const TutorChat = ({
   const queryClient = useQueryClient();
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [lastFailedText, setLastFailedText] = useState<string | null>(null);
