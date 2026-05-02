@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader2, Save, X } from "lucide-react";
+import { Eye, EyeOff, Loader2, Save, ScanEye, X } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
@@ -34,6 +34,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { logger } from "@/lib/logger";
 import { AdminPillsEditor } from "./AdminPillsEditor";
+import { AdminModulePreview } from "./AdminModulePreview";
 
 type Trail = {
   id: string;
@@ -110,6 +111,7 @@ export const AdminTrilha = () => {
   const [trailFilter, setTrailFilter] = useState<string>("todas");
   const [editing, setEditing] = useState<ModuleRow | null>(null);
   const [pillsModule, setPillsModule] = useState<ModuleRow | null>(null);
+  const [previewModule, setPreviewModule] = useState<ModuleRow | null>(null);
 
   const { data: trails, isLoading: trailsLoading } = useQuery({
     queryKey: ["admin-trails"],
@@ -272,7 +274,7 @@ export const AdminTrilha = () => {
                 disponível em
               </TableHead>
               <TableHead className="uppercase text-xs tracking-wide w-24">status</TableHead>
-              <TableHead className="uppercase text-xs tracking-wide w-44 text-right">
+              <TableHead className="uppercase text-xs tracking-wide w-56 text-right">
                 ações
               </TableHead>
             </TableRow>
@@ -359,6 +361,15 @@ export const AdminTrilha = () => {
                             <Eye className="w-4 h-4" />
                           )}
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => setPreviewModule(m)}
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-perestroika-preto/10 transition-colors"
+                          aria-label="ver preview do aluno"
+                          title="ver preview do aluno"
+                        >
+                          <ScanEye className="w-4 h-4" />
+                        </button>
                         <Button
                           type="button"
                           variant="outline"
@@ -401,6 +412,12 @@ export const AdminTrilha = () => {
         moduleNumber={pillsModule?.number ?? null}
         moduleTitle={pillsModule?.title ?? null}
         onClose={() => setPillsModule(null)}
+      />
+
+      <AdminModulePreview
+        module={previewModule}
+        trail={previewModule ? trailById.get(previewModule.trail_id) : null}
+        onClose={() => setPreviewModule(null)}
       />
     </div>
   );
