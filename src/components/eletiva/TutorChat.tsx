@@ -69,17 +69,26 @@ export const TutorChat = ({
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, streaming]);
 
-  const send = async () => {
-    const text = input.trim();
+  const runSend = async (text: string) => {
     if (!text || streaming) return;
-    setInput("");
-    const next: Msg[] = [...messages, { role: "user", content: text }];
-    setMessages(next);
+    setErrorMsg(null);
+    setLastFailedText(null);
     setStreaming(true);
 
+    // snapshot pra reverter em caso de falha
+    const baseMessages = messages;
+    // empurra user + bolha vazia do assistant (mostra "pensando..." na hora)
+    setMessages([
+      ...baseMessages,
+      { role: "user", content: text },
+      { role: "assistant", content: "" },
+    ]);
+
     let assistantSoFar = "";
+    let receivedAny = false;
     const upsertAssistant = (chunk: string) => {
       assistantSoFar += chunk;
+      receivedAny = true;
       setMessages((prev) => {
         const last = prev[prev.length - 1];
         if (last?.role === "assistant") {
@@ -89,6 +98,14 @@ export const TutorChat = ({
         }
         return [...prev, { role: "assistant", content: assistantSoFar }];
       });
+    };
+
+    const failWith = (msg: string) => {
+      setErrorMsg(msg);
+      setLastFailedText(text);
+      // remove a bolha vazia do assistant E a do user (devolve input pro usuário via retry)
+      setMessages(baseMessages);
+      setInput(text);
     };
 
     try {
@@ -111,15 +128,12 @@ export const TutorChat = ({
         } catch {
           // não json
         }
-        if (resp.status === 429) {
-          toast.error("muitas perguntas em sequência, respira e tenta de novo.");
-        } else if (resp.status === 402) {
-          toast.error("créditos da ia esgotaram. avisa a equipe.");
-        } else {
-          toast.error(parsed.error ?? "deu ruim ao falar com o tutor.");
-        }
-        // reverte msg do user
-        setMessages(messages);
+        let msg = parsed.error ?? "deu ruim ao falar com o tutor.";
+        if (resp.status === 429) msg = "muitas perguntas em sequência. respira uns segundos e tenta de novo.";
+        else if (resp.status === 402) msg = "créditos da ia esgotaram. avisa a equipe da escola.";
+        else if (resp.status === 401) msg = "sua sessão caiu. faz login de novo.";
+        toast.error(msg);
+        failWith(msg);
         return;
       }
 
@@ -128,41 +142,72 @@ export const TutorChat = ({
       let buffer = "";
       let done = false;
 
+      const processLine = (rawLine: string) => {
+        let line = rawLine;
+        if (line.endsWith("\r")) line = line.slice(0, -1);
+        if (line.startsWith(":") || line.trim() === "") return;
+        if (!line.startsWith("data: ")) return;
+        const json = line.slice(6).trim();
+        if (json === "[DONE]") {
+          done = true;
+          return;
+        }
+        try {
+          const parsed = JSON.parse(json);
+          const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+          if (content) upsertAssistant(content);
+        } catch {
+          // JSON parcial — ignora silenciosamente, próximo chunk completa
+        }
+      };
+
       while (!done) {
         const { done: d, value } = await reader.read();
         if (d) break;
         buffer += decoder.decode(value, { stream: true });
         let nl: number;
         while ((nl = buffer.indexOf("\n")) !== -1) {
-          let line = buffer.slice(0, nl);
+          const line = buffer.slice(0, nl);
           buffer = buffer.slice(nl + 1);
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (line.startsWith(":") || line.trim() === "") continue;
-          if (!line.startsWith("data: ")) continue;
-          const json = line.slice(6).trim();
-          if (json === "[DONE]") {
-            done = true;
-            break;
-          }
-          try {
-            const parsed = JSON.parse(json);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-            if (content) upsertAssistant(content);
-          } catch {
-            buffer = line + "\n" + buffer;
-            break;
-          }
+          processLine(line);
+          if (done) break;
         }
+      }
+      // flush leftover sem newline
+      if (buffer.trim()) processLine(buffer);
+
+      if (!receivedAny) {
+        const msg = "o tutor não devolveu resposta. tenta de novo.";
+        toast.error(msg);
+        failWith(msg);
+        return;
       }
 
       // invalida cache pra próxima abertura puxar do banco
       queryClient.invalidateQueries({ queryKey: ["tutor-conv", user?.id, trailId] });
     } catch (e) {
-      console.error(e);
-      toast.error("conexão caiu. tenta de novo.");
-      setMessages(messages);
+      console.error("[tutor-chat]", e);
+      const msg = "conexão caiu. tenta de novo.";
+      toast.error(msg);
+      failWith(msg);
     } finally {
       setStreaming(false);
+    }
+  };
+
+  const send = async () => {
+    const text = input.trim();
+    if (!text) return;
+    setInput("");
+    await runSend(text);
+  };
+
+  const retry = async () => {
+    if (!lastFailedText) return;
+    const text = lastFailedText;
+    setInput("");
+    await runSend(text);
+  };
     }
   };
 
