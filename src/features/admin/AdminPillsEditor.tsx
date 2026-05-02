@@ -362,8 +362,8 @@ export const AdminPillsEditor = ({
 
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            {pills?.length ?? 0} pílula(s). a ordem aqui é a que o aluno vê no
-            módulo.
+            {pills?.length ?? 0} pílula(s). arrasta pelo punho ⠿ pra
+            reordenar. a ordem aqui é a que o aluno vê no módulo.
           </p>
           <Button
             type="button"
