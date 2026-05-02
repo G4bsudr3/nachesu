@@ -7,7 +7,6 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import { TrilhaColumn } from "@/components/eletiva/TrilhaColumn";
 
 const trailColorByOrder: Record<number, string> = {

@@ -10,7 +10,6 @@ import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import { TutorChat } from "@/components/eletiva/TutorChat";
 
 type Pill = {

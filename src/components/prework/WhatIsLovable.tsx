@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import type { BuilderLevel } from "@/lib/builderLevel";
 import { isNovice } from "@/lib/builderLevel";
 

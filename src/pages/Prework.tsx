@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, BookOpen, Play, Wrench, Check, ExternalLink, LogOut, ArrowRight, Sparkles } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePrework, PreworkItem } from "@/features/prework/usePrework";
 import { LEVEL_INTRO } from "@/features/prework/preworkContent";

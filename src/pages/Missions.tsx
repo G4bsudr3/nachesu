@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink, Check, AlertCircle, Clock, LogOut, Loader2, Sparkles, ArrowRight } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useMissions, type Mission, type MissionSubmission, type MissionStatus } from "@/features/missions/useMissions";
