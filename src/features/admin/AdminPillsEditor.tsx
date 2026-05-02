@@ -589,6 +589,7 @@ const emptyValues: PillForm = {
   duration_min_low: undefined,
   duration_min_high: undefined,
   required: true,
+  published: true,
 };
 
 const PillFormDialog = ({
