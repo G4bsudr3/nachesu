@@ -771,15 +771,35 @@ const PillFormDialog = ({
               htmlFor="p-attach"
               className="text-xs uppercase tracking-wide"
             >
-              url do anexo (opcional)
+              anexo (opcional)
             </Label>
-            <Input
-              id="p-attach"
-              type="url"
-              placeholder="https://..."
-              value={values.attachment_url ?? ""}
-              onChange={(e) => change("attachment_url", e.target.value)}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="p-attach"
+                type="url"
+                placeholder="https://... ou faz upload ao lado"
+                value={values.attachment_url ?? ""}
+                onChange={(e) => change("attachment_url", e.target.value)}
+                className="flex-1"
+              />
+              <AttachmentUpload
+                onUploaded={(url) => change("attachment_url", url)}
+              />
+              {values.attachment_url && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  title="limpar anexo"
+                  onClick={() => change("attachment_url", "")}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              cola uma url ou envia um arquivo (pdf, imagem, doc, até 20mb)
+            </p>
             {errors.attachment_url && (
               <p className="text-xs text-destructive">{errors.attachment_url}</p>
             )}
