@@ -123,6 +123,64 @@ const Modulo = () => {
     onError: (e: Error) => toast.error(e.message ?? "deu ruim ao concluir"),
   });
 
+  const completedPillIds = snapshot?.completedPillIds ?? new Set<string>();
+
+  const togglePillMutation = useMutation({
+    mutationFn: async (pill: Pill) => {
+      if (!user) throw new Error("sem contexto");
+      const isDone = completedPillIds.has(pill.id);
+      if (isDone) {
+        const { error } = await supabase
+          .from("student_pill_progress")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("pill_id", pill.id);
+        if (error) throw error;
+        return { wasDone: true };
+      }
+      const { error } = await supabase.from("student_pill_progress").upsert(
+        {
+          user_id: user.id,
+          pill_id: pill.id,
+          completed_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,pill_id" },
+      );
+      if (error) throw error;
+      return { wasDone: false };
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+      // checa se todas as required do módulo agora estão feitas → auto-complete
+      if (!user || !moduleRow || isCompleted || !pills) return;
+      const required = pills.filter((p) => p.required);
+      const fresh = await supabase
+        .from("student_pill_progress")
+        .select("pill_id")
+        .eq("user_id", user.id)
+        .in(
+          "pill_id",
+          required.map((p) => p.id),
+        );
+      const doneCount = fresh.data?.length ?? 0;
+      if (required.length > 0 && doneCount >= required.length) {
+        const now = new Date().toISOString();
+        await supabase.from("student_module_progress").upsert(
+          {
+            user_id: user.id,
+            module_id: moduleRow.id,
+            started_at: progress?.started_at ?? now,
+            completed_at: now,
+          },
+          { onConflict: "user_id,module_id" },
+        );
+        toast.success("rodou todas as pílulas. módulo concluído.");
+        queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+      }
+    },
+    onError: (e: Error) => toast.error(e.message ?? "deu ruim ao salvar"),
+  });
+
   // estados
   if (!number || Number.isNaN(moduleNumber) || moduleNumber < 1 || moduleNumber > 20) {
     return <Navigate to="/app" replace />;
