@@ -263,6 +263,14 @@ const App = () => (
                 element={<Navigate to="/admin/certificate-sandbox" replace />}
               />
               <Route
+                path="/admin/aula/:n"
+                element={
+                  <AdminRoute>
+                    <AdminAula />
+                  </AdminRoute>
+                }
+              />
+              <Route
                 path="/admin"
                 element={
                   <AdminRoute>
