@@ -287,6 +287,7 @@ export const AdminPillsEditor = ({
 
   // mover: aplica a nova ordem completa (0..n-1) baseada num array reordenado.
   // mais robusto que swap pontual porque qualquer gap herdado já fica corrigido.
+  // optimistic update: atualiza o cache antes do round-trip pra UX fluida durante o drag.
   const reorderMutation = useMutation({
     mutationFn: async (orderedIds: string[]) => {
       const results = await Promise.all(
@@ -300,24 +301,49 @@ export const AdminPillsEditor = ({
       const firstErr = results.find((r) => r.error);
       if (firstErr?.error) throw firstErr.error;
     },
-    onSuccess: () => {
-      invalidate();
+    onMutate: async (orderedIds) => {
+      const queryKey = ["admin-pills", moduleId];
+      await qc.cancelQueries({ queryKey });
+      const previous = qc.getQueryData<Pill[]>(queryKey);
+      if (previous) {
+        const byId = new Map(previous.map((p) => [p.id, p]));
+        const next = orderedIds
+          .map((id, i) => {
+            const p = byId.get(id);
+            return p ? { ...p, order_index: i } : null;
+          })
+          .filter(Boolean) as Pill[];
+        qc.setQueryData(queryKey, next);
+      }
+      return { previous };
     },
-    onError: (e: Error) => {
+    onError: (e: Error, _vars, ctx) => {
+      // rollback
+      if (ctx?.previous) {
+        qc.setQueryData(["admin-pills", moduleId], ctx.previous);
+      }
       logger.error("[admin/pills] reorder:", e);
       toast.error(e.message ?? "deu ruim ao reordenar");
     },
+    onSuccess: () => {
+      invalidate();
+    },
   });
 
-  const move = (index: number, direction: -1 | 1) => {
-    if (!pills) return;
-    const target = index + direction;
-    if (target < 0 || target >= pills.length) return;
-    const next = [...pills];
-    const [moved] = next.splice(index, 1);
-    next.splice(target, 0, moved);
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || !pills || active.id === over.id) return;
+    const oldIndex = pills.findIndex((p) => p.id === active.id);
+    const newIndex = pills.findIndex((p) => p.id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+    const next = arrayMove(pills, oldIndex, newIndex);
     reorderMutation.mutate(next.map((p) => p.id));
   };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
