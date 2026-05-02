@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock, ExternalLink, FileText, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, ExternalLink, FileText, Play } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
