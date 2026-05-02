@@ -2,14 +2,30 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
-  ArrowDown,
-  ArrowUp,
+  GripVertical,
   Loader2,
   Plus,
   Save,
   Trash2,
   X,
 } from "lucide-react";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -271,6 +287,7 @@ export const AdminPillsEditor = ({
 
   // mover: aplica a nova ordem completa (0..n-1) baseada num array reordenado.
   // mais robusto que swap pontual porque qualquer gap herdado já fica corrigido.
+  // optimistic update: atualiza o cache antes do round-trip pra UX fluida durante o drag.
   const reorderMutation = useMutation({
     mutationFn: async (orderedIds: string[]) => {
       const results = await Promise.all(
@@ -284,24 +301,49 @@ export const AdminPillsEditor = ({
       const firstErr = results.find((r) => r.error);
       if (firstErr?.error) throw firstErr.error;
     },
-    onSuccess: () => {
-      invalidate();
+    onMutate: async (orderedIds) => {
+      const queryKey = ["admin-pills", moduleId];
+      await qc.cancelQueries({ queryKey });
+      const previous = qc.getQueryData<Pill[]>(queryKey);
+      if (previous) {
+        const byId = new Map(previous.map((p) => [p.id, p]));
+        const next = orderedIds
+          .map((id, i) => {
+            const p = byId.get(id);
+            return p ? { ...p, order_index: i } : null;
+          })
+          .filter(Boolean) as Pill[];
+        qc.setQueryData(queryKey, next);
+      }
+      return { previous };
     },
-    onError: (e: Error) => {
+    onError: (e: Error, _vars, ctx) => {
+      // rollback
+      if (ctx?.previous) {
+        qc.setQueryData(["admin-pills", moduleId], ctx.previous);
+      }
       logger.error("[admin/pills] reorder:", e);
       toast.error(e.message ?? "deu ruim ao reordenar");
     },
+    onSuccess: () => {
+      invalidate();
+    },
   });
 
-  const move = (index: number, direction: -1 | 1) => {
-    if (!pills) return;
-    const target = index + direction;
-    if (target < 0 || target >= pills.length) return;
-    const next = [...pills];
-    const [moved] = next.splice(index, 1);
-    next.splice(target, 0, moved);
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || !pills || active.id === over.id) return;
+    const oldIndex = pills.findIndex((p) => p.id === active.id);
+    const newIndex = pills.findIndex((p) => p.id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+    const next = arrayMove(pills, oldIndex, newIndex);
     reorderMutation.mutate(next.map((p) => p.id));
   };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
@@ -320,8 +362,8 @@ export const AdminPillsEditor = ({
 
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            {pills?.length ?? 0} pílula(s). a ordem aqui é a que o aluno vê no
-            módulo.
+            {pills?.length ?? 0} pílula(s). arrasta pelo punho ⠿ pra
+            reordenar. a ordem aqui é a que o aluno vê no módulo.
           </p>
           <Button
             type="button"
@@ -344,82 +386,27 @@ export const AdminPillsEditor = ({
               nenhuma pílula ainda. clica em "nova pílula" pra começar.
             </p>
           )}
-          {!isLoading &&
-            pills?.map((p, i) => (
-              <div
-                key={p.id}
-                className="flex items-start gap-3 rounded-lg border border-perestroika-preto/15 bg-white/60 p-3"
+          {!isLoading && pills && pills.length > 0 && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={pills.map((p) => p.id)}
+                strategy={verticalListSortingStrategy}
               >
-                <div className="flex flex-col gap-1 pt-0.5">
-                  <button
-                    type="button"
-                    aria-label="mover pra cima"
-                    onClick={() => move(i, -1)}
-                    disabled={i === 0 || reorderMutation.isPending}
-                    className="w-6 h-6 inline-flex items-center justify-center rounded hover:bg-perestroika-preto/10 disabled:opacity-30"
-                  >
-                    <ArrowUp className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="mover pra baixo"
-                    onClick={() => move(i, 1)}
-                    disabled={
-                      i === (pills.length - 1) || reorderMutation.isPending
-                    }
-                    className="w-6 h-6 inline-flex items-center justify-center rounded hover:bg-perestroika-preto/10 disabled:opacity-30"
-                  >
-                    <ArrowDown className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="font-medium truncate">{p.title}</span>
-                    <Badge variant="outline" className="text-[10px] uppercase">
-                      {KIND_LABEL[p.kind]}
-                    </Badge>
-                    {!p.required && (
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] uppercase border-perestroika-preto/20"
-                      >
-                        opcional
-                      </Badge>
-                    )}
-                    {(p.duration_min_low || p.duration_min_high) && (
-                      <span className="text-[11px] text-muted-foreground">
-                        {p.duration_min_low ?? "?"}–
-                        {p.duration_min_high ?? "?"} min
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-3 text-[11px] text-perestroika-preto/60">
-                    {p.video_url && <span>🎬 vídeo</span>}
-                    {p.attachment_url && <span>📎 anexo</span>}
-                    {p.body_md && <span>📝 {p.body_md.length} caracteres</span>}
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="text-xs"
-                    onClick={() => setEditing(p)}
-                  >
-                    editar
-                  </Button>
-                  <button
-                    type="button"
-                    aria-label="remover pílula"
-                    onClick={() => setPendingDelete(p)}
-                    className="w-8 h-8 inline-flex items-center justify-center rounded-md hover:bg-destructive/10 text-destructive transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
+                {pills.map((p) => (
+                  <SortablePillRow
+                    key={p.id}
+                    pill={p}
+                    onEdit={() => setEditing(p)}
+                    onDelete={() => setPendingDelete(p)}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          )}
         </div>
 
         <DialogFooter>
@@ -481,6 +468,100 @@ export const AdminPillsEditor = ({
         </AlertDialog>
       </DialogContent>
     </Dialog>
+  );
+};
+
+// ─── row sortable ─────────────────────────────────────────────────────────────
+
+interface RowProps {
+  pill: Pill;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: pill.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : "auto",
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-start gap-3 rounded-lg border bg-white/60 p-3 ${
+        isDragging
+          ? "border-perestroika-preto/40 shadow-lg"
+          : "border-perestroika-preto/15"
+      }`}
+    >
+      <button
+        type="button"
+        aria-label={`reordenar pílula ${pill.title}`}
+        title="arrasta pra reordenar"
+        {...attributes}
+        {...listeners}
+        className="flex-shrink-0 inline-flex items-center justify-center w-6 h-12 rounded text-perestroika-preto/40 hover:text-perestroika-preto hover:bg-perestroika-preto/10 cursor-grab active:cursor-grabbing touch-none"
+      >
+        <GripVertical className="w-4 h-4" />
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-wrap items-center gap-2 mb-1">
+          <span className="font-medium truncate">{pill.title}</span>
+          <Badge variant="outline" className="text-[10px] uppercase">
+            {KIND_LABEL[pill.kind]}
+          </Badge>
+          {!pill.required && (
+            <Badge
+              variant="outline"
+              className="text-[10px] uppercase border-perestroika-preto/20"
+            >
+              opcional
+            </Badge>
+          )}
+          {(pill.duration_min_low || pill.duration_min_high) && (
+            <span className="text-[11px] text-muted-foreground">
+              {pill.duration_min_low ?? "?"}–{pill.duration_min_high ?? "?"} min
+            </span>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-3 text-[11px] text-perestroika-preto/60">
+          {pill.video_url && <span>🎬 vídeo</span>}
+          {pill.attachment_url && <span>📎 anexo</span>}
+          {pill.body_md && <span>📝 {pill.body_md.length} caracteres</span>}
+        </div>
+      </div>
+      <div className="flex items-center gap-1">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="text-xs"
+          onClick={onEdit}
+        >
+          editar
+        </Button>
+        <button
+          type="button"
+          aria-label="remover pílula"
+          onClick={onDelete}
+          className="w-8 h-8 inline-flex items-center justify-center rounded-md hover:bg-destructive/10 text-destructive transition-colors"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
   );
 };
 
