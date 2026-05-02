@@ -471,6 +471,100 @@ export const AdminPillsEditor = ({
   );
 };
 
+// ─── row sortable ─────────────────────────────────────────────────────────────
+
+interface RowProps {
+  pill: Pill;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: pill.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : "auto",
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-start gap-3 rounded-lg border bg-white/60 p-3 ${
+        isDragging
+          ? "border-perestroika-preto/40 shadow-lg"
+          : "border-perestroika-preto/15"
+      }`}
+    >
+      <button
+        type="button"
+        aria-label={`reordenar pílula ${pill.title}`}
+        title="arrasta pra reordenar"
+        {...attributes}
+        {...listeners}
+        className="flex-shrink-0 inline-flex items-center justify-center w-6 h-12 rounded text-perestroika-preto/40 hover:text-perestroika-preto hover:bg-perestroika-preto/10 cursor-grab active:cursor-grabbing touch-none"
+      >
+        <GripVertical className="w-4 h-4" />
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-wrap items-center gap-2 mb-1">
+          <span className="font-medium truncate">{pill.title}</span>
+          <Badge variant="outline" className="text-[10px] uppercase">
+            {KIND_LABEL[pill.kind]}
+          </Badge>
+          {!pill.required && (
+            <Badge
+              variant="outline"
+              className="text-[10px] uppercase border-perestroika-preto/20"
+            >
+              opcional
+            </Badge>
+          )}
+          {(pill.duration_min_low || pill.duration_min_high) && (
+            <span className="text-[11px] text-muted-foreground">
+              {pill.duration_min_low ?? "?"}–{pill.duration_min_high ?? "?"} min
+            </span>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-3 text-[11px] text-perestroika-preto/60">
+          {pill.video_url && <span>🎬 vídeo</span>}
+          {pill.attachment_url && <span>📎 anexo</span>}
+          {pill.body_md && <span>📝 {pill.body_md.length} caracteres</span>}
+        </div>
+      </div>
+      <div className="flex items-center gap-1">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="text-xs"
+          onClick={onEdit}
+        >
+          editar
+        </Button>
+        <button
+          type="button"
+          aria-label="remover pílula"
+          onClick={onDelete}
+          className="w-8 h-8 inline-flex items-center justify-center rounded-md hover:bg-destructive/10 text-destructive transition-colors"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // ─── form ─────────────────────────────────────────────────────────────────────
 
 interface FormProps {
