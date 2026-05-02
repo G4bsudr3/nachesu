@@ -287,7 +287,7 @@ export const TutorChat = ({
                 style={{ backgroundColor: trailColor }}
                 aria-hidden="true"
               >
-                <EletivaSymbol size={20} />
+                <EletivaSymbol size={20} pose="talking" />
               </span>
               <div>
                 <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
@@ -413,9 +413,9 @@ export const TutorChat = ({
                           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                           transition={{ repeat: Infinity, duration: 1.2 }}
                         >
-                          <EletivaSymbol size={14} />
+                          <EletivaSymbol size={16} pose="thinking" />
                         </motion.span>
-                        pensando...
+                        amassando o barro da resposta...
                       </span>
                     )}
                   </div>
