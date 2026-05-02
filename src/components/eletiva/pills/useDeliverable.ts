@@ -68,7 +68,7 @@ export function useDeliverable(moduleId: string | undefined) {
       const next = { ...(data.content ?? {}), ...patch };
       const { error } = await supabase
         .from("module_deliverables")
-        .update({ content: next, updated_at: new Date().toISOString() })
+        .update({ content: next as never, updated_at: new Date().toISOString() })
         .eq("id", data.id);
       if (error) throw error;
       return next;
