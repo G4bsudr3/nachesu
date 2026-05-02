@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUp, X } from "lucide-react";
+import { ArrowUp, Loader2, RefreshCw, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -37,6 +37,8 @@ export const TutorChat = ({
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [lastFailedText, setLastFailedText] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // carrega histórico ao abrir
@@ -56,7 +58,11 @@ export const TutorChat = ({
   });
 
   useEffect(() => {
-    if (open) setMessages(stored ?? []);
+    if (open) {
+      setMessages(stored ?? []);
+      setErrorMsg(null);
+      setLastFailedText(null);
+    }
   }, [open, stored]);
 
   useEffect(() => {
