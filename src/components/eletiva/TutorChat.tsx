@@ -23,8 +23,13 @@ import {
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = {
+  role: "user" | "assistant";
+  content: string;
+  context?: { done: string[]; current: string | null } | null;
+};
 
 interface TutorChatProps {
   open: boolean;
