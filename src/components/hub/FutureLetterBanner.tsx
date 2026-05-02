@@ -50,7 +50,7 @@ export const FutureLetterBanner = () => {
                 </>
               ) : (
                 <>
-                  escreve com teu grupo e salva direto no admin da imersão.
+                  escreva com o seu grupo e salve direto no admin da imersão.
                 </>
               )}
             </p>
