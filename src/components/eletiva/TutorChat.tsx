@@ -115,11 +115,12 @@ export const TutorChat = ({
 
     // snapshot pra reverter em caso de falha
     const baseMessages = messages;
-    // empurra user + bolha vazia do assistant (mostra "pensando..." na hora)
+    const ctx = buildTrailContext();
+    // empurra user + bolha vazia do assistant (mostra contexto + "pensando...")
     setMessages([
       ...baseMessages,
       { role: "user", content: text },
-      { role: "assistant", content: "" },
+      { role: "assistant", content: "", context: ctx },
     ]);
 
     let assistantSoFar = "";
