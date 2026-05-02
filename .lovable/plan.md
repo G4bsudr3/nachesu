@@ -1,89 +1,158 @@
-# Dashboard `/app` — fonte de verdade (Eletiva Sebrae)
 
-Atualizado quando o dashboard do aluno mudar de hierarquia ou copy. Esse arquivo descreve o estado atual implementado.
+# aula 1 — "abrir o olho" como módulo testável
+
+transformar o briefing do dudu (5 partes, 50 min, PBL com radar de problemas) num módulo da eletiva 100% navegável por aluno e professor, sem mexer na arquitetura existente de `modules` + `module_pills` + `module_deliverables`. eletiva sebrae continua por fora; identidade duduo aparece dentro da página do módulo.
 
 ## princípio
 
-> O dashboard do aluno Eletiva responde uma pergunta só: **"o que eu faço agora?"**
+cada uma das 5 partes do encontro vira **uma pílula** do módulo 01. o radar de problemas vira **deliverable estruturado** (`module_deliverables.kind = 'mixed'`) com payload em `content jsonb`. o aluno só avança pra próxima pílula depois de fechar a anterior. admin vê tudo.
 
-A jornada é linear: primeiro acesso → módulo 01 → ... → módulo 20 → projeto autoral. Não há "fechar ciclo", "pesquisa final" ou "carta pro futuro" no fluxo padrão (esses conceitos vêm do produto legado Chŏra Lovable e só renderizam atrás de `eletiva_extras_enabled`).
-
-## hierarquia de cima pra baixo
+## arquitetura
 
 ```text
-HEADER (logo + nick + admin/conta/sair)
-  1. DashboardGreeting   → "oi, {nick}." + 1 frase contextual
-  2. EletivaCard (HERO)  → próximo módulo (estado A/B/C/D)
-  3. TrailsProgress      → 4 trilhas, mini-progress
-  4. HubGateway          → tutor IA + materiais (apoio)
-  5. (flag) NextActionHero + JourneyChips + ArchiveSection — pós-evento Chŏra
-FOOTER (eletiva sebrae · escola sebrae · 1º ano EM)
+modules.number = 1  (eletiva fundamentos & ia → trocar trilha pra "enxergar")
+└── module_pills (5 itens, ordem fixa, todas required salvo bônus)
+     ├── 01 abertura          → pilula_a   (vídeo placeholder + transcrição)
+     ├── 02 conteúdo curado   → pilula_b   (2 cards externos + 3 perguntas-guia)
+     ├── 03 radar de campo    → exercicio_pbl (formulário tabela editável + upload)
+     ├── 04 checagem rápida   → pilula_c   (quiz 3 perguntas com feedback)
+     └── 05 bônus opcional    → registro   (required=false)
+└── module_deliverables (1 por aluno, kind='mixed')
+     └── content = { items: [...], quiz_answers: {...}, guided_answers: {...} }
 ```
 
-## estados do hero (`EletivaCard`)
+nada de tabela nova. tudo cabe em `module_pills.body_md` + um campo novo `interaction_schema jsonb` na própria pílula pra descrever quiz/formulário. payload do aluno fica em `module_deliverables.content`.
 
-- **A — aquecendo**: `totalPublished === 0`. Copy "sua eletiva tá aquecendo", lista as 4 trilhas, mascote `building` decorativo. Sem CTA primário.
-- **B — primeiro passo**: tem módulo aberto, `totalCompleted === 0`. Eyebrow "começa por aqui", CTA "abrir módulo 01".
-- **C — em andamento**: tem módulo atual, já fechou pelo menos 1. Eyebrow "continue de onde parou", CTA "voltar pro módulo".
-- **D — completo**: `currentModule === null` e `nextModule === null`. Fundo preto, mascote `celebrating`, CTA pro projeto autoral.
+## decisões já fechadas com você
 
-## estados da saudação (`DashboardGreeting`)
+1. **identidade**: eletiva sebrae por fora (header, footer, dashboard). dentro de `/app/modulo/1`, paleta + tipografia duduo.
+2. **escopo**: aula 1 inteira funcional (mvp testável de ponta a ponta).
+3. **admin**: completo já — submissions, csv, métricas, alerta de evasão.
+4. **vídeo do dudu**: placeholder + accordion "ler em vez de assistir" fechado.
 
-- aquecendo: "a eletiva está aquecendo. enquanto isso, dá uma olhada no mapa."
-- primeiro passo: "bom te ver por aqui. abaixo, o seu próximo passo."
-- em curso: "boa, você tá construindo. {n}/{total} fechados."
-- pausa longa (≥7d): "faz {n} dias. retoma quando der."
-- tudo feito: "você fechou tudo o que tá aberto. respeita."
+---
 
-## componentes do pós-evento Chŏra (atrás de flag)
+## o que vamos construir
 
-`NextActionHero`, `JourneyChips`, `ArchiveSection`, `OnboardingDialog` legado, rota `/app/onboarding` (5 marcos), `MobileNav` item "pesquisa", rotas `/app/feedback-final`, `/app/certificado`, `/app/dinamica/carta-futuro`, `/app/carta`, `/app/prework`, `/app/tutorial`, `/app/entregas` — todos vivem, mas só aparecem com `useEletivaExtras().enabled === true` (admin liga em `/admin`).
+### 1. base do módulo (migrations + seed)
 
-## copy do hero — exemplo estado B
+- migration: adiciona `interaction_schema jsonb` em `module_pills` (descreve quiz/form). adiciona `cover_color text` em `modules` pra o accent duduo.
+- seed do módulo 01: troca trail/objetivo/título atual por **"missão 1: abrir o olho"** (objetivo, total_minutes=50, deliverable_description preenchido, published=true).
+- seed das 5 pílulas com copy exata do briefing (transcrição, cards externos, instruções do radar, quiz, bônus).
+- registra na tabela `trails` uma trilha "enxergar" (cor `#F25E3D`) ou reusa a trilha 1 atualizando título — confirmo durante a execução qual quebra menos coisa pro resto da eletiva.
 
-```text
-COMEÇA POR AQUI            módulo 01/20
-─────────────────────────
-{título do módulo}
-─────────────────────────
-{objetivo do módulo, lowercase, 1-2 frases}
+### 2. tema duduo dentro do módulo
 
-[abrir módulo 01 →]    ver mapa completo
+novo `<DuduoTheme>` provider local que aplica via css-vars na div raiz da página `/app/modulo/:n`, sem vazar pra fora:
 
-⏱ {min} min   ● {trilha}
-```
+- cores: `--bg #F5EEE1`, `--ink #202124`, `--accent #F25E3D`, `--gold #EFD7A9`, `--cream #F2D8DC`, `--blue #448FF2`, `--teal #75BF9C`, `--amber #F2BC57`, `--mute #9AA0A7`.
+- tipografia: importa **Sora 800** via google fonts no `index.html` (já tem league gothic + urbanist). títulos do módulo passam a usar sora; corpo continua urbanist.
+- doodles: 4 svgs orgânicos novos (seta, espiral, sublinhado, círculo) em `src/components/duduo/doodles/` aplicados como decoração em momentos chave (instruções do radar, tela final).
 
-## OnboardingDialog (componente)
+ativação por `data-theme="duduo"` no wrapper. coexiste com tema perestroika sem conflito porque a página inteira de módulo já é um shell isolado.
 
-Reescrito pra 3 estados Eletiva: `primeiro-acesso-aberto` / `primeiro-acesso-fechado` / `retorno`. Sem vocabulário Chŏra. Detalhes em `mem://content/onboarding-states.md`.
+### 3. as 5 pílulas como componentes ricos
 
-## checklist de rebrand pós-Chŏra (ainda válido)
+componentes novos em `src/components/eletiva/pills/`:
 
-Critérios pra qualquer mudança de UI no dashboard:
+- `PillAbertura.tsx` — player 16:9 escuro com play falso em `--accent`, `<Accordion>` "ler em vez de assistir" fechado por padrão, botão "começar a missão →".
+- `PillConteudoCurado.tsx` — 2 cards externos (vídeo ellen macarthur, reportagem portal impactto) com link, duração, descrição de 1 linha. abaixo, **3 perguntas-guia**: 2 de texto longo (com mínimo de caracteres), 1 múltipla escolha. salva em `module_deliverables.content.guided_answers`.
+- `PillRadar.tsx` — o coração da aula. tabela editável mobile-first com botão "+ adicionar item". 4 campos por linha: descrição, onde, fluxo (dropdown 6 opções), evidência. evidência aceita upload (storage bucket novo `radar-evidences`, privado, rls própria-do-aluno) + link + áudio. validação ao enviar: ≥5 itens, ≥2 fluxos diferentes, evidência em todos. mensagem de erro "regra anti-óbvio" em destaque. salva em `module_deliverables.content.items` + sobe arquivos pro storage.
+- `PillQuiz.tsx` — 3 perguntas: 1 single, 1 multi-select, 1 texto longo sem feedback. cada pergunta mostra feedback inline depois de responder (verde/vermelho com texto exato do briefing).
+- `PillBonus.tsx` — instrução pra buscar kurzgesagt no youtube + textarea opcional ("o dado que mais me chocou foi ___ porque ___"). selo dourado quando responder.
 
-1. Nenhuma string menciona "FBI", "carta de builder", "carta pro futuro", "pesquisa final", "fechar ciclo", "certificado", "pré-work", "missões", "tutorial" fora de `<ExtrasGate>` ou da flag `extrasEnabled`.
-2. Mascote nunca aparece com pose `celebrating` no estado de primeiro acesso.
-3. `<title>` do documento começa com "Eletiva Sebrae" no fluxo padrão.
-4. Footer mantém "eletiva sebrae · escola sebrae · 1º ano EM".
+cada componente recebe `pill`, `deliverable` e `onSave` e é gentil: auto-save com debounce, indicador "salvo" sutil, "salvar e voltar depois" no rodapé.
 
-### teste rápido por amostragem
+### 4. progressão linear dentro do módulo
 
-```bash
-# nenhuma string proibida fora de ExtrasGate / arquivos legados
-rg -n "fechar o ciclo|pesquisa final|carta pro futuro|carta de builder" \
-  src/pages/AppDashboard.tsx \
-  src/components/dashboard/EletivaCard.tsx \
-  src/components/dashboard/DashboardGreeting.tsx \
-  src/components/dashboard/TrailsProgress.tsx \
-  src/components/dashboard/HubGateway.tsx \
-  src/components/OnboardingDialog.tsx
-# esperado: 0 matches
-```
+a página `Modulo.tsx` ganha um modo **"step-by-step"** quando o módulo tem pílulas com `interaction_schema`. em vez de mostrar todas em accordion, mostra **uma por vez** com:
 
-## o que NÃO foi tocado
+- barra de progresso fixa no topo (5 passos, accent `#F25E3D`).
+- "tempo restante estimado" ao lado da barra (soma `duration_min_high` das pílulas que faltam).
+- cada pílula só desbloqueia quando a anterior é marcada concluída via interação (não só checkbox).
+- bônus (passo 5) é opcional: módulo é marcado concluído ao terminar o passo 4.
+- "salvar e voltar depois" persiste a posição (`localStorage` + última pílula concluída no banco).
 
-- Lógica de `useEletivaProgress`, `usePostEventStatus`.
-- Schema do banco, RLS, edge functions.
-- Páginas `/app/trilhas`, `/app/modulo/:n`, `/app/tutor`, `/app/hub/*`.
-- Admin.
-- Assets do mascote.
+modo legado (lista de pílulas com checkbox) continua funcionando pros outros 19 módulos. flag por pílula: se `interaction_schema is not null`, vira step-by-step.
+
+### 5. tela final pós-conclusão
+
+quando aluno fecha o quiz (passo 4):
+
+- headline grande sora 800: "missão 1 cumprida".
+- texto exato do briefing.
+- **render do radar do aluno**: cards bonitos com a evidência (foto/áudio/link) + flag do fluxo. é o "output concreto" que o briefing pede.
+- 2 ctas: "ver minha lista" → fica na própria tela; "voltar pro início" → `/app`.
+- mascote em pose `celebrating` discreta (acessório, não protagonista — duduo é editorial, não infantil).
+
+### 6. admin completo
+
+nova rota `/admin/aula/1` (e padrão `/admin/aula/:n`). três abas:
+
+- **submissions**: tabela aluno × status, % conclusão, n° itens no radar, fluxos selecionados, link pro detalhe individual com evidências baixáveis.
+- **métricas**: 4 cards com os alvos do briefing (taxa conclusão, mediana de itens, % com diversidade de fluxos, tempo médio). gráfico de distribuição de fluxos (barra horizontal).
+- **alertas**: lista de alunos em risco (sem entrega 48h após available_from, ou entrega com <3 itens, ou listas idênticas detectadas por hash). botão "marcar como contatado".
+
+botão **exportar csv** no topo: gera planilha com todas as respostas (radar items + quiz + perguntas-guia) por aluno, timestamp incluso. usa edge function `export-module-csv` pra montar no servidor.
+
+### 7. notificações
+
+edge function `module-1-watcher` (cron diário):
+
+- 24h antes de prazo (se houver `available_until` definido pelo admin): envia email "ainda dá tempo de fazer o radar".
+- 48h após available_from sem nenhuma entrega: marca em `student_alerts` (tabela nova) e aparece na aba alertas do admin. opcionalmente dispara email pro professor via `send-transactional-email`.
+
+por enquanto, sem prazo final → só dispara o alerta de 48h.
+
+### 8. storage para evidências do radar
+
+- bucket novo `radar-evidences` (privado).
+- rls: aluno faz `INSERT/SELECT/DELETE` só dos arquivos cujo path começa com seu próprio `user_id/`. admin lê tudo.
+- aceita imagem (jpg, png, webp), áudio (mp3, m4a, ogg), até 10mb.
+- limite de 10 arquivos por radar (1 por item).
+
+---
+
+## detalhes técnicos (técnico, pode pular se quiser)
+
+- **migrations** (ordem):
+  1. add `module_pills.interaction_schema jsonb` + `modules.cover_color text`.
+  2. cria bucket `radar-evidences` + policies.
+  3. cria tabela `student_alerts` (user_id, module_id, kind, raised_at, contacted_at, notes).
+  4. cria função `compute_module_metrics(module_id uuid)` returns jsonb (security definer, só admin chama).
+- **dados**: insert das 5 pílulas com `interaction_schema` populado pro radar/quiz/perguntas-guia. registro do módulo 01 ajustado (título, objetivo, deliverable_description, published=true).
+- **fontes**: adicionar Sora no index.html sem mexer nas outras famílias.
+- **rotas novas**: `/admin/aula/:n` (já protegida por `AdminRoute`).
+- **edge functions**: `export-module-csv`, `module-1-watcher` (cron via supabase scheduler).
+- **shadcn**: usar `Tabs`, `Progress`, `Accordion`, `Sheet` (pra mobile do radar), `Dialog` (pra preview de evidência).
+- **form do radar**: react-hook-form + zod (validação composta: ≥5 items, ≥2 fluxos únicos, evidência por item).
+- **upload**: `supabase.storage.from('radar-evidences').upload(path, file)` + signed url pra leitura.
+- **persistência incremental**: cada salvamento dá upsert em `module_deliverables` com `status='rascunho'` até aluno bater "enviar meu radar →" → vira `enviado`.
+
+## arquivos a criar/editar (ordem de impacto)
+
+1. migrations (4 arquivos).
+2. `src/components/duduo/DuduoTheme.tsx` + 4 doodles svg.
+3. `src/components/eletiva/pills/Pill*.tsx` (5 componentes).
+4. `src/components/eletiva/pills/EvidenceUploader.tsx` (compartilhado).
+5. refactor leve em `src/pages/Modulo.tsx` pra suportar modo step-by-step.
+6. `src/pages/admin/AdminAula.tsx` + `src/features/admin/useAulaSubmissions.ts`.
+7. `src/components/admin/AulaMetrics.tsx` + `AulaAlerts.tsx` + `AulaSubmissionsTable.tsx`.
+8. supabase functions: `export-module-csv`, `module-1-watcher`.
+9. seed sql do módulo 01 com copy completa do briefing.
+10. atualização da `.lovable/plan.md` documentando o modelo "aula com interaction_schema".
+
+## o que NÃO vou fazer agora (e por quê)
+
+- não vou mudar o módulo 02-20: continuam no modo lista-de-pílulas legado. o modo step-by-step é opt-in por pílula.
+- não vou criar mascote/ilustração nova pra duduo — você não aprovou asset. uso só doodles vetoriais simples.
+- não vou plugar lovable ai aqui (o briefing não pediu — quiz é determinístico).
+- não vou trocar fontes globalmente. sora vive só dentro de `data-theme="duduo"`.
+
+## sinais que vamos confirmar depois do build
+
+- abrir `/app/modulo/1` num celular 375px e fazer o fluxo inteiro: ler abertura, responder perguntas-guia, adicionar 5 itens no radar com 1 foto, fechar quiz, ver tela final.
+- abrir `/admin/aula/1` e ver a submission aparecer na lista, baixar csv, ver métricas atualizando.
+- recarregar no meio do radar e confirmar que rascunho voltou.
+
+quando aprovar, executo na ordem listada e te chamo pra testar assim que o fluxo do aluno estiver de pé (antes do admin completo) pra você sentir o feel da identidade duduo.
