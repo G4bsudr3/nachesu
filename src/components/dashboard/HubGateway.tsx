@@ -41,7 +41,7 @@ const extrasLinks: GatewayLink[] = [
   {
     to: "/app/hub/projetos",
     title: "projetos",
-    copy: "feed da turma. reage, comenta, posta o teu",
+    copy: "feed da turma. reaja, comente, poste o seu",
     icon: <BookOpen className="h-5 w-5" />,
     accent: "linear-gradient(135deg, #fd4644 0%, #fe7b02 100%)",
   },
