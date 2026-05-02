@@ -8,7 +8,7 @@ import { usePostEventStatus } from "@/hooks/usePostEventStatus";
 import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { EletivaStar } from "@/components/brand/EletivaStar";
+
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { NextActionHero } from "@/components/dashboard/NextActionHero";
 import { JourneyChips } from "@/components/dashboard/JourneyChips";
