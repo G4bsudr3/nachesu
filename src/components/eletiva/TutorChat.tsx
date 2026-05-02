@@ -207,9 +207,7 @@ export const TutorChat = ({
     const text = lastFailedText;
     setInput("");
     await runSend(text);
-  };
-    }
-  };
+
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
