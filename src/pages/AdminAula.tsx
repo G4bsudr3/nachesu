@@ -231,6 +231,82 @@ function AdminAulaInner({ number }: { number: number }) {
   );
 }
 
+// ============== conteúdo ==============
+
+function ConteudoTab({ module: mod, accent }: { module: ModuleRow; accent: string }) {
+  const [editorOpen, setEditorOpen] = useState(false);
+
+  const pillsQuery = useQuery({
+    queryKey: ["admin-aula", "pills-list", mod.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("module_pills")
+        .select("id, kind, title, required, order_index, published")
+        .eq("module_id", mod.id)
+        .order("order_index", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-xl">pílulas da aula</h2>
+        <Button
+          size="sm"
+          onClick={() => setEditorOpen(true)}
+          className="bg-perestroika-preto text-perestroika-bege hover:bg-perestroika-preto/85"
+        >
+          editar pílulas
+        </Button>
+      </div>
+
+      {pillsQuery.isLoading ? (
+        <div className="grid place-items-center py-10">
+          <Loader2 className="h-5 w-5 animate-spin text-perestroika-preto/50" />
+        </div>
+      ) : (
+        <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-white divide-y divide-perestroika-preto/10">
+          {(pillsQuery.data ?? []).map((p) => (
+            <div key={p.id} className="flex items-center gap-3 px-4 py-3">
+              <span
+                className="h-7 w-7 rounded-full grid place-items-center font-display text-sm shrink-0"
+                style={{ backgroundColor: `${accent}20`, color: accent }}
+              >
+                {p.order_index}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="font-body text-sm truncate">{p.title}</p>
+                <p className="font-body text-[11px] text-perestroika-preto/55">
+                  {p.kind}
+                  {p.required ? " · obrigatória" : " · opcional"}
+                  {!p.published ? " · oculta" : ""}
+                </p>
+              </div>
+            </div>
+          ))}
+          {(pillsQuery.data ?? []).length === 0 && (
+            <p className="px-4 py-6 font-body text-sm text-perestroika-preto/55">
+              nenhuma pílula ainda. abre o editor pra criar.
+            </p>
+          )}
+        </div>
+      )}
+
+      <AdminPillsEditor
+        moduleId={editorOpen ? mod.id : null}
+        moduleTitle={mod.title}
+        moduleNumber={mod.number}
+        onClose={() => {
+          setEditorOpen(false);
+          pillsQuery.refetch();
+        }}
+      />
+    </div>
+  );
+}
+
 // ============== métricas ==============
 
 function MetricsPanel({
