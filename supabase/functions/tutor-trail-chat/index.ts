@@ -277,6 +277,7 @@ Deno.serve(async (req) => {
                 user_id: userId,
                 trail_id: trailId,
                 messages: trimmed,
+                title: titleToPersist,
                 updated_at: nowIso,
               },
               { onConflict: "user_id,trail_id" },
