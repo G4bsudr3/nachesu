@@ -6,6 +6,7 @@ interface TrilhaColumnProps {
   trail: EletivaTrail;
   modules: (EletivaModule & { id: string })[];
   progressByModuleId: Record<string, ModuleProgress>;
+  unlockedModuleIds: Set<string>;
   fallbackColor: string;
   columnIndex: number;
 }
@@ -27,14 +28,17 @@ const formatDate = (iso: string) => {
 const getModuleState = (
   module: EletivaModule & { id: string },
   progressByModuleId: Record<string, ModuleProgress>,
-  firstAvailableNotCompletedId: string | null,
+  unlockedModuleIds: Set<string>,
+  firstUnlockedNotCompletedId: string | null,
 ): ModulePillState => {
   const progress = progressByModuleId[module.id];
   if (progress?.completed_at) return "completed";
   if (!isAvailable(module)) {
     return module.available_from ? "upcoming" : "locked";
   }
-  if (module.id === firstAvailableNotCompletedId) return "current";
+  // publicado mas trancado por desbloqueio sequencial
+  if (!unlockedModuleIds.has(module.id)) return "locked";
+  if (module.id === firstUnlockedNotCompletedId) return "current";
   return "available";
 };
 
@@ -42,16 +46,17 @@ export const TrilhaColumn = ({
   trail,
   modules,
   progressByModuleId,
+  unlockedModuleIds,
   fallbackColor,
   columnIndex,
 }: TrilhaColumnProps) => {
   const trailColor = trail.color ?? fallbackColor;
   const completed = modules.filter((m) => progressByModuleId[m.id]?.completed_at).length;
 
-  // primeiro disponível e não concluído da trilha = "atual" desta trilha
-  const firstAvailableNotCompletedId =
+  // primeiro desbloqueado e não concluído da trilha = "atual" desta trilha
+  const firstUnlockedNotCompletedId =
     modules.find(
-      (m) => isAvailable(m) && !progressByModuleId[m.id]?.completed_at,
+      (m) => unlockedModuleIds.has(m.id) && !progressByModuleId[m.id]?.completed_at,
     )?.id ?? null;
 
   return (
@@ -101,7 +106,7 @@ export const TrilhaColumn = ({
               key={module.id}
               number={module.number}
               title={module.title}
-              state={getModuleState(module, progressByModuleId, firstAvailableNotCompletedId)}
+              state={getModuleState(module, progressByModuleId, unlockedModuleIds, firstUnlockedNotCompletedId)}
               trailColor={trailColor}
               availableFromLabel={
                 module.available_from ? formatDate(module.available_from) : null

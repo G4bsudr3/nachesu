@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, ExternalLink, FileT
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
@@ -44,6 +45,7 @@ const Modulo = () => {
   const { number } = useParams<{ number: string }>();
   const moduleNumber = Number(number);
   const { user } = useAuth();
+  const { isAdmin } = useUserRole();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress();
@@ -117,7 +119,14 @@ const Modulo = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("módulo concluído. bom demais.");
+      const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
+      const nextWasLocked =
+        next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
+      if (nextWasLocked) {
+        toast.success(`módulo ${String(next!.number).padStart(2, "0")} desbloqueado.`);
+      } else {
+        toast.success("módulo concluído. bom demais.");
+      }
       queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
     },
     onError: (e: Error) => toast.error(e.message ?? "deu ruim ao concluir"),
@@ -174,7 +183,14 @@ const Modulo = () => {
           },
           { onConflict: "user_id,module_id" },
         );
-        toast.success("rodou todas as pílulas. módulo concluído.");
+        const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
+        const nextWasLocked =
+          next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
+        if (nextWasLocked) {
+          toast.success(`rodou todas as pílulas. módulo ${String(next!.number).padStart(2, "0")} desbloqueado.`);
+        } else {
+          toast.success("rodou todas as pílulas. módulo concluído.");
+        }
         queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
       }
     },
@@ -219,6 +235,44 @@ const Modulo = () => {
 
   const prevModule = snapshot?.modules.find((m) => m.number === moduleNumber - 1) ?? null;
   const nextModule = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
+
+  // bloqueio sequencial: módulo publicado mas anterior ainda não concluído.
+  // admin sempre passa (precisa preview). flag `eletiva_sequential_unlock = false` desliga.
+  const isUnlocked = isAdmin || (snapshot?.unlockedModuleIds.has(moduleRow.id) ?? false);
+  if (!isUnlocked) {
+    return (
+      <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
+        <PageHeader showLogo logoLink="/app" />
+        <main className="container max-w-2xl pt-10 pb-20 text-center">
+          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
+            módulo {String(moduleRow.number).padStart(2, "0")}
+          </p>
+          <h1 className="font-display uppercase text-4xl sm:text-5xl mb-3 leading-[0.95]">
+            esse módulo abre quando você fechar o anterior
+          </h1>
+          <p className="font-body text-perestroika-preto/70 mb-7 max-w-md mx-auto">
+            a eletiva é em escada. termina o módulo {String(moduleNumber - 1).padStart(2, "0")} e esse aqui libera na hora.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {prevModule && (
+              <Link
+                to={`/app/modulo/${prevModule.number}`}
+                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+              >
+                <ArrowLeft className="h-4 w-4" /> ir pro módulo {String(prevModule.number).padStart(2, "0")}
+              </Link>
+            )}
+            <Link
+              to="/app/trilhas"
+              className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-6 py-3 font-body text-sm uppercase tracking-wide hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+            >
+              ver mapa completo
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
