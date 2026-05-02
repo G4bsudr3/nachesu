@@ -395,6 +395,13 @@ export const AdminTrilha = () => {
         }
         isSaving={saveModuleMutation.isPending}
       />
+
+      <AdminPillsEditor
+        moduleId={pillsModule?.id ?? null}
+        moduleNumber={pillsModule?.number ?? null}
+        moduleTitle={pillsModule?.title ?? null}
+        onClose={() => setPillsModule(null)}
+      />
     </div>
   );
 };
