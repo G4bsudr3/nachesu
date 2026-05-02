@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUp, Loader2, RefreshCw, X } from "lucide-react";
+import { ArrowUp, Loader2, RefreshCw, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -9,6 +9,17 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,6 +47,7 @@ export const TutorChat = ({
   const queryClient = useQueryClient();
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [lastFailedText, setLastFailedText] = useState<string | null>(null);
@@ -209,6 +221,31 @@ export const TutorChat = ({
     await runSend(text);
   };
 
+  const clearConversation = async () => {
+    if (!user || streaming || clearing) return;
+    setClearing(true);
+    try {
+      // só zera se já existir registro; se não existe, nada a fazer
+      const { error } = await supabase
+        .from("tutor_conversations")
+        .update({ messages: [], title: null })
+        .eq("user_id", user.id)
+        .eq("trail_id", trailId);
+      if (error) throw error;
+      setMessages([]);
+      setInput("");
+      setErrorMsg(null);
+      setLastFailedText(null);
+      queryClient.invalidateQueries({ queryKey: ["tutor-conv", user.id, trailId] });
+      toast.success("conversa zerada. contexto do tutor reiniciado.");
+    } catch (e) {
+      console.error("[tutor-chat] clear", e);
+      toast.error("não rolou limpar agora. tenta de novo.");
+    } finally {
+      setClearing(false);
+    }
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -234,14 +271,53 @@ export const TutorChat = ({
                 </SheetTitle>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="rounded-full p-2 hover:bg-perestroika-preto/10"
-              aria-label="fechar tutor"
-            >
-              <X className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button
+                    type="button"
+                    disabled={streaming || clearing || messages.length === 0}
+                    className="rounded-full p-2 hover:bg-perestroika-preto/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="limpar conversa"
+                    title="limpar conversa"
+                  >
+                    {clearing ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-perestroika-bege border-2 border-perestroika-preto">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="font-display uppercase text-2xl">
+                      zerar essa conversa?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="font-body text-perestroika-preto/75">
+                      o histórico com o joão-de-barro nessa trilha vai sumir e o contexto reinicia
+                      do zero. essa ação não tem volta.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="font-body">cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => void clearConversation()}
+                      className="bg-perestroika-vermelho text-perestroika-bege hover:bg-perestroika-vermelho/90 font-body"
+                    >
+                      zerar conversa
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
+                className="rounded-full p-2 hover:bg-perestroika-preto/10"
+                aria-label="fechar tutor"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           </div>
           <p className="font-body text-xs text-perestroika-preto/65 mt-2">
             conversando sobre <strong>{trailTitle.toLowerCase()}</strong>. seu histórico fica salvo.
