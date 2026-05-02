@@ -66,11 +66,9 @@ export function PillRadar({
   isCompleted,
   isCompleting,
 }: Props) {
-  const { user } = useAuth();
   const [items, setItems] = useState<RadarItem[]>(() =>
     initial && initial.length > 0 ? initial : [newItem()],
   );
-  const [uploadingId, setUploadingId] = useState<string | null>(null);
 
   // hidrata uma vez quando initial chega depois
   useEffect(() => {
@@ -119,36 +117,6 @@ export function PillRadar({
       return;
     }
     setItems((prev) => [...prev, newItem()]);
-  };
-
-  const handleFile = async (id: string, file: File) => {
-    if (!user) return;
-    if (file.size > maxMb * 1024 * 1024) {
-      toast.error(`arquivo passa de ${maxMb}mb.`);
-      return;
-    }
-    setUploadingId(id);
-    try {
-      const ext = file.name.split(".").pop() ?? "bin";
-      const path = `${user.id}/${id}-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("radar-evidences").upload(path, file, {
-        upsert: false,
-        contentType: file.type || undefined,
-      });
-      if (error) throw error;
-      updateItem(id, {
-        evidence_kind: "file",
-        evidence_path: path,
-        evidence_name: file.name,
-        evidence_link: undefined,
-      });
-      toast.success("evidência salva.");
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "erro no upload";
-      toast.error(msg);
-    } finally {
-      setUploadingId(null);
-    }
   };
 
   return (
