@@ -24,10 +24,10 @@ const HIDDEN_PREFIXES = [
 ];
 
 const COPY_VARIANTS = [
-  { label: "fecha o ciclo", text: "{nome}, falta tu contar como foi 👀" },
-  { label: "4 minutinhos", text: "ô {nome}, conta tua experiência do chora?" },
-  { label: "a gente quer saber", text: "{nome}, tua resposta vale ouro pra próxima edição" },
-  { label: "tá esperando tu", text: "{nome}, a pesquisa final ainda não tem tua voz" },
+  { label: "fecha o ciclo", text: "{nome}, falta você contar como foi 👀" },
+  { label: "4 minutinhos", text: "ô {nome}, conta a sua experiência na eletiva?" },
+  { label: "a gente quer saber", text: "{nome}, a sua resposta vale ouro pra próxima turma" },
+  { label: "tá esperando você", text: "{nome}, a pesquisa final ainda não tem a sua voz" },
 ];
 
 const dayOfYear = () => {
