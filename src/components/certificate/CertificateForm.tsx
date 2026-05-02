@@ -98,7 +98,7 @@ export const CertificateForm = ({
           required
           aria-invalid={!nameValid}
           className="w-full px-5 py-4 bg-perestroika-bege border-2 border-perestroika-preto/15 rounded-xl font-body text-base focus:border-perestroika-preto focus:outline-none transition-colors"
-          placeholder="seu nome do jeito que tu quer ver"
+          placeholder="seu nome do jeito que você quer ver"
         />
         <div className="flex flex-wrap gap-2">
           {chips.map((c) => (
