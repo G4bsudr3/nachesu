@@ -310,7 +310,7 @@ const ChoraBot = () => {
       (meta.nickname as string | undefined) ||
       (meta.display_name as string | undefined) ||
       user?.email?.split("@")[0] ||
-      "tu";
+      "vc";
     const parts = name.trim().split(/\s+/);
     if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toLowerCase();
     return name.slice(0, 2).toLowerCase();
