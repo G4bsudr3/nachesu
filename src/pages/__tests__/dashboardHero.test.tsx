@@ -25,7 +25,7 @@ const HeroFragment = () => {
   return (
     <section data-testid="hero">
       <header>
-        <h1 data-testid="hero-title">boas-vindas ao chŏra hub</h1>
+        <h1 data-testid="hero-title">boas-vindas à eletiva</h1>
         <p data-testid="hero-subtitle">
           pra você descobrir o seu arquétipo, a gente precisa de uns 10 minutos seus.
         </p>
