@@ -486,6 +486,10 @@ const AdminFbi = () => {
             <TabsContent value="trilha">
               <AdminTrilha />
             </TabsContent>
+
+            <TabsContent value="tutor">
+              <AdminTutor />
+            </TabsContent>
           </Tabs>
         </motion.div>
       </main>
