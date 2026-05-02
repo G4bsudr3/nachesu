@@ -190,7 +190,7 @@ const HubIndex = () => {
                   fotos do chora lovable
                 </h2>
                 <p className="mt-2 max-w-md font-body text-sm text-perestroika-bege/90">
-                  manda tuas fotos e vê o álbum que a turma tá montando 📸
+                  mande as suas fotos e veja o álbum que a turma tá montando 📸
                 </p>
               </div>
             </div>
