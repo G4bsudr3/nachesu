@@ -7,6 +7,7 @@ import {
   Plus,
   Save,
   Trash2,
+  Upload,
   X,
 } from "lucide-react";
 import {
