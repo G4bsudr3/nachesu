@@ -520,7 +520,7 @@ const ChoraBot = () => {
                       send();
                     }
                   }}
-                  placeholder="manda tua dúvida..."
+                  placeholder="mande sua dúvida..."
                   rows={1}
                   maxLength={MAX_PROMPT_LENGTH}
                   aria-label="pergunta pro tutor IA"
