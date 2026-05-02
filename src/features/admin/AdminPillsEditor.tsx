@@ -720,6 +720,27 @@ const PillFormDialog = ({
             </div>
           </div>
 
+          <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 p-3 flex items-center justify-between gap-3">
+            <div>
+              <Label
+                htmlFor="p-published"
+                className="text-xs uppercase tracking-wide"
+              >
+                {values.published ? "publicada" : "rascunho"}
+              </Label>
+              <p className="text-[11px] text-muted-foreground">
+                {values.published
+                  ? "alunos veem essa pílula no módulo"
+                  : "só admins veem. salva tranquilo, nada vaza pro aluno"}
+              </p>
+            </div>
+            <Switch
+              id="p-published"
+              checked={values.published}
+              onCheckedChange={(v) => change("published", v)}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label
