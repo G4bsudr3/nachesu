@@ -46,24 +46,44 @@ export function EvidenceUploader({
 }: Props) {
   const { user } = useAuth();
   const [uploading, setUploading] = useState(false);
+  const [progressMsg, setProgressMsg] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleFile = async (file: File) => {
-    if (!user) return;
+    setErrorMsg(null);
+    if (!user) {
+      const m = "precisa estar logado pra subir evidência.";
+      setErrorMsg(m);
+      toast.error(m);
+      return;
+    }
+    const allowed = /^(image\/|audio\/)/.test(file.type);
+    if (!allowed) {
+      const m = "só foto ou áudio por enquanto.";
+      setErrorMsg(m);
+      toast.error(m);
+      return;
+    }
     if (file.size > maxMb * 1024 * 1024) {
-      toast.error(`arquivo passa de ${maxMb}mb.`);
+      const m = `arquivo passa de ${maxMb}mb.`;
+      setErrorMsg(m);
+      toast.error(m);
       return;
     }
     setUploading(true);
+    setProgressMsg("subindo...");
     try {
       // se já tinha um path antigo pra esse item, remove pra não acumular lixo
       if (value.evidence_path) {
         await supabase.storage.from(BUCKET).remove([value.evidence_path]).catch(() => {});
       }
-      const ext = file.name.split(".").pop() ?? "bin";
+      const ext = (file.name.split(".").pop() ?? "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
+      // path prefixado por user.id pra bater com a rls do bucket privado
       const path = `${user.id}/${itemId}-${Date.now()}.${ext}`;
       const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
         upsert: false,
         contentType: file.type || undefined,
+        cacheControl: "3600",
       });
       if (error) throw error;
       onChange({
@@ -72,9 +92,17 @@ export function EvidenceUploader({
         evidence_name: file.name,
         evidence_link: undefined,
       });
+      setProgressMsg("evidência salva.");
       toast.success("evidência salva.");
+      setTimeout(() => setProgressMsg(null), 1500);
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "erro no upload";
+      const raw = e instanceof Error ? e.message : "erro no upload";
+      // rls volta mensagens técnicas; traduz pra humano
+      const msg = /row-level security|not authorized|permission/i.test(raw)
+        ? "sem permissão pra subir aqui. faz login de novo."
+        : raw;
+      setErrorMsg(msg);
+      setProgressMsg(null);
       toast.error(msg);
     } finally {
       setUploading(false);
