@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Award, Clock, Mail, MessageCircleHeart, Sparkles } from "lucide-react";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import type { PostEventStatus } from "@/hooks/usePostEventStatus";
 
 interface Props {
@@ -131,7 +131,7 @@ export const NextActionHero = ({ nickname, status }: Props) => {
         aria-hidden
         className="pointer-events-none absolute -right-12 -top-12 opacity-25"
       >
-        <LagrimaGradient size={180} />
+        <EletivaSymbol size={180} />
       </div>
 
       <div className="relative flex flex-col gap-6">

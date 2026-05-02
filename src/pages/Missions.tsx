@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink, Check, AlertCircle, Clock, LogOut, Loader2, Sparkles, ArrowRight } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { EletivaStar } from "@/components/brand/EletivaStar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useMissions, type Mission, type MissionSubmission, type MissionStatus } from "@/features/missions/useMissions";
@@ -265,7 +265,7 @@ const Missions = () => {
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <EstrelaPerestroika
+        <EletivaStar
           size={360}
           color="rosa"
           className="absolute -right-32 -bottom-32 opacity-25 motion-safe:animate-spin-slow sm:!w-[480px] lg:!w-[620px]"

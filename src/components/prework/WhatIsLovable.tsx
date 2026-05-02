@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { EletivaStar } from "@/components/brand/EletivaStar";
 import type { BuilderLevel } from "@/lib/builderLevel";
 import { isNovice } from "@/lib/builderLevel";
 
@@ -40,7 +40,7 @@ export const WhatIsLovable = ({ level }: WhatIsLovableProps) => {
         className="w-full flex items-center justify-between gap-4 p-5 sm:p-7 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-inset"
       >
         <div className="flex items-center gap-4 min-w-0">
-          <EstrelaPerestroika color="rosa" size={36} className="shrink-0 motion-safe:animate-spin-slow" />
+          <EletivaStar color="rosa" size={36} className="shrink-0 motion-safe:animate-spin-slow" />
           <div className="min-w-0">
             <p className="font-body text-xs uppercase tracking-wide text-perestroika-preto/55">degrau zero</p>
             <h2 className="font-display uppercase text-3xl sm:text-4xl leading-none mt-1">

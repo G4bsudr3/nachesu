@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 import { PageShell } from "@/components/layout/PageShell";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { JourneyMilestone, type MilestoneState } from "@/components/onboarding/JourneyMilestone";
 import { JourneyProgress } from "@/components/onboarding/JourneyProgress";
 import { useAuth } from "@/contexts/AuthContext";
@@ -252,7 +252,7 @@ const Onboarding = () => {
 
         {allDone && (
           <div className="mb-8 rounded-3xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-6 flex items-center gap-4">
-            <LagrimaGradient size={56} />
+            <EletivaSymbol size={56} />
             <div className="flex-1">
               <p className="font-display uppercase text-2xl leading-tight text-perestroika-preto">
                 você fechou a trilha

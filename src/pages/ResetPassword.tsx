@@ -5,7 +5,7 @@ import { Lock, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { PasswordStrength, evaluatePasswordStrength } from "@/components/PasswordStrength";
 import { t } from "@/lib/authErrors";
 
@@ -98,7 +98,7 @@ const ResetPassword = () => {
 
       <main className="flex-1 container flex items-center justify-center py-16">
         <div className="w-full max-w-md relative">
-          <LagrimaGradient
+          <EletivaSymbol
             size={64}
             className="absolute -top-20 right-0 animate-pulse-soft"
             rotate={-15}

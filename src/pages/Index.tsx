@@ -3,8 +3,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
-import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { EletivaStar } from "@/components/brand/EletivaStar";
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
 
 const trilhas = [
@@ -97,10 +97,10 @@ const Index = () => {
           aria-hidden="true"
         >
           <span className="block sm:hidden">
-            <LagrimaGradient size={84} rotate={12} />
+            <EletivaSymbol size={84} rotate={12} />
           </span>
           <span className="hidden sm:block">
-            <LagrimaGradient size={140} rotate={12} />
+            <EletivaSymbol size={140} rotate={12} />
           </span>
         </motion.div>
 
@@ -274,7 +274,7 @@ const Index = () => {
           className="absolute -right-16 top-1/2 -translate-y-1/2 opacity-[0.07] pointer-events-none"
           aria-hidden="true"
         >
-          <EstrelaPerestroika size={420} color="preta" />
+          <EletivaStar size={420} color="preta" />
         </div>
 
         <motion.div

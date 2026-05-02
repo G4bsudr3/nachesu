@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfileStatus } from "@/hooks/useProfileStatus";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
-import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 const WHATSAPP_URL = "https://wa.me/5531995384834";
@@ -29,7 +29,7 @@ const Pending = () => {
       {/* lágrima decorativa contida em wrapper local */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -bottom-20 -right-20 opacity-40">
-          <LagrimaGradient size={420} rotate={-20} />
+          <EletivaSymbol size={420} rotate={-20} />
         </div>
       </div>
 
