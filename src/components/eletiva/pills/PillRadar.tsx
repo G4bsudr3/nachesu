@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Trash2, Upload, Link as LinkIcon, AlertTriangle, ArrowRight, Loader2 } from "lucide-react";
+import { Plus, Trash2, AlertTriangle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
+import { EvidenceUploader, type EvidenceKind } from "./EvidenceUploader";
 
 type FluxoOpt = { label: string; value: string };
-
-type EvidenceKind = "none" | "file" | "link";
 
 export type RadarItem = {
   id: string;
