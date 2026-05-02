@@ -398,6 +398,9 @@ export const AdminTrilha = () => {
         </Table>
       </div>
 
+      {/* prompts PBL do tutor IA por trilha */}
+      <TrailPblEditor trails={trails ?? []} />
+
       <EditModuleDialog
         module={editing}
         trails={trails ?? []}
