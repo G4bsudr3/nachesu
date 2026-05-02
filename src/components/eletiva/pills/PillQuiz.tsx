@@ -114,18 +114,18 @@ export function PillQuiz({
     const text = isRight ? q.feedback_correct : q.feedback_wrong;
     return (
       <div
-        className={`mt-2 rounded-xl border-2 p-3 font-body text-sm flex items-start gap-2 ${
+        className="mt-2 rounded-xl border-2 p-3 font-body text-sm flex items-start gap-2 text-perestroika-preto"
+        style={
           isRight
-            ? "border-75BF9C bg-75BF9C/10 text-perestroika-preto"
-            : "border-fd4644 bg-fd4644/5 text-perestroika-preto"
-        }`}
-        style={isRight ? { borderColor: "#75BF9C", backgroundColor: "#75BF9C1A" } : undefined}
+            ? { borderColor: "#75BF9C", backgroundColor: "#75BF9C1A" }
+            : { borderColor: "#fd4644", backgroundColor: "#fd46440D" }
+        }
         role="status"
       >
         {isRight ? (
           <Check className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: "#3a8a5f" }} />
         ) : (
-          <X className="h-4 w-4 mt-0.5 flex-shrink-0 text-fd4644" />
+          <X className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: "#fd4644" }} />
         )}
         <span className="whitespace-pre-wrap">{text}</span>
       </div>

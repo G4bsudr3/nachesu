@@ -21,7 +21,10 @@ export function SaveIndicator({ status }: { status: Status }) {
     );
   }
   return (
-    <span className="inline-flex items-center gap-1.5 font-body text-[11px] uppercase tracking-wider text-fd4644">
+    <span
+      className="inline-flex items-center gap-1.5 font-body text-[11px] uppercase tracking-wider"
+      style={{ color: "#fd4644" }}
+    >
       <AlertTriangle className="h-3 w-3" aria-hidden="true" />
       tenta de novo
     </span>

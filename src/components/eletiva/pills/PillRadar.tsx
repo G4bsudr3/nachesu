@@ -317,8 +317,14 @@ export function PillRadar({
 
       {/* validação */}
       {!validation.ok && (
-        <div className="rounded-2xl border-2 border-fd4644 bg-fd4644/5 p-4">
-          <p className="font-body text-sm font-medium text-fd4644 inline-flex items-center gap-2 mb-2">
+        <div
+          className="rounded-2xl border-2 p-4"
+          style={{ borderColor: "#fd4644", backgroundColor: "#fd46440D" }}
+        >
+          <p
+            className="font-body text-sm font-medium inline-flex items-center gap-2 mb-2"
+            style={{ color: "#fd4644" }}
+          >
             <AlertTriangle className="h-4 w-4" /> falta pouco pro radar fechar
           </p>
           <ul className="font-body text-sm text-perestroika-preto/80 space-y-1 list-disc pl-5">
