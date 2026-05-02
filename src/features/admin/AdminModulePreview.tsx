@@ -85,12 +85,14 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
     queryKey: ["admin-pills-preview", module?.id],
     enabled: !!module?.id,
     queryFn: async () => {
+      // o preview simula o que o aluno vê: filtra rascunhos.
       const { data, error } = await supabase
         .from("module_pills")
         .select(
           "id, module_id, order_index, kind, title, body_md, duration_min_low, duration_min_high, video_url, attachment_url, required",
         )
         .eq("module_id", module!.id)
+        .eq("published", true)
         .order("order_index");
       if (error) throw error;
       return (data ?? []) as Pill[];

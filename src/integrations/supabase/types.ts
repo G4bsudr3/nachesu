@@ -1289,6 +1289,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["pill_kind"]
           module_id: string
           order_index: number
+          published: boolean
           required: boolean
           title: string
           updated_at: string
@@ -1304,6 +1305,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["pill_kind"]
           module_id: string
           order_index?: number
+          published?: boolean
           required?: boolean
           title: string
           updated_at?: string
@@ -1319,6 +1321,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["pill_kind"]
           module_id?: string
           order_index?: number
+          published?: boolean
           required?: boolean
           title?: string
           updated_at?: string

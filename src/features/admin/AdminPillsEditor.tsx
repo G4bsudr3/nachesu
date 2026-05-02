@@ -96,6 +96,7 @@ type Pill = {
   duration_min_low: number | null;
   duration_min_high: number | null;
   required: boolean;
+  published: boolean;
   order_index: number;
 };
 
@@ -126,6 +127,7 @@ const pillSchema = z.object({
   duration_min_low: z.coerce.number().int().min(0).max(600).optional(),
   duration_min_high: z.coerce.number().int().min(0).max(600).optional(),
   required: z.boolean(),
+  published: z.boolean(),
 });
 
 type PillForm = z.infer<typeof pillSchema>;
@@ -156,7 +158,7 @@ export const AdminPillsEditor = ({
       const { data, error } = await supabase
         .from("module_pills")
         .select(
-          "id, module_id, title, kind, body_md, video_url, attachment_url, duration_min_low, duration_min_high, required, order_index",
+          "id, module_id, title, kind, body_md, video_url, attachment_url, duration_min_low, duration_min_high, required, published, order_index",
         )
         .eq("module_id", moduleId!)
         .order("order_index");
@@ -224,6 +226,7 @@ export const AdminPillsEditor = ({
         duration_min_low: values.duration_min_low ?? null,
         duration_min_high: values.duration_min_high ?? null,
         required: values.required,
+        published: values.published,
         order_index: maxOrder + 1,
       });
       if (error) throw error;
@@ -253,6 +256,7 @@ export const AdminPillsEditor = ({
           duration_min_low: vars.values.duration_min_low ?? null,
           duration_min_high: vars.values.duration_min_high ?? null,
           required: vars.values.required,
+          published: vars.values.published,
           updated_at: new Date().toISOString(),
         })
         .eq("id", vars.id);
@@ -493,7 +497,9 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    // pílulas em rascunho ficam opacas mesmo paradas, pra deixar claro que o
+    // aluno não tá vendo.
+    opacity: isDragging ? 0.5 : pill.published ? 1 : 0.55,
     zIndex: isDragging ? 50 : "auto",
   };
 
@@ -504,7 +510,9 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
       className={`flex items-start gap-3 rounded-lg border bg-white/60 p-3 ${
         isDragging
           ? "border-perestroika-preto/40 shadow-lg"
-          : "border-perestroika-preto/15"
+          : pill.published
+            ? "border-perestroika-preto/15"
+            : "border-dashed border-perestroika-preto/25"
       }`}
     >
       <button
@@ -523,6 +531,11 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
           <Badge variant="outline" className="text-[10px] uppercase">
             {KIND_LABEL[pill.kind]}
           </Badge>
+          {!pill.published && (
+            <Badge className="text-[10px] uppercase bg-perestroika-preto/85 text-perestroika-bege border-transparent">
+              rascunho
+            </Badge>
+          )}
           {!pill.required && (
             <Badge
               variant="outline"
@@ -585,6 +598,7 @@ const emptyValues: PillForm = {
   duration_min_low: undefined,
   duration_min_high: undefined,
   required: true,
+  published: true,
 };
 
 const PillFormDialog = ({
@@ -612,6 +626,7 @@ const PillFormDialog = ({
         duration_min_low: initial.duration_min_low ?? undefined,
         duration_min_high: initial.duration_min_high ?? undefined,
         required: initial.required,
+        published: initial.published ?? true,
       });
     } else {
       setValues(emptyValues);
@@ -703,6 +718,27 @@ const PillFormDialog = ({
                 onCheckedChange={(v) => change("required", v)}
               />
             </div>
+          </div>
+
+          <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 p-3 flex items-center justify-between gap-3">
+            <div>
+              <Label
+                htmlFor="p-published"
+                className="text-xs uppercase tracking-wide"
+              >
+                {values.published ? "publicada" : "rascunho"}
+              </Label>
+              <p className="text-[11px] text-muted-foreground">
+                {values.published
+                  ? "alunos veem essa pílula no módulo"
+                  : "só admins veem. salva tranquilo, nada vaza pro aluno"}
+              </p>
+            </div>
+            <Switch
+              id="p-published"
+              checked={values.published}
+              onCheckedChange={(v) => change("published", v)}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">

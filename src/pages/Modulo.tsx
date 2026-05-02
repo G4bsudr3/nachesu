@@ -66,10 +66,13 @@ const Modulo = () => {
     queryKey: ["module-pills", moduleRow?.id],
     enabled: !!moduleRow?.id,
     queryFn: async () => {
+      // a RLS já esconde rascunhos pra alunos; o filtro explícito garante
+      // que admins navegando como aluno também não vejam pílulas em rascunho.
       const { data, error } = await supabase
         .from("module_pills")
         .select("*")
         .eq("module_id", moduleRow!.id)
+        .eq("published", true)
         .order("order_index");
       if (error) throw error;
       return (data ?? []) as Pill[];
