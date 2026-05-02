@@ -365,32 +365,62 @@ export const TutorChat = ({
 
           <AnimatePresence initial={false}>
             {messages.map((m, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm whitespace-pre-wrap ${
-                    m.role === "user"
-                      ? "bg-perestroika-preto text-perestroika-bege"
-                      : "bg-white/70 border border-perestroika-preto/15"
-                  }`}
+              <div key={i} className="space-y-2">
+                {m.role === "assistant" && m.context && (m.context.done.length > 0 || m.context.current) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex justify-start"
+                  >
+                    <div className="max-w-[85%] rounded-xl bg-perestroika-bege border border-dashed border-perestroika-preto/25 px-3 py-2 font-body text-[11px] text-perestroika-preto/65 leading-relaxed">
+                      <p className="uppercase tracking-[0.18em] text-[9px] text-perestroika-preto/45 mb-1">
+                        contexto do tutor
+                      </p>
+                      {m.context.done.length > 0 ? (
+                        <p>
+                          <span className="font-semibold text-perestroika-preto/75">
+                            {m.context.done.length} módulo{m.context.done.length > 1 ? "s" : ""} concluído{m.context.done.length > 1 ? "s" : ""}:
+                          </span>{" "}
+                          {m.context.done.join(" · ")}
+                        </p>
+                      ) : (
+                        <p className="text-perestroika-preto/55">nenhum módulo concluído ainda nessa trilha.</p>
+                      )}
+                      {m.context.current && (
+                        <p className="mt-1">
+                          <span className="font-semibold text-perestroika-preto/75">em andamento:</span>{" "}
+                          {m.context.current}
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
-                  {m.content || (
-                    <span className="inline-flex items-center gap-2 text-perestroika-preto/50">
-                      <motion.span
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                        transition={{ repeat: Infinity, duration: 1.2 }}
-                      >
-                        <LagrimaGradient size={14} />
-                      </motion.span>
-                      pensando...
-                    </span>
-                  )}
-                </div>
-              </motion.div>
+                  <div
+                    className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm whitespace-pre-wrap ${
+                      m.role === "user"
+                        ? "bg-perestroika-preto text-perestroika-bege"
+                        : "bg-white/70 border border-perestroika-preto/15"
+                    }`}
+                  >
+                    {m.content || (
+                      <span className="inline-flex items-center gap-2 text-perestroika-preto/50">
+                        <motion.span
+                          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                          transition={{ repeat: Infinity, duration: 1.2 }}
+                        >
+                          <LagrimaGradient size={14} />
+                        </motion.span>
+                        pensando...
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              </div>
             ))}
           </AnimatePresence>
         </div>
