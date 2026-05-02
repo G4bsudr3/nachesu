@@ -363,6 +363,15 @@ export const AdminTrilha = () => {
                           type="button"
                           variant="outline"
                           size="sm"
+                          onClick={() => setPillsModule(m)}
+                          className="text-xs uppercase tracking-wide"
+                        >
+                          pílulas
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
                           onClick={() => setEditing(m)}
                           className="text-xs uppercase tracking-wide"
                         >
