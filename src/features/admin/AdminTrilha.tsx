@@ -41,6 +41,7 @@ type Trail = {
   order_index: number;
   title: string;
   color: string | null;
+  pbl_prompt: string | null;
 };
 
 type ModuleRow = {
@@ -118,7 +119,7 @@ export const AdminTrilha = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("trails")
-        .select("id, order_index, title, color")
+        .select("id, order_index, title, color, pbl_prompt")
         .order("order_index");
       if (error) throw error;
       return (data ?? []) as Trail[];
