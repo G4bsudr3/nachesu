@@ -118,7 +118,7 @@ const FutureLetter = () => {
             className="text-center py-12"
           >
             <div className="flex justify-center mb-6">
-              <EletivaSymbol className="w-16 h-20" />
+              <EletivaSymbol size={96} pose="resting" />
             </div>
             <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none mb-4">
               carta salva.

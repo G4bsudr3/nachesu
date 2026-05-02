@@ -48,8 +48,8 @@ const MinhaCarta = () => {
 
         {!loading && state === "none" && (
           <EmptyState
-            icon={<EletivaSymbol size={64} />}
-            titulo="sua carta ainda não foi escrita"
+            icon={<EletivaSymbol size={88} pose="resting" />}
+            titulo="ainda sem galhos por aqui"
             descricao="primeiro envia o formulário fbi. depois a equipe da escola lê suas respostas e escreve uma carta personalizada pra você."
             cta={{ to: "/forms", label: "preencher fbi" }}
           />

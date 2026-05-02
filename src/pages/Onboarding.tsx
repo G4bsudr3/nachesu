@@ -252,7 +252,7 @@ const Onboarding = () => {
 
         {allDone && (
           <div className="mb-8 rounded-3xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-6 flex items-center gap-4">
-            <EletivaSymbol size={56} />
+            <EletivaSymbol size={64} pose="celebrating" />
             <div className="flex-1">
               <p className="font-display uppercase text-2xl leading-tight text-perestroika-preto">
                 você fechou a trilha

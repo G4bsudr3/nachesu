@@ -38,7 +38,7 @@ export const EletivaCard = () => {
         className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8"
       >
         <div className="absolute -right-6 -top-6 opacity-90 pointer-events-none" aria-hidden="true">
-          <EletivaSymbol size={96} rotate={18} />
+          <EletivaSymbol size={110} rotate={12} pose="peeking" />
         </div>
         <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
           eletiva ia na prática

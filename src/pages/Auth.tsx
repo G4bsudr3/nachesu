@@ -258,9 +258,10 @@ const Auth = () => {
       <main className="flex-1 container flex items-center justify-center py-16">
         <div className="w-full max-w-md relative">
           <EletivaSymbol
-            size={64}
-            className="absolute -top-20 right-0 animate-pulse-soft"
+            size={72}
+            className="absolute -top-24 right-0 animate-pulse-soft"
             rotate={-15}
+            pose="peeking"
           />
 
           {!sent ? (
