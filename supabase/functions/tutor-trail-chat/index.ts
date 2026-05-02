@@ -128,7 +128,7 @@ Deno.serve(async (req) => {
         .eq("user_id", userId),
       admin
         .from("tutor_conversations")
-        .select("id, messages")
+        .select("id, messages, title")
         .eq("user_id", userId)
         .eq("trail_id", trailId)
         .maybeSingle(),
