@@ -256,6 +256,7 @@ export const AdminPillsEditor = ({
           duration_min_low: vars.values.duration_min_low ?? null,
           duration_min_high: vars.values.duration_min_high ?? null,
           required: vars.values.required,
+          published: vars.values.published,
           updated_at: new Date().toISOString(),
         })
         .eq("id", vars.id);
