@@ -43,6 +43,7 @@ const Certificado = lazy(() => import("./pages/Certificado.tsx"));
 const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandbox.tsx"));
 const FutureLetter = lazy(() => import("./pages/FutureLetter.tsx"));
 const ChoraBot = lazy(() => import("./pages/ChoraBot.tsx"));
+const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
@@ -143,6 +144,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Missions />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/app/modulo/:number"
+                element={
+                  <ProtectedRoute>
+                    <Modulo />
                   </ProtectedRoute>
                 }
               />
