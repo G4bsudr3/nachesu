@@ -155,10 +155,48 @@ export const AdminPillsEditor = ({
     qc.invalidateQueries({ queryKey: ["modulo"] });
   };
 
+  // garante que order_index seja sequencial (0..n-1) sem gaps nem duplicatas.
+  // lê o estado atual do banco pra não confiar no cache, e só atualiza linhas
+  // que de fato precisam mudar. ignora erros silenciosamente: a normalização é
+  // best-effort, não deve quebrar o fluxo principal.
+  const normalizeOrder = async (mid: string): Promise<void> => {
+    const { data, error } = await supabase
+      .from("module_pills")
+      .select("id, order_index")
+      .eq("module_id", mid)
+      .order("order_index")
+      .order("created_at"); // tiebreaker estável quando order_index empata
+    if (error || !data) {
+      logger.error("[admin/pills] normalize fetch:", error);
+      return;
+    }
+    const updates = data
+      .map((row, i) => ({ id: row.id, order_index: i, prev: row.order_index }))
+      .filter((u) => u.prev !== u.order_index);
+    if (updates.length === 0) return;
+    const results = await Promise.all(
+      updates.map((u) =>
+        supabase
+          .from("module_pills")
+          .update({ order_index: u.order_index })
+          .eq("id", u.id),
+      ),
+    );
+    const firstErr = results.find((r) => r.error);
+    if (firstErr?.error) {
+      logger.error("[admin/pills] normalize update:", firstErr.error);
+    }
+  };
+
   const createMutation = useMutation({
     mutationFn: async (values: PillForm) => {
       if (!moduleId) throw new Error("módulo inválido");
-      const nextOrder = (pills?.length ?? 0);
+      // posiciona no fim: usa o maior order_index existente + 1.
+      // assim evita colisão mesmo se o cache estiver desatualizado.
+      const maxOrder = (pills ?? []).reduce(
+        (acc, p) => (p.order_index > acc ? p.order_index : acc),
+        -1,
+      );
       const { error } = await supabase.from("module_pills").insert({
         module_id: moduleId,
         title: values.title.trim(),
@@ -169,9 +207,10 @@ export const AdminPillsEditor = ({
         duration_min_low: values.duration_min_low ?? null,
         duration_min_high: values.duration_min_high ?? null,
         required: values.required,
-        order_index: nextOrder,
+        order_index: maxOrder + 1,
       });
       if (error) throw error;
+      await normalizeOrder(moduleId);
     },
     onSuccess: () => {
       toast.success("pílula criada");
@@ -217,6 +256,7 @@ export const AdminPillsEditor = ({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("module_pills").delete().eq("id", id);
       if (error) throw error;
+      if (moduleId) await normalizeOrder(moduleId);
     },
     onSuccess: () => {
       toast.success("pílula removida");
@@ -229,15 +269,16 @@ export const AdminPillsEditor = ({
     },
   });
 
+  // mover: aplica a nova ordem completa (0..n-1) baseada num array reordenado.
+  // mais robusto que swap pontual porque qualquer gap herdado já fica corrigido.
   const reorderMutation = useMutation({
-    mutationFn: async (updates: { id: string; order_index: number }[]) => {
-      // sem rpc batch: roda updates em paralelo
+    mutationFn: async (orderedIds: string[]) => {
       const results = await Promise.all(
-        updates.map((u) =>
+        orderedIds.map((id, i) =>
           supabase
             .from("module_pills")
-            .update({ order_index: u.order_index })
-            .eq("id", u.id),
+            .update({ order_index: i })
+            .eq("id", id),
         ),
       );
       const firstErr = results.find((r) => r.error);
@@ -256,12 +297,10 @@ export const AdminPillsEditor = ({
     if (!pills) return;
     const target = index + direction;
     if (target < 0 || target >= pills.length) return;
-    const a = pills[index];
-    const b = pills[target];
-    reorderMutation.mutate([
-      { id: a.id, order_index: target },
-      { id: b.id, order_index: index },
-    ]);
+    const next = [...pills];
+    const [moved] = next.splice(index, 1);
+    next.splice(target, 0, moved);
+    reorderMutation.mutate(next.map((p) => p.id));
   };
 
   return (
