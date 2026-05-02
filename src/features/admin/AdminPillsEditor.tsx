@@ -7,6 +7,7 @@ import {
   Plus,
   Save,
   Trash2,
+  Upload,
   X,
 } from "lucide-react";
 import {
@@ -770,15 +771,35 @@ const PillFormDialog = ({
               htmlFor="p-attach"
               className="text-xs uppercase tracking-wide"
             >
-              url do anexo (opcional)
+              anexo (opcional)
             </Label>
-            <Input
-              id="p-attach"
-              type="url"
-              placeholder="https://..."
-              value={values.attachment_url ?? ""}
-              onChange={(e) => change("attachment_url", e.target.value)}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="p-attach"
+                type="url"
+                placeholder="https://... ou faz upload ao lado"
+                value={values.attachment_url ?? ""}
+                onChange={(e) => change("attachment_url", e.target.value)}
+                className="flex-1"
+              />
+              <AttachmentUpload
+                onUploaded={(url) => change("attachment_url", url)}
+              />
+              {values.attachment_url && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  title="limpar anexo"
+                  onClick={() => change("attachment_url", "")}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              cola uma url ou envia um arquivo (pdf, imagem, doc, até 20mb)
+            </p>
             {errors.attachment_url && (
               <p className="text-xs text-destructive">{errors.attachment_url}</p>
             )}
@@ -830,6 +851,96 @@ const PillFormDialog = ({
         </form>
       </DialogContent>
     </Dialog>
+  );
+};
+
+// ─── upload de anexo ─────────────────────────────────────────────────────────
+// faz upload pro bucket público "pill-attachments" e devolve a public url.
+// rls do bucket exige admin pra insert; leitura é pública.
+
+const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024; // 20 mb
+
+const sanitizeFilename = (name: string): string => {
+  const dot = name.lastIndexOf(".");
+  const base = (dot > 0 ? name.slice(0, dot) : name)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+    .slice(0, 60) || "anexo";
+  const ext = dot > 0 ? name.slice(dot).toLowerCase().replace(/[^a-z0-9.]/g, "") : "";
+  return `${base}${ext}`;
+};
+
+interface AttachmentUploadProps {
+  onUploaded: (publicUrl: string) => void;
+}
+
+const AttachmentUpload = ({ onUploaded }: AttachmentUploadProps) => {
+  const [uploading, setUploading] = useState(false);
+
+  const handleFile = async (file: File) => {
+    if (file.size > MAX_ATTACHMENT_BYTES) {
+      toast.error("arquivo grande demais. máx 20mb");
+      return;
+    }
+    setUploading(true);
+    try {
+      const safeName = sanitizeFilename(file.name);
+      // path único: timestamp + nome saneado evita colisão e mantém legível na url
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}`;
+      const { error: upErr } = await supabase.storage
+        .from("pill-attachments")
+        .upload(path, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type || undefined,
+        });
+      if (upErr) throw upErr;
+      const { data } = supabase.storage
+        .from("pill-attachments")
+        .getPublicUrl(path);
+      if (!data?.publicUrl) throw new Error("não consegui gerar a url pública");
+      onUploaded(data.publicUrl);
+      toast.success("anexo enviado");
+    } catch (e) {
+      logger.error("[admin/pills] upload anexo:", e);
+      const msg = e instanceof Error ? e.message : "deu ruim no upload";
+      toast.error(msg);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="icon"
+      title="enviar arquivo"
+      disabled={uploading}
+      asChild
+    >
+      <label className="cursor-pointer">
+        {uploading ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <Upload className="w-4 h-4" />
+        )}
+        <input
+          type="file"
+          className="sr-only"
+          disabled={uploading}
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            // limpa o input pra permitir reupload do mesmo arquivo depois
+            e.target.value = "";
+            if (f) void handleFile(f);
+          }}
+        />
+      </label>
+    </Button>
   );
 };
 
