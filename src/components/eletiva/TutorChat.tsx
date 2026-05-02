@@ -292,6 +292,24 @@ export const TutorChat = ({
           </AnimatePresence>
         </div>
 
+        {errorMsg && (
+          <div className="mx-4 mb-2 rounded-xl border-2 border-perestroika-vermelho bg-perestroika-vermelho/10 px-3 py-2.5 flex items-start gap-2">
+            <p className="font-body text-xs text-perestroika-preto/85 flex-1">
+              {errorMsg}
+            </p>
+            {lastFailedText && (
+              <button
+                type="button"
+                onClick={() => void retry()}
+                disabled={streaming}
+                className="shrink-0 inline-flex items-center gap-1 rounded-full bg-perestroika-preto text-perestroika-bege px-2.5 py-1 font-body text-[10px] uppercase tracking-wide hover:scale-105 active:scale-95 disabled:opacity-50 transition-transform"
+              >
+                <RefreshCw className="h-3 w-3" /> tentar de novo
+              </button>
+            )}
+          </div>
+        )}
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -309,23 +327,28 @@ export const TutorChat = ({
                   void send();
                 }
               }}
-              placeholder="pergunta o que travou..."
+              placeholder={streaming ? "joão-de-barro tá pensando..." : "pergunta o que travou..."}
               rows={1}
               maxLength={2000}
               disabled={streaming}
-              className="flex-1 resize-none bg-transparent border-0 outline-none font-body text-sm placeholder:text-perestroika-preto/40 max-h-32 px-2 py-1.5"
+              aria-busy={streaming}
+              className="flex-1 resize-none bg-transparent border-0 outline-none font-body text-sm placeholder:text-perestroika-preto/40 max-h-32 px-2 py-1.5 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
               disabled={!input.trim() || streaming}
               className="shrink-0 rounded-full bg-perestroika-preto text-perestroika-bege p-2.5 disabled:opacity-40 hover:scale-105 active:scale-95 transition-transform"
-              aria-label="enviar"
+              aria-label={streaming ? "aguardando resposta" : "enviar"}
             >
-              <ArrowUp className="h-4 w-4" />
+              {streaming ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ArrowUp className="h-4 w-4" />
+              )}
             </button>
           </div>
           <p className="text-[10px] text-perestroika-preto/40 mt-1.5 px-1">
-            shift + enter pra quebrar linha
+            {streaming ? "esperando o tutor terminar..." : "shift + enter pra quebrar linha"}
           </p>
         </form>
       </SheetContent>
