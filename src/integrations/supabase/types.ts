@@ -1714,6 +1714,7 @@ export type Database = {
           description: string | null
           id: string
           order_index: number
+          pbl_prompt: string | null
           title: string
           updated_at: string
         }
@@ -1723,6 +1724,7 @@ export type Database = {
           description?: string | null
           id?: string
           order_index?: number
+          pbl_prompt?: string | null
           title: string
           updated_at?: string
         }
@@ -1732,10 +1734,46 @@ export type Database = {
           description?: string | null
           id?: string
           order_index?: number
+          pbl_prompt?: string | null
           title?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      tutor_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          messages: Json
+          trail_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          trail_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          trail_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tutor_conversations_trail_id_fkey"
+            columns: ["trail_id"]
+            isOneToOne: false
+            referencedRelation: "trails"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tutorial_idea: {
         Row: {

@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, ExternalLink, FileText, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, ExternalLink, FileText, MessageCircle, Play } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { TutorChat } from "@/components/eletiva/TutorChat";
 
 type Pill = {
   id: string;
@@ -49,6 +50,7 @@ const Modulo = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress();
+  const [tutorOpen, setTutorOpen] = useState(false);
 
   const moduleRow = useMemo(
     () => snapshot?.modules.find((m) => m.number === moduleNumber) ?? null,
@@ -437,6 +439,16 @@ const Modulo = () => {
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 )}
+                {pill.kind === "exercicio_pbl" && trail && (
+                  <button
+                    type="button"
+                    onClick={() => setTutorOpen(true)}
+                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:scale-105 active:scale-95 transition-transform"
+                    style={{ backgroundColor: trailColor }}
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" /> conversar com tutor
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => togglePillMutation.mutate(pill)}
@@ -534,6 +546,16 @@ const Modulo = () => {
           )}
         </nav>
       </main>
+
+      {trail && (
+        <TutorChat
+          open={tutorOpen}
+          onOpenChange={setTutorOpen}
+          trailId={trail.id}
+          trailTitle={trail.title}
+          trailColor={trailColor}
+        />
+      )}
 
       <EletivaFooter />
     </div>

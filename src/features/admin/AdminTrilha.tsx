@@ -41,6 +41,7 @@ type Trail = {
   order_index: number;
   title: string;
   color: string | null;
+  pbl_prompt: string | null;
 };
 
 type ModuleRow = {
@@ -118,7 +119,7 @@ export const AdminTrilha = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("trails")
-        .select("id, order_index, title, color")
+        .select("id, order_index, title, color, pbl_prompt")
         .order("order_index");
       if (error) throw error;
       return (data ?? []) as Trail[];
@@ -397,6 +398,9 @@ export const AdminTrilha = () => {
         </Table>
       </div>
 
+      {/* prompts PBL do tutor IA por trilha */}
+      <TrailPblEditor trails={trails ?? []} />
+
       <EditModuleDialog
         module={editing}
         trails={trails ?? []}
@@ -630,5 +634,96 @@ const EditModuleDialog = ({
         )}
       </DialogContent>
     </Dialog>
+  );
+};
+
+// ─── editor dos prompts PBL do tutor IA por trilha ────────────────────────────
+
+interface TrailPblEditorProps {
+  trails: Trail[];
+}
+
+const TrailPblEditor = ({ trails }: TrailPblEditorProps) => {
+  const qc = useQueryClient();
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  const saveMutation = useMutation({
+    mutationFn: async (vars: { id: string; prompt: string }) => {
+      const { error } = await supabase
+        .from("trails")
+        .update({
+          pbl_prompt: vars.prompt.trim() || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", vars.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("prompt PBL salvo");
+      qc.invalidateQueries({ queryKey: ["admin-trails"] });
+    },
+    onError: (e: Error) => {
+      logger.error("[admin/trilha] save pbl:", e);
+      toast.error(e.message ?? "deu ruim ao salvar");
+    },
+  });
+
+  if (!trails.length) return null;
+
+  return (
+    <section className="space-y-3 max-w-3xl">
+      <div className="space-y-1">
+        <h3 className="font-display text-2xl uppercase tracking-tight">
+          tutor IA · problema central de cada trilha
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          o que você escrever aqui vai pro system prompt do joão-de-barro quando o aluno conversar com ele
+          dentro de uma pílula de exercício PBL. seja específico: o problema, o desafio, o que o aluno precisa
+          destravar. deixe vazio pra desligar o foco PBL nessa trilha.
+        </p>
+      </div>
+
+      {trails.map((t) => {
+        const value = drafts[t.id] ?? t.pbl_prompt ?? "";
+        const dirty = value !== (t.pbl_prompt ?? "");
+        return (
+          <div
+            key={t.id}
+            className="rounded-xl border border-perestroika-preto/15 bg-white/40 p-4 space-y-2"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <Label className="text-xs uppercase tracking-wide">
+                {t.order_index}. {t.title.toLowerCase()}
+              </Label>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={!dirty || saveMutation.isPending}
+                onClick={() => saveMutation.mutate({ id: t.id, prompt: value })}
+                className="text-xs uppercase tracking-wide"
+              >
+                {saveMutation.isPending ? (
+                  <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
+                ) : (
+                  <Save className="w-3.5 h-3.5 mr-1" />
+                )}
+                salvar
+              </Button>
+            </div>
+            <Textarea
+              value={value}
+              onChange={(e) =>
+                setDrafts((prev) => ({ ...prev, [t.id]: e.target.value }))
+              }
+              rows={3}
+              maxLength={1000}
+              placeholder="ex: como você usaria IA pra resolver o gargalo de atendimento da sua loja física?"
+              className="bg-white/60"
+            />
+          </div>
+        );
+      })}
+    </section>
   );
 };
