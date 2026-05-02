@@ -30,6 +30,7 @@ const CartaPublica = lazy(() => import("./pages/CartaPublica.tsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
 const Tutorial = lazy(() => import("./pages/Tutorial.tsx"));
 const Onboarding = lazy(() => import("./pages/Onboarding.tsx"));
+const OnboardingDialogPage = lazy(() => import("./pages/OnboardingDialogPage.tsx"));
 const HubIndex = lazy(() => import("./pages/HubIndex.tsx"));
 const HubGallery = lazy(() => import("./pages/HubGallery.tsx"));
 const HubBuilder = lazy(() => import("./pages/HubBuilder.tsx"));
@@ -190,6 +191,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Onboarding />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/app/onboarding"
+                element={
+                  <ProtectedRoute>
+                    <OnboardingDialogPage />
                   </ProtectedRoute>
                 }
               />
