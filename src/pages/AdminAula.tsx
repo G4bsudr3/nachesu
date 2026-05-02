@@ -202,7 +202,7 @@ function AdminAulaInner({ number }: { number: number }) {
           </TabsList>
 
           <TabsContent value="conteudo" className="mt-0">
-            <AdminPillsEditor moduleId={mod.id} moduleTitle={mod.title} />
+            <ConteudoTab module={mod} accent={accent} />
           </TabsContent>
 
           <TabsContent value="metricas" className="mt-0">
