@@ -127,6 +127,7 @@ const pillSchema = z.object({
   duration_min_low: z.coerce.number().int().min(0).max(600).optional(),
   duration_min_high: z.coerce.number().int().min(0).max(600).optional(),
   required: z.boolean(),
+  published: z.boolean(),
 });
 
 type PillForm = z.infer<typeof pillSchema>;
