@@ -386,82 +386,27 @@ export const AdminPillsEditor = ({
               nenhuma pílula ainda. clica em "nova pílula" pra começar.
             </p>
           )}
-          {!isLoading &&
-            pills?.map((p, i) => (
-              <div
-                key={p.id}
-                className="flex items-start gap-3 rounded-lg border border-perestroika-preto/15 bg-white/60 p-3"
+          {!isLoading && pills && pills.length > 0 && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={pills.map((p) => p.id)}
+                strategy={verticalListSortingStrategy}
               >
-                <div className="flex flex-col gap-1 pt-0.5">
-                  <button
-                    type="button"
-                    aria-label="mover pra cima"
-                    onClick={() => move(i, -1)}
-                    disabled={i === 0 || reorderMutation.isPending}
-                    className="w-6 h-6 inline-flex items-center justify-center rounded hover:bg-perestroika-preto/10 disabled:opacity-30"
-                  >
-                    <ArrowUp className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="mover pra baixo"
-                    onClick={() => move(i, 1)}
-                    disabled={
-                      i === (pills.length - 1) || reorderMutation.isPending
-                    }
-                    className="w-6 h-6 inline-flex items-center justify-center rounded hover:bg-perestroika-preto/10 disabled:opacity-30"
-                  >
-                    <ArrowDown className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="font-medium truncate">{p.title}</span>
-                    <Badge variant="outline" className="text-[10px] uppercase">
-                      {KIND_LABEL[p.kind]}
-                    </Badge>
-                    {!p.required && (
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] uppercase border-perestroika-preto/20"
-                      >
-                        opcional
-                      </Badge>
-                    )}
-                    {(p.duration_min_low || p.duration_min_high) && (
-                      <span className="text-[11px] text-muted-foreground">
-                        {p.duration_min_low ?? "?"}–
-                        {p.duration_min_high ?? "?"} min
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-3 text-[11px] text-perestroika-preto/60">
-                    {p.video_url && <span>🎬 vídeo</span>}
-                    {p.attachment_url && <span>📎 anexo</span>}
-                    {p.body_md && <span>📝 {p.body_md.length} caracteres</span>}
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="text-xs"
-                    onClick={() => setEditing(p)}
-                  >
-                    editar
-                  </Button>
-                  <button
-                    type="button"
-                    aria-label="remover pílula"
-                    onClick={() => setPendingDelete(p)}
-                    className="w-8 h-8 inline-flex items-center justify-center rounded-md hover:bg-destructive/10 text-destructive transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
+                {pills.map((p) => (
+                  <SortablePillRow
+                    key={p.id}
+                    pill={p}
+                    onEdit={() => setEditing(p)}
+                    onDelete={() => setPendingDelete(p)}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          )}
         </div>
 
         <DialogFooter>
