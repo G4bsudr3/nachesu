@@ -458,7 +458,7 @@ const ChoraBot = () => {
                       o chŏra bot.
                     </h1>
                     <p className="font-body text-perestroika-preto/80 mb-6 leading-relaxed">
-                      {welcome || "tira tua dúvida sobre o que rolou no chora lovable. tô por aqui até 26 de maio."}
+                      {welcome || "tire suas dúvidas sobre o que rolou nas aulas. tô por aqui sempre."}
                     </p>
                     <div className="space-y-2">
                       <p className="font-display uppercase text-[10px] tracking-[0.25em] text-perestroika-preto/50">
