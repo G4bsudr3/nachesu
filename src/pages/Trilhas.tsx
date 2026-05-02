@@ -33,7 +33,7 @@ const Trilhas = () => {
     );
   }
 
-  const { trails, modules, progressByModuleId, totalCompleted, totalPublished } = data;
+  const { trails, modules, progressByModuleId, unlockedModuleIds, totalCompleted, totalPublished } = data;
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
@@ -107,6 +107,7 @@ const Trilhas = () => {
                     trail={trail}
                     modules={trailModules}
                     progressByModuleId={progressByModuleId}
+                    unlockedModuleIds={unlockedModuleIds}
                     fallbackColor={trailColorByOrder[trail.order_index] ?? "#090909"}
                     columnIndex={idx}
                   />
