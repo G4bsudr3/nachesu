@@ -617,6 +617,7 @@ const PillFormDialog = ({
         duration_min_low: initial.duration_min_low ?? undefined,
         duration_min_high: initial.duration_min_high ?? undefined,
         required: initial.required,
+        published: initial.published ?? true,
       });
     } else {
       setValues(emptyValues);
