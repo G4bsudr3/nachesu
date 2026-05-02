@@ -24,6 +24,7 @@ const AccountSettings = lazy(() => import("./pages/AccountSettings.tsx"));
 const Prework = lazy(() => import("./pages/Prework.tsx"));
 const Missions = lazy(() => import("./pages/Missions.tsx"));
 const AdminFbi = lazy(() => import("./pages/AdminFbi.tsx"));
+const AdminAula = lazy(() => import("./pages/AdminAula.tsx"));
 const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
 const MinhaCarta = lazy(() => import("./pages/MinhaCarta.tsx"));
 const CartaPublica = lazy(() => import("./pages/CartaPublica.tsx"));
