@@ -223,50 +223,18 @@ export function PillRadar({
               <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1.5">
                 evidência
               </label>
-              <div className="flex flex-wrap items-center gap-2">
-                <label
-                  className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5 font-body text-xs cursor-pointer transition-colors ${
-                    item.evidence_kind === "file"
-                      ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                      : "border-perestroika-preto/20 hover:border-perestroika-preto/50"
-                  }`}
-                >
-                  {uploadingId === item.id ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Upload className="h-3.5 w-3.5" />
-                  )}
-                  {item.evidence_name ?? "subir foto/áudio"}
-                  <input
-                    type="file"
-                    accept="image/*,audio/*"
-                    className="sr-only"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) void handleFile(item.id, f);
-                      e.target.value = "";
-                    }}
-                  />
-                </label>
-                <span className="font-body text-[11px] text-perestroika-preto/50">ou</span>
-                <div className="flex-1 min-w-[160px] flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/20 px-3 py-1">
-                  <LinkIcon className="h-3.5 w-3.5 text-perestroika-preto/55 flex-shrink-0" />
-                  <input
-                    type="url"
-                    value={item.evidence_link ?? ""}
-                    onChange={(e) =>
-                      updateItem(item.id, {
-                        evidence_kind: e.target.value ? "link" : "none",
-                        evidence_link: e.target.value,
-                        evidence_path: undefined,
-                        evidence_name: undefined,
-                      })
-                    }
-                    placeholder="cole link"
-                    className="w-full bg-transparent font-body text-xs focus:outline-none"
-                  />
-                </div>
-              </div>
+              <EvidenceUploader
+                itemId={item.id}
+                value={{
+                  evidence_kind: item.evidence_kind,
+                  evidence_link: item.evidence_link,
+                  evidence_path: item.evidence_path,
+                  evidence_name: item.evidence_name,
+                }}
+                onChange={(next) => updateItem(item.id, next)}
+                accent={accent}
+                maxMb={maxMb}
+              />
             </div>
           </li>
         ))}
