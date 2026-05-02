@@ -16,11 +16,11 @@ export const EletivaCard = () => {
   if (isLoading) {
     return (
       <section
-        aria-label="sua trilha"
-        className="rounded-3xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] p-6 sm:p-8 motion-safe:animate-pulse"
+        aria-label="próximo passo"
+        className="rounded-3xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] p-8 sm:p-12 motion-safe:animate-pulse"
       >
-        <div className="h-3 w-32 bg-perestroika-preto/15 rounded mb-4" />
-        <div className="h-8 w-3/4 bg-perestroika-preto/15 rounded mb-3" />
+        <div className="h-3 w-32 bg-perestroika-preto/15 rounded mb-6" />
+        <div className="h-12 w-3/4 bg-perestroika-preto/15 rounded mb-4" />
         <div className="h-4 w-1/2 bg-perestroika-preto/10 rounded" />
       </section>
     );
@@ -30,34 +30,40 @@ export const EletivaCard = () => {
 
   const { currentModule, nextModule, totalPublished, totalCompleted, trails } = data;
 
-  // empty state: nada publicado ainda
+  // estado A: nada publicado ainda → eletiva aquecendo
   if (totalPublished === 0) {
     return (
       <section
-        aria-label="sua trilha"
-        className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8"
+        aria-label="próximo passo"
+        className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-8 sm:p-12"
       >
-        <div className="absolute -right-6 -top-6 opacity-90 pointer-events-none" aria-hidden="true">
-          <EletivaSymbol size={110} rotate={12} pose="peeking" />
+        <div
+          className="absolute -right-8 -top-8 opacity-90 pointer-events-none"
+          aria-hidden="true"
+        >
+          <EletivaSymbol size={160} rotate={8} pose="building" />
         </div>
-        <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-4">
           eletiva ia na prática
         </p>
-        <h2 className="font-display uppercase text-3xl sm:text-4xl mb-3 leading-[0.95]">
-          sua trilha está aquecendo
+        <h2 className="font-display uppercase text-5xl sm:text-7xl mb-4 leading-[0.9] text-balance max-w-2xl">
+          sua eletiva tá aquecendo
         </h2>
-        <p className="font-body text-base text-perestroika-preto/75 max-w-lg mb-6">
-          20 módulos, 4 trilhas, um projeto autoral seu no fim. o primeiro módulo abre em breve, você recebe aviso quando rolar.
+        <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl mb-8 text-pretty">
+          são 20 módulos divididos em 4 trilhas. o primeiro módulo abre em breve, você é avisado por aqui assim que liberar.
         </p>
         <div className="flex flex-wrap gap-2">
           {trails.map((t) => (
             <span
               key={t.id}
-              className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 px-3 py-1.5 font-body text-xs sm:text-sm"
+              className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 bg-white/40 px-3 py-1.5 font-body text-xs sm:text-sm"
             >
               <span
                 className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: t.color ?? trailColorByOrder[t.order_index] ?? "#090909" }}
+                style={{
+                  backgroundColor:
+                    t.color ?? trailColorByOrder[t.order_index] ?? "#090909",
+                }}
                 aria-hidden="true"
               />
               {t.title.toLowerCase()}
@@ -68,28 +74,33 @@ export const EletivaCard = () => {
     );
   }
 
-  // estado normal: tem módulo atual
+  // estado D: tudo concluído
   const moduleToShow = currentModule ?? nextModule;
   if (!moduleToShow) {
-    // tudo concluído
     return (
       <section
-        aria-label="sua trilha"
-        className="rounded-3xl border-2 border-perestroika-preto bg-perestroika-preto text-perestroika-bege p-6 sm:p-8"
+        aria-label="próximo passo"
+        className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-preto text-perestroika-bege p-8 sm:p-12"
       >
-        <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-bege/60 mb-3 inline-flex items-center gap-2">
+        <div
+          className="absolute -right-8 -top-8 opacity-30 pointer-events-none"
+          aria-hidden="true"
+        >
+          <EletivaSymbol size={180} pose="celebrating" />
+        </div>
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-bege/70 mb-4 inline-flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5" />
-          fechou a eletiva
+          ciclo completo
         </p>
-        <h2 className="font-display uppercase text-3xl sm:text-4xl mb-3 leading-[0.95]">
+        <h2 className="font-display uppercase text-5xl sm:text-7xl mb-4 leading-[0.9] text-balance max-w-2xl">
           os 20 módulos foram seus
         </h2>
-        <p className="font-body text-base text-perestroika-bege/80 mb-6 max-w-lg">
-          agora é hora de soltar o seu projeto pro mundo e revisitar o que faz sentido.
+        <p className="font-body text-base sm:text-lg text-perestroika-bege/85 mb-8 max-w-xl text-pretty">
+          agora é hora de soltar o seu projeto autoral pro mundo. revisita o que fizer sentido, quando fizer sentido.
         </p>
         <Link
           to="/app/projeto"
-          className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+          className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
         >
           ver meu projeto <ArrowRight className="h-4 w-4" />
         </Link>
@@ -97,43 +108,54 @@ export const EletivaCard = () => {
     );
   }
 
-  const progressPct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
-  const trailColor = trailColorByOrder[
-    trails.find((t) => t.id === moduleToShow.trail_id)?.order_index ?? 1
-  ] ?? "#fe7b02";
-  const isNext = !currentModule;
+  // estados B (primeiro acesso) e C (em andamento)
+  const isFirstStep = totalCompleted === 0;
+  const trail = trails.find((t) => t.id === moduleToShow.trail_id);
+  const trailColor =
+    trailColorByOrder[trail?.order_index ?? 1] ?? "#fe7b02";
+  const eyebrow = isFirstStep ? "começa por aqui" : "continue de onde parou";
+  const ctaLabel = isFirstStep ? "abrir módulo 01" : "voltar pro módulo";
 
   return (
     <section
       aria-label="próximo módulo da eletiva"
-      className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-bege p-6 sm:p-8"
+      className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-bege p-8 sm:p-12"
     >
+      {/* accent bar topo com cor da trilha */}
       <div
-        className="absolute inset-x-0 top-0 h-1.5"
+        className="absolute inset-x-0 top-0 h-2"
         style={{ backgroundColor: trailColor }}
         aria-hidden="true"
       />
 
-      <div className="flex items-start justify-between gap-4 mb-3">
-        <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60">
-          {isNext ? "próximo módulo" : "continue de onde parou"}
+      {/* mascote construindo no canto */}
+      <div
+        className="absolute -right-6 -top-2 opacity-90 pointer-events-none hidden sm:block"
+        aria-hidden="true"
+      >
+        <EletivaSymbol size={140} rotate={-8} pose="building" />
+      </div>
+
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+          {eyebrow}
         </p>
-        <span className="font-body text-xs sm:text-sm text-perestroika-preto/60 whitespace-nowrap">
+        <span className="font-body text-xs sm:text-sm text-perestroika-preto/60 whitespace-nowrap tabular-nums">
           módulo {String(moduleToShow.number).padStart(2, "0")}/20
         </span>
       </div>
 
-      <h2 className="font-display uppercase text-3xl sm:text-4xl mb-3 leading-[0.95]">
+      <h2 className="font-display uppercase text-5xl sm:text-7xl mb-5 leading-[0.9] text-balance max-w-2xl">
         {moduleToShow.title}
       </h2>
 
       {moduleToShow.objective && (
-        <p className="font-body text-base text-perestroika-preto/75 max-w-lg mb-5">
+        <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl mb-6 text-pretty">
           {moduleToShow.objective}
         </p>
       )}
 
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-6 font-body text-sm text-perestroika-preto/70">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8 font-body text-sm text-perestroika-preto/70">
         <span className="inline-flex items-center gap-1.5">
           <Clock className="h-3.5 w-3.5" aria-hidden="true" />
           {moduleToShow.total_minutes ?? 50} min
@@ -144,16 +166,16 @@ export const EletivaCard = () => {
             style={{ backgroundColor: trailColor }}
             aria-hidden="true"
           />
-          {trails.find((t) => t.id === moduleToShow.trail_id)?.title.toLowerCase() ?? "trilha"}
+          {trail?.title.toLowerCase() ?? "trilha"}
         </span>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <Link
           to={`/app/modulo/${moduleToShow.number}`}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-7 py-4 font-body text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
         >
-          {isNext ? "começar módulo" : "continuar"} <ArrowRight className="h-4 w-4" />
+          {ctaLabel} <ArrowRight className="h-4 w-4" />
         </Link>
         <Link
           to="/app/trilhas"
@@ -161,26 +183,6 @@ export const EletivaCard = () => {
         >
           ver mapa completo
         </Link>
-
-        <div className="flex-1 min-w-[140px]">
-          <div className="flex items-center justify-between font-body text-xs text-perestroika-preto/60 mb-1.5">
-            <span>sua jornada</span>
-            <span>{totalCompleted}/{totalPublished}</span>
-          </div>
-          <div
-            className="h-1.5 w-full rounded-full bg-perestroika-preto/10 overflow-hidden"
-            role="progressbar"
-            aria-valuenow={progressPct}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={`${progressPct}% concluído`}
-          >
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${progressPct}%`, backgroundColor: trailColor }}
-            />
-          </div>
-        </div>
       </div>
     </section>
   );

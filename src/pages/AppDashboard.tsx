@@ -3,7 +3,9 @@ import { LogOut, Settings, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { usePostEventStatus } from "@/hooks/usePostEventStatus";
+import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaStar } from "@/components/brand/EletivaStar";
@@ -13,6 +15,8 @@ import { JourneyChips } from "@/components/dashboard/JourneyChips";
 import { HubGateway } from "@/components/dashboard/HubGateway";
 import { ArchiveSection } from "@/components/dashboard/ArchiveSection";
 import { EletivaCard } from "@/components/dashboard/EletivaCard";
+import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
+import { TrailsProgress } from "@/components/dashboard/TrailsProgress";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
@@ -23,7 +27,9 @@ const AppDashboard = () => {
   const queryClient = useQueryClient();
 
   const { data: dashboard, isLoading: dashboardLoading } = useDashboardData();
+  const { data: eletiva } = useEletivaProgress();
   const status = usePostEventStatus();
+  const { enabled: extrasEnabled } = useEletivaExtras();
 
   const nickname = dashboard?.nicknameDisplay ?? "";
   const hasPassword = dashboard?.profile?.has_password ?? true;
@@ -42,6 +48,21 @@ const AppDashboard = () => {
       </div>
     );
   }
+
+  // calcula dias desde a última atividade (start_at ou completed_at mais recente)
+  const daysSinceLastActivity: number | null = (() => {
+    if (!eletiva) return null;
+    let mostRecent = 0;
+    for (const p of Object.values(eletiva.progressByModuleId)) {
+      const ts = Math.max(
+        p.completed_at ? new Date(p.completed_at).getTime() : 0,
+        p.started_at ? new Date(p.started_at).getTime() : 0,
+      );
+      if (ts > mostRecent) mostRecent = ts;
+    }
+    if (mostRecent === 0) return null;
+    return Math.floor((Date.now() - mostRecent) / (1000 * 60 * 60 * 24));
+  })();
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
@@ -95,20 +116,33 @@ const AppDashboard = () => {
             />
           )}
 
-          {/* eletiva: card do próximo módulo (produto principal hoje) */}
+          {/* 1. saudação contextual */}
+          <DashboardGreeting
+            nickname={nickname}
+            totalCompleted={eletiva?.totalCompleted ?? 0}
+            totalPublished={eletiva?.totalPublished ?? 0}
+            daysSinceLastActivity={daysSinceLastActivity}
+          />
+
+          {/* 2. hero único: próximo módulo da eletiva */}
           <EletivaCard />
 
-          {/* hero único: a próxima ação pendente da jornada pós-evento */}
-          <NextActionHero nickname={nickname} status={status} />
+          {/* 3. progresso visual das 4 trilhas */}
+          {eletiva && eletiva.totalPublished > 0 && (
+            <TrailsProgress snapshot={eletiva} />
+          )}
 
-          {/* status da jornada (3 chips) */}
-          <JourneyChips status={status} />
-
-          {/* hub como destino permanente */}
+          {/* 4. apoio: tutor IA + materiais (e extras se admin ligar a flag) */}
           <HubGateway />
 
-          {/* trilha pré-evento, colapsada */}
-          <ArchiveSection />
+          {/* 5. extras pós-evento Chŏra: só com flag ligada (admin reativa quando precisar) */}
+          {extrasEnabled && (
+            <>
+              <NextActionHero nickname={nickname} status={status} />
+              <JourneyChips status={status} />
+              <ArchiveSection />
+            </>
+          )}
         </div>
       </main>
 
