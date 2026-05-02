@@ -57,6 +57,27 @@ export const TutorChat = ({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [lastFailedText, setLastFailedText] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { data: snapshot } = useEletivaProgress();
+
+  // resumo da trilha atual: módulos concluídos + módulo em andamento
+  const buildTrailContext = (): { done: string[]; current: string | null } => {
+    if (!snapshot) return { done: [], current: null };
+    const trailModules = snapshot.modules
+      .filter((m) => m.trail_id === trailId)
+      .sort((a, b) => a.number - b.number);
+    const done = trailModules
+      .filter((m) => snapshot.progressByModuleId[m.id]?.completed_at)
+      .map((m) => `m${String(m.number).padStart(2, "0")} · ${m.title.toLowerCase()}`);
+    const currentMod = trailModules.find(
+      (m) =>
+        snapshot.unlockedModuleIds.has(m.id) &&
+        !snapshot.progressByModuleId[m.id]?.completed_at,
+    );
+    const current = currentMod
+      ? `m${String(currentMod.number).padStart(2, "0")} · ${currentMod.title.toLowerCase()}`
+      : null;
+    return { done, current };
+  };
 
   // carrega histórico ao abrir
   const { data: stored } = useQuery({
