@@ -48,16 +48,12 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
 
     // ---- autorização ---------------------------------------------------
-    const cronSecret = Deno.env.get('MODULE_WATCHER_CRON_SECRET') ?? ''
-    const headerSecret = req.headers.get('x-cron-secret') ?? ''
+    // só admin logado pode chamar (cron fica pra depois quando virar agendado)
     const authHeader = req.headers.get('Authorization') ?? ''
     let allowed = false
     let actor = 'unknown'
 
-    if (cronSecret && headerSecret && headerSecret === cronSecret) {
-      allowed = true
-      actor = 'cron'
-    } else if (authHeader.startsWith('Bearer ')) {
+    if (authHeader.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '')
       const userClient = createClient(supabaseUrl, anonKey, {
         global: { headers: { Authorization: authHeader } },
