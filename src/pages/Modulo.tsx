@@ -50,6 +50,7 @@ const Modulo = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress();
+  const [tutorOpen, setTutorOpen] = useState(false);
 
   const moduleRow = useMemo(
     () => snapshot?.modules.find((m) => m.number === moduleNumber) ?? null,
@@ -437,6 +438,16 @@ const Modulo = () => {
                     <FileText className="h-3.5 w-3.5" /> material
                     <ExternalLink className="h-3 w-3" />
                   </a>
+                )}
+                {pill.kind === "exercicio_pbl" && trail && (
+                  <button
+                    type="button"
+                    onClick={() => setTutorOpen(true)}
+                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:scale-105 active:scale-95 transition-transform"
+                    style={{ backgroundColor: trailColor }}
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" /> conversar com tutor
+                  </button>
                 )}
                 <button
                   type="button"
