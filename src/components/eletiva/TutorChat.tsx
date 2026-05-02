@@ -271,14 +271,53 @@ export const TutorChat = ({
                 </SheetTitle>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="rounded-full p-2 hover:bg-perestroika-preto/10"
-              aria-label="fechar tutor"
-            >
-              <X className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button
+                    type="button"
+                    disabled={streaming || clearing || messages.length === 0}
+                    className="rounded-full p-2 hover:bg-perestroika-preto/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="limpar conversa"
+                    title="limpar conversa"
+                  >
+                    {clearing ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-perestroika-bege border-2 border-perestroika-preto">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="font-display uppercase text-2xl">
+                      zerar essa conversa?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="font-body text-perestroika-preto/75">
+                      o histórico com o joão-de-barro nessa trilha vai sumir e o contexto reinicia
+                      do zero. essa ação não tem volta.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="font-body">cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => void clearConversation()}
+                      className="bg-perestroika-vermelho text-perestroika-bege hover:bg-perestroika-vermelho/90 font-body"
+                    >
+                      zerar conversa
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
+                className="rounded-full p-2 hover:bg-perestroika-preto/10"
+                aria-label="fechar tutor"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           </div>
           <p className="font-body text-xs text-perestroika-preto/65 mt-2">
             conversando sobre <strong>{trailTitle.toLowerCase()}</strong>. seu histórico fica salvo.
