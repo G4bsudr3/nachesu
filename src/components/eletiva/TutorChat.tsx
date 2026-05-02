@@ -460,7 +460,7 @@ export const TutorChat = ({
                   void send();
                 }
               }}
-              placeholder={streaming ? "joão-de-barro tá pensando..." : "pergunta o que travou..."}
+              placeholder={streaming ? "joão-de-barro está pensando..." : "pergunte o que travou..."}
               rows={1}
               maxLength={2000}
               disabled={streaming}
