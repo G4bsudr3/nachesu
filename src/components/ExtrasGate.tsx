@@ -8,12 +8,11 @@ interface ExtrasGateProps {
 }
 
 /**
- * gate pra rotas de features sociais herdadas do chŏra lovable.
+ * gate pra rotas de features sociais legadas (mural, álbum, builder ia,
+ * carta pro futuro). escondidas por padrão na eletiva.
  * - admin: passa direto (precisa ver pra decidir reativar)
  * - aluno + flag off: redireciona pra /app
  * - aluno + flag on: passa
- *
- * usar em volta das rotas: galeria, projetos, ranking, álbum, turma, builder, carta-futuro.
  */
 export const ExtrasGate = ({ children }: ExtrasGateProps) => {
   const { enabled, isLoading } = useEletivaExtras();
