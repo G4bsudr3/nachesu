@@ -49,9 +49,9 @@ const buildState = (status: PostEventStatus, nickname: string): HeroState => {
     // se a carta ainda nem foi liberada (sem sessão aberta) e nada foi feito, sinaliza espera
     if (!status.futureLetterSessionOpen && !status.futureLetterDone) {
       return {
-        eyebrow: "tua próxima ação",
-        title: "fecha o ciclo do chora",
-        copy: "leva uns 4 minutos. tuas respostas afinam as próximas edições e liberam o certificado oficial. a carta pro futuro abre em breve, fica de olho.",
+        eyebrow: "sua próxima ação",
+        title: "feche o ciclo da eletiva",
+        copy: "leva uns 4 minutos. as suas respostas afinam as próximas turmas e liberam o certificado oficial. a carta pro futuro abre em breve, fique de olho.",
         primary: { label: "responder pesquisa final", to: "/app/feedback-final" },
         secondary: SECONDARY_HUB,
         icon: <MessageCircleHeart className="h-7 w-7" />,
