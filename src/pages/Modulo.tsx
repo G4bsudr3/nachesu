@@ -119,7 +119,14 @@ const Modulo = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("módulo concluído. bom demais.");
+      const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
+      const nextWasLocked =
+        next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
+      if (nextWasLocked) {
+        toast.success(`módulo ${String(next!.number).padStart(2, "0")} desbloqueado.`);
+      } else {
+        toast.success("módulo concluído. bom demais.");
+      }
       queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
     },
     onError: (e: Error) => toast.error(e.message ?? "deu ruim ao concluir"),
@@ -176,7 +183,14 @@ const Modulo = () => {
           },
           { onConflict: "user_id,module_id" },
         );
-        toast.success("rodou todas as pílulas. módulo concluído.");
+        const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
+        const nextWasLocked =
+          next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
+        if (nextWasLocked) {
+          toast.success(`rodou todas as pílulas. módulo ${String(next!.number).padStart(2, "0")} desbloqueado.`);
+        } else {
+          toast.success("rodou todas as pílulas. módulo concluído.");
+        }
         queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
       }
     },
