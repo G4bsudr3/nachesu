@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, LayoutGrid, Map, MessageCircleHeart } from "lucide-react";
+import { Home, LayoutGrid, Map, MessageCircleHeart, Sparkles } from "lucide-react";
+import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 
 interface NavItem {
   to: string;
@@ -9,12 +10,18 @@ interface NavItem {
   matchPrefix?: string;
 }
 
-const items: NavItem[] = [
+const baseItems: NavItem[] = [
   { to: "/app", label: "início", icon: <Home className="h-5 w-5" /> },
   { to: "/app/trilhas", label: "trilhas", icon: <Map className="h-5 w-5" />, matchPrefix: "/app/trilhas" },
+  { to: "/app/tutor", label: "tutor", icon: <Sparkles className="h-5 w-5" />, matchPrefix: "/app/tutor" },
   { to: "/app/hub", label: "hub", icon: <LayoutGrid className="h-5 w-5" />, matchPrefix: "/app/hub" },
-  { to: "/app/feedback-final", label: "pesquisa", icon: <MessageCircleHeart className="h-5 w-5" /> },
 ];
+
+const extrasItem: NavItem = {
+  to: "/app/feedback-final",
+  label: "pesquisa",
+  icon: <MessageCircleHeart className="h-5 w-5" />,
+};
 
 const isActive = (pathname: string, item: NavItem) => {
   if (item.matchPrefix) return pathname.startsWith(item.matchPrefix);
@@ -30,6 +37,9 @@ const isActive = (pathname: string, item: NavItem) => {
  */
 export const MobileNav = () => {
   const { pathname } = useLocation();
+  const { enabled: extrasEnabled } = useEletivaExtras();
+  const items = extrasEnabled ? [...baseItems, extrasItem] : baseItems;
+  const cols = items.length === 5 ? "grid-cols-5" : "grid-cols-4";
 
   return (
     <nav
@@ -37,7 +47,7 @@ export const MobileNav = () => {
       className="fixed inset-x-0 bottom-0 z-30 border-t border-perestroika-preto/10 bg-perestroika-bege/95 backdrop-blur sm:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <ul className="grid grid-cols-4">
+      <ul className={`grid ${cols}`}>
         {items.map((item) => {
           const active = isActive(pathname, item);
           return (

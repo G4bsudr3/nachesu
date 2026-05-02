@@ -59,13 +59,13 @@ export const HubGateway = () => {
       <header className="mb-5 flex items-end justify-between gap-4">
         <div>
           <p className="mb-1 font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55">
-            o que tem por aqui
+            apoio
           </p>
           <h2
             id="hub-gateway-title"
             className="font-display text-3xl uppercase leading-none text-perestroika-preto sm:text-4xl"
           >
-            volta sempre que precisar
+            quando travar, vem aqui
           </h2>
         </div>
         <Link
