@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { logger } from "@/lib/logger";
+import { AdminPillsEditor } from "./AdminPillsEditor";
 
 type Trail = {
   id: string;
@@ -108,6 +109,7 @@ export const AdminTrilha = () => {
   const qc = useQueryClient();
   const [trailFilter, setTrailFilter] = useState<string>("todas");
   const [editing, setEditing] = useState<ModuleRow | null>(null);
+  const [pillsModule, setPillsModule] = useState<ModuleRow | null>(null);
 
   const { data: trails, isLoading: trailsLoading } = useQuery({
     queryKey: ["admin-trails"],
@@ -270,7 +272,7 @@ export const AdminTrilha = () => {
                 disponível em
               </TableHead>
               <TableHead className="uppercase text-xs tracking-wide w-24">status</TableHead>
-              <TableHead className="uppercase text-xs tracking-wide w-32 text-right">
+              <TableHead className="uppercase text-xs tracking-wide w-44 text-right">
                 ações
               </TableHead>
             </TableRow>
@@ -361,6 +363,15 @@ export const AdminTrilha = () => {
                           type="button"
                           variant="outline"
                           size="sm"
+                          onClick={() => setPillsModule(m)}
+                          className="text-xs uppercase tracking-wide"
+                        >
+                          pílulas
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
                           onClick={() => setEditing(m)}
                           className="text-xs uppercase tracking-wide"
                         >
@@ -383,6 +394,13 @@ export const AdminTrilha = () => {
           editing && saveModuleMutation.mutate({ id: editing.id, values })
         }
         isSaving={saveModuleMutation.isPending}
+      />
+
+      <AdminPillsEditor
+        moduleId={pillsModule?.id ?? null}
+        moduleNumber={pillsModule?.number ?? null}
+        moduleTitle={pillsModule?.title ?? null}
+        onClose={() => setPillsModule(null)}
       />
     </div>
   );
