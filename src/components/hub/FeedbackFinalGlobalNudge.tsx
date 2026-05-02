@@ -49,11 +49,11 @@ const useNickname = () => {
         .select("nickname, display_name")
         .eq("user_id", user.id)
         .maybeSingle();
-      const raw = data?.nickname || data?.display_name || user.email?.split("@")[0] || "tu";
+      const raw = data?.nickname || data?.display_name || user.email?.split("@")[0] || "você";
       return raw.split(" ")[0].toLowerCase();
     },
   });
-  return data ?? "tu";
+  return data ?? "você";
 };
 
 export const FeedbackFinalGlobalNudge = () => {
