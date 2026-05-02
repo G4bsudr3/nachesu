@@ -404,7 +404,7 @@ const classifyFbiError = (err: unknown): FbiErrorInfo => {
       kind: "permission",
       title: "sem permissão",
       message: "o servidor bloqueou o acesso ao seu fbi.",
-      suggestion: "pinga o frattz no whatsapp se isso persistir.",
+      suggestion: "fala com o suporte da escola se isso persistir.",
       raw,
     };
   }
@@ -431,7 +431,7 @@ const classifyFbiError = (err: unknown): FbiErrorInfo => {
       kind: "unknown",
       title: "servidor com soluço",
       message: "algo quebrou do nosso lado.",
-      suggestion: "tenta de novo em um minuto. se continuar, avisa o frattz.",
+      suggestion: "tenta de novo em um minuto. se continuar, avisa o suporte da escola.",
       raw,
     };
   }
@@ -439,7 +439,7 @@ const classifyFbiError = (err: unknown): FbiErrorInfo => {
     kind: "unknown",
     title: "erro ao carregar fbi",
     message: raw,
-    suggestion: "tenta de novo. se persistir, avisa o frattz.",
+    suggestion: "tenta de novo. se persistir, avisa o suporte da escola.",
     raw,
   };
 };
