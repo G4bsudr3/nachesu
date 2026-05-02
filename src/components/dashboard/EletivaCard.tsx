@@ -155,6 +155,12 @@ export const EletivaCard = () => {
         >
           {isNext ? "começar módulo" : "continuar"} <ArrowRight className="h-4 w-4" />
         </Link>
+        <Link
+          to="/app/trilhas"
+          className="inline-flex items-center justify-center gap-2 font-body text-sm text-perestroika-preto/70 hover:text-perestroika-preto underline-offset-4 hover:underline"
+        >
+          ver mapa completo
+        </Link>
 
         <div className="flex-1 min-w-[140px]">
           <div className="flex items-center justify-between font-body text-xs text-perestroika-preto/60 mb-1.5">
