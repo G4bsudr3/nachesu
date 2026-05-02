@@ -358,8 +358,8 @@ export const TutorChat = ({
               animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl border-2 border-dashed border-perestroika-preto/25 p-5 text-sm text-perestroika-preto/70"
             >
-              oi. eu sou o joão-de-barro, tutor dessa trilha. me pergunta qualquer coisa sobre os módulos,
-              o problema central ou um próximo passo. eu não dou resposta pronta, mas destravo o seu raciocínio.
+              oi, eu sou o joão-de-barro, tutor dessa trilha da eletiva. pergunte qualquer coisa sobre os módulos,
+              o desafio central ou o próximo passo. eu não entrego resposta pronta, mas ajudo você a destravar o raciocínio.
             </motion.div>
           )}
 
@@ -460,7 +460,7 @@ export const TutorChat = ({
                   void send();
                 }
               }}
-              placeholder={streaming ? "joão-de-barro tá pensando..." : "pergunta o que travou..."}
+              placeholder={streaming ? "joão-de-barro está pensando..." : "pergunte o que travou..."}
               rows={1}
               maxLength={2000}
               disabled={streaming}
