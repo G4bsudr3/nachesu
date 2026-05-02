@@ -226,6 +226,7 @@ export const AdminPillsEditor = ({
         duration_min_low: values.duration_min_low ?? null,
         duration_min_high: values.duration_min_high ?? null,
         required: values.required,
+        published: values.published,
         order_index: maxOrder + 1,
       });
       if (error) throw error;
