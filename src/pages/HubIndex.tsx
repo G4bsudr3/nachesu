@@ -126,7 +126,7 @@ const HubIndex = () => {
     {
       to: "/app/hub/projetos",
       title: "projetos",
-      copy: "o feed da turma. reage, comenta, posta o teu",
+      copy: "o feed da turma. reaja, comente, poste o seu",
       hint: loading ? "carregando…" : `${counts.projects} no feed`,
       icon: <FolderOpen className="h-7 w-7" />,
       accent: "linear-gradient(135deg, #fd4644 0%, #fe7b02 100%)",
