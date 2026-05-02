@@ -288,6 +288,7 @@ const AdminFbi = () => {
             <TabsList className="bg-perestroika-preto/5 mb-6 inline-flex flex-wrap h-auto">
               <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">eletiva</TabsTrigger>
               <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
+              <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
               <TabsTrigger value="fbi" className="uppercase tracking-wide text-xs">fbi</TabsTrigger>
               <TabsTrigger value="prework" className="uppercase tracking-wide text-xs">pré-work</TabsTrigger>
               <TabsTrigger value="missoes" className="uppercase tracking-wide text-xs">missões</TabsTrigger>
