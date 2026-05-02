@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { logger } from "@/lib/logger";
+import { AdminPillsEditor } from "./AdminPillsEditor";
 
 type Trail = {
   id: string;
