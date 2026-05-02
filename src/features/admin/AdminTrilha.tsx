@@ -34,6 +34,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { logger } from "@/lib/logger";
 import { AdminPillsEditor } from "./AdminPillsEditor";
+import { AdminModulePreview } from "./AdminModulePreview";
 
 type Trail = {
   id: string;
