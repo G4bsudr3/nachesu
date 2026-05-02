@@ -531,6 +531,11 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
           <Badge variant="outline" className="text-[10px] uppercase">
             {KIND_LABEL[pill.kind]}
           </Badge>
+          {!pill.published && (
+            <Badge className="text-[10px] uppercase bg-perestroika-preto/85 text-perestroika-bege border-transparent">
+              rascunho
+            </Badge>
+          )}
           {!pill.required && (
             <Badge
               variant="outline"
