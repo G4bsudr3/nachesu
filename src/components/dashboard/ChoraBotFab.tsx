@@ -47,7 +47,7 @@ export const ChoraBotFab = () => {
     <Link
       to="/app/tutor"
       onClick={handleClick}
-      aria-label="abrir tutor IA — tira tua dúvida"
+      aria-label="abrir tutor IA — tire sua dúvida"
       className="group fixed right-4 z-40 flex items-center gap-2.5 sm:right-6 transition-transform duration-150 hover:scale-[1.03] active:scale-90"
       style={{
         bottom: "calc(var(--mobile-nav-h, 0px) + 1rem)",
