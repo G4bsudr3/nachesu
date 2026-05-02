@@ -111,6 +111,7 @@ export const AdminTrilha = () => {
   const [trailFilter, setTrailFilter] = useState<string>("todas");
   const [editing, setEditing] = useState<ModuleRow | null>(null);
   const [pillsModule, setPillsModule] = useState<ModuleRow | null>(null);
+  const [previewModule, setPreviewModule] = useState<ModuleRow | null>(null);
 
   const { data: trails, isLoading: trailsLoading } = useQuery({
     queryKey: ["admin-trails"],
