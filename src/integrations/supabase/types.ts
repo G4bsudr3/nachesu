@@ -1286,6 +1286,7 @@ export type Database = {
           duration_min_high: number | null
           duration_min_low: number | null
           id: string
+          interaction_schema: Json | null
           kind: Database["public"]["Enums"]["pill_kind"]
           module_id: string
           order_index: number
@@ -1302,6 +1303,7 @@ export type Database = {
           duration_min_high?: number | null
           duration_min_low?: number | null
           id?: string
+          interaction_schema?: Json | null
           kind: Database["public"]["Enums"]["pill_kind"]
           module_id: string
           order_index?: number
@@ -1318,6 +1320,7 @@ export type Database = {
           duration_min_high?: number | null
           duration_min_low?: number | null
           id?: string
+          interaction_schema?: Json | null
           kind?: Database["public"]["Enums"]["pill_kind"]
           module_id?: string
           order_index?: number
@@ -1375,6 +1378,7 @@ export type Database = {
       modules: {
         Row: {
           available_from: string | null
+          cover_color: string | null
           created_at: string
           deliverable_description: string | null
           id: string
@@ -1389,6 +1393,7 @@ export type Database = {
         }
         Insert: {
           available_from?: string | null
+          cover_color?: string | null
           created_at?: string
           deliverable_description?: string | null
           id?: string
@@ -1403,6 +1408,7 @@ export type Database = {
         }
         Update: {
           available_from?: string | null
+          cover_color?: string | null
           created_at?: string
           deliverable_description?: string | null
           id?: string
@@ -1627,6 +1633,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      student_alerts: {
+        Row: {
+          contacted_at: string | null
+          created_at: string
+          id: string
+          kind: string
+          module_id: string
+          notes: string | null
+          raised_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contacted_at?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          module_id: string
+          notes?: string | null
+          raised_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contacted_at?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          module_id?: string
+          notes?: string | null
+          raised_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_alerts_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       student_module_progress: {
         Row: {
@@ -1870,6 +1920,7 @@ export type Database = {
         }[]
       }
       can_submit_public_fbi: { Args: { _email: string }; Returns: boolean }
+      compute_module_metrics: { Args: { _module_id: string }; Returns: Json }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
