@@ -46,6 +46,7 @@ import { AdminVotacaoProjetos } from "@/features/admin/AdminVotacaoProjetos";
 import { AdminChoraBot } from "@/features/admin/AdminChoraBot";
 import { AdminEletivaSettings } from "@/features/admin/AdminEletivaSettings";
 import { AdminTrilha } from "@/features/admin/AdminTrilha";
+import { AdminTutor } from "@/features/admin/AdminTutor";
 import AdminUsers from "./AdminUsers";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Database } from "@/integrations/supabase/types";
