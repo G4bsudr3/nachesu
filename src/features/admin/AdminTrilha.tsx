@@ -361,6 +361,15 @@ export const AdminTrilha = () => {
                             <Eye className="w-4 h-4" />
                           )}
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => setPreviewModule(m)}
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-perestroika-preto/10 transition-colors"
+                          aria-label="ver preview do aluno"
+                          title="ver preview do aluno"
+                        >
+                          <ScanEye className="w-4 h-4" />
+                        </button>
                         <Button
                           type="button"
                           variant="outline"
