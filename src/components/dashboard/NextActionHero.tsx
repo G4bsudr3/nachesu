@@ -34,9 +34,9 @@ const buildState = (status: PostEventStatus, nickname: string): HeroState => {
   // carta pro futuro: só vira ação principal se a sessão tá aberta
   if (status.futureLetterSessionOpen && !status.futureLetterDone) {
     return {
-      eyebrow: "tua próxima ação",
+      eyebrow: "sua próxima ação",
       title: "manda a carta pro futuro",
-      copy: "ficou pendente lá no sábado. escreve com teu grupo, sela, e a gente entrega no dia certo.",
+      copy: "ficou pendente lá no sábado. escreva com o seu grupo, sele, e a gente entrega no dia certo.",
       primary: { label: "abrir carta pro futuro", to: "/app/dinamica/carta-futuro" },
       secondary: SECONDARY_HUB,
       icon: <Mail className="h-7 w-7" />,
