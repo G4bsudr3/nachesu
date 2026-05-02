@@ -56,7 +56,7 @@ export const useEletivaProgress = () => {
     enabled: !!user,
     staleTime: 30_000,
     queryFn: async (): Promise<EletivaSnapshot> => {
-      const [{ data: trails }, { data: modules }, progressRes] = await Promise.all([
+      const [{ data: trails }, { data: modules }, progressRes, pillProgressRes] = await Promise.all([
         supabase
           .from("trails")
           .select("id, order_index, title, description, color")
@@ -71,12 +71,22 @@ export const useEletivaProgress = () => {
               .select("module_id, started_at, completed_at")
               .eq("user_id", user.id)
           : Promise.resolve({ data: [] as ModuleProgress[] }),
+        user
+          ? supabase
+              .from("student_pill_progress")
+              .select("pill_id, completed_at")
+              .eq("user_id", user.id)
+          : Promise.resolve({ data: [] as PillProgress[] }),
       ]);
 
       const progressByModuleId: Record<string, ModuleProgress> = {};
       for (const p of (progressRes.data ?? []) as ModuleProgress[]) {
         progressByModuleId[p.module_id] = p;
       }
+
+      const completedPillIds = new Set<string>(
+        ((pillProgressRes.data ?? []) as PillProgress[]).map((p) => p.pill_id),
+      );
 
       const allModules = (modules ?? []) as (EletivaModule & { id: string })[];
       const publishedModules = allModules.filter(isAvailable);
@@ -97,6 +107,7 @@ export const useEletivaProgress = () => {
         trails: (trails ?? []) as EletivaTrail[],
         modules: allModules,
         progressByModuleId,
+        completedPillIds,
         totalPublished: publishedModules.length,
         totalCompleted,
         currentModule,
