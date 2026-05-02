@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, ExternalLink, FileText, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Circle, Clock, ExternalLink, FileText, MessageCircle, Play } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { LagrimaGradient } from "@/components/brand/LagrimaGradient";
 import { EstrelaPerestroika } from "@/components/brand/EstrelaPerestroika";
+import { TutorChat } from "@/components/eletiva/TutorChat";
 
 type Pill = {
   id: string;
