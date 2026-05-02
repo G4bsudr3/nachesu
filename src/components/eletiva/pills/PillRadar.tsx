@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Trash2, Upload, Link as LinkIcon, AlertTriangle, ArrowRight, Loader2 } from "lucide-react";
+import { Plus, Trash2, AlertTriangle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
+import { EvidenceUploader, type EvidenceKind } from "./EvidenceUploader";
 
 type FluxoOpt = { label: string; value: string };
-
-type EvidenceKind = "none" | "file" | "link";
 
 export type RadarItem = {
   id: string;
@@ -69,11 +66,9 @@ export function PillRadar({
   isCompleted,
   isCompleting,
 }: Props) {
-  const { user } = useAuth();
   const [items, setItems] = useState<RadarItem[]>(() =>
     initial && initial.length > 0 ? initial : [newItem()],
   );
-  const [uploadingId, setUploadingId] = useState<string | null>(null);
 
   // hidrata uma vez quando initial chega depois
   useEffect(() => {
@@ -122,36 +117,6 @@ export function PillRadar({
       return;
     }
     setItems((prev) => [...prev, newItem()]);
-  };
-
-  const handleFile = async (id: string, file: File) => {
-    if (!user) return;
-    if (file.size > maxMb * 1024 * 1024) {
-      toast.error(`arquivo passa de ${maxMb}mb.`);
-      return;
-    }
-    setUploadingId(id);
-    try {
-      const ext = file.name.split(".").pop() ?? "bin";
-      const path = `${user.id}/${id}-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("radar-evidences").upload(path, file, {
-        upsert: false,
-        contentType: file.type || undefined,
-      });
-      if (error) throw error;
-      updateItem(id, {
-        evidence_kind: "file",
-        evidence_path: path,
-        evidence_name: file.name,
-        evidence_link: undefined,
-      });
-      toast.success("evidência salva.");
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "erro no upload";
-      toast.error(msg);
-    } finally {
-      setUploadingId(null);
-    }
   };
 
   return (
@@ -258,50 +223,18 @@ export function PillRadar({
               <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1.5">
                 evidência
               </label>
-              <div className="flex flex-wrap items-center gap-2">
-                <label
-                  className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5 font-body text-xs cursor-pointer transition-colors ${
-                    item.evidence_kind === "file"
-                      ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                      : "border-perestroika-preto/20 hover:border-perestroika-preto/50"
-                  }`}
-                >
-                  {uploadingId === item.id ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Upload className="h-3.5 w-3.5" />
-                  )}
-                  {item.evidence_name ?? "subir foto/áudio"}
-                  <input
-                    type="file"
-                    accept="image/*,audio/*"
-                    className="sr-only"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) void handleFile(item.id, f);
-                      e.target.value = "";
-                    }}
-                  />
-                </label>
-                <span className="font-body text-[11px] text-perestroika-preto/50">ou</span>
-                <div className="flex-1 min-w-[160px] flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/20 px-3 py-1">
-                  <LinkIcon className="h-3.5 w-3.5 text-perestroika-preto/55 flex-shrink-0" />
-                  <input
-                    type="url"
-                    value={item.evidence_link ?? ""}
-                    onChange={(e) =>
-                      updateItem(item.id, {
-                        evidence_kind: e.target.value ? "link" : "none",
-                        evidence_link: e.target.value,
-                        evidence_path: undefined,
-                        evidence_name: undefined,
-                      })
-                    }
-                    placeholder="cole link"
-                    className="w-full bg-transparent font-body text-xs focus:outline-none"
-                  />
-                </div>
-              </div>
+              <EvidenceUploader
+                itemId={item.id}
+                value={{
+                  evidence_kind: item.evidence_kind,
+                  evidence_link: item.evidence_link,
+                  evidence_path: item.evidence_path,
+                  evidence_name: item.evidence_name,
+                }}
+                onChange={(next) => updateItem(item.id, next)}
+                accent={accent}
+                maxMb={maxMb}
+              />
             </div>
           </li>
         ))}
