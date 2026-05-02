@@ -109,6 +109,7 @@ export const AdminTrilha = () => {
   const qc = useQueryClient();
   const [trailFilter, setTrailFilter] = useState<string>("todas");
   const [editing, setEditing] = useState<ModuleRow | null>(null);
+  const [pillsModule, setPillsModule] = useState<ModuleRow | null>(null);
 
   const { data: trails, isLoading: trailsLoading } = useQuery({
     queryKey: ["admin-trails"],
