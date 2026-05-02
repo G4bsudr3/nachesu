@@ -74,7 +74,7 @@ export const ChoraBotFab = () => {
         }`}
         aria-hidden="true"
       >
-        tira tua dúvida
+        tire sua dúvida
       </span>
 
       {/* indicador permanente mobile: pontinho rosa minúsculo, sempre visível mas discreto */}
