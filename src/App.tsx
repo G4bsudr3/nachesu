@@ -44,6 +44,7 @@ const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandb
 const FutureLetter = lazy(() => import("./pages/FutureLetter.tsx"));
 const ChoraBot = lazy(() => import("./pages/ChoraBot.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
+const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
@@ -144,6 +145,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Missions />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/app/trilhas"
+                element={
+                  <ProtectedRoute>
+                    <Trilhas />
                   </ProtectedRoute>
                 }
               />

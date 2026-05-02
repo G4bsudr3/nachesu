@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, LayoutGrid, Mail, MessageCircleHeart } from "lucide-react";
+import { Home, LayoutGrid, Map, MessageCircleHeart } from "lucide-react";
 
 interface NavItem {
   to: string;
@@ -11,8 +11,8 @@ interface NavItem {
 
 const items: NavItem[] = [
   { to: "/app", label: "início", icon: <Home className="h-5 w-5" /> },
+  { to: "/app/trilhas", label: "trilhas", icon: <Map className="h-5 w-5" />, matchPrefix: "/app/trilhas" },
   { to: "/app/hub", label: "hub", icon: <LayoutGrid className="h-5 w-5" />, matchPrefix: "/app/hub" },
-  { to: "/app/carta", label: "carta", icon: <Mail className="h-5 w-5" /> },
   { to: "/app/feedback-final", label: "pesquisa", icon: <MessageCircleHeart className="h-5 w-5" /> },
 ];
 
