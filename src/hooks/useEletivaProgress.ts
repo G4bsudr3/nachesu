@@ -36,6 +36,8 @@ export type EletivaSnapshot = {
   modules: (EletivaModule & { id: string })[];
   progressByModuleId: Record<string, ModuleProgress>;
   completedPillIds: Set<string>;
+  unlockedModuleIds: Set<string>;
+  sequentialUnlock: boolean;
   totalPublished: number;
   totalCompleted: number;
   currentModule: (EletivaModule & { id: string }) | null;
@@ -56,7 +58,13 @@ export const useEletivaProgress = () => {
     enabled: !!user,
     staleTime: 30_000,
     queryFn: async (): Promise<EletivaSnapshot> => {
-      const [{ data: trails }, { data: modules }, progressRes, pillProgressRes] = await Promise.all([
+      const [
+        { data: trails },
+        { data: modules },
+        progressRes,
+        pillProgressRes,
+        sequentialRes,
+      ] = await Promise.all([
         supabase
           .from("trails")
           .select("id, order_index, title, description, color")
@@ -77,6 +85,11 @@ export const useEletivaProgress = () => {
               .select("pill_id, completed_at")
               .eq("user_id", user.id)
           : Promise.resolve({ data: [] as PillProgress[] }),
+        supabase
+          .from("hub_settings")
+          .select("value")
+          .eq("key", "eletiva_sequential_unlock")
+          .maybeSingle(),
       ]);
 
       const progressByModuleId: Record<string, ModuleProgress> = {};
@@ -94,11 +107,43 @@ export const useEletivaProgress = () => {
         (m) => progressByModuleId[m.id]?.completed_at,
       ).length;
 
-      // currentModule = primeira disponível não concluída
-      const currentModule =
-        publishedModules.find((m) => !progressByModuleId[m.id]?.completed_at) ?? null;
+      // sequencial: default true. setting "false" → modo livre.
+      const sequentialUnlock =
+        (sequentialRes.data?.value ?? "true").toLowerCase() !== "false";
 
-      // nextModule = depois da current
+      // calcula desbloqueios. ordenação por number garante "anterior".
+      const sortedAll = [...allModules].sort((a, b) => a.number - b.number);
+      const unlockedModuleIds = new Set<string>();
+      for (let i = 0; i < sortedAll.length; i++) {
+        const m = sortedAll[i];
+        if (!isAvailable(m)) continue;
+        if (!sequentialUnlock) {
+          unlockedModuleIds.add(m.id);
+          continue;
+        }
+        // primeiro módulo (number=1) sempre desbloqueado se publicado
+        if (m.number === 1) {
+          unlockedModuleIds.add(m.id);
+          continue;
+        }
+        const prev = sortedAll.find((p) => p.number === m.number - 1);
+        // se anterior nem existe ou nem foi publicado, libera (não trava por buraco editorial)
+        if (!prev || !isAvailable(prev)) {
+          unlockedModuleIds.add(m.id);
+          continue;
+        }
+        if (progressByModuleId[prev.id]?.completed_at) {
+          unlockedModuleIds.add(m.id);
+        }
+      }
+
+      // currentModule = primeira disponível e desbloqueada não concluída
+      const currentModule =
+        publishedModules.find(
+          (m) => unlockedModuleIds.has(m.id) && !progressByModuleId[m.id]?.completed_at,
+        ) ?? null;
+
+      // nextModule = próxima depois da current
       const nextModule = currentModule
         ? publishedModules.find((m) => m.number > currentModule.number) ?? null
         : null;
@@ -108,6 +153,8 @@ export const useEletivaProgress = () => {
         modules: allModules,
         progressByModuleId,
         completedPillIds,
+        unlockedModuleIds,
+        sequentialUnlock,
         totalPublished: publishedModules.length,
         totalCompleted,
         currentModule,
