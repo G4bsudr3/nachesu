@@ -1,42 +1,76 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { Check, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+
+export type OnboardingState = "primeiro-acesso-aberto" | "primeiro-acesso-fechado" | "retorno";
 
 interface OnboardingDialogProps {
   open: boolean;
   onClose: () => void;
   onPrimary: () => void;
-  accessLevel: "full" | "gated";
-  cardPublished: boolean;
-  fbiSubmitted: boolean;
+  state: OnboardingState;
+  /** número do módulo atual a abrir (default 1) */
+  currentModuleNumber?: number;
 }
+
+const COPY: Record<
+  OnboardingState,
+  {
+    title: string;
+    subtitle: string;
+    primary: string;
+    pose: "talking" | "building" | "resting";
+    bullets: string[];
+  }
+> = {
+  "primeiro-acesso-aberto": {
+    title: "boas-vindas à eletiva",
+    subtitle:
+      "ia na prática, do zero. são 20 módulos divididos em 4 trilhas, no seu tempo. o primeiro tá aberto.",
+    primary: "abrir o primeiro módulo",
+    pose: "talking",
+    bullets: [
+      "fundamentos: o que é IA e por que isso muda o jogo",
+      "prompts: aprender a conversar com a máquina",
+      "construção: tirar ideia do papel com IA",
+      "publicar: soltar o seu projeto pro mundo",
+    ],
+  },
+  "primeiro-acesso-fechado": {
+    title: "boas-vindas à eletiva",
+    subtitle:
+      "ia na prática, do zero. a eletiva tá aquecendo, o primeiro módulo abre em breve. enquanto isso, dá uma olhada no mapa.",
+    primary: "ver as trilhas",
+    pose: "resting",
+    bullets: [
+      "fundamentos: o que é IA e por que isso muda o jogo",
+      "prompts: aprender a conversar com a máquina",
+      "construção: tirar ideia do papel com IA",
+      "publicar: soltar o seu projeto pro mundo",
+    ],
+  },
+  retorno: {
+    title: "bom te ver de volta",
+    subtitle: "seu próximo módulo tá aí embaixo. continua de onde parou.",
+    primary: "continuar",
+    pose: "building",
+    bullets: [],
+  },
+};
 
 export const OnboardingDialog = ({
   open,
   onClose,
   onPrimary,
-  accessLevel,
-  cardPublished,
-  fbiSubmitted,
+  state,
 }: OnboardingDialogProps) => {
-  // 3 estados: sem fbi → carta pendente → carta publicada
-  const noFbi = !fbiSubmitted;
-  const primaryLabel = noFbi
-    ? "ver o mapa da trilha"
-    : cardPublished
-      ? "ver minha carta"
-      : "ir pro hub";
-
-  const title = noFbi ? "boas-vindas à eletiva" : "bem-vindo à eletiva";
-  const subtitle = noFbi
-    ? "pra você descobrir o seu arquétipo e abrir a sua própria carta, a gente precisa de uns 10 minutos seus no fbi. abrimos o mapa da trilha pra você ver o que vem pela frente."
-    : "esse é o seu espaço da eletiva. é daqui que você prepara, joga e revisita depois.";
+  const { title, subtitle, primary, pose, bullets } = COPY[state];
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent className="bg-perestroika-bege border-perestroika-preto/15 sm:rounded-3xl max-w-lg p-0 overflow-hidden">
         <div className="flex flex-col items-center pt-8 pb-2 px-6 sm:px-10">
-          <EletivaSymbol size={64} pose="talking" />
+          <EletivaSymbol size={64} pose={pose} />
           <DialogTitle className="mt-5 font-display uppercase text-4xl sm:text-5xl leading-none text-perestroika-preto text-center text-balance">
             {title}
           </DialogTitle>
@@ -46,79 +80,24 @@ export const OnboardingDialog = ({
         </div>
 
         <div className="px-6 sm:px-10 pb-8 pt-4 flex flex-col gap-6">
-          {noFbi ? (
+          {bullets.length > 0 && (
             <section>
               <h3 className="font-body text-xs uppercase tracking-wide text-perestroika-preto/60 mb-3">
-                seu primeiro passo
+                as 4 trilhas
               </h3>
-              <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
-                <div className="font-body text-sm sm:text-base font-semibold text-perestroika-preto mb-1">
-                  responda o fbi
-                </div>
-                <p className="font-body text-sm text-perestroika-preto/70 text-pretty">
-                  19 perguntas curtas. é o que destrava a sua carta personalizada de builder.
-                </p>
-              </div>
-            </section>
-          ) : (
-            <section>
-              <h3 className="font-body text-xs uppercase tracking-wide text-perestroika-preto/60 mb-3">
-                o que tem aqui pra você agora
-              </h3>
-              <ul className="flex flex-col gap-3">
-                {cardPublished ? (
-                  <li className="flex gap-3">
-                    <Check className="h-4 w-4 mt-1 shrink-0 text-perestroika-preto" />
-                    <div>
-                      <div className="font-body text-sm sm:text-base font-semibold text-perestroika-preto">
-                        sua carta de builder completa
-                      </div>
-                      <p className="font-body text-sm text-perestroika-preto/70 text-pretty">
-                        a versão pública é um teaser. aqui você vê arquétipo, superpoder, sombra e próximo movimento, na íntegra.
-                      </p>
-                    </div>
+              <ul className="flex flex-col gap-2.5 font-body text-sm text-perestroika-preto/80">
+                {bullets.map((b, i) => (
+                  <li key={i} className="flex gap-2.5">
+                    <span
+                      aria-hidden
+                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-perestroika-preto/40"
+                    />
+                    <span className="text-pretty">{b}</span>
                   </li>
-                ) : (
-                  <li className="flex gap-3">
-                    <Check className="h-4 w-4 mt-1 shrink-0 text-perestroika-preto" />
-                    <div>
-                      <div className="font-body text-sm sm:text-base font-semibold text-perestroika-preto">
-                        sua carta de builder
-                      </div>
-                      <p className="font-body text-sm text-perestroika-preto/70 text-pretty">
-                        a equipe está finalizando. avisamos quando publicar.
-                      </p>
-                    </div>
-                  </li>
-                )}
-                <li className="flex gap-3">
-                  <Check className="h-4 w-4 mt-1 shrink-0 text-perestroika-preto" />
-                  <div>
-                    <div className="font-body text-sm sm:text-base font-semibold text-perestroika-preto">
-                      suas respostas do fbi
-                    </div>
-                    <p className="font-body text-sm text-perestroika-preto/70 text-pretty">
-                      pra revisitar quando quiser.
-                    </p>
-                  </div>
-                </li>
+                ))}
               </ul>
             </section>
           )}
-
-          <section>
-            <h3 className="font-body text-xs uppercase tracking-wide text-perestroika-preto/60 mb-3">
-              sua trilha no hub
-            </h3>
-            <ul className="flex flex-col gap-2 font-body text-sm text-perestroika-preto/80">
-              <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-perestroika-preto/40" /> fbi · 10 min</li>
-              <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-perestroika-preto/40" /> sua carta de builder</li>
-              <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-perestroika-preto/40" /> pré-work · 6 itens</li>
-              <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-perestroika-preto/40" /> tutorial · etapa 00 + 5 etapas</li>
-              <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-perestroika-preto/40" /> missões · 5 desafios curtos</li>
-              <li className="flex items-center gap-2 text-perestroika-preto/55"><Check className="h-3.5 w-3.5 text-perestroika-preto/30" /> hub da turma · libera dia 25</li>
-            </ul>
-          </section>
 
           <div className="flex flex-col gap-3 pt-2">
             <button
@@ -126,7 +105,7 @@ export const OnboardingDialog = ({
               onClick={onPrimary}
               className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-6 font-body text-sm uppercase tracking-wide transition-all hover:gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
-              {primaryLabel}
+              {primary}
               <ArrowRight className="h-4 w-4" />
             </button>
             <button
@@ -137,10 +116,6 @@ export const OnboardingDialog = ({
               depois eu vejo
             </button>
           </div>
-
-          <p className="font-body text-xs text-perestroika-preto/60 text-center text-pretty">
-            a gente avisa no whatsapp sempre que algo novo libera.
-          </p>
         </div>
       </DialogContent>
     </Dialog>
