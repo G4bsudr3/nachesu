@@ -8,7 +8,7 @@ import { usePostEventStatus } from "@/hooks/usePostEventStatus";
 import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { EletivaStar } from "@/components/brand/EletivaStar";
+
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { NextActionHero } from "@/components/dashboard/NextActionHero";
 import { JourneyChips } from "@/components/dashboard/JourneyChips";
@@ -66,15 +66,6 @@ const AppDashboard = () => {
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
-      {/* decoração de fundo */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <EletivaStar
-          size={360}
-          color="rosa"
-          className="absolute -right-32 -bottom-32 opacity-25 motion-safe:animate-spin-slow sm:!w-[480px] lg:!w-[620px]"
-        />
-      </div>
-
       <PageHeader
         showLogo
         logoLink="/"
