@@ -179,7 +179,7 @@ const Certificado = () => {
         {phase === "generating" && (
           <div className="flex flex-col items-center justify-center text-center py-20 min-h-[60vh]">
             <div className="animate-pulse">
-              <EletivaSymbol size={96} />
+              <EletivaSymbol size={120} pose="celebrating" />
             </div>
             <h1 className="font-display uppercase text-4xl sm:text-6xl leading-[0.9] mt-8 max-w-2xl text-balance">
               gerando o seu certificado

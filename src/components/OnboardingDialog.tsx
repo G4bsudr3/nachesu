@@ -36,7 +36,7 @@ export const OnboardingDialog = ({
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent className="bg-perestroika-bege border-perestroika-preto/15 sm:rounded-3xl max-w-lg p-0 overflow-hidden">
         <div className="flex flex-col items-center pt-8 pb-2 px-6 sm:px-10">
-          <EletivaSymbol size={56} />
+          <EletivaSymbol size={64} pose="talking" />
           <DialogTitle className="mt-5 font-display uppercase text-4xl sm:text-5xl leading-none text-perestroika-preto text-center text-balance">
             {title}
           </DialogTitle>

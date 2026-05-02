@@ -232,7 +232,7 @@ const DoneScreen = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 220, damping: 18 }}
       >
-        <EletivaSymbol size={120} />
+        <EletivaSymbol size={140} pose="celebrating" />
       </motion.div>
       <motion.h1
         initial={{ y: 20, opacity: 0 }}
@@ -422,9 +422,10 @@ const PublicFbiFormFlow = ({
 
       <main className="flex-1 container max-w-3xl py-10 sm:py-14 pb-32 md:pb-14 relative">
         <EletivaSymbol
-          size={56}
-          className="hidden lg:block absolute right-6 top-6 opacity-80"
-          rotate={12}
+          size={72}
+          className="hidden lg:block absolute right-6 top-6 opacity-90"
+          rotate={8}
+          pose="peeking"
         />
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div

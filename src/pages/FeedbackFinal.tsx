@@ -21,7 +21,7 @@ interface CardData {
 
 const ThanksScreen = () => (
   <div className="flex flex-col items-center text-center py-16 sm:py-24">
-    <EletivaSymbol size={72} />
+    <EletivaSymbol size={96} pose="celebrating" />
     <p className="mt-8 font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-laranja">
       pesquisa enviada
     </p>

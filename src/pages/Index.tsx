@@ -97,10 +97,10 @@ const Index = () => {
           aria-hidden="true"
         >
           <span className="block sm:hidden">
-            <EletivaSymbol size={84} rotate={12} />
+            <EletivaSymbol size={96} rotate={6} pose="celebrating" />
           </span>
           <span className="hidden sm:block">
-            <EletivaSymbol size={140} rotate={12} />
+            <EletivaSymbol size={160} rotate={6} pose="celebrating" />
           </span>
         </motion.div>
 
