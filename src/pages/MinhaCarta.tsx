@@ -50,7 +50,7 @@ const MinhaCarta = () => {
           <EmptyState
             icon={<EletivaSymbol size={64} />}
             titulo="sua carta ainda não foi escrita"
-            descricao="primeiro envia o formulário fbi. depois o frattz lê suas respostas e escreve uma carta personalizada pra você."
+            descricao="primeiro envia o formulário fbi. depois a equipe da escola lê suas respostas e escreve uma carta personalizada pra você."
             cta={{ to: "/forms", label: "preencher fbi" }}
           />
         )}
@@ -67,7 +67,7 @@ const MinhaCarta = () => {
           <EmptyState
             icon={<Hourglass className="h-10 w-10 text-perestroika-vermelho" />}
             titulo="deu ruim na geração"
-            descricao="rolou um erro ao escrever sua carta. o frattz já foi avisado e vai rodar de novo manualmente."
+            descricao="rolou um erro ao escrever sua carta. a equipe já foi avisada e vai rodar de novo manualmente."
           />
         )}
 
@@ -75,7 +75,7 @@ const MinhaCarta = () => {
           <EmptyState
             icon={<Hourglass className="h-10 w-10 text-perestroika-azul" />}
             titulo="quase lá"
-            descricao="sua carta tá pronta, mas o frattz ainda tá revisando antes de liberar. a gente te avisa no whatsapp quando ela publicar."
+            descricao="sua carta tá pronta, mas a equipe ainda tá revisando antes de liberar. a gente avisa quando ela publicar."
           />
         )}
 

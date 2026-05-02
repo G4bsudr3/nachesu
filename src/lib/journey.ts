@@ -48,7 +48,7 @@ export const computeNextStep = (i: JourneyInput): JourneyStep => {
   if (i.cardStatus === "gerando" || i.cardStatus === "revisao" || i.cardStatus === "erro") {
     return {
       label: "sua carta tá sendo escrita",
-      helper: "o frattz tá finalizando. avisa no whatsapp quando publicar.",
+      helper: "a equipe da escola está finalizando. te avisamos quando publicar.",
       href: "/app/carta",
       kind: "carta-gerando",
     };

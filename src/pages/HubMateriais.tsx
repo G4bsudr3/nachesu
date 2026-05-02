@@ -255,7 +255,7 @@ const HubMateriais = () => {
           <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/30 p-12 text-center">
             <p className="font-display text-3xl uppercase text-perestroika-preto/60">vazio por aqui</p>
             <p className="mt-2 font-body text-sm text-perestroika-preto/55">
-              ainda não tem material nessa categoria. o admin vai postar em breve, ou puxa orelha do frattz 🤙
+              ainda não tem material nessa categoria. o admin vai postar em breve, ou avisa o suporte da escola 🤙
             </p>
           </div>
         )}

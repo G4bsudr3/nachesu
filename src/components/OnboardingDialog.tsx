@@ -86,7 +86,7 @@ export const OnboardingDialog = ({
                         sua carta de builder
                       </div>
                       <p className="font-body text-sm text-perestroika-preto/70 text-pretty">
-                        o frattz está finalizando. avisamos no whatsapp quando publicar.
+                        a equipe está finalizando. avisamos quando publicar.
                       </p>
                     </div>
                   </li>

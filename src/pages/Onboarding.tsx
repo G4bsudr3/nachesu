@@ -126,12 +126,12 @@ const Onboarding = () => {
         cardState === "gerando"
           ? "a IA tá lendo suas respostas. volta em alguns minutos."
           : cardState === "revisao"
-            ? "tá pronta no banco. o frattz tá revisando antes de liberar."
+            ? "tá pronta no banco. a equipe está revisando antes de liberar."
             : cardState === "erro"
-              ? "rolou um erro. o frattz vai rodar de novo."
+              ? "rolou um erro. a equipe vai rodar de novo."
               : cardDone
                 ? "arquétipo, superpoder, sombra e próximo movimento. fica salva pra revisitar."
-                : "depois do fbi, IA + frattz escrevem uma carta com seu arquétipo, superpoder, sombra e próximo movimento.",
+                : "depois do fbi, a IA escreve uma carta com seu arquétipo, superpoder, sombra e próximo movimento.",
       state: cartaState,
       href: cardDone ? "/app/carta" : undefined,
       ctaLabel: cardDone ? "ver minha carta" : undefined,

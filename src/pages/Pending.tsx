@@ -61,7 +61,7 @@ const Pending = () => {
           <div className="mt-8 space-y-4 text-lg sm:text-xl text-perestroika-preto/80 max-w-xl">
             <p>seu email ainda não está na nossa lista.</p>
             <p>
-              se você já se inscreveu, manda um oi no whatsapp do frattz que ele libera em minutos.
+              se você já se inscreveu, fala com o suporte da escola que ele libera em minutos.
             </p>
           </div>
 
@@ -73,7 +73,7 @@ const Pending = () => {
               className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-7 py-4 text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
               <MessageCircle className="w-4 h-4" />
-              chamar o frattz
+              chamar o suporte
             </a>
             <button
               onClick={signOut}
