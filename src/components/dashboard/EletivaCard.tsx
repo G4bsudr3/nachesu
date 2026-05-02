@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Sparkles } from "lucide-react";
-import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { useEletivaProgress, type EletivaSnapshot } from "@/hooks/useEletivaProgress";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 const trailColorByOrder: Record<number, string> = {
@@ -10,8 +10,20 @@ const trailColorByOrder: Record<number, string> = {
   4: "#6f77fc",
 };
 
-export const EletivaCard = () => {
-  const { data, isLoading } = useEletivaProgress();
+interface Props {
+  /**
+   * snapshot já fetchado lá no AppDashboard. opcional: se não vier,
+   * o componente fetcha sozinho (react-query dedupa, sem custo).
+   * passar a prop garante que greeting + hero + trilhas leiam do mesmo
+   * snapshot na mesma render.
+   */
+  snapshot?: EletivaSnapshot;
+}
+
+export const EletivaCard = ({ snapshot }: Props = {}) => {
+  const query = useEletivaProgress();
+  const data = snapshot ?? query.data;
+  const isLoading = !snapshot && query.isLoading;
 
   if (isLoading) {
     return (
@@ -28,7 +40,14 @@ export const EletivaCard = () => {
 
   if (!data) return null;
 
-  const { currentModule, nextModule, totalPublished, totalCompleted, trails } = data;
+  const {
+    currentModule,
+    nextModule,
+    totalPublished,
+    totalCompleted,
+    trails,
+    progressByModuleId,
+  } = data;
 
   // estado A: nada publicado ainda → eletiva aquecendo
   if (totalPublished === 0) {
@@ -50,7 +69,7 @@ export const EletivaCard = () => {
           sua eletiva tá aquecendo
         </h2>
         <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl mb-8 text-pretty">
-          são 20 módulos divididos em 4 trilhas. o primeiro módulo abre em breve, você é avisado por aqui assim que liberar.
+          são 20 módulos divididos em 4 trilhas. o primeiro abre em breve, você é avisado por aqui assim que liberar.
         </p>
         <div className="flex flex-wrap gap-2">
           {trails.map((t) => (
@@ -74,9 +93,11 @@ export const EletivaCard = () => {
     );
   }
 
-  // estado D: tudo concluído
+  // estado D: tudo o que está publicado já foi concluído
+  // (não confundir com "fechou os 20" — pode ter só 5 publicados ainda)
   const moduleToShow = currentModule ?? nextModule;
   if (!moduleToShow) {
+    const fechouTudo = totalCompleted >= 20;
     return (
       <section
         aria-label="próximo passo"
@@ -90,31 +111,62 @@ export const EletivaCard = () => {
         </div>
         <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-bege/70 mb-4 inline-flex items-center gap-2">
           <Sparkles className="h-3.5 w-3.5" />
-          ciclo completo
+          {fechouTudo ? "ciclo completo" : "em dia"}
         </p>
         <h2 className="font-display uppercase text-5xl sm:text-7xl mb-4 leading-[0.9] text-balance max-w-2xl">
-          os 20 módulos foram seus
+          {fechouTudo
+            ? "os 20 módulos foram seus"
+            : "você tá em dia com a eletiva"}
         </h2>
         <p className="font-body text-base sm:text-lg text-perestroika-bege/85 mb-8 max-w-xl text-pretty">
-          agora é hora de soltar o seu projeto autoral pro mundo. revisita o que fizer sentido, quando fizer sentido.
+          {fechouTudo
+            ? "agora é hora de soltar o seu projeto autoral pro mundo. revisita o que fizer sentido, quando fizer sentido."
+            : `fechou os ${totalCompleted} módulos abertos até aqui. o próximo libera em breve, te aviso por aqui.`}
         </p>
-        <Link
-          to="/app/projeto"
-          className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
-        >
-          ver meu projeto <ArrowRight className="h-4 w-4" />
-        </Link>
+        {fechouTudo && (
+          <Link
+            to="/app/projeto"
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+          >
+            ver meu projeto <ArrowRight className="h-4 w-4" />
+          </Link>
+        )}
+        {!fechouTudo && (
+          <Link
+            to="/app/trilhas"
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+          >
+            revisitar o que já fiz <ArrowRight className="h-4 w-4" />
+          </Link>
+        )}
       </section>
     );
   }
 
   // estados B (primeiro acesso) e C (em andamento)
-  const isFirstStep = totalCompleted === 0;
+  // distingue 3 sub-estados:
+  //  - "começar agora" → nunca abriu nenhum módulo
+  //  - "começar este módulo" → já fechou outros, mas nunca abriu este
+  //  - "voltar pro módulo" → este módulo está iniciado, não concluído
+  const moduleProgress = progressByModuleId[moduleToShow.id];
+  const isStarted = !!moduleProgress?.started_at;
+  const noProgressAtAll = totalCompleted === 0 && !isStarted;
+  const numberStr = String(moduleToShow.number).padStart(2, "0");
+
+  const eyebrow = noProgressAtAll
+    ? "começa por aqui"
+    : isStarted
+      ? "continue de onde parou"
+      : "próximo módulo";
+
+  const ctaLabel = noProgressAtAll
+    ? `abrir módulo ${numberStr}`
+    : isStarted
+      ? `voltar pro módulo ${numberStr}`
+      : `começar módulo ${numberStr}`;
+
   const trail = trails.find((t) => t.id === moduleToShow.trail_id);
-  const trailColor =
-    trailColorByOrder[trail?.order_index ?? 1] ?? "#fe7b02";
-  const eyebrow = isFirstStep ? "começa por aqui" : "continue de onde parou";
-  const ctaLabel = isFirstStep ? "abrir módulo 01" : "voltar pro módulo";
+  const trailColor = trailColorByOrder[trail?.order_index ?? 1] ?? "#fe7b02";
 
   return (
     <section
@@ -141,7 +193,7 @@ export const EletivaCard = () => {
           {eyebrow}
         </p>
         <span className="font-body text-xs sm:text-sm text-perestroika-preto/60 whitespace-nowrap tabular-nums">
-          módulo {String(moduleToShow.number).padStart(2, "0")}/20
+          módulo {numberStr}/{String(totalPublished).padStart(2, "0")}
         </span>
       </div>
 
@@ -168,6 +220,11 @@ export const EletivaCard = () => {
           />
           {trail?.title.toLowerCase() ?? "trilha"}
         </span>
+        {totalCompleted > 0 && (
+          <span className="text-perestroika-preto/55 tabular-nums">
+            {totalCompleted} de {totalPublished} fechados
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">

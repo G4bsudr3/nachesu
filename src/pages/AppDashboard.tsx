@@ -125,7 +125,7 @@ const AppDashboard = () => {
           />
 
           {/* 2. hero único: próximo módulo da eletiva */}
-          <EletivaCard />
+          <EletivaCard snapshot={eletiva ?? undefined} />
 
           {/* 3. progresso visual das 4 trilhas */}
           {eletiva && eletiva.totalPublished > 0 && (
