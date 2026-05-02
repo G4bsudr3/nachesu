@@ -124,11 +124,11 @@ const AccountSettings = () => {
           <div className="flex items-center gap-2 mb-1">
             <Instagram className="h-4 w-4" />
             <h2 className="font-display uppercase text-2xl leading-none">
-              tuas redes
+              suas redes
             </h2>
           </div>
           <p className="font-body text-sm text-perestroika-preto/70 mb-5">
-            se preencher, aparece em <Link to="/app/hub/turma" className="underline decoration-perestroika-laranja decoration-2 underline-offset-4">redes da turma</Link> e fica fácil teu pessoal te achar.
+            se preencher, aparece em <Link to="/app/hub/turma" className="underline decoration-perestroika-laranja decoration-2 underline-offset-4">redes da turma</Link> e fica fácil o seu pessoal te achar.
           </p>
           <div className="space-y-3">
             <div>
