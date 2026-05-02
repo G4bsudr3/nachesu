@@ -74,14 +74,14 @@ export const CertificateForm = ({
       <header className="text-center">
         <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-perestroika-laranja mb-3">
           <Sparkles className="w-3.5 h-3.5" />
-          monta o teu
+          monte o seu
         </div>
         <h1 className="font-display uppercase text-4xl sm:text-6xl leading-[0.9] mb-3">
-          como tu quer aparecer?
+          como você quer aparecer?
         </h1>
         <p className="font-body text-perestroika-preto/70 max-w-md mx-auto text-balance">
-          duas escolhas e o teu certificado fica pronto. tipografia editorial, qualidade de impressão, fiel à prévia.
-          {archetypeInfo && " a carta do teu arquétipo entra automaticamente."}
+          duas escolhas e o seu certificado fica pronto. tipografia editorial, qualidade de impressão, fiel à prévia.
+          {archetypeInfo && " a carta do seu arquétipo entra automaticamente."}
         </p>
       </header>
 
