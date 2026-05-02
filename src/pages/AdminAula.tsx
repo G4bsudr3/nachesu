@@ -314,7 +314,7 @@ function MetricsPanel({
   accent,
   onRefresh,
 }: {
-  query: ReturnType<typeof useQuery<Metrics>>;
+  query: { isLoading: boolean; error: unknown; data: Metrics | undefined };
   accent: string;
   onRefresh: () => void;
 }) {
