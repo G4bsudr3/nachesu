@@ -6,7 +6,7 @@ import { BotAvatar } from "@/components/chora-bot/BotAvatar";
  * floating action button do tutor IA (mascote joão-de-barro).
  *
  * o avatar circular do tutor fica permanente no canto, com label editorial
- * "tira tua dúvida" pulsando periodicamente no mobile pra chamar atenção
+ * "tire sua dúvida" pulsando periodicamente no mobile pra chamar atenção
  * sem ser invasivo. respeita --mobile-nav-h, safe-area iOS e
  * prefers-reduced-motion.
  */
