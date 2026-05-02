@@ -1,25 +1,19 @@
 // module-1-watcher
 //
-// roda em loop (cron) e levanta student_alerts quando:
+// avalia progresso da aula 1 e levanta student_alerts quando:
 //   - aluno iniciou a aula 1 ("abrir o olho") há mais de 48h
 //   - e ainda não enviou o radar (module_deliverables.submitted_at IS NULL)
 //   - e ainda não tem alerta aberto pra esse par (user_id, module_id, kind)
 //
-// retorna json com contagem de alertas criados pra a função poder ser testada
-// manualmente via supabase--curl_edge_functions ou disparada por pg_cron.
-//
-// segurança:
-//   - usa service role key (acessa todos os registros, ignora rls)
-//   - só permite chamadas autenticadas como admin OU com header
-//     x-cron-secret quando vier do pg_cron
-//   - validate_jwt fica false (default lovable); validamos manualmente
+// dispara via botão "rodar agora" no painel admin (futuramente vira cron).
+// só admin logado consegue chamar.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type, x-cron-secret',
+    'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
 }
 
@@ -48,16 +42,12 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
 
     // ---- autorização ---------------------------------------------------
-    const cronSecret = Deno.env.get('MODULE_WATCHER_CRON_SECRET') ?? ''
-    const headerSecret = req.headers.get('x-cron-secret') ?? ''
+    // só admin logado pode chamar (cron fica pra depois quando virar agendado)
     const authHeader = req.headers.get('Authorization') ?? ''
     let allowed = false
     let actor = 'unknown'
 
-    if (cronSecret && headerSecret && headerSecret === cronSecret) {
-      allowed = true
-      actor = 'cron'
-    } else if (authHeader.startsWith('Bearer ')) {
+    if (authHeader.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '')
       const userClient = createClient(supabaseUrl, anonKey, {
         global: { headers: { Authorization: authHeader } },

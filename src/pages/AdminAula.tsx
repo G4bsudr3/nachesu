@@ -423,6 +423,129 @@ function MetricsPanel({
           <FlowBars data={m.flow_distribution} accent={accent} />
         )}
       </div>
+
+      <WatcherPanel onDone={onRefresh} />
+    </div>
+  );
+}
+
+// ============== watcher ==============
+
+type WatcherResult = {
+  scanned_started: number;
+  alerts_created: number;
+  alerts_existing: number;
+  threshold_hours: number;
+  cutoff_iso: string;
+};
+
+function WatcherPanel({ onDone }: { onDone: () => void }) {
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<WatcherResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [ranAt, setRanAt] = useState<Date | null>(null);
+
+  const run = async () => {
+    setRunning(true);
+    setError(null);
+    try {
+      const { data, error: invokeError } = await supabase.functions.invoke(
+        "module-1-watcher",
+        { body: {} },
+      );
+      if (invokeError) throw invokeError;
+      const payload = data as { ok?: boolean; result?: WatcherResult; error?: string };
+      if (!payload.ok || !payload.result) {
+        throw new Error(payload.error ?? "resposta inesperada do watcher");
+      }
+      setResult(payload.result);
+      setRanAt(new Date());
+      const created = payload.result.alerts_created;
+      if (created > 0) {
+        toast.success(`${created} novo(s) alerta(s) criado(s).`);
+      } else {
+        toast.success("nenhum novo alerta. ninguém parou no caminho ainda.");
+      }
+      onDone();
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "erro ao chamar watcher";
+      setError(msg);
+      toast.error(msg);
+      logger.error("module-1-watcher invoke failed", e);
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-white p-5 space-y-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+            watcher de inatividade
+          </p>
+          <p className="font-body text-sm text-perestroika-preto/75 mt-1">
+            varre quem começou a aula 1 há mais de 48h e ainda não enviou o radar,
+            cria um alerta pra você puxar a pessoa.
+          </p>
+        </div>
+        <Button
+          size="sm"
+          onClick={run}
+          disabled={running}
+          className="bg-perestroika-preto text-perestroika-bege hover:bg-perestroika-preto/85 shrink-0"
+        >
+          {running ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <RefreshCw className="h-4 w-4 mr-2" />
+          )}
+          {running ? "rodando..." : "rodar agora"}
+        </Button>
+      </div>
+
+      {error && (
+        <p
+          role="alert"
+          className="font-body text-xs rounded-lg px-3 py-2"
+          style={{ backgroundColor: "#fd464415", color: "#fd4644" }}
+        >
+          {error}
+        </p>
+      )}
+
+      {result && ranAt && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t-2 border-perestroika-preto/10">
+          <Stat label="varridos" value={result.scanned_started} />
+          <Stat label="novos alertas" value={result.alerts_created} highlight />
+          <Stat label="já alertados" value={result.alerts_existing} />
+          <Stat label="rodou às" value={ranAt.toLocaleTimeString("pt-BR")} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Stat({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: number | string;
+  highlight?: boolean;
+}) {
+  return (
+    <div>
+      <p className="font-body text-[10px] uppercase tracking-wide text-perestroika-preto/50">
+        {label}
+      </p>
+      <p
+        className="font-display text-xl tabular-nums"
+        style={{ color: highlight ? "#F25E3D" : "#202124" }}
+      >
+        {value}
+      </p>
     </div>
   );
 }
