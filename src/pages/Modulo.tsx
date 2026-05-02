@@ -325,10 +325,16 @@ const Modulo = () => {
             </div>
           )}
 
-          {pills?.map((pill, idx) => (
+          {pills?.map((pill, idx) => {
+            const pillDone = completedPillIds.has(pill.id);
+            return (
             <article
               key={pill.id}
-              className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-6 hover:border-perestroika-preto/40 transition-colors"
+              className={`rounded-2xl border-2 p-5 sm:p-6 transition-colors ${
+                pillDone
+                  ? "border-perestroika-preto/40 bg-perestroika-preto/[0.04]"
+                  : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
+              }`}
             >
               <div className="flex items-center justify-between gap-3 mb-2">
                 <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
@@ -345,7 +351,7 @@ const Modulo = () => {
                 )}
               </div>
 
-              <h3 className="font-display uppercase text-xl sm:text-2xl mb-2 leading-tight">
+              <h3 className={`font-display uppercase text-xl sm:text-2xl mb-2 leading-tight ${pillDone ? "line-through decoration-perestroika-preto/40 decoration-2" : ""}`}>
                 {pill.title}
               </h3>
 
@@ -355,7 +361,7 @@ const Modulo = () => {
                 </p>
               )}
 
-              <div className="flex flex-wrap gap-2 mt-4">
+              <div className="flex flex-wrap items-center gap-2 mt-4">
                 {pill.video_url && (
                   <a
                     href={pill.video_url}
@@ -377,9 +383,31 @@ const Modulo = () => {
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 )}
+                <button
+                  type="button"
+                  onClick={() => togglePillMutation.mutate(pill)}
+                  disabled={togglePillMutation.isPending}
+                  aria-pressed={pillDone}
+                  className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wide transition-colors disabled:opacity-50 ${
+                    pillDone
+                      ? "bg-perestroika-preto text-perestroika-bege"
+                      : "border border-perestroika-preto/30 hover:bg-perestroika-preto hover:text-perestroika-bege"
+                  }`}
+                >
+                  {pillDone ? (
+                    <>
+                      <CheckCircle2 className="h-3.5 w-3.5" /> concluída
+                    </>
+                  ) : (
+                    <>
+                      <Circle className="h-3.5 w-3.5" /> marcar
+                    </>
+                  )}
+                </button>
               </div>
             </article>
-          ))}
+            );
+          })}
         </section>
 
         {/* ação de conclusão */}
