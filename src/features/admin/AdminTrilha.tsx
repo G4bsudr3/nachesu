@@ -413,6 +413,12 @@ export const AdminTrilha = () => {
         moduleTitle={pillsModule?.title ?? null}
         onClose={() => setPillsModule(null)}
       />
+
+      <AdminModulePreview
+        module={previewModule}
+        trail={previewModule ? trailById.get(previewModule.trail_id) : null}
+        onClose={() => setPreviewModule(null)}
+      />
     </div>
   );
 };
