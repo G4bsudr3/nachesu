@@ -106,7 +106,7 @@ export const TrilhaColumn = ({
               key={module.id}
               number={module.number}
               title={module.title}
-              state={getModuleState(module, progressByModuleId, firstAvailableNotCompletedId)}
+              state={getModuleState(module, progressByModuleId, unlockedModuleIds, firstUnlockedNotCompletedId)}
               trailColor={trailColor}
               availableFromLabel={
                 module.available_from ? formatDate(module.available_from) : null
