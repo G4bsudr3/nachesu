@@ -547,6 +547,16 @@ const Modulo = () => {
         </nav>
       </main>
 
+      {trail && (
+        <TutorChat
+          open={tutorOpen}
+          onOpenChange={setTutorOpen}
+          trailId={trail.id}
+          trailTitle={trail.title}
+          trailColor={trailColor}
+        />
+      )}
+
       <EletivaFooter />
     </div>
   );
