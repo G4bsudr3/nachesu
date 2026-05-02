@@ -497,7 +497,9 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    // pílulas em rascunho ficam opacas mesmo paradas, pra deixar claro que o
+    // aluno não tá vendo.
+    opacity: isDragging ? 0.5 : pill.published ? 1 : 0.55,
     zIndex: isDragging ? 50 : "auto",
   };
 
@@ -508,7 +510,9 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
       className={`flex items-start gap-3 rounded-lg border bg-white/60 p-3 ${
         isDragging
           ? "border-perestroika-preto/40 shadow-lg"
-          : "border-perestroika-preto/15"
+          : pill.published
+            ? "border-perestroika-preto/15"
+            : "border-dashed border-perestroika-preto/25"
       }`}
     >
       <button
