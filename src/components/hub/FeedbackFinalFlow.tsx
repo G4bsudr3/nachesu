@@ -126,7 +126,7 @@ export const FeedbackFinalFlow = ({
           valeu por construir junto
         </h1>
         <p className="mt-5 font-body text-perestroika-preto/70 max-w-md text-balance">
-          tuas respostas chegaram. agora é a parte boa: pega teu certificado oficial pra postar onde for.
+          suas respostas chegaram. agora é a parte boa: pegue o seu certificado oficial pra postar onde for.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link
