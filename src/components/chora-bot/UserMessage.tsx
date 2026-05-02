@@ -7,7 +7,7 @@ interface UserMessageProps {
  * balão do user — minimalista, sem fundo, só texto à direita
  * com bolinha de iniciais bege com borda preta. deixa o bot ser o protagonista.
  */
-export const UserMessage = ({ content, initials = "tu" }: UserMessageProps) => {
+export const UserMessage = ({ content, initials = "vc" }: UserMessageProps) => {
   return (
     <div className="flex gap-3 items-start justify-end">
       <div className="flex-1 min-w-0 max-w-[85%] flex justify-end">
