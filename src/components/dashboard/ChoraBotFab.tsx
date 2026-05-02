@@ -60,7 +60,7 @@ export const ChoraBotFab = () => {
         }`}
       >
         <span className="inline-block w-1.5 h-1.5 rounded-full bg-perestroika-rosa" />
-        tira tua dúvida
+        tire sua dúvida
       </span>
 
       {/* mobile: super discreto. em repouso, só um pontinho rosa pulsando no canto da lágrima.
