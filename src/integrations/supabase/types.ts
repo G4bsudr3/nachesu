@@ -1745,6 +1745,7 @@ export type Database = {
           created_at: string
           id: string
           messages: Json
+          title: string | null
           trail_id: string
           updated_at: string
           user_id: string
@@ -1753,6 +1754,7 @@ export type Database = {
           created_at?: string
           id?: string
           messages?: Json
+          title?: string | null
           trail_id: string
           updated_at?: string
           user_id: string
@@ -1761,6 +1763,7 @@ export type Database = {
           created_at?: string
           id?: string
           messages?: Json
+          title?: string | null
           trail_id?: string
           updated_at?: string
           user_id?: string
