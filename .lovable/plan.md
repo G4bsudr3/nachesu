@@ -1,91 +1,92 @@
-# próximos passos da eletiva ia na prática
+# João-de-Barro vivo: 6 poses com voz própria
 
-## status
-- ✅ etapa 1 — progresso por pílula
-- ✅ etapa 2 — mapa de trilhas (`/app/trilhas`)
-- ✅ etapa 3 — desbloqueio sequencial entre módulos
-- ✅ etapa 4 — tutor IA por trilha (joão-de-barro)
-- ✅ etapa 5 — rebrand profundo Eletiva (mai/2026)
+Hoje o mascote é uma única imagem (`joao-de-barro-tutor.png`) repetida em 18+ lugares. Vou transformá-lo num personagem com 6 poses distintas, cada uma com microcopy próprio, mapeadas semanticamente por contexto.
 
----
+## As 6 poses
 
-## etapa 5 — rebrand Eletiva (entregue)
+| # | slug | pose | onde aparece |
+|---|------|------|--------------|
+| 1 | `building` | construindo o ninho, com barro/galhinho no bico, casinha em obras atrás | loadings (App, Trilhas, Modulo, Dashboard, Certificado) |
+| 2 | `thinking` | de cabeça inclinada, olho brilhando, bolha "..." discreta acima | TutorChat — estado "pensando..." |
+| 3 | `talking` | bico aberto, asa em gesto, postura comunicativa | TutorChat — avatar das mensagens do tutor |
+| 4 | `celebrating` | asas abertas, confete leve em paleta Perestroika, casinha pronta atrás | NextActionHero, Certificado (após emitir), FeedbackFinal (sucesso) |
+| 5 | `resting` | sentado calmo no galho, casinha vazia ao lado, atmosfera de espera | empty states (MinhaCarta sem carta, Pending, FutureLetter "ainda não") |
+| 6 | `peeking` | espiando do canto, só meio corpo, olhar curioso | decoração de fundo / canto (Pending hero, EletivaCard, Auth, ResetPassword, PublicForm canto) |
 
-**o que ficou pronto:**
-- `<EletivaSymbol />` (mascote joão-de-barro) substituiu `<LagrimaGradient />` em todas as páginas-aluno (~25 arquivos).
-- `<EletivaStar />` substituiu `<EstrelaPerestroika />` em todas as páginas-aluno e no `PageShell`.
-- `index.html`: title, description, og e twitter atualizados pra "eletiva ia na prática · vai lá e cria · escola sebrae".
-- copy limpa: removido "frattz" como pessoa nas páginas-aluno (vira "equipe da escola" / "suporte da escola"); removido "chŏra lovable" do `OnboardingDialog`, `NextActionHero`, `tutorialSteps`, `useEletivaExtras`, `ExtrasGate`, `AdminEletivaSettings`, testes.
-- tom: "tu/teu/tua" trocado por "você/seu/sua" no `Index` e `Auth`.
-- componentes legados (`LagrimaGradient`, `EstrelaPerestroika`, `ChoraLogo`, `PeresLogo`) intactos, ainda usados pelas páginas Chŏra atrás da flag.
+Mantém 100% a referência canônica (`mem://design/mascote-estetica.md`): paleta Perestroika, contorno preto fino, fundo bege, sem 3D.
 
-**o que ficou fora deste ciclo:**
-- certificado co-branding Eletiva + Sebrae no `CertificateEditorial` — depende do asset oficial Sebrae.
-- `feedbackFinalFlag.ts` ainda hardcoda nome/local Chŏra — só relevante se a flag for reativada.
-- "tu/teu" residual em outras páginas legadas Chŏra — preservado intencionalmente.
+## Microcopy por pose
 
-**critérios de aceite atingidos:**
-- páginas-aluno Eletiva = 0 ocorrências de `LagrimaGradient` e `EstrelaPerestroika`.
-- `<title>` do `index.html` não contém "chora".
-- páginas Chŏra atrás de `ExtrasGate` continuam visualmente intactas.
-- tutor da trilha mostra mascote, não gota.
+Cada loading/empty ganha frase com voz do mascote (lowercase, sem em-dash, "você"):
 
----
+- `building` loading: "construindo seu ninho..." / "ajeitando os galhinhos..." / "preparando o barro..." (rotativo aleatório por mount)
+- `thinking` no chat: substitui "pensando..." por "amassando o barro da resposta..."
+- `resting` MinhaCarta vazia: "ainda sem galhos por aqui. envia o fbi que eu começo a construir."
+- `resting` FutureLetter agendada: "sua carta tá no ninho, esperando o tempo certo."
+- `celebrating` Certificado: "ninho pronto. parabéns por construir."
+- `peeking` decoração: sem texto (só presença visual)
 
-## checklist de rebrand (validação contínua)
+## Geração dos assets
 
-usar a cada mudança que toque marca, copy ou meta da Eletiva. cada item tem critério de aceitação objetivo + comando rápido pra confirmar.
+Usar `lovable_ai` skill com Nano Banana Pro (`google/gemini-3-pro-image-preview`) e `--edit-image` passando a referência canônica `joao-de-barro-tutor.png` como base, garantindo continuidade visual (mesmo desenho, mesma paleta, só pose/expressão muda).
 
-### a. strings proibidas em páginas-aluno
+Saída: `src/assets/joao/{slug}.png` (6 arquivos, 1024x1024).
 
-| # | regra | aceite | comando |
-|---|---|---|---|
-| a1 | nenhuma menção textual a "chŏra/chora lovable" fora de páginas legadas | apenas matches dentro de `src/pages/Hub*.tsx` (gated) ou comentários | `rg -ni "chŏra\|chora lovable" src -g '!src/pages/Hub*' -g '*.{ts,tsx}'` |
-| a2 | sem "frattz" como pessoa em copy de aluno | só aparece em config/admin/legacy | `rg -ni "frattz" src -g '*.{ts,tsx}' \| grep -v "Hub\|Admin\|legacy\|config"` |
-| a3 | tom "você/seu/sua" nas páginas-aluno Eletiva | `rg` abaixo retorna 0 hits fora de Hub*/Admin*/Mascote/Voting/Feedback*Dia1 | `rg -nP "\b(tu\|teu\|tua\|teus\|tuas\|contigo)\b" src -g '*.{ts,tsx}' \| grep -vE "tutor\|tutorial\|atual\|status\|virtual\|situa\|footer\|estrutura\|Hub(Album\|Projetos\|Gallery\|Turma\|Ranking)\|Admin\|Mascote\|Voting\|VoteButton\|GlobalVoting\|TurmaRedes\|AlbumUploader\|FeedbackDia1"` |
-| a4 | sem em-dash (`—`) e sem hashtags (`#palavra`) em copy | 0 hits fora de markdown/comentários | `rg -n "—" src -g '*.{ts,tsx}'` e `rg -nP "(^\|\s)#[a-z]" src -g '*.{ts,tsx}'` |
-| a5 | sem datas/local do Chŏra ("25-26 abril", "instituto caldeira", "porto alegre") | 0 hits em páginas-aluno | `rg -ni "25.?26 abril\|instituto caldeira\|porto alegre" src -g '*.{ts,tsx}'` |
+QA obrigatório: gero, abro cada PNG, verifico paleta + traço + sem texto + sem 3D antes de prosseguir.
 
-### b. componentes de marca
+## Refator do componente
 
-| # | regra | aceite | comando |
-|---|---|---|---|
-| b1 | `LagrimaGradient` só em páginas Chŏra legadas (Hub*, FutureLetter, Mascote, etc.) | matches só nesses arquivos | `rg -n "LagrimaGradient" src -g '*.{ts,tsx}'` |
-| b2 | `EstrelaPerestroika` idem | só em legacy + definição | `rg -n "EstrelaPerestroika" src -g '*.{ts,tsx}'` |
-| b3 | `ChoraLogo` só atrás de `ExtrasGate` ou em definição | conferir manualmente lista | `rg -n "ChoraLogo" src -g '*.{ts,tsx}'` |
-| b4 | páginas-aluno usam `<EletivaLogo />` + `<EletivaFooter />` | Index, Auth, Dashboard, Trilhas, Modulo, Tutorial, Onboarding, Pending, Certificado, FeedbackFinal contêm os imports | `rg -l "EletivaLogo\|EletivaFooter" src/pages` |
-| b5 | tutor IA exibe `<EletivaSymbol />` (joão-de-barro), nunca gota | grep no TutorChat e ChoraBot retorna `EletivaSymbol`, não `LagrimaGradient` | `rg -n "EletivaSymbol\|LagrimaGradient" src/components/eletiva/TutorChat.tsx src/pages/ChoraBot.tsx` |
+`EletivaSymbol.tsx` ganha prop `pose` (default `building` pra retrocompatibilidade — todos os loadings atuais já fazem sentido com essa pose):
 
-### c. metadados (`index.html`)
+```tsx
+type Pose = "building" | "thinking" | "talking" | "celebrating" | "resting" | "peeking";
 
-| # | regra | aceite | comando |
-|---|---|---|---|
-| c1 | `<title>` contém "Eletiva" e não "Chŏra/Chora" | grep abaixo só retorna a tag esperada | `rg -n "<title>" index.html` |
-| c2 | `meta description` curto (<160) e fala da Eletiva | 1 hit, sem "chora" | `rg -n 'name="description"' index.html` |
-| c3 | OG/Twitter tags coerentes (title, description, image) | todas mencionam Eletiva | `rg -nP 'property="og:\|name="twitter:' index.html` |
-| c4 | sem em-dash em metas | 0 hits | `rg -n "—" index.html` |
-
-### d. teste rápido pós-mudança (rodar sempre)
-
-um único comando que combina os checks críticos. se imprimir vazio, passou:
-
-```bash
-echo "== a1 chŏra ==" && rg -ni "chŏra|chora lovable" src -g '!src/pages/Hub*' -g '*.{ts,tsx}'
-echo "== a4 em-dash ==" && rg -n "—" src -g '*.{ts,tsx}' index.html
-echo "== a5 datas/local antigos ==" && rg -ni "25.?26 abril|instituto caldeira|porto alegre" src -g '*.{ts,tsx}'
-echo "== b5 tutor com mascote ==" && rg -L "EletivaSymbol" src/components/eletiva/TutorChat.tsx
-echo "== c1 title ==" && rg -nq "<title>.*[Ee]letiva.*</title>" index.html || echo "FALHA: title sem Eletiva"
-echo "== c1 title sem chora ==" && rg -nqi "<title>.*chora" index.html && echo "FALHA: title contém chora" || true
+<EletivaSymbol pose="celebrating" size={180} />
 ```
 
-salvar como `scripts/check-rebrand.sh` quando rolar a próxima passada e rodar com `bash scripts/check-rebrand.sh`.
+Internamente: map `pose → asset import`. Sem breaking change nos call-sites existentes — eu atualizo cada um pro pose semântico correto na mesma passada.
 
----
+Novo helper opcional `useJoaoLine(context)` retorna microcopy aleatório do array daquele contexto, pra loadings parecerem vivos.
 
-## próximas opções (não comprometido ainda)
+## Mapeamento detalhado dos 18 call-sites
 
-- conteúdo real nos 20 módulos + PBL prompts populados.
-- analytics: ver no admin quantas trocas o aluno teve com o tutor por trilha.
-- certificado co-branding Eletiva + Sebrae quando o asset oficial chegar.
-- "modo evento ao vivo" pra rodar a eletiva presencial em sala.
+```text
+App.tsx                       → building   (loading global)
+AppDashboard loading          → building
+Trilhas loading               → building
+Modulo loading                → building
+Certificado loading           → building
+OnboardingDialog              → talking    (mascote apresenta)
+Onboarding card de boas-vindas→ talking
+TutorChat avatar (msg)        → talking
+TutorChat "pensando..."       → thinking
+NextActionHero                → celebrating (já é celebratório)
+Certificado pós-emissão       → celebrating
+FeedbackFinal sucesso         → celebrating
+MinhaCarta empty              → resting
+FutureLetter (agendada)       → resting
+Pending (decoração canto)     → peeking
+EletivaCard (canto -top -right)→ peeking
+Auth (canto pulse)            → peeking
+ResetPassword (canto pulse)   → peeking
+PublicForm canto              → peeking
+PublicForm hero (size 120)    → talking
+Index hero (size 84/140)      → celebrating
+```
 
+## Detalhes técnicos
+
+- 6 imports no `EletivaSymbol`, lookup por objeto literal — Vite faz tree-shake bem.
+- `alt=""` permanece (decorativo). Onde houver microcopy visível, o texto carrega o significado.
+- Sem mudança de schema, sem edge function, sem migration.
+- Atualizo `mem://design/mascote-estetica.md` adicionando seção "Poses do tutor" no fim.
+
+## Critérios de aceitação
+
+1. 6 PNGs gerados, todos coerentes com a referência (mesmo personagem reconhecível).
+2. `EletivaSymbol` aceita prop `pose`, default `building`, sem quebrar nenhum call-site.
+3. 18 call-sites atualizados pro pose semântico correto.
+4. TutorChat alterna `talking` (msg) e `thinking` (loading) corretamente.
+5. Loadings de página rotacionam entre 3 frases de microcopy do `building`.
+6. Empty states (`MinhaCarta`, `FutureLetter`) usam `resting` + frase própria.
+7. Memory atualizada com mapeamento das poses.
