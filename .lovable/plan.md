@@ -1,92 +1,187 @@
-# João-de-Barro vivo: 6 poses com voz própria
+## diagnóstico: o dashboard hoje está invertido
 
-Hoje o mascote é uma única imagem (`joao-de-barro-tutor.png`) repetida em 18+ lugares. Vou transformá-lo num personagem com 6 poses distintas, cada uma com microcopy próprio, mapeadas semanticamente por contexto.
+O `/app` atual (`src/pages/AppDashboard.tsx`) foi desenhado para o **pós-evento Chŏra Lovable** (imersão de 2 dias que já aconteceu). Mas o produto vivo agora é a **Eletiva Sebrae IA na Prática** que está começando — 20 módulos, 4 trilhas, alunos do 1º ano EM. A hierarquia, copy e estados estão totalmente fora do contexto.
 
-## As 6 poses
+### o que está errado, em ordem de gravidade
 
-| # | slug | pose | onde aparece |
-|---|------|------|--------------|
-| 1 | `building` | construindo o ninho, com barro/galhinho no bico, casinha em obras atrás | loadings (App, Trilhas, Modulo, Dashboard, Certificado) |
-| 2 | `thinking` | de cabeça inclinada, olho brilhando, bolha "..." discreta acima | TutorChat — estado "pensando..." |
-| 3 | `talking` | bico aberto, asa em gesto, postura comunicativa | TutorChat — avatar das mensagens do tutor |
-| 4 | `celebrating` | asas abertas, confete leve em paleta Perestroika, casinha pronta atrás | NextActionHero, Certificado (após emitir), FeedbackFinal (sucesso) |
-| 5 | `resting` | sentado calmo no galho, casinha vazia ao lado, atmosfera de espera | empty states (MinhaCarta sem carta, Pending, FutureLetter "ainda não") |
-| 6 | `peeking` | espiando do canto, só meio corpo, olhar curioso | decoração de fundo / canto (Pending hero, EletivaCard, Auth, ResetPassword, PublicForm canto) |
+1. **`<NextActionHero>` ocupa o hero gritando "FECHE O CICLO DA ELETIVA" e "RESPONDER PESQUISA FINAL"**. Para um aluno que acabou de receber acesso, isso é absurdo: ele nunca abriu um módulo. O hero hoje é um seletor entre 3 ações pós-evento (carta pro futuro, pesquisa final, certificado) que não existem no contexto Eletiva Sebrae.
+2. **`<EletivaCard>` (a coisa que importa) vem em segundo plano**, com visual mais discreto que o hero gradient.
+3. **`<JourneyChips>` mostra carta pro futuro / pesquisa final / certificado** — três ações do produto antigo, irrelevantes pro aluno Sebrae.
+4. **`<HubGateway>` mistura tutor + materiais com "galeria" e "projetos da turma"** (extras do Chŏra).
+5. **`<ArchiveSection>` "memórias da preparação"** lista carta de builder, pré-work, tutorial, entregas — vocabulário 100% Chŏra, nenhum aluno Eletiva sabe o que é.
+6. **Footer diz "eletiva sebrae · escola sebrae · 1º ano EM"** mas o resto da página fala de carta pro futuro. Esquizofrenia.
+7. **Onboarding modal** ainda decide estados via `fbiSubmitted` + `cardState` (carta de arquétipo), conceitos do Chŏra que não existem no fluxo Sebrae.
+8. **MobileNav e rotas** apontam pra `/app/feedback-final`, `/app/certificado`, `/app/dinamica/carta-futuro` — links zumbis pro aluno novo.
 
-Mantém 100% a referência canônica (`mem://design/mascote-estetica.md`): paleta Perestroika, contorno preto fino, fundo bege, sem 3D.
+A causa raiz é simples: o produto pivotou de Chŏra (curso passado) pra Eletiva Sebrae (curso vivo), mas o dashboard nunca foi reescrito. Ficou herdando a infra do antigo.
 
-## Microcopy por pose
+---
 
-Cada loading/empty ganha frase com voz do mascote (lowercase, sem em-dash, "você"):
+## princípio do redesign
 
-- `building` loading: "construindo seu ninho..." / "ajeitando os galhinhos..." / "preparando o barro..." (rotativo aleatório por mount)
-- `thinking` no chat: substitui "pensando..." por "amassando o barro da resposta..."
-- `resting` MinhaCarta vazia: "ainda sem galhos por aqui. envia o fbi que eu começo a construir."
-- `resting` FutureLetter agendada: "sua carta tá no ninho, esperando o tempo certo."
-- `celebrating` Certificado: "ninho pronto. parabéns por construir."
-- `peeking` decoração: sem texto (só presença visual)
+> O dashboard do aluno Eletiva responde uma pergunta só: **"o que eu faço agora?"**
 
-## Geração dos assets
+Tudo que não serve a essa pergunta sai do hero, vai pra rodapé secundário ou some atrás de flag.
 
-Usar `lovable_ai` skill com Nano Banana Pro (`google/gemini-3-pro-image-preview`) e `--edit-image` passando a referência canônica `joao-de-barro-tutor.png` como base, garantindo continuidade visual (mesmo desenho, mesma paleta, só pose/expressão muda).
-
-Saída: `src/assets/joao/{slug}.png` (6 arquivos, 1024x1024).
-
-QA obrigatório: gero, abro cada PNG, verifico paleta + traço + sem texto + sem 3D antes de prosseguir.
-
-## Refator do componente
-
-`EletivaSymbol.tsx` ganha prop `pose` (default `building` pra retrocompatibilidade — todos os loadings atuais já fazem sentido com essa pose):
-
-```tsx
-type Pose = "building" | "thinking" | "talking" | "celebrating" | "resting" | "peeking";
-
-<EletivaSymbol pose="celebrating" size={180} />
+A jornada do aluno Sebrae é linear e clara:
+```text
+primeiro acesso → conhecer eletiva → módulo 01 → ... → módulo 20 → projeto autoral
 ```
 
-Internamente: map `pose → asset import`. Sem breaking change nos call-sites existentes — eu atualizo cada um pro pose semântico correto na mesma passada.
+Não tem 3 ações paralelas no fim. Tem um próximo módulo. Sempre.
 
-Novo helper opcional `useJoaoLine(context)` retorna microcopy aleatório do array daquele contexto, pra loadings parecerem vivos.
+---
 
-## Mapeamento detalhado dos 18 call-sites
+## nova hierarquia do `/app` (de cima pra baixo)
 
 ```text
-App.tsx                       → building   (loading global)
-AppDashboard loading          → building
-Trilhas loading               → building
-Modulo loading                → building
-Certificado loading           → building
-OnboardingDialog              → talking    (mascote apresenta)
-Onboarding card de boas-vindas→ talking
-TutorChat avatar (msg)        → talking
-TutorChat "pensando..."       → thinking
-NextActionHero                → celebrating (já é celebratório)
-Certificado pós-emissão       → celebrating
-FeedbackFinal sucesso         → celebrating
-MinhaCarta empty              → resting
-FutureLetter (agendada)       → resting
-Pending (decoração canto)     → peeking
-EletivaCard (canto -top -right)→ peeking
-Auth (canto pulse)            → peeking
-ResetPassword (canto pulse)   → peeking
-PublicForm canto              → peeking
-PublicForm hero (size 120)    → talking
-Index hero (size 84/140)      → celebrating
+┌─ HEADER (logo + nick + admin/conta/sair) ─────────────┐
+│                                                        │
+│  1. SALUDA + CONTEXTO                                  │
+│     "oi, {nick}." + 1 frase sobre onde você está       │
+│     (varia por estado: primeiro acesso / em curso /    │
+│     trilha completa)                                   │
+│                                                        │
+│  2. HERO ÚNICO: PRÓXIMO MÓDULO  ← protagonista        │
+│     - estado A: nada publicado → "trilha aquecendo"    │
+│     - estado B: primeiro módulo disponível →           │
+│       "começar módulo 01" (CTA gigante)                │
+│     - estado C: em andamento → "continuar módulo NN"   │
+│     - estado D: tudo concluído → "projeto autoral"     │
+│                                                        │
+│  3. PROGRESSO DAS 4 TRILHAS (visual, 1 linha)          │
+│     barrinhas finas com cor de cada trilha             │
+│                                                        │
+│  4. APOIO: TUTOR IA + MATERIAIS (2 cards lado a lado)  │
+│                                                        │
+│  5. (admin only / flag) extras: galeria, projetos      │
+│                                                        │
+│  6. FOOTER: identidade Sebrae                          │
+└────────────────────────────────────────────────────────┘
 ```
 
-## Detalhes técnicos
+Tudo do pós-evento Chŏra (NextActionHero, JourneyChips, ArchiveSection, links de carta-futuro / pesquisa-final / certificado) **só renderiza atrás da flag `eletiva_extras_enabled`** (que já existe via `useEletivaExtras`). Default: oculto. Quando o admin precisar reabrir pra alguma turma, liga a flag.
 
-- 6 imports no `EletivaSymbol`, lookup por objeto literal — Vite faz tree-shake bem.
-- `alt=""` permanece (decorativo). Onde houver microcopy visível, o texto carrega o significado.
-- Sem mudança de schema, sem edge function, sem migration.
-- Atualizo `mem://design/mascote-estetica.md` adicionando seção "Poses do tutor" no fim.
+---
 
-## Critérios de aceitação
+## o que muda, arquivo por arquivo
 
-1. 6 PNGs gerados, todos coerentes com a referência (mesmo personagem reconhecível).
-2. `EletivaSymbol` aceita prop `pose`, default `building`, sem quebrar nenhum call-site.
-3. 18 call-sites atualizados pro pose semântico correto.
-4. TutorChat alterna `talking` (msg) e `thinking` (loading) corretamente.
-5. Loadings de página rotacionam entre 3 frases de microcopy do `building`.
-6. Empty states (`MinhaCarta`, `FutureLetter`) usam `resting` + frase própria.
-7. Memory atualizada com mapeamento das poses.
+### `src/pages/AppDashboard.tsx` — reescrita parcial
+- Remove `usePostEventStatus`, `<NextActionHero>`, `<JourneyChips>`, `<ArchiveSection>` do render padrão.
+- Adiciona componente novo `<DashboardGreeting nickname={...} state={...} />` no topo.
+- Promove `<EletivaCard>` a hero único (estilo + tamanho maiores).
+- Adiciona `<TrailsProgress />` (componente novo, abaixo do hero).
+- Move `<HubGateway>` pra baixo, simplificado pra 2 cards base (tutor IA + materiais).
+- Pós-evento atrás de `useEletivaExtras().enabled === true` apenas.
+
+### `src/components/dashboard/EletivaCard.tsx` — promovido a hero
+- Aumenta escala tipográfica (5xl/7xl no título), padding (p-8 sm:p-12).
+- Adiciona accent bar gradiente com cor da trilha do módulo atual.
+- Mascote `building` (não `peeking`) no canto, em escala maior — ele está construindo COM o aluno.
+- Estados:
+  - **antes do início (totalPublished === 0)**: copy "sua eletiva começa em breve. enquanto isso, conhece o terreno." + lista as 4 trilhas com pílulas.
+  - **primeiro módulo disponível e nada começado**: pré-eyebrow "começa por aqui" + CTA "abrir módulo 01".
+  - **em andamento**: eyebrow "continue de onde parou" + CTA "voltar pro módulo NN".
+  - **tudo concluído**: copy convidando pro projeto autoral (mantém o que já existe, só ajusta tom).
+
+### `src/components/dashboard/DashboardGreeting.tsx` — novo
+Pequeno bloco acima do hero. Lowercase, urbanist, não compete com o hero.
+```text
+oi, {nick}.
+{contextLine}
+```
+- primeiro acesso: "bom te ver por aqui. abaixo, o seu próximo passo."
+- em curso (1+ módulo feito): "boa, você está construindo. {n}/20 fechados."
+- pausa longa (>7 dias sem progresso): "faz um tempo. retoma quando der."
+- tudo feito: "você fechou os 20 módulos. respeita."
+
+### `src/components/dashboard/TrailsProgress.tsx` — novo
+Substitui `<JourneyChips>` no slot "status visual rápido". Mostra 4 trilhas como mini-progress bars horizontais com nome + n/n.
+```text
+[fundamentos    ████████░░  4/5]
+[prompts        ██░░░░░░░░  1/5]
+[construção     ░░░░░░░░░░  0/5]
+[publicar       ░░░░░░░░░░  0/5]
+```
+Usa cores `#fe7b02 / #fd4644 / #f756a6 / #6f77fc`. Cada barra é Link pra `/app/trilhas?focus={id}`.
+
+### `src/components/dashboard/HubGateway.tsx` — simplifica
+Mantém apenas `tutor IA` e `materiais` como base. Os extras (galeria, projetos) já vêm escondidos atrás da flag — está correto, só revisar copy.
+
+Copy do header muda de "volta sempre que precisar" pra "apoio quando travar".
+
+### `src/components/dashboard/ArchiveSection.tsx` — esconde no fluxo Eletiva
+Só renderiza dentro de `<ExtrasGate>` (já existe). Sai do dashboard padrão.
+
+### `src/components/layout/MobileNav.tsx` — revisar itens
+Auditar e remover/esconder itens pós-evento (carta pro futuro, pesquisa final, certificado) atrás da flag. Substituir por: hub, trilhas, tutor, conta.
+
+### `src/components/OnboardingDialog.tsx` — readequar 3 estados
+Hoje os estados falam de FBI + carta de arquétipo (Chŏra). Reescrever pra Eletiva:
+- **estado A — primeiro acesso, módulo 01 disponível**: "boas-vindas à eletiva ia na prática. são 20 módulos divididos em 4 trilhas. o primeiro tá aberto." CTA: "abrir módulo 01".
+- **estado B — primeiro acesso, módulos ainda fechados**: "boas-vindas. a eletiva começa em breve, te aviso por aqui." CTA: "ver as trilhas".
+- **estado C — retorno, sem progresso recente**: "bom te ver de volta." CTA: "continuar".
+
+Disparado uma vez por sessão (já existe controle).
+
+### `src/pages/Onboarding.tsx` (rota `/app/onboarding`)
+Está cheio de FBI / carta de builder / pré-work / tutorial / missões — tudo Chŏra. **Decisão**: esconder essa rota do fluxo Eletiva (continua acessível via URL pra admins). A "trilha em 5 marcos" não cabe mais. Documentar como legado Chŏra.
+
+### footer e copy global
+Footer já diz "eletiva sebrae · escola sebrae · 1º ano EM" — mantém.
+
+---
+
+## tom e copy (frattz adaptado pra escola)
+
+Lowercase, "você", frases curtas, sem em-dash, sem hashtags. Mantém a memória core.
+
+Sample do hero estado B (primeiro acesso):
+```text
+COMEÇA POR AQUI            módulo 01/20
+─────────────────────────
+o que é IA, no susto
+─────────────────────────
+desmistificar a IA com a mão na massa.
+você vai sair entendendo o que é
+modelo, prompt, e por que isso muda
+o jogo agora.
+
+[abrir módulo 01 →]    [ver mapa completo]
+
+sua jornada                          0/20
+░░░░░░░░░░░░░░░░░░░░░░░░░░░
+```
+
+---
+
+## entregáveis
+
+Em ordem de execução, atomizados pra commits separados:
+
+1. Criar `<DashboardGreeting>` e `<TrailsProgress>`.
+2. Reescrever `<EletivaCard>` como hero (escala + estados).
+3. Reescrever `<AppDashboard>` com a nova ordem; pós-evento sob flag.
+4. Simplificar `<HubGateway>` (revisar copy do header) e `<ArchiveSection>` (mover pra dentro do gate).
+5. Reescrever 3 estados do `<OnboardingDialog>` com vocabulário Eletiva.
+6. Auditar `<MobileNav>` e mover itens pós-evento pra atrás da flag.
+7. Atualizar `.lovable/plan.md` documentando o novo dashboard como fonte de verdade do `/app`.
+8. Atualizar memória `mem://content/onboarding-states.md` com os novos 3 estados (Eletiva, não Chŏra).
+
+## critérios de aceitação
+
+1. Aluno em primeiro acesso vê: saudação curta → hero "começar módulo 01" → progresso das 4 trilhas → tutor IA + materiais → footer. **Zero menção a "fechar ciclo", "pesquisa final", "certificado", "carta pro futuro"**.
+2. Hero ocupa o protagonismo visual (maior tipo, mais padding) que `NextActionHero` ocupa hoje.
+3. Mascote no hero usa pose `building`, não `celebrating`.
+4. Todos os componentes pós-evento (NextActionHero, JourneyChips, ArchiveSection, links de carta/pesquisa/certificado no MobileNav) só renderizam quando `useEletivaExtras().enabled === true`.
+5. OnboardingDialog não menciona FBI nem carta de arquétipo no fluxo Eletiva default.
+6. Rota `/app/onboarding` (legado Chŏra) continua acessível mas não é linkada do dashboard novo.
+7. Build passa, sem TypeScript errors.
+
+## o que NÃO faço neste plano (pra não escopar demais)
+
+- Não mexo em `/app/trilhas`, `/app/modulo/:n`, nem na lógica de `useEletivaProgress`.
+- Não removo arquivos do pós-evento (FutureLetter, FeedbackFinal, Certificado) — ficam vivos atrás da flag pra reuso.
+- Não mexo no admin.
+- Não gero novos assets do mascote.
+- Não mexo em auth nem schema do banco.
