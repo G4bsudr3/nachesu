@@ -95,6 +95,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <SeoRouter />
           <DashboardDraftPersistence />
           <Suspense fallback={null}>
             <GlobalVotingBanner />
