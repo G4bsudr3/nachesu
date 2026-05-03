@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { EletivaStar } from "@/components/brand/EletivaStar";
+
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
 
 type EletivaKey = "ia-na-pratica" | "economia-circular";
@@ -402,13 +402,6 @@ const Index = () => {
 
       {/* manifesto */}
       <section className="relative container py-24 sm:py-36 border-t border-perestroika-preto/10">
-        <div
-          className="absolute -right-16 top-1/2 -translate-y-1/2 opacity-[0.07] pointer-events-none"
-          aria-hidden="true"
-        >
-          <EletivaStar size={420} color="preta" />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -417,13 +410,13 @@ const Index = () => {
           className="relative max-w-3xl"
         >
           <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
-            o combinado
+            o jeito da escola
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
-            penso, logo crio.<br />itero, logo fica foda.
+            aprender fazendo,<br />criar pra valer.
           </h2>
           <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
-            você não precisa saber tudo antes de começar. precisa começar e ir aprendendo enquanto constrói. as duas eletivas são exatamente esse caminho.
+            você não precisa saber tudo antes de começar. ao longo do ano, semana a semana, você vai construindo o seu projeto e aprendendo na prática. é assim que a eletiva funciona.
           </p>
         </motion.div>
       </section>
