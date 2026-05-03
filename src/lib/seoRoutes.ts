@@ -40,27 +40,27 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     index: true,
   },
   "/app": {
-    title: "meu painel · eletiva ia na prática",
-    description: "seu progresso, sua trilha atual e o próximo módulo liberado.",
+    title: "meu painel · eletivas escola sebrae",
+    description: "seu progresso na eletiva escolhida e o próximo módulo liberado.",
   },
   "/app/eletivas": {
-    title: "minhas eletivas · eletiva ia na prática",
-    description: "veja suas matrículas e escolha qual eletiva acessar agora.",
+    title: "minhas eletivas · escola sebrae",
+    description: "veja suas matrículas em ia na prática e economia circular e escolha qual acessar agora.",
   },
   "/app/trilhas": {
-    title: "trilhas · eletiva ia na prática",
+    title: "trilhas · eletivas escola sebrae",
     description: "as 4 trilhas da sua eletiva e os 20 módulos liberados conforme você avança.",
   },
   "/app/tutor": {
-    title: "tutor ia · eletiva ia na prática",
+    title: "tutor ia · eletivas escola sebrae",
     description: "converse com o tutor da sua trilha e desbloqueie o próximo passo.",
   },
   "/app/chora-bot": {
-    title: "tutor ia · eletiva ia na prática",
+    title: "tutor ia · eletivas escola sebrae",
     description: "converse com o tutor da sua trilha e desbloqueie o próximo passo.",
   },
   "/app/conta": {
-    title: "minha conta · eletiva ia na prática",
+    title: "minha conta · eletivas escola sebrae",
     description: "atualize seus dados e preferências.",
   },
 };
@@ -99,7 +99,7 @@ export function getRouteSeo(pathname: string): RouteSeo {
   if (prefixes[0]) return ROUTE_SEO[prefixes[0]];
 
   return {
-    title: "eletiva ia na prática · naches u × escola sebrae",
+    title: "eletivas escola sebrae · naches u",
     description: baseDesc,
     image: DEFAULT_OG,
   };
