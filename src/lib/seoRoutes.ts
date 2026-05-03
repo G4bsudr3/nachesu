@@ -22,6 +22,13 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     image: DEFAULT_OG,
     index: true,
   },
+  "/eletivas": {
+    title: "escolha sua eletiva · ia na prática ou economia circular",
+    description:
+      "duas eletivas da escola sebrae: ia na prática (frattz) e economia circular (dudu). escolha por onde começar.",
+    image: DEFAULT_OG,
+    index: true,
+  },
   "/auth": {
     title: "entrar · eletiva ia na prática",
     description: "acesse sua eletiva pra continuar a trilha.",
