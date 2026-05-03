@@ -1,116 +1,77 @@
-## decisões fechadas
+## contexto
 
-1. **matrícula = manual por convite.** admin importa lista de emails por eletiva. aluno só vê eletivas em que foi convidado.
-2. **liberação de módulo = manual pelo admin.** acabou o desbloqueio sequencial automático e o cron de `available_from`. admin clica "liberar módulo X" e pronto.
-3. **1 professor por eletiva.** dudu = economia circular. frattz = ia na prática. fim.
-4. **tutor IA escopado por eletiva.** prompt-base diferente, histórico separado.
+a home (`src/pages/Index.tsx`) hoje vende só "ia na prática". mas a base serve **duas eletivas** da escola sebrae:
 
-## arquitetura
+- **ia na prática** (frattz) — construir um app com ia em 20 semanas
+- **economia circular & negócios regenerativos** (dudu) — pensar e prototipar negócios que regeneram
 
-camada nova **`courses`** acima de `trails`. mudança mínima no resto: `trails` ganha `course_id`, `tutor_conversations` ganha `course_id`. `enrollments` controla acesso. `module_releases` registra liberação manual.
+o hero, a tese, as trilhas e o cta final precisam refletir isso sem virar landing genérica. a ideia continua sendo "ia na prática" como produto-âncora, mas a home agora apresenta **as duas eletivas como portas** da escola sebrae 1º ano em.
+
+## o que muda na home
+
+### 1. hero (topo)
+- eyebrow: `eletivas · escola sebrae · 1º ano em`
+- headline em duas linhas, mantendo league gothic gigante:
+  - `duas eletivas.`
+  - `um ano pra criar.`
+- subcopy: `escolha a sua: construir um app com ia ou desenhar um negócio que regenera. as duas em 20 semanas, com tutor ia do lado.`
+- ctas:
+  - primário preto `começar agora →` (mantém, vai pra `/auth`)
+  - secundário `ver as eletivas ↓` (âncora pra nova section)
+- joão-de-barro continua flutuando no canto, pose `celebrating` (mantém)
+
+### 2. nova section "as duas eletivas" (substitui a tese atual)
+dois cards lado a lado (stack no mobile), cada um com a identidade da eletiva. usa as cores perestroika já no código.
 
 ```text
-courses
- ├─ slug, title, subtitle
- ├─ professor_name, professor_bio_md, professor_avatar_url
- ├─ theme jsonb { palette, fonts, doodles, accent, tutor_system_prompt }
- ├─ order_index, published, hero_image_url
-
-course_invites (convite por email, antes do signup)
- └─ course_id, email_normalized, invited_at, claimed_at
-
-enrollments (matrícula efetiva, depois do signup)
- └─ user_id, course_id, enrolled_at, status ('active'|'paused')
-
-module_releases (liberação manual)
- └─ module_id, released_at, released_by
-
-trails        + course_id (nova fk)
-tutor_conversations + course_id (nova fk)
-modules / module_pills / module_deliverables / student_module_progress
-              → inalterados, escopam por trail.course_id
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ 01 · IA NA PRÁTICA       │  │ 02 · ECONOMIA CIRCULAR   │
+│ frattz                   │  │ dudu                     │
+│                          │  │                          │
+│ construa seu primeiro    │  │ desenhe um negócio que   │
+│ app com ia, do problema  │  │ regenera, do sistema ao  │
+│ ao mvp no ar.            │  │ protótipo validado.      │
+│                          │  │                          │
+│ 4 trilhas · 20 módulos   │  │ 4 trilhas · 20 módulos   │
+└──────────────────────────┘  └──────────────────────────┘
 ```
 
-**RLS chave:**
-- `courses`: select autenticado se publicado **e** aluno matriculado, ou admin.
-- `modules`: select se aluno matriculado no course do trail **e** existe `module_releases` desse módulo, ou admin.
-- `enrollments`: select próprio + admin gerencia.
-- `course_invites`: só admin.
+- ia na prática: accent rosa `#f756a6`
+- economia circular: accent azul `#6f77fc` (combina com o azul sebrae da identidade)
+- cada card tem hover sutil (lift -4px) e link âncora pra section de trilhas correspondente
 
-**hook de signup:** ao confirmar email, trigger procura `course_invites` por email e cria `enrollments` correspondentes, marca `claimed_at`.
+### 3. trilhas (section atual `#trilhas`)
+vira **tabbed** entre as duas eletivas:
+- toggle no topo: `[ ia na prática ] [ economia circular ]`
+- ao trocar, o grid de 4 trilhas re-renderiza com os títulos da eletiva escolhida
+- dados das trilhas da economia circular vêm do `.lovable/plan.md`: `enxergar / entender / criar / validar` (5 módulos cada)
+- mantém o mesmo card design + cores perestroika
 
-## ondas
+### 4. tutor joão-de-barro (section preta)
+ajuste de copy pra deixar claro que **cada eletiva tem seu tutor ia escopado** (mesmo joão visualmente, prompt diferente):
+- headline: `cada eletiva tem seu tutor.`
+- subcopy: `o joão te acompanha nas duas. com ia da naches por trás, ele muda de tom: provocador-builder na ia na prática, investigativo-sistêmico na economia circular.`
 
-### onda 1 — fundação multi-eletiva
-- migrations: `courses`, `enrollments`, `course_invites`, `module_releases`, add `trails.course_id`, add `tutor_conversations.course_id`.
-- seed 2 courses: `ia-na-pratica` (frattz) e `economia-circular` (dudu) com tema completo.
-- backfill: 4 trilhas atuais → ia-na-pratica. cria 4 trilhas novas (enxergar/entender/criar/validar) em economia-circular.
-- move o módulo 1 atual ("abrir o olho" / radar) pra trilha "enxergar" da economia circular (é dele).
-- RLS por matrícula + liberação manual.
-- trigger `claim_invites_on_signup`.
-- aposenta a flag `eletiva_sequential_unlock` (passa a ser sempre manual).
+### 5. manifesto + cta final
+- manifesto: mantém `penso, logo crio. itero, logo fica foda.` (vale pras duas)
+- cta final: `bora construir?` → `entrar na eletiva` continua. copy embaixo: `o login te leva direto pra eletiva em que você está matriculado.`
 
-### onda 2 — seed conteúdo dudu
-- 20 módulos da economia circular conforme pdf (título, objetivo, deliverable_description).
-- 5 pílulas por módulo no padrão pdf (abertura · conteúdo curado · atividade prática PBL · checagem rápida · bônus opcional) com `interaction_schema` populado.
-- todos `published=false` no seed; admin libera quando quiser.
-- módulo 1 já existe → só reassocia.
-- 19 módulos da IA na Prática mantêm o que tem (placeholders); refino fica pra rodada futura.
+### 6. footer
+`eletivas escola sebrae · 1º ano em · construído com lovable`
 
-### onda 3 — admin: convites + liberação
-- nova rota `/admin/eletivas` (lista courses + cards rápidos).
-- `/admin/eletivas/:slug/convites`: textarea/colar emails, importa em massa, mostra status (convidado / matriculado / removido).
-- `/admin/eletivas/:slug/modulos`: lista os 20 módulos com toggle "liberado / bloqueado" (escreve em `module_releases`). mostra quem está em cada módulo.
-- `/admin/eletivas/:slug/editar`: edita título, professor, tema, prompt do tutor.
-- `/admin/aula/:n` continua, agora filtra por course do módulo automaticamente.
+## arquivos afetados
 
-### onda 4 — dashboard + catálogo do aluno
-- `AppDashboard.tsx`: lê matrículas. 1 matrícula → vê só ela. 2+ → cards lado a lado dos próximos passos por eletiva, com switcher.
-- nova rota `/app/eletiva/:slug` = home da eletiva (constellation view escopada, header com identidade do course, professor em destaque, progresso por trilha).
-- `EletivaCard.tsx` vira `CourseCard.tsx` reutilizável.
-- `MobileNav` ganha switcher quando há 2+ matrículas.
-- aluno sem matrícula: tela "ainda não tem eletiva liberada" com instrução de contato.
+- `src/pages/Index.tsx` — refactor hero + nova section "duas eletivas" + tabs nas trilhas + ajustes de copy
+- `src/lib/seoRoutes.ts` — atualiza title/description da rota `/` pra refletir as duas eletivas (hoje fala só de ia na prática). novo title sugerido: `eletivas escola sebrae · ia na prática + economia circular`
+- `index.html` — atualiza `<title>`, `meta description`, `og:title`, `og:description`, `twitter:title`, `twitter:description` no mesmo espírito
 
-### onda 5 — identidade visual escopada
-- generaliza `<DuduoTheme>` em `<CourseTheme courseSlug>` que lê `courses.theme` e aplica css-vars locais.
-- páginas-aluno escopadas (`/app/eletiva/:slug/*`, `/app/modulo/:n`) ficam dentro do provider do course do módulo.
-- `/app` raiz mantém identidade Sebrae+Perestroika neutra.
-- IA na Prática usa o tema atual (perestroika+sebrae). Economia Circular usa o tema duduo (Sora 800, bege quente, doodles, accent #F25E3D).
-- header de página mostra Sebrae + nome da eletiva + professor.
+## o que **não** muda
 
-### onda 6 — tutor IA escopado
-- `tutor-trail-chat` recebe `course_slug` no body, carrega `theme.tutor_system_prompt` do course.
-- prompts iniciais:
-  - **ia-na-pratica:** mentor builder (frattz vibe), foco prompt eng / mvp / lovable / iteração.
-  - **economia-circular:** mentor investigativo (dudu vibe), foco pensamento sistêmico / fluxos / regeneração / validação leve.
-- `tutor_conversations` escopado por course → cada eletiva tem seu próprio histórico.
+- paleta, fontes, mascote, componentes de marca (`EletivaLogo`, `EletivaSymbol`, `EletivaStar`)
+- rotas internas, schema, hooks (`useActiveEletiva`, etc.)
+- og-images por eletiva (já feitos numa iteração anterior)
+- `/app/*` e fluxo de matrícula
 
-### onda 7 — entregável final por eletiva
-- IA: módulo 20 = link app lovable + pitch (texto/áudio).
-- Economia Circular: módulo 20 = mini-dossiê (problema+evidências, personas, mapa de fluxo, proposta de valor, modelo, validação, próximos passos) + pitch 2-3min (vídeo).
-- página `/app/eletiva/:slug/dossie` (só economia-circular) renderiza o dossiê em formato editorial.
-- certificado: cada course tem template próprio assinado pelo professor da eletiva. arquétipos do builder card seguem iguais.
+## signature moment
 
-### onda 8 — copy, QA, regressão
-- copy estático "eletiva sebrae" → "minhas eletivas" / nome do course.
-- testes: tema vaza só dentro do escopo do course; aluno sem matrícula não vê módulos do outro course; convite cria enrollment ao signup.
-- QA mobile dos dois temas em paralelo.
-
-## o que NÃO vou fazer
-- renomear `chora`, `hub`, `missions` no código (regra do projeto).
-- duplicar tabelas de módulos.
-- tocar nas páginas Chŏra legadas (atrás da flag).
-- escrever conteúdo das pílulas IA do frattz nessa rodada.
-- suportar liberação automática (cron) — admin libera manual e fim.
-- catálogo público de eletivas — só aluno convidado vê.
-
-## ordem de entrega segura
-
-1. **onda 1 (db + RLS)** — backfill cuidadoso, ninguém perde acesso. enquanto não tem ui de matrícula, dou matrícula automática a todos os alunos atuais nas duas eletivas (one-shot no migration) pra não cortar acesso de quem já está no ar.
-2. **onda 2 (seed dudu)** em paralelo, só dados.
-3. **onda 3 (admin)** pra você conseguir gerenciar convites e liberar módulos.
-4. **onda 4 (dashboard aluno)** — mudança visível.
-5. **onda 5 (tema escopado)** — Dudu para de ser "intruso" na cara da Naches.
-6. **ondas 6-8** — refinamento.
-
-posso começar pela **onda 1 + 2** (db + seed dudu), que destrava todo o resto?
+a tab das trilhas tem transição com framer-motion `AnimatePresence` + `layoutId` na barra de fundo do tab ativo, criando um morph fluido entre as duas eletivas. cor do accent muda também, dando leitura imediata de "trocou de mundo".

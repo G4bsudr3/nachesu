@@ -13,12 +13,12 @@ export type RouteSeo = {
 };
 
 const baseDesc =
-  "eletiva da naches u em parceria com a escola sebrae. 4 trilhas, 20 módulos e tutor ia em cada uma.";
+  "duas eletivas da escola sebrae em parceria com a naches u. ia na prática (frattz) e economia circular (dudu). 20 semanas, tutor ia do lado.";
 
 export const ROUTE_SEO: Record<string, RouteSeo> = {
   "/": {
-    title: "eletiva ia na prática · naches u × escola sebrae",
-    description: `${baseDesc} construa com ia em projetos reais. vai lá e cria.`,
+    title: "eletivas escola sebrae · ia na prática + economia circular",
+    description: `${baseDesc} vai lá e cria.`,
     image: DEFAULT_OG,
     index: true,
   },
