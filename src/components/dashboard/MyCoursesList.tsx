@@ -59,7 +59,7 @@ export const MyCoursesList = () => {
           return (
             <Link
               key={e.id}
-              to={`/app/eletivas/${c.slug}`}
+              to={`/app/trilhas?eletiva=${c.slug}`}
               className="group relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-white/60 p-6 transition hover:border-perestroika-preto hover:bg-white"
             >
               <div
