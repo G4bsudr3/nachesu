@@ -141,6 +141,50 @@ const Index = () => {
     window.localStorage.setItem(STORAGE_KEY, activeTab);
   }, [activeTab]);
 
+  // observa qual seção (#eletivas / #trilhas) está visível pra destacar no menu
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  useEffect(() => {
+    const ids = ["eletivas", "trilhas"];
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // pega a entrada mais visível dentre as que estão intersectando
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+      },
+      {
+        // descarta o header sticky no topo (~120px) e dá margem inferior
+        rootMargin: "-120px 0px -55% 0px",
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+      },
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
+  // scroll suave respeitando prefers-reduced-motion
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    el.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+    history.replaceState(null, "", `#${id}`);
+  };
+
+  const navItems: { id: string; label: string }[] = [
+    { id: "eletivas", label: "eletivas" },
+    { id: "trilhas", label: "trilhas" },
+  ];
+
   const activeEletiva = eletivas[activeTab];
 
   return (
@@ -185,13 +229,32 @@ const Index = () => {
             })}
           </div>
 
-          <nav className="flex items-center gap-4 sm:gap-6">
-            <a
-              href="#trilhas"
-              className="hidden sm:inline font-body text-sm uppercase tracking-wide hover:opacity-60 transition-opacity"
-            >
-              trilhas
-            </a>
+          <nav className="flex items-center gap-4 sm:gap-6" aria-label="seções da página">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => handleAnchorClick(e, item.id)}
+                  aria-current={isActive ? "true" : undefined}
+                  className={`hidden sm:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
+                    isActive
+                      ? "opacity-100 text-perestroika-preto"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  {item.label}
+                  <motion.span
+                    className="absolute left-0 right-0 -bottom-0.5 h-0.5 origin-left"
+                    style={{ backgroundColor: activeEletiva.accent }}
+                    initial={false}
+                    animate={{ scaleX: isActive ? 1 : 0 }}
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                </a>
+              );
+            })}
             <Link
               to="/auth"
               className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
@@ -297,7 +360,7 @@ const Index = () => {
       </section>
 
       {/* as duas eletivas */}
-      <section id="eletivas" className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-8">
+      <section id="eletivas" className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -403,7 +466,7 @@ const Index = () => {
       </section>
 
       {/* trilhas com tabs */}
-      <section id="trilhas" className="container py-20 sm:py-28 scroll-mt-8">
+      <section id="trilhas" className="container py-20 sm:py-28 scroll-mt-32">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
