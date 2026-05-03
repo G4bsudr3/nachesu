@@ -47,9 +47,17 @@ export const MyCoursesList = () => {
 
   return (
     <section aria-label="minhas eletivas" className="space-y-4">
-      <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
-        minhas eletivas
-      </p>
+      <div className="flex items-end justify-between gap-3">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+          minhas eletivas
+        </p>
+        <Link
+          to="/app/eletivas"
+          className="font-body text-xs uppercase tracking-wider text-perestroika-preto/70 hover:text-perestroika-preto"
+        >
+          gerenciar →
+        </Link>
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {items.map((e) => {
           const c = e.course!;

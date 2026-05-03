@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
+import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
@@ -23,9 +24,14 @@ const Trilhas = () => {
   const [params] = useSearchParams();
   const slug = params.get("eletiva") ?? undefined;
   const { data: enrollments } = useMyEnrollments();
+  const { slug: activeSlug } = useActiveEletiva();
   const { data: course, isLoading: courseLoading } = useCourseBySlug(slug);
-  // fallback: se não veio slug, usa a primeira matrícula do aluno
-  const fallbackCourse = !slug ? enrollments?.[0]?.course ?? null : null;
+  // fallback: slug ativa salva > primeira matrícula
+  const fallbackCourse = !slug
+    ? enrollments?.find((e) => e.course?.slug === activeSlug)?.course ??
+      enrollments?.[0]?.course ??
+      null
+    : null;
   const activeCourse = course ?? fallbackCourse;
   const { data, isLoading } = useEletivaProgress(activeCourse?.id ?? null);
 

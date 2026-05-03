@@ -47,6 +47,7 @@ const FutureLetter = lazy(() => import("./pages/FutureLetter.tsx"));
 const ChoraBot = lazy(() => import("./pages/ChoraBot.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
+const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
@@ -152,6 +153,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Missions />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/app/eletivas"
+                element={
+                  <ProtectedRoute>
+                    <MinhasEletivas />
                   </ProtectedRoute>
                 }
               />
