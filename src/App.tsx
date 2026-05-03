@@ -49,6 +49,7 @@ const ChoraBot = lazy(() => import("./pages/ChoraBot.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
 const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
+const Eletivas = lazy(() => import("./pages/Eletivas.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
@@ -104,6 +105,7 @@ const App = () => (
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/eletivas" element={<Eletivas />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/forms" element={<PublicForm />} />
