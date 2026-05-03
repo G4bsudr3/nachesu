@@ -229,13 +229,32 @@ const Index = () => {
             })}
           </div>
 
-          <nav className="flex items-center gap-4 sm:gap-6">
-            <a
-              href="#trilhas"
-              className="hidden sm:inline font-body text-sm uppercase tracking-wide hover:opacity-60 transition-opacity"
-            >
-              trilhas
-            </a>
+          <nav className="flex items-center gap-4 sm:gap-6" aria-label="seções da página">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => handleAnchorClick(e, item.id)}
+                  aria-current={isActive ? "true" : undefined}
+                  className={`hidden sm:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
+                    isActive
+                      ? "opacity-100 text-perestroika-preto"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  {item.label}
+                  <motion.span
+                    className="absolute left-0 right-0 -bottom-0.5 h-0.5 origin-left"
+                    style={{ backgroundColor: activeEletiva.accent }}
+                    initial={false}
+                    animate={{ scaleX: isActive ? 1 : 0 }}
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                </a>
+              );
+            })}
             <Link
               to="/auth"
               className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
