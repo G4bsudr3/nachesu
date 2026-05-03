@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, LogOut, Settings, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
@@ -19,9 +20,20 @@ const trailColorByOrder: Record<number, string> = {
 const Trilhas = () => {
   const { signOut } = useAuth();
   const { isAdmin } = useUserRole();
-  const { data, isLoading } = useEletivaProgress();
+  const [params] = useSearchParams();
+  const slug = params.get("eletiva") ?? undefined;
+  const { data: enrollments } = useMyEnrollments();
+  const { data: course, isLoading: courseLoading } = useCourseBySlug(slug);
+  // fallback: se não veio slug, usa a primeira matrícula do aluno
+  const fallbackCourse = !slug ? enrollments?.[0]?.course ?? null : null;
+  const activeCourse = course ?? fallbackCourse;
+  const { data, isLoading } = useEletivaProgress(activeCourse?.id ?? null);
 
-  if (isLoading || !data) {
+  // matriculado nesse curso?
+  const isEnrolled = !!enrollments?.some((e) => e.course_id === activeCourse?.id);
+
+
+  if (isLoading || courseLoading || !data) {
     return (
       <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -30,6 +42,27 @@ const Trilhas = () => {
           </div>
           <p className="font-body text-xs text-perestroika-preto/55">preparando o barro...</p>
           <span className="sr-only">carregando trilhas</span>
+        </div>
+      </div>
+    );
+  }
+
+  // sem curso ativo (nem slug válido nem matrícula): bloqueia acesso
+  if (!activeCourse || !isEnrolled) {
+    return (
+      <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center px-6">
+        <div className="max-w-md text-center space-y-4">
+          <EletivaSymbol size={80} pose="resting" />
+          <h1 className="font-display uppercase text-3xl">acesso restrito</h1>
+          <p className="font-body text-sm text-perestroika-preto/75">
+            você não está matriculado nessa eletiva. volte ao painel pra ver as suas.
+          </p>
+          <Link
+            to="/app"
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto px-5 py-2.5 font-body text-sm text-perestroika-bege"
+          >
+            <ArrowLeft className="h-4 w-4" /> voltar ao painel
+          </Link>
         </div>
       </div>
     );
@@ -75,13 +108,13 @@ const Trilhas = () => {
 
           <header className="mb-8 sm:mb-10">
             <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2">
-              eletiva ia na prática
+              eletiva {activeCourse.title.toLowerCase()}
             </p>
             <h1 className="font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.9] mb-3">
               o mapa inteiro
             </h1>
             <p className="font-body text-base text-perestroika-preto/75 max-w-2xl">
-              4 trilhas, 20 módulos. {totalCompleted} de {totalPublished} módulos liberados já são seus.
+              com {activeCourse.professor_name.toLowerCase()}. {totalCompleted} de {totalPublished} módulos liberados já são seus.
             </p>
           </header>
 

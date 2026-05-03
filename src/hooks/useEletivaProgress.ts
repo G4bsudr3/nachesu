@@ -50,29 +50,33 @@ const isAvailable = (m: { published: boolean; available_from: string | null }) =
   return new Date(m.available_from).getTime() <= Date.now();
 };
 
-export const useEletivaProgress = () => {
+/**
+ * snapshot de progresso de uma eletiva.
+ * passa courseId pra escopar por matrícula. sem courseId, agrega tudo
+ * que o aluno enxerga (legado — usado só por callers antigos).
+ */
+export const useEletivaProgress = (courseId?: string | null) => {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ["eletiva-progress", user?.id ?? "anon"],
+    queryKey: ["eletiva-progress", user?.id ?? "anon", courseId ?? "all"],
     enabled: !!user,
     staleTime: 30_000,
     queryFn: async (): Promise<EletivaSnapshot> => {
+      const trailsQuery = supabase
+        .from("trails")
+        .select("id, order_index, title, description, color, course_id")
+        .order("order_index");
+      if (courseId) trailsQuery.eq("course_id", courseId);
+
       const [
         { data: trails },
-        { data: modules },
         progressRes,
         pillProgressRes,
         sequentialRes,
+        releasesRes,
       ] = await Promise.all([
-        supabase
-          .from("trails")
-          .select("id, order_index, title, description, color")
-          .order("order_index"),
-        supabase
-          .from("modules")
-          .select("id, number, trail_id, title, objective, total_minutes, available_from, published")
-          .order("number"),
+        trailsQuery,
         user
           ? supabase
               .from("student_module_progress")
@@ -90,7 +94,22 @@ export const useEletivaProgress = () => {
           .select("value")
           .eq("key", "eletiva_sequential_unlock")
           .maybeSingle(),
+        supabase.from("module_releases").select("module_id"),
       ]);
+
+      const trailIds = (trails ?? []).map((t: any) => t.id);
+      const modulesQuery = supabase
+        .from("modules")
+        .select("id, number, trail_id, title, objective, total_minutes, available_from, published")
+        .order("number");
+      if (trailIds.length > 0) modulesQuery.in("trail_id", trailIds);
+      const { data: modules } = trailIds.length > 0
+        ? await modulesQuery
+        : { data: [] as any[] };
+
+      const releasedModuleIds = new Set<string>(
+        ((releasesRes.data ?? []) as { module_id: string }[]).map((r) => r.module_id),
+      );
 
       const progressByModuleId: Record<string, ModuleProgress> = {};
       for (const p of (progressRes.data ?? []) as ModuleProgress[]) {
@@ -102,7 +121,11 @@ export const useEletivaProgress = () => {
       );
 
       const allModules = (modules ?? []) as (EletivaModule & { id: string })[];
-      const publishedModules = allModules.filter(isAvailable);
+      // released: liberação manual via admin. módulo só conta como disponível
+      // se publicado + dentro da janela + admin liberou.
+      const isReleased = (m: { id: string; published: boolean; available_from: string | null }) =>
+        isAvailable(m) && releasedModuleIds.has(m.id);
+      const publishedModules = allModules.filter(isReleased);
       const totalCompleted = publishedModules.filter(
         (m) => progressByModuleId[m.id]?.completed_at,
       ).length;
@@ -116,19 +139,17 @@ export const useEletivaProgress = () => {
       const unlockedModuleIds = new Set<string>();
       for (let i = 0; i < sortedAll.length; i++) {
         const m = sortedAll[i];
-        if (!isAvailable(m)) continue;
+        if (!isReleased(m)) continue;
         if (!sequentialUnlock) {
           unlockedModuleIds.add(m.id);
           continue;
         }
-        // primeiro módulo (number=1) sempre desbloqueado se publicado
         if (m.number === 1) {
           unlockedModuleIds.add(m.id);
           continue;
         }
         const prev = sortedAll.find((p) => p.number === m.number - 1);
-        // se anterior nem existe ou nem foi publicado, libera (não trava por buraco editorial)
-        if (!prev || !isAvailable(prev)) {
+        if (!prev || !isReleased(prev)) {
           unlockedModuleIds.add(m.id);
           continue;
         }

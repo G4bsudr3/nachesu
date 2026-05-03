@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { useMyEnrollments } from "@/hooks/useCourses";
 import { usePostEventStatus } from "@/hooks/usePostEventStatus";
 import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useQueryClient } from "@tanstack/react-query";
@@ -28,7 +29,12 @@ const AppDashboard = () => {
   const queryClient = useQueryClient();
 
   const { data: dashboard, isLoading: dashboardLoading } = useDashboardData();
-  const { data: eletiva } = useEletivaProgress();
+  const { data: enrollments } = useMyEnrollments();
+  // se aluno tem só uma eletiva, escopa o hero/progresso por ela.
+  // se tem mais de uma, MyCoursesList vira o hub e o hero some.
+  const singleCourseId =
+    enrollments && enrollments.length === 1 ? enrollments[0].course_id : null;
+  const { data: eletiva } = useEletivaProgress(singleCourseId);
   const status = usePostEventStatus();
   const { enabled: extrasEnabled } = useEletivaExtras();
 
@@ -116,16 +122,21 @@ const AppDashboard = () => {
             daysSinceLastActivity={daysSinceLastActivity}
           />
 
-          {/* 2. minhas eletivas: lista todas as matrículas ativas do aluno */}
-          <MyCoursesList />
+          {/* mais de uma matrícula → mostra hub de eletivas (sem hero) */}
+          {(enrollments?.length ?? 0) > 1 && <MyCoursesList />}
 
-          {/* 3. hero único: próximo módulo da eletiva ativa */}
-          <EletivaCard snapshot={eletiva ?? undefined} />
-
-          {/* 3. progresso visual das 4 trilhas */}
-          {eletiva && eletiva.totalPublished > 0 && (
-            <TrailsProgress snapshot={eletiva} />
+          {/* uma única matrícula → hero + progresso da eletiva */}
+          {singleCourseId && (
+            <>
+              <EletivaCard snapshot={eletiva ?? undefined} />
+              {eletiva && eletiva.totalPublished > 0 && (
+                <TrailsProgress snapshot={eletiva} />
+              )}
+            </>
           )}
+
+          {/* nenhuma matrícula */}
+          {enrollments && enrollments.length === 0 && <MyCoursesList />}
 
           {/* 4. apoio: tutor IA + materiais (e extras se admin ligar a flag) */}
           <HubGateway />
