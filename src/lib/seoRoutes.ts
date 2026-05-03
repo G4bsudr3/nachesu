@@ -99,7 +99,7 @@ export function getRouteSeo(pathname: string): RouteSeo {
   if (prefixes[0]) return ROUTE_SEO[prefixes[0]];
 
   return {
-    title: "eletiva ia na prática · naches u × escola sebrae",
+    title: "eletivas escola sebrae · naches u",
     description: baseDesc,
     image: DEFAULT_OG,
   };
