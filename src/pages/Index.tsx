@@ -411,40 +411,21 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-10 sm:mb-12 max-w-2xl"
         >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
-            como cada eletiva é feita
+          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4 inline-flex items-center gap-2">
+            <span
+              className="inline-block w-2 h-2 rounded-full"
+              style={{ backgroundColor: activeEletiva.accent }}
+              aria-hidden="true"
+            />
+            trilhas de {activeEletiva.nome}
           </p>
           <h2 className="font-display uppercase display-clamp-section mb-4 leading-[0.95]">
             4 trilhas, 20 módulos, 1 projeto seu
           </h2>
           <p className="font-body text-base sm:text-lg text-perestroika-preto/75">
-            cada módulo tem 50 minutos, sai um por semana. troque entre as eletivas pra ver as trilhas de cada uma.
+            cada módulo tem 50 minutos, sai um por semana. troque a eletiva no topo pra ver as trilhas da outra.
           </p>
         </motion.div>
-
-        {/* tabs */}
-        <div className="mb-10 sm:mb-12 inline-flex rounded-full border-2 border-perestroika-preto/15 bg-perestroika-bege p-1 relative">
-          {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
-            const isActive = activeTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className="relative z-10 px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-body text-xs sm:text-sm uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-                style={{ color: isActive ? "#f2e4d8" : undefined }}
-              >
-                {isActive && (
-                  <motion.span
-                    layoutId="tab-bg"
-                    className="absolute inset-0 rounded-full bg-perestroika-preto -z-10"
-                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                  />
-                )}
-                <span className="relative">{eletivas[key].nome}</span>
-              </button>
-            );
-          })}
-        </div>
 
         <AnimatePresence mode="wait">
           <motion.div
