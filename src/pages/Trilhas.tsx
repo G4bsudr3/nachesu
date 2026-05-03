@@ -23,9 +23,14 @@ const Trilhas = () => {
   const [params] = useSearchParams();
   const slug = params.get("eletiva") ?? undefined;
   const { data: enrollments } = useMyEnrollments();
+  const { slug: activeSlug } = useActiveEletiva();
   const { data: course, isLoading: courseLoading } = useCourseBySlug(slug);
-  // fallback: se não veio slug, usa a primeira matrícula do aluno
-  const fallbackCourse = !slug ? enrollments?.[0]?.course ?? null : null;
+  // fallback: slug ativa salva > primeira matrícula
+  const fallbackCourse = !slug
+    ? enrollments?.find((e) => e.course?.slug === activeSlug)?.course ??
+      enrollments?.[0]?.course ??
+      null
+    : null;
   const activeCourse = course ?? fallbackCourse;
   const { data, isLoading } = useEletivaProgress(activeCourse?.id ?? null);
 
