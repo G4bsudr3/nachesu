@@ -505,10 +505,11 @@ const Index = () => {
             transition={{ duration: 0.6 }}
             className="font-display uppercase display-clamp-hero leading-[0.95] max-w-3xl"
           >
-            bora construir?
+            bora construir {activeEletiva.nome}?
           </motion.h2>
 
           <motion.div
+            key={`cta-${activeTab}`}
             initial={{ opacity: 0, scale: 0.85 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-20%" }}
@@ -516,14 +517,15 @@ const Index = () => {
           >
             <Link
               to="/auth"
-              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-10 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full text-perestroika-bege px-10 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+              style={{ backgroundColor: activeEletiva.accent }}
             >
-              entrar na eletiva <ArrowRight className="h-4 w-4" />
+              entrar em {activeEletiva.nome} <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
 
           <p className="font-body text-xs sm:text-sm text-perestroika-preto/60 max-w-md">
-            o login reconhece a sua matrícula e te leva pra eletiva certa, seja ia na prática ou economia circular.
+            já é {activeEletiva.professor}? o login reconhece sua matrícula e te leva direto pra trilha certa.
           </p>
         </div>
       </section>
