@@ -461,7 +461,7 @@ const Index = () => {
           </motion.div>
 
           <p className="font-body text-xs sm:text-sm text-perestroika-preto/60 max-w-md">
-            o login te leva direto pra eletiva em que você está matriculado.
+            o login reconhece a sua matrícula e te leva pra eletiva certa, seja ia na prática ou economia circular.
           </p>
         </div>
       </section>
