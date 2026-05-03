@@ -139,19 +139,17 @@ export const useEletivaProgress = (courseId?: string | null) => {
       const unlockedModuleIds = new Set<string>();
       for (let i = 0; i < sortedAll.length; i++) {
         const m = sortedAll[i];
-        if (!isAvailable(m)) continue;
+        if (!isReleased(m)) continue;
         if (!sequentialUnlock) {
           unlockedModuleIds.add(m.id);
           continue;
         }
-        // primeiro módulo (number=1) sempre desbloqueado se publicado
         if (m.number === 1) {
           unlockedModuleIds.add(m.id);
           continue;
         }
         const prev = sortedAll.find((p) => p.number === m.number - 1);
-        // se anterior nem existe ou nem foi publicado, libera (não trava por buraco editorial)
-        if (!prev || !isAvailable(prev)) {
+        if (!prev || !isReleased(prev)) {
           unlockedModuleIds.add(m.id);
           continue;
         }
