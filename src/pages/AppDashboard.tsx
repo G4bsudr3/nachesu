@@ -22,6 +22,7 @@ import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
+import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
   const { user, signOut } = useAuth();
