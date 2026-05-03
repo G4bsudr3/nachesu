@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
+import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
