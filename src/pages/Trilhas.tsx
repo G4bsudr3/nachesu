@@ -108,13 +108,13 @@ const Trilhas = () => {
 
           <header className="mb-8 sm:mb-10">
             <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2">
-              eletiva ia na prática
+              eletiva {activeCourse.title.toLowerCase()}
             </p>
             <h1 className="font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.9] mb-3">
               o mapa inteiro
             </h1>
             <p className="font-body text-base text-perestroika-preto/75 max-w-2xl">
-              4 trilhas, 20 módulos. {totalCompleted} de {totalPublished} módulos liberados já são seus.
+              com {activeCourse.professor_name.toLowerCase()}. {totalCompleted} de {totalPublished} módulos liberados já são seus.
             </p>
           </header>
 
