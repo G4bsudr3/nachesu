@@ -189,13 +189,13 @@ const Index = () => {
             className="font-display uppercase display-clamp-hero"
           >
             <span className="block">duas eletivas.</span>
-            <span className="block">um ano pra criar.</span>
+            <span className="block">um hub só.</span>
           </motion.h1>
           <motion.p
             variants={heroItem}
             className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80"
           >
-            escolha a sua: construir um app com ia, ou desenhar um negócio que regenera. as duas em 20 semanas, com tutor ia do lado.
+            ia na prática com frattz, economia circular com dudu. dois caminhos, mesmo método: 20 semanas, tutor ia do lado e um projeto seu no ar no fim.
           </motion.p>
 
           <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
