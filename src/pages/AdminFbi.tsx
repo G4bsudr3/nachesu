@@ -45,6 +45,7 @@ import { AdminFutureLetters } from "@/features/admin/AdminFutureLetters";
 import { AdminVotacaoProjetos } from "@/features/admin/AdminVotacaoProjetos";
 import { AdminChoraBot } from "@/features/admin/AdminChoraBot";
 import { AdminEletivaSettings } from "@/features/admin/AdminEletivaSettings";
+import { AdminEletivas } from "@/features/admin/AdminEletivas";
 import { AdminTrilha } from "@/features/admin/AdminTrilha";
 import { AdminTutor } from "@/features/admin/AdminTutor";
 import AdminUsers from "./AdminUsers";
@@ -79,10 +80,11 @@ const escapeCsv = (val: unknown) => {
   return `"${s}"`;
 };
 
-const VALID_TABS = ["eletiva", "trilha", "tutor", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "eletiva", "trilha", "tutor", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
+  eletivas: "eletivas · cursos",
   eletiva: "eletiva · settings",
   trilha: "eletiva · trilha",
   tutor: "eletiva · tutor IA",
@@ -287,6 +289,7 @@ const AdminFbi = () => {
             className="w-full"
           >
             <TabsList className="bg-perestroika-preto/5 mb-6 inline-flex flex-wrap h-auto">
+              <TabsTrigger value="eletivas" className="uppercase tracking-wide text-xs">eletivas</TabsTrigger>
               <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">eletiva</TabsTrigger>
               <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
               <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
@@ -478,6 +481,10 @@ const AdminFbi = () => {
 
             <TabsContent value="chora-bot">
               <AdminChoraBot />
+            </TabsContent>
+
+            <TabsContent value="eletivas">
+              <AdminEletivas />
             </TabsContent>
 
             <TabsContent value="eletiva">
