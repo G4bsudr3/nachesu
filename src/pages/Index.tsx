@@ -424,6 +424,165 @@ const Index = () => {
             );
           })}
         </div>
+
+        {/* comparação lado a lado */}
+        <div className="mt-16 sm:mt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.55 }}
+            className="mb-8 sm:mb-10 max-w-2xl"
+          >
+            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
+              compare lado a lado
+            </p>
+            <h3 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
+              o que muda entre uma e outra
+            </h3>
+          </motion.div>
+
+          {/* mobile: pares de cards. desktop: tabela editorial */}
+          <div className="overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege">
+            {/* cabeçalho */}
+            <div className="grid grid-cols-3 border-b-2 border-perestroika-preto/15">
+              <div className="hidden md:block p-5 sm:p-6" />
+              <div className="col-span-3 md:col-span-1 grid grid-cols-2 md:contents">
+                {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
+                  const e = eletivas[key];
+                  const isActive = activeTab === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setActiveTab(key)}
+                      className={`relative text-left p-5 sm:p-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-0 ${
+                        isActive ? "bg-perestroika-preto/[0.04]" : "hover:bg-perestroika-preto/[0.02]"
+                      }`}
+                    >
+                      <span
+                        className="absolute inset-x-0 top-0 h-1.5"
+                        style={{ backgroundColor: e.accent }}
+                        aria-hidden="true"
+                      />
+                      <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
+                        eletiva {e.n}
+                      </p>
+                      <p className="font-display uppercase text-xl sm:text-2xl leading-tight">
+                        {e.nome}
+                      </p>
+                      <p className="font-body text-xs text-perestroika-preto/60 mt-1">
+                        {e.professor}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* linhas */}
+            {[
+              {
+                label: "objetivo",
+                values: {
+                  "ia-na-pratica": "sair com um app real publicado, resolvendo uma dor sua.",
+                  "economia-circular": "desenhar um modelo de negócio regenerativo, validado com gente real.",
+                },
+              },
+              {
+                label: "duração",
+                values: {
+                  "ia-na-pratica": "20 semanas · 1 módulo de 50 min por semana",
+                  "economia-circular": "20 semanas · 1 módulo de 50 min por semana",
+                },
+              },
+              {
+                label: "entregáveis",
+                values: {
+                  "ia-na-pratica": "mvp publicado, prompt-deck pessoal, demo de 60 segundos.",
+                  "economia-circular": "mapa de sistema, protótipo regenerativo, dossiê de validação.",
+                },
+              },
+              {
+                label: "professor",
+                values: {
+                  "ia-na-pratica": "frattz · ceo da naches, embaixador global lovable.",
+                  "economia-circular": "dudu · estrategista em circularidade e negócios regenerativos.",
+                },
+              },
+              {
+                label: "tutor ia",
+                values: {
+                  "ia-na-pratica": "joão-de-barro provocador-builder, te empurra pro próximo mvp.",
+                  "economia-circular": "joão-de-barro investigativo-sistêmico, te puxa pra ver o ciclo todo.",
+                },
+              },
+            ].map((row, i) => (
+              <motion.div
+                key={row.label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-5%" }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+                className="grid grid-cols-3 border-b border-perestroika-preto/10 last:border-b-0"
+              >
+                <div className="col-span-3 md:col-span-1 px-5 sm:px-6 pt-5 md:py-6 md:border-r border-perestroika-preto/10">
+                  <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+                    {row.label}
+                  </p>
+                </div>
+                {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
+                  const e = eletivas[key];
+                  return (
+                    <div
+                      key={key}
+                      className="px-5 sm:px-6 py-4 md:py-6 border-t md:border-t-0 md:border-l border-perestroika-preto/10 first-of-type:border-l-0 md:first-of-type:border-l"
+                    >
+                      <p className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/45 mb-1.5 md:hidden">
+                        {e.nome}
+                      </p>
+                      <p className="font-body text-sm sm:text-base text-perestroika-preto/85 leading-relaxed">
+                        {row.values[key]}
+                      </p>
+                    </div>
+                  );
+                })}
+              </motion.div>
+            ))}
+
+            {/* rodapé com CTAs */}
+            <div className="grid grid-cols-3 bg-perestroika-preto/[0.03]">
+              <div className="hidden md:block p-5 sm:p-6" />
+              {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
+                const e = eletivas[key];
+                return (
+                  <div
+                    key={key}
+                    className="col-span-3 md:col-span-1 p-5 sm:p-6 border-t md:border-t-0 md:border-l border-perestroika-preto/10 first-of-type:border-l-0 md:first-of-type:border-l flex flex-col sm:flex-row md:flex-col gap-2 sm:gap-3 md:gap-2"
+                  >
+                    <a
+                      href="#trilhas"
+                      onClick={(ev) => {
+                        setActiveTab(key);
+                        handleAnchorClick(ev, "trilhas");
+                      }}
+                      className="inline-flex items-center justify-center gap-2 min-h-11 rounded-full text-perestroika-bege px-5 py-2.5 font-body text-xs sm:text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                      style={{ backgroundColor: e.accent }}
+                    >
+                      ver trilhas <ArrowRight className="h-3.5 w-3.5" />
+                    </a>
+                    <Link
+                      to="/auth"
+                      className="inline-flex items-center justify-center min-h-11 px-3 font-body text-xs sm:text-sm uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
+                    >
+                      entrar
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* tutor joão-de-barro */}
