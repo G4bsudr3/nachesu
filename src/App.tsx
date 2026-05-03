@@ -157,6 +157,14 @@ const App = () => (
                 }
               />
               <Route
+                path="/app/eletivas"
+                element={
+                  <ProtectedRoute>
+                    <MinhasEletivas />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/app/trilhas"
                 element={
                   <ProtectedRoute>
