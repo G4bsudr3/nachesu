@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { EletivaStar } from "@/components/brand/EletivaStar";
+
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
 
 type EletivaKey = "ia-na-pratica" | "economia-circular";
