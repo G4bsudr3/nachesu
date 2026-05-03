@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+
 import { toast } from "sonner";
 import { ChevronLeft, Mail, Lock, Unlock } from "lucide-react";
 
@@ -83,7 +83,7 @@ export function AdminEletivas() {
                 )}
               </div>
               <p className="font-body text-xs text-perestroika-preto/55 mt-3">slug: {c.slug}</p>
-            </Card>
+            </div>
           ))}
         </div>
       )}
@@ -177,7 +177,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
   });
 
   return (
-    <Card className="p-5 space-y-4">
+    <div className="p-5 space-y-4">
       <div className="flex items-center gap-2">
         <Mail className="h-4 w-4" />
         <h3 className="font-display text-lg uppercase">convites por email</h3>
@@ -227,7 +227,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
           </div>
         ))}
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -283,7 +283,7 @@ function ModulesPanel({ courseId }: { courseId: string }) {
   });
 
   return (
-    <Card className="p-5 space-y-4">
+    <div className="p-5 space-y-4">
       <div className="flex items-center gap-2">
         <Unlock className="h-4 w-4" />
         <h3 className="font-display text-lg uppercase">liberação de módulos</h3>
@@ -338,6 +338,6 @@ function ModulesPanel({ courseId }: { courseId: string }) {
           </p>
         )}
       </div>
-    </Card>
+    </div>
   );
 }
