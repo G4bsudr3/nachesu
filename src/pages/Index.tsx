@@ -141,6 +141,50 @@ const Index = () => {
     window.localStorage.setItem(STORAGE_KEY, activeTab);
   }, [activeTab]);
 
+  // observa qual seção (#eletivas / #trilhas) está visível pra destacar no menu
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  useEffect(() => {
+    const ids = ["eletivas", "trilhas"];
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // pega a entrada mais visível dentre as que estão intersectando
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+      },
+      {
+        // descarta o header sticky no topo (~120px) e dá margem inferior
+        rootMargin: "-120px 0px -55% 0px",
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+      },
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
+  // scroll suave respeitando prefers-reduced-motion
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    el.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+    history.replaceState(null, "", `#${id}`);
+  };
+
+  const navItems: { id: string; label: string }[] = [
+    { id: "eletivas", label: "eletivas" },
+    { id: "trilhas", label: "trilhas" },
+  ];
+
   const activeEletiva = eletivas[activeTab];
 
   return (
