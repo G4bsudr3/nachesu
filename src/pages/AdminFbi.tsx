@@ -483,6 +483,10 @@ const AdminFbi = () => {
               <AdminChoraBot />
             </TabsContent>
 
+            <TabsContent value="eletivas">
+              <AdminEletivas />
+            </TabsContent>
+
             <TabsContent value="eletiva">
               <AdminEletivaSettings />
             </TabsContent>
