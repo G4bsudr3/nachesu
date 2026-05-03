@@ -154,10 +154,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
       });
       if (error) throw error;
 
-      // se algum desses emails já tem auth.users, cria enrollment imediato
-      // (RLS no enrollments só aceita admin escrevendo qualquer user_id, ok)
-      const { data: existing } = await supabase.rpc("admin_list_users" as any).then(r => r);
-      // best-effort: pula se rpc não bater. enrollment vai ser criado no signup pelo trigger.
+      // enrollments serão criados automaticamente no signup pelo trigger.
       return list.length;
     },
     onSuccess: (n) => {
