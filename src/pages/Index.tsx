@@ -139,7 +139,19 @@ const Index = () => {
         className="container flex items-center justify-between pt-8 pb-4"
       >
         <ChoraLogo variant="dark" />
-        <nav>
+        <nav className="flex items-center gap-5 sm:gap-7">
+          <a
+            href="#eletivas"
+            className="hidden sm:inline font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+          >
+            eletivas
+          </a>
+          <a
+            href="#trilhas"
+            className="hidden sm:inline font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+          >
+            trilhas
+          </a>
           <Link
             to="/auth"
             className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
@@ -170,20 +182,20 @@ const Index = () => {
             variants={heroItem}
             className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6"
           >
-            eletivas · escola sebrae · 1º ano em
+            hub das eletivas · escola sebrae · 1º ano em
           </motion.p>
           <motion.h1
             variants={heroItem}
             className="font-display uppercase display-clamp-hero"
           >
             <span className="block">duas eletivas.</span>
-            <span className="block">um ano pra criar.</span>
+            <span className="block">um hub só.</span>
           </motion.h1>
           <motion.p
             variants={heroItem}
             className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80"
           >
-            escolha a sua: construir um app com ia, ou desenhar um negócio que regenera. as duas em 20 semanas, com tutor ia do lado.
+            ia na prática com frattz, economia circular com dudu. dois caminhos, mesmo método: 20 semanas, tutor ia do lado e um projeto seu no ar no fim.
           </motion.p>
 
           <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
@@ -191,13 +203,13 @@ const Index = () => {
               to="/auth"
               className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-8 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
-              começar agora <ArrowRight className="h-4 w-4" />
+              entrar na minha eletiva <ArrowRight className="h-4 w-4" />
             </Link>
             <a
               href="#eletivas"
               className="inline-flex items-center min-h-11 px-1 font-body text-sm sm:text-base uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
             >
-              ver as eletivas ↓
+              conhecer as duas ↓
             </a>
           </motion.div>
         </motion.div>
@@ -449,14 +461,14 @@ const Index = () => {
           </motion.div>
 
           <p className="font-body text-xs sm:text-sm text-perestroika-preto/60 max-w-md">
-            o login te leva direto pra eletiva em que você está matriculado.
+            o login reconhece a sua matrícula e te leva pra eletiva certa, seja ia na prática ou economia circular.
           </p>
         </div>
       </section>
 
       <footer className="container py-10 text-center">
         <p className="font-body text-xs text-perestroika-preto/55">
-          eletivas escola sebrae · 1º ano em · construído com lovable
+          hub das eletivas · escola sebrae × naches u · 1º ano em
         </p>
       </footer>
     </div>
