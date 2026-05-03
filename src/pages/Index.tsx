@@ -182,7 +182,7 @@ const Index = () => {
             variants={heroItem}
             className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6"
           >
-            eletivas · escola sebrae · 1º ano em
+            hub das eletivas · escola sebrae · 1º ano em
           </motion.p>
           <motion.h1
             variants={heroItem}
