@@ -468,7 +468,7 @@ const Index = () => {
 
       <footer className="container py-10 text-center">
         <p className="font-body text-xs text-perestroika-preto/55">
-          eletivas escola sebrae · 1º ano em · construído com lovable
+          hub das eletivas · escola sebrae × naches u · 1º ano em
         </p>
       </footer>
     </div>
