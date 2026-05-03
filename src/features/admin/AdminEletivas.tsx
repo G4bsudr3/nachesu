@@ -61,9 +61,9 @@ export function AdminEletivas() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {courses.map((c) => (
-            <Card
+            <div
               key={c.id}
-              className="p-5 cursor-pointer hover:bg-perestroika-bege/40 transition"
+              className="p-5 rounded-lg border border-perestroika-preto/10 bg-white cursor-pointer hover:bg-perestroika-bege/40 transition"
               onClick={() => setSelected(c)}
             >
               <div className="flex items-start justify-between gap-3">
