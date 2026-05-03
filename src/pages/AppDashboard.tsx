@@ -122,16 +122,21 @@ const AppDashboard = () => {
             daysSinceLastActivity={daysSinceLastActivity}
           />
 
-          {/* 2. minhas eletivas: lista todas as matrículas ativas do aluno */}
-          <MyCoursesList />
+          {/* mais de uma matrícula → mostra hub de eletivas (sem hero) */}
+          {(enrollments?.length ?? 0) > 1 && <MyCoursesList />}
 
-          {/* 3. hero único: próximo módulo da eletiva ativa */}
-          <EletivaCard snapshot={eletiva ?? undefined} />
-
-          {/* 3. progresso visual das 4 trilhas */}
-          {eletiva && eletiva.totalPublished > 0 && (
-            <TrailsProgress snapshot={eletiva} />
+          {/* uma única matrícula → hero + progresso da eletiva */}
+          {singleCourseId && (
+            <>
+              <EletivaCard snapshot={eletiva ?? undefined} courseSlug={enrollments?.[0]?.course?.slug} />
+              {eletiva && eletiva.totalPublished > 0 && (
+                <TrailsProgress snapshot={eletiva} courseSlug={enrollments?.[0]?.course?.slug} />
+              )}
+            </>
           )}
+
+          {/* nenhuma matrícula */}
+          {enrollments && enrollments.length === 0 && <MyCoursesList />}
 
           {/* 4. apoio: tutor IA + materiais (e extras se admin ligar a flag) */}
           <HubGateway />
