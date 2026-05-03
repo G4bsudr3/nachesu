@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { useMyEnrollments } from "@/hooks/useCourses";
 import { usePostEventStatus } from "@/hooks/usePostEventStatus";
 import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useQueryClient } from "@tanstack/react-query";
