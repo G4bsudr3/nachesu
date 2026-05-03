@@ -33,7 +33,7 @@ const Trilhas = () => {
   const isEnrolled = !!enrollments?.some((e) => e.course_id === activeCourse?.id);
 
 
-  if (isLoading || !data) {
+  if (isLoading || courseLoading || !data) {
     return (
       <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -42,6 +42,27 @@ const Trilhas = () => {
           </div>
           <p className="font-body text-xs text-perestroika-preto/55">preparando o barro...</p>
           <span className="sr-only">carregando trilhas</span>
+        </div>
+      </div>
+    );
+  }
+
+  // sem curso ativo (nem slug válido nem matrícula): bloqueia acesso
+  if (!activeCourse || !isEnrolled) {
+    return (
+      <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center px-6">
+        <div className="max-w-md text-center space-y-4">
+          <EletivaSymbol size={80} pose="resting" />
+          <h1 className="font-display uppercase text-3xl">acesso restrito</h1>
+          <p className="font-body text-sm text-perestroika-preto/75">
+            você não está matriculado nessa eletiva. volte ao painel pra ver as suas.
+          </p>
+          <Link
+            to="/app"
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto px-5 py-2.5 font-body text-sm text-perestroika-bege"
+          >
+            <ArrowLeft className="h-4 w-4" /> voltar ao painel
+          </Link>
         </div>
       </div>
     );
