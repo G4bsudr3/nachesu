@@ -360,7 +360,7 @@ const Index = () => {
       </section>
 
       {/* as duas eletivas */}
-      <section id="eletivas" className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-8">
+      <section id="eletivas" className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -466,7 +466,7 @@ const Index = () => {
       </section>
 
       {/* trilhas com tabs */}
-      <section id="trilhas" className="container py-20 sm:py-28 scroll-mt-8">
+      <section id="trilhas" className="container py-20 sm:py-28 scroll-mt-32">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
