@@ -121,7 +121,11 @@ export const useEletivaProgress = (courseId?: string | null) => {
       );
 
       const allModules = (modules ?? []) as (EletivaModule & { id: string })[];
-      const publishedModules = allModules.filter(isAvailable);
+      // released: liberação manual via admin. módulo só conta como disponível
+      // se publicado + dentro da janela + admin liberou.
+      const isReleased = (m: { id: string; published: boolean; available_from: string | null }) =>
+        isAvailable(m) && releasedModuleIds.has(m.id);
+      const publishedModules = allModules.filter(isReleased);
       const totalCompleted = publishedModules.filter(
         (m) => progressByModuleId[m.id]?.completed_at,
       ).length;
