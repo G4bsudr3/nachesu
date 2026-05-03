@@ -20,6 +20,7 @@ import { TrailsProgress } from "@/components/dashboard/TrailsProgress";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
 
 const AppDashboard = () => {
   const { user, signOut } = useAuth();
@@ -115,7 +116,10 @@ const AppDashboard = () => {
             daysSinceLastActivity={daysSinceLastActivity}
           />
 
-          {/* 2. hero único: próximo módulo da eletiva */}
+          {/* 2. minhas eletivas: lista todas as matrículas ativas do aluno */}
+          <MyCoursesList />
+
+          {/* 3. hero único: próximo módulo da eletiva ativa */}
           <EletivaCard snapshot={eletiva ?? undefined} />
 
           {/* 3. progresso visual das 4 trilhas */}
