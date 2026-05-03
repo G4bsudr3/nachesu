@@ -177,7 +177,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
   });
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-white space-y-4">
       <div className="flex items-center gap-2">
         <Mail className="h-4 w-4" />
         <h3 className="font-display text-lg uppercase">convites por email</h3>
@@ -283,7 +283,7 @@ function ModulesPanel({ courseId }: { courseId: string }) {
   });
 
   return (
-    <div className="p-5 space-y-4">
+    <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-white space-y-4">
       <div className="flex items-center gap-2">
         <Unlock className="h-4 w-4" />
         <h3 className="font-display text-lg uppercase">liberação de módulos</h3>
