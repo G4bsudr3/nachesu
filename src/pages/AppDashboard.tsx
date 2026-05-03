@@ -31,10 +31,14 @@ const AppDashboard = () => {
 
   const { data: dashboard, isLoading: dashboardLoading } = useDashboardData();
   const { data: enrollments } = useMyEnrollments();
-  // se aluno tem só uma eletiva, escopa o hero/progresso por ela.
-  // se tem mais de uma, MyCoursesList vira o hub e o hero some.
-  const singleCourseId =
-    enrollments && enrollments.length === 1 ? enrollments[0].course_id : null;
+  const { slug: activeSlug } = useActiveEletiva();
+  // se aluno tem só 1 matrícula, escopa pelo único curso.
+  // se tem mais, usa a slug "atual" escolhida em /app/eletivas (se existir).
+  const activeEnrollment =
+    enrollments && enrollments.length === 1
+      ? enrollments[0]
+      : enrollments?.find((e) => e.course?.slug === activeSlug) ?? null;
+  const singleCourseId = activeEnrollment?.course_id ?? null;
   const { data: eletiva } = useEletivaProgress(singleCourseId);
   const status = usePostEventStatus();
   const { enabled: extrasEnabled } = useEletivaExtras();
