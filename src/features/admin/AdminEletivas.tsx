@@ -154,7 +154,25 @@ function InvitesPanel({ courseId }: { courseId: string }) {
       });
       if (error) throw error;
 
-      // enrollments serão criados automaticamente no signup pelo trigger.
+      // se algum email já é aluno cadastrado, cria a matrícula direto
+      const { data: existingUsers } = await supabase.rpc("admin_list_users");
+      const matched = (existingUsers ?? []).filter((u: any) =>
+        list.includes(String(u.email).toLowerCase())
+      );
+      if (matched.length > 0) {
+        await supabase.from("enrollments").upsert(
+          matched.map((u: any) => ({ user_id: u.user_id, course_id: courseId })),
+          { onConflict: "user_id,course_id", ignoreDuplicates: true }
+        );
+        // marca esses convites como claimed
+        await supabase
+          .from("course_invites")
+          .update({ claimed_at: new Date().toISOString() })
+          .eq("course_id", courseId)
+          .in("email_normalized", matched.map((u: any) => String(u.email).toLowerCase()));
+      }
+
+      // enrollments futuros virão automaticamente no signup pelo trigger.
       return list.length;
     },
     onSuccess: (n) => {
