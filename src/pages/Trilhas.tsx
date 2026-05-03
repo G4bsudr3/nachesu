@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, LogOut, Settings, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
@@ -19,7 +20,18 @@ const trailColorByOrder: Record<number, string> = {
 const Trilhas = () => {
   const { signOut } = useAuth();
   const { isAdmin } = useUserRole();
-  const { data, isLoading } = useEletivaProgress();
+  const [params] = useSearchParams();
+  const slug = params.get("eletiva") ?? undefined;
+  const { data: enrollments } = useMyEnrollments();
+  const { data: course, isLoading: courseLoading } = useCourseBySlug(slug);
+  // fallback: se não veio slug, usa a primeira matrícula do aluno
+  const fallbackCourse = !slug ? enrollments?.[0]?.course ?? null : null;
+  const activeCourse = course ?? fallbackCourse;
+  const { data, isLoading } = useEletivaProgress(activeCourse?.id ?? null);
+
+  // matriculado nesse curso?
+  const isEnrolled = !!enrollments?.some((e) => e.course_id === activeCourse?.id);
+
 
   if (isLoading || !data) {
     return (
