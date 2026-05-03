@@ -354,6 +354,95 @@ export type Database = {
         }
         Relationships: []
       }
+      course_invites: {
+        Row: {
+          claimed_at: string | null
+          claimed_by: string | null
+          course_id: string
+          created_at: string
+          email_normalized: string
+          id: string
+          invited_at: string
+          invited_by: string | null
+        }
+        Insert: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          course_id: string
+          created_at?: string
+          email_normalized: string
+          id?: string
+          invited_at?: string
+          invited_by?: string | null
+        }
+        Update: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          course_id?: string
+          created_at?: string
+          email_normalized?: string
+          id?: string
+          invited_at?: string
+          invited_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_invites_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          created_at: string
+          hero_image_url: string | null
+          id: string
+          order_index: number
+          professor_avatar_url: string | null
+          professor_bio_md: string | null
+          professor_name: string
+          published: boolean
+          slug: string
+          subtitle: string | null
+          theme: Json
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          hero_image_url?: string | null
+          id?: string
+          order_index?: number
+          professor_avatar_url?: string | null
+          professor_bio_md?: string | null
+          professor_name: string
+          published?: boolean
+          slug: string
+          subtitle?: string | null
+          theme?: Json
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          hero_image_url?: string | null
+          id?: string
+          order_index?: number
+          professor_avatar_url?: string | null
+          professor_bio_md?: string | null
+          professor_name?: string
+          published?: boolean
+          slug?: string
+          subtitle?: string | null
+          theme?: Json
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -440,6 +529,44 @@ export type Database = {
           used_at?: string | null
         }
         Relationships: []
+      }
+      enrollments: {
+        Row: {
+          course_id: string
+          created_at: string
+          enrolled_at: string
+          id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          enrolled_at?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          enrolled_at?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fbi_responses: {
         Row: {
@@ -1375,6 +1502,32 @@ export type Database = {
           },
         ]
       }
+      module_releases: {
+        Row: {
+          module_id: string
+          released_at: string
+          released_by: string | null
+        }
+        Insert: {
+          module_id: string
+          released_at?: string
+          released_by?: string | null
+        }
+        Update: {
+          module_id?: string
+          released_at?: string
+          released_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_releases_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: true
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       modules: {
         Row: {
           available_from: string | null
@@ -1760,6 +1913,7 @@ export type Database = {
       trails: {
         Row: {
           color: string | null
+          course_id: string | null
           created_at: string
           description: string | null
           id: string
@@ -1770,6 +1924,7 @@ export type Database = {
         }
         Insert: {
           color?: string | null
+          course_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -1780,6 +1935,7 @@ export type Database = {
         }
         Update: {
           color?: string | null
+          course_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -1788,10 +1944,19 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "trails_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tutor_conversations: {
         Row: {
+          course_id: string | null
           created_at: string
           id: string
           messages: Json
@@ -1801,6 +1966,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          course_id?: string | null
           created_at?: string
           id?: string
           messages?: Json
@@ -1810,6 +1976,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          course_id?: string | null
           created_at?: string
           id?: string
           messages?: Json
@@ -1819,6 +1986,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "tutor_conversations_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tutor_conversations_trail_id_fkey"
             columns: ["trail_id"]
