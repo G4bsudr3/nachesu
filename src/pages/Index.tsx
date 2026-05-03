@@ -139,7 +139,19 @@ const Index = () => {
         className="container flex items-center justify-between pt-8 pb-4"
       >
         <ChoraLogo variant="dark" />
-        <nav>
+        <nav className="flex items-center gap-5 sm:gap-7">
+          <a
+            href="#eletivas"
+            className="hidden sm:inline font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+          >
+            eletivas
+          </a>
+          <a
+            href="#trilhas"
+            className="hidden sm:inline font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+          >
+            trilhas
+          </a>
           <Link
             to="/auth"
             className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
