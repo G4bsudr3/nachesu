@@ -110,10 +110,18 @@ const heroItem = {
   },
 };
 
+const STORAGE_KEY = "home:eletiva-preferida";
+
 const Index = () => {
   const prefersReducedMotion = useReducedMotion();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<EletivaKey>("ia-na-pratica");
+  const [activeTab, setActiveTab] = useState<EletivaKey>(() => {
+    if (typeof window === "undefined") return "ia-na-pratica";
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    return saved === "economia-circular" || saved === "ia-na-pratica"
+      ? saved
+      : "ia-na-pratica";
+  });
 
   // se um magic link cair na home com erro, manda pro /auth pra tratar
   useEffect(() => {
@@ -127,38 +135,99 @@ const Index = () => {
     }
   }, [navigate]);
 
+  // persiste a eletiva escolhida pra próxima visita
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(STORAGE_KEY, activeTab);
+  }, [activeTab]);
+
   const activeEletiva = eletivas[activeTab];
 
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
-      {/* topbar */}
+      {/* topbar com seletor de eletiva */}
       <motion.header
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="container flex items-center justify-between pt-8 pb-4"
+        className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85 border-b border-perestroika-preto/10"
       >
-        <ChoraLogo variant="dark" />
-        <nav className="flex items-center gap-5 sm:gap-7">
-          <a
-            href="#eletivas"
-            className="hidden sm:inline font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+        <div className="container flex items-center justify-between gap-4 py-4">
+          <ChoraLogo variant="dark" />
+
+          {/* seletor central */}
+          <div
+            role="tablist"
+            aria-label="escolha sua eletiva"
+            className="hidden md:inline-flex rounded-full border-2 border-perestroika-preto/15 bg-perestroika-bege p-1 relative"
           >
-            eletivas
-          </a>
-          <a
-            href="#trilhas"
-            className="hidden sm:inline font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+            {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
+              const isActive = activeTab === key;
+              return (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveTab(key)}
+                  className="relative z-10 px-4 lg:px-5 py-2 rounded-full font-body text-xs lg:text-sm uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                  style={{ color: isActive ? "#f2e4d8" : undefined }}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="header-tab-bg"
+                      className="absolute inset-0 rounded-full bg-perestroika-preto -z-10"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative">{eletivas[key].nome}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <nav className="flex items-center gap-4 sm:gap-6">
+            <a
+              href="#trilhas"
+              className="hidden sm:inline font-body text-sm uppercase tracking-wide hover:opacity-60 transition-opacity"
+            >
+              trilhas
+            </a>
+            <Link
+              to="/auth"
+              className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+            >
+              entrar
+            </Link>
+          </nav>
+        </div>
+
+        {/* seletor mobile */}
+        <div className="md:hidden border-t border-perestroika-preto/10">
+          <div
+            role="tablist"
+            aria-label="escolha sua eletiva"
+            className="container flex gap-2 py-2 overflow-x-auto"
           >
-            trilhas
-          </a>
-          <Link
-            to="/auth"
-            className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
-          >
-            entrar
-          </Link>
-        </nav>
+            {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
+              const isActive = activeTab === key;
+              return (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveTab(key)}
+                  className={`shrink-0 rounded-full px-4 py-2 font-body text-xs uppercase tracking-wide border transition-colors ${
+                    isActive
+                      ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
+                      : "border-perestroika-preto/20 text-perestroika-preto/70"
+                  }`}
+                >
+                  {eletivas[key].nome}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </motion.header>
 
       {/* hero */}
@@ -180,9 +249,14 @@ const Index = () => {
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
           <motion.p
             variants={heroItem}
-            className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6"
+            className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6 inline-flex items-center gap-2"
           >
-            hub das eletivas · escola sebrae · 1º ano em
+            <span
+              className="inline-block w-2 h-2 rounded-full"
+              style={{ backgroundColor: activeEletiva.accent }}
+              aria-hidden="true"
+            />
+            sua escolha · {activeEletiva.nome} · {activeEletiva.professor}
           </motion.p>
           <motion.h1
             variants={heroItem}
@@ -191,25 +265,32 @@ const Index = () => {
             <span className="block">duas eletivas.</span>
             <span className="block">um hub só.</span>
           </motion.h1>
-          <motion.p
-            variants={heroItem}
-            className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80"
-          >
-            ia na prática com frattz, economia circular com dudu. dois caminhos, mesmo método: 20 semanas, tutor ia do lado e um projeto seu no ar no fim.
-          </motion.p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`pitch-${activeTab}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+              className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80"
+            >
+              {activeEletiva.pitch} 20 semanas, tutor ia do lado e um projeto seu no ar no fim.
+            </motion.p>
+          </AnimatePresence>
 
           <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
             <Link
               to="/auth"
-              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-8 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full text-perestroika-bege px-8 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+              style={{ backgroundColor: activeEletiva.accent }}
             >
-              entrar na minha eletiva <ArrowRight className="h-4 w-4" />
+              entrar em {activeEletiva.nome} <ArrowRight className="h-4 w-4" />
             </Link>
             <a
-              href="#eletivas"
+              href="#trilhas"
               className="inline-flex items-center min-h-11 px-1 font-body text-sm sm:text-base uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
             >
-              conhecer as duas ↓
+              ver as 4 trilhas ↓
             </a>
           </motion.div>
         </motion.div>
