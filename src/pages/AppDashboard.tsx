@@ -20,6 +20,7 @@ import { TrailsProgress } from "@/components/dashboard/TrailsProgress";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
 
 const AppDashboard = () => {
   const { user, signOut } = useAuth();
