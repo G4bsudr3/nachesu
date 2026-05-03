@@ -128,9 +128,9 @@ const AppDashboard = () => {
           {/* uma única matrícula → hero + progresso da eletiva */}
           {singleCourseId && (
             <>
-              <EletivaCard snapshot={eletiva ?? undefined} courseSlug={enrollments?.[0]?.course?.slug} />
+              <EletivaCard snapshot={eletiva ?? undefined} />
               {eletiva && eletiva.totalPublished > 0 && (
-                <TrailsProgress snapshot={eletiva} courseSlug={enrollments?.[0]?.course?.slug} />
+                <TrailsProgress snapshot={eletiva} />
               )}
             </>
           )}
