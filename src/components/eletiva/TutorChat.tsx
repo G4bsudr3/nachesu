@@ -158,7 +158,12 @@ export const TutorChat = ({
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ trail_id: trailId, message: text }),
+        body: JSON.stringify({
+          trail_id: trailId,
+          message: text,
+          pill_prompt: pillContext?.pillPrompt ?? null,
+          pill_title: pillContext?.pillTitle ?? null,
+        }),
       });
 
       if (!resp.ok || !resp.body) {
