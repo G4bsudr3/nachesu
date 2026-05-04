@@ -131,11 +131,36 @@ const AppDashboard = () => {
             daysSinceLastActivity={daysSinceLastActivity}
           />
 
-          {/* mais de uma matrícula → mostra hub de eletivas (sem hero) */}
-          {(enrollments?.length ?? 0) > 1 && <MyCoursesList />}
+          {/* 2+ matrículas → switcher mobile-first + hero da eletiva ATIVA + progresso */}
+          {hasMultiple && (
+            <>
+              <section aria-label="suas eletivas" className="space-y-3">
+                <div className="flex items-end justify-between gap-3">
+                  <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+                    suas eletivas · escolha a atual
+                  </p>
+                  <Link
+                    to="/app/eletivas"
+                    className="font-body text-xs uppercase tracking-wider text-perestroika-preto/70 hover:text-perestroika-preto"
+                  >
+                    gerenciar →
+                  </Link>
+                </div>
+                <EletivaSwitcher />
+              </section>
+              {activeCourseId && (
+                <>
+                  <EletivaCard snapshot={eletiva ?? undefined} />
+                  {eletiva && eletiva.totalPublished > 0 && (
+                    <TrailsProgress snapshot={eletiva} />
+                  )}
+                </>
+              )}
+            </>
+          )}
 
-          {/* uma única matrícula → hero + progresso da eletiva */}
-          {singleCourseId && (
+          {/* 1 matrícula → hero direto + progresso */}
+          {!hasMultiple && activeCourseId && (
             <>
               <EletivaCard snapshot={eletiva ?? undefined} />
               {eletiva && eletiva.totalPublished > 0 && (
@@ -144,7 +169,7 @@ const AppDashboard = () => {
             </>
           )}
 
-          {/* nenhuma matrícula */}
+          {/* 0 matrículas → estado vazio */}
           {enrollments && enrollments.length === 0 && <MyCoursesList />}
 
           {/* 4. apoio: tutor IA + materiais (e extras se admin ligar a flag) */}
