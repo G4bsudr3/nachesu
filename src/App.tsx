@@ -97,9 +97,7 @@ const App = () => (
           <SeoRouter />
           <DashboardDraftPersistence />
           <Suspense fallback={null}>
-            <ExtrasGate>
-              <GlobalVotingBanner />
-            </ExtrasGate>
+            <GlobalVotingBanner />
           </Suspense>
           <Suspense fallback={<RouteFallback />}>
             <Routes>
