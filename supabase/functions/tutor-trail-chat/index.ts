@@ -100,6 +100,8 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const trailId = typeof body?.trail_id === "string" ? body.trail_id : "";
     const message = typeof body?.message === "string" ? body.message.trim() : "";
+    const pillPrompt = typeof body?.pill_prompt === "string" && body.pill_prompt.trim().length > 0 ? body.pill_prompt : null;
+    const pillTitle = typeof body?.pill_title === "string" && body.pill_title.trim().length > 0 ? body.pill_title : null;
 
     if (!trailId || message.length < 2) {
       return new Response(
