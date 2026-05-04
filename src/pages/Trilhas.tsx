@@ -23,15 +23,15 @@ const Trilhas = () => {
   const { signOut } = useAuth();
   const { isAdmin } = useUserRole();
   const [params] = useSearchParams();
-  const slug = params.get("eletiva") ?? undefined;
+  const urlSlug = params.get("eletiva") ?? undefined;
   const { data: enrollments } = useMyEnrollments();
   const { slug: activeSlug } = useActiveEletiva();
-  const { data: course, isLoading: courseLoading } = useCourseBySlug(slug);
-  // fallback: slug ativa salva > primeira matrícula
-  const fallbackCourse = !slug
-    ? enrollments?.find((e) => e.course?.slug === activeSlug)?.course ??
-      enrollments?.[0]?.course ??
-      null
+  // prioridade: slug ativa do switcher > slug da URL > primeira matrícula
+  // (o switcher atualiza activeSlug, mas a URL pode ter sido aberta direto via link)
+  const effectiveSlug = activeSlug ?? urlSlug;
+  const { data: course, isLoading: courseLoading } = useCourseBySlug(effectiveSlug);
+  const fallbackCourse = !effectiveSlug
+    ? enrollments?.[0]?.course ?? null
     : null;
   const activeCourse = course ?? fallbackCourse;
   const { data, isLoading } = useEletivaProgress(activeCourse?.id ?? null);
