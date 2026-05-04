@@ -31,6 +31,10 @@ const Modulo = () => {
   const queryClient = useQueryClient();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress();
   const [tutorOpen, setTutorOpen] = useState(false);
+  const [tutorPillContext, setTutorPillContext] = useState<{
+    pillTitle: string;
+    pillPrompt: string;
+  } | null>(null);
 
   const moduleRow = useMemo(
     () => snapshot?.modules.find((m) => m.number === moduleNumber) ?? null,
@@ -288,7 +292,17 @@ const Modulo = () => {
           hasTrail={!!trail}
           onTogglePill={(p) => togglePillMutation.mutate(p)}
           togglePending={togglePillMutation.isPending}
-          onOpenTutor={() => setTutorOpen(true)}
+          onOpenTutor={(pill) => {
+            if (pill?.interaction_schema?.tutor_prompt) {
+              setTutorPillContext({
+                pillTitle: pill.title,
+                pillPrompt: pill.interaction_schema.tutor_prompt,
+              });
+            } else {
+              setTutorPillContext(null);
+            }
+            setTutorOpen(true);
+          }}
         />
 
         <ModuloFooter
@@ -303,10 +317,14 @@ const Modulo = () => {
       {trail && (
         <TutorChat
           open={tutorOpen}
-          onOpenChange={setTutorOpen}
+          onOpenChange={(o) => {
+            setTutorOpen(o);
+            if (!o) setTutorPillContext(null);
+          }}
           trailId={trail.id}
           trailTitle={trail.title}
           trailColor={trailColor}
+          pillContext={tutorPillContext}
         />
       )}
 

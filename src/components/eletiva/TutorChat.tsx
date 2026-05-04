@@ -37,6 +37,7 @@ interface TutorChatProps {
   trailId: string;
   trailTitle: string;
   trailColor: string;
+  pillContext?: { pillTitle: string; pillPrompt: string } | null;
 }
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tutor-trail-chat`;
@@ -47,6 +48,7 @@ export const TutorChat = ({
   trailId,
   trailTitle,
   trailColor,
+  pillContext,
 }: TutorChatProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -156,7 +158,12 @@ export const TutorChat = ({
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ trail_id: trailId, message: text }),
+        body: JSON.stringify({
+          trail_id: trailId,
+          message: text,
+          pill_prompt: pillContext?.pillPrompt ?? null,
+          pill_title: pillContext?.pillTitle ?? null,
+        }),
       });
 
       if (!resp.ok || !resp.body) {
@@ -349,6 +356,17 @@ export const TutorChat = ({
           <p className="font-body text-xs text-perestroika-preto/65 mt-2">
             conversando sobre <strong>{trailTitle.toLowerCase()}</strong>. seu histórico fica salvo.
           </p>
+          {pillContext && (
+            <div
+              className="mt-3 rounded-xl border-2 px-3 py-2 font-body text-[11px] text-perestroika-preto/85 leading-relaxed"
+              style={{ borderColor: trailColor, backgroundColor: `${trailColor}15` }}
+            >
+              <p className="uppercase tracking-[0.18em] text-[9px] text-perestroika-preto/55 mb-0.5">
+                exercício em andamento
+              </p>
+              <p className="font-semibold">{pillContext.pillTitle.toLowerCase()}</p>
+            </div>
+          )}
         </SheetHeader>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4">

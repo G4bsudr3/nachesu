@@ -26,6 +26,8 @@ const buildSystemPrompt = (ctx: {
   pblPrompt: string | null;
   currentModule: { number: number; title: string; objective: string | null } | null;
   completedModules: { number: number; title: string }[];
+  pillPrompt: string | null;
+  pillTitle: string | null;
 }): string => {
   const completedList = ctx.completedModules.length
     ? ctx.completedModules
@@ -38,6 +40,10 @@ const buildSystemPrompt = (ctx: {
         ctx.currentModule.objective ? `\nobjetivo: ${ctx.currentModule.objective}` : ""
       }`
     : "(nenhum módulo em andamento agora)";
+
+  const pillBlock = ctx.pillPrompt
+    ? `\n\n## EXERCÍCIO ATIVO AGORA (prioridade máxima)\n\no aluno acabou de abrir o exercício "${ctx.pillTitle ?? "sem título"}". siga estas instruções específicas pra esse exercício, elas vencem qualquer coisa do system prompt geral:\n\n${ctx.pillPrompt}`
+    : "";
 
   return `você é o joão-de-barro, tutor IA da eletiva sebrae. seu jeito é o do frattz: lowercase sempre, frases curtas, direto, sem em-dash, sem hashtags, sem corporativês. trata o aluno por "você" (nunca "tu"). emoji raro, no máximo um por resposta, e só se couber.
 
@@ -64,7 +70,7 @@ ${current}
 - se ele perguntar algo fora da trilha, traz de volta com leveza ("foge um pouco do escopo aqui, mas...").
 - se ele pedir "me dá a resposta", devolve uma pergunta que destrava ele.
 - nunca finja que sabe coisa que não sabe sobre o curso. se faltar contexto, diz "isso aí seu professor de turma resolve melhor".
-- termina ofertando próximo movimento concreto sempre que fizer sentido.`;
+- termina ofertando próximo movimento concreto sempre que fizer sentido.${pillBlock}`;
 };
 
 Deno.serve(async (req) => {
@@ -94,6 +100,8 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const trailId = typeof body?.trail_id === "string" ? body.trail_id : "";
     const message = typeof body?.message === "string" ? body.message.trim() : "";
+    const pillPrompt = typeof body?.pill_prompt === "string" && body.pill_prompt.trim().length > 0 ? body.pill_prompt : null;
+    const pillTitle = typeof body?.pill_title === "string" && body.pill_title.trim().length > 0 ? body.pill_title : null;
 
     if (!trailId || message.length < 2) {
       return new Response(
@@ -173,6 +181,8 @@ Deno.serve(async (req) => {
         ? { number: currentModule.number, title: currentModule.title, objective: currentModule.objective }
         : null,
       completedModules,
+      pillPrompt,
+      pillTitle,
     });
 
     const history = (convRes.data?.messages ?? []) as ChatMessage[];

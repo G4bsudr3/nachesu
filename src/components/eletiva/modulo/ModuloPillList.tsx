@@ -1,4 +1,5 @@
-import { CheckCircle2, Circle, Clock, ExternalLink, FileText, MessageCircle, Play } from "lucide-react";
+import { CheckCircle2, Circle, Clock, ExternalLink, FileText, MessageCircle } from "lucide-react";
+import { PillVideoPlayer } from "./PillVideoPlayer";
 
 export type ModuloPill = {
   id: string;
@@ -12,6 +13,7 @@ export type ModuloPill = {
   video_url: string | null;
   attachment_url: string | null;
   required: boolean;
+  interaction_schema?: { tutor_prompt?: string } | null;
 };
 
 const pillKindLabel: Record<ModuloPill["kind"], string> = {
@@ -30,7 +32,7 @@ interface Props {
   hasTrail: boolean;
   onTogglePill: (pill: ModuloPill) => void;
   togglePending: boolean;
-  onOpenTutor: () => void;
+  onOpenTutor: (pill?: ModuloPill) => void;
 }
 
 export const ModuloPillList = ({
@@ -105,17 +107,11 @@ export const ModuloPillList = ({
             </p>
           )}
 
+          {pill.video_url && (
+            <PillVideoPlayer url={pill.video_url} trailColor={trailColor} />
+          )}
+
           <div className="flex flex-wrap items-center gap-2 mt-4">
-            {pill.video_url && (
-              <a
-                href={pill.video_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1.5 font-body text-xs uppercase tracking-wide hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
-              >
-                <Play className="h-3.5 w-3.5" /> assistir
-              </a>
-            )}
             {pill.attachment_url && (
               <a
                 href={pill.attachment_url}
@@ -127,10 +123,10 @@ export const ModuloPillList = ({
                 <ExternalLink className="h-3 w-3" />
               </a>
             )}
-            {pill.kind === "exercicio_pbl" && hasTrail && (
+            {(pill.kind === "exercicio_pbl" || pill.interaction_schema?.tutor_prompt) && hasTrail && (
               <button
                 type="button"
-                onClick={onOpenTutor}
+                onClick={() => onOpenTutor(pill)}
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:scale-105 active:scale-95 transition-transform"
                 style={{ backgroundColor: trailColor }}
               >
