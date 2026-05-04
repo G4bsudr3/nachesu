@@ -181,6 +181,8 @@ Deno.serve(async (req) => {
         ? { number: currentModule.number, title: currentModule.title, objective: currentModule.objective }
         : null,
       completedModules,
+      pillPrompt,
+      pillTitle,
     });
 
     const history = (convRes.data?.messages ?? []) as ChatMessage[];
