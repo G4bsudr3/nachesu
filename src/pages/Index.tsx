@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, Linkedin } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
+import frattzPhoto from "@/assets/facilitadores/frattz.png";
+import duduPhoto from "@/assets/facilitadores/dudu.png";
 
 type EletivaKey = "ia-na-pratica" | "economia-circular";
 
@@ -616,13 +618,14 @@ const Index = () => {
               eletivaLabel: "ia na prática",
               nick: "frattz",
               nome: "Mateus Frattezi",
-              tagline: "embaixador global lovable · ceo naches",
+              tagline: "palestrante & educador em ia · embaixador lovable · cofundador da naches",
               quote:
                 "construo na frente da turma, com a turma decidindo o caminho. saio deixando algo rodando.",
-              bio: "lidera a naches, b2b saas de gamificação com ia pra educação. trouxe o jeito mão-na-massa do lovable pra dentro da sala de aula, do bett ao instituto caldeira.",
-              tags: ["embaixador global lovable", "ceo naches", "construindo ao vivo"],
+              bio: "cria experiências de aprendizado com ia e game design pra quem quer sair do consumo passivo e começar a fazer. cofundador da naches, embaixador global do lovable e palestrante. mostra ao vivo, com a turma junto, como tirar uma ideia da cabeça e colocar no ar.",
+              tags: ["embaixador global lovable", "cofundador naches", "ia + game design", "construindo ao vivo"],
               accent: "#f756a6",
-              initials: "fz",
+              photo: frattzPhoto,
+              linkedin: "https://www.linkedin.com/in/frattin/",
             },
             {
               key: "economia-circular" as EletivaKey,
@@ -635,7 +638,8 @@ const Index = () => {
               bio: "ex-perestroika, ex-500 global, hoje sócio as a service. mistura bagagem de empreendedor com olhar clínico pra metodologia de aprendizagem.",
               tags: ["ex-perestroika", "ex-500 global", "sócio as a service", "stanford"],
               accent: "#6f77fc",
-              initials: "do",
+              photo: duduPhoto,
+              linkedin: "https://www.linkedin.com/in/duduobregon/",
             },
           ].map((f, i) => (
             <motion.article
@@ -652,17 +656,30 @@ const Index = () => {
                 aria-hidden="true"
               />
               <div className="flex items-start gap-5 mb-6">
-                <div
-                  className="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center font-display text-3xl sm:text-4xl uppercase"
-                  style={{ backgroundColor: f.accent, color: "#f2e4d8" }}
-                  aria-hidden="true"
-                >
-                  {f.initials}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
-                    facilitador · {f.eletivaLabel}
-                  </p>
+                <img
+                  src={f.photo}
+                  alt={f.nome}
+                  className="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover ring-2"
+                  style={{ boxShadow: `0 0 0 4px ${f.accent}22`, borderColor: f.accent }}
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
+                      facilitador · {f.eletivaLabel}
+                    </p>
+                    <a
+                      href={f.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`linkedin de ${f.nick}`}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-perestroika-preto/15 text-perestroika-preto/70 hover:text-perestroika-bege transition-colors"
+                      style={{ backgroundColor: "transparent" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = f.accent)}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                    >
+                      <Linkedin className="w-4 h-4" />
+                    </a>
+                  </div>
                   <h3 className="font-display uppercase text-3xl sm:text-4xl leading-none">
                     {f.nick}
                   </h3>
