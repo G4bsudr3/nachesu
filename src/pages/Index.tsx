@@ -315,14 +315,25 @@ const Index = () => {
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
           <motion.p
             variants={heroItem}
-            className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6 inline-flex items-center gap-2"
+            className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6 inline-flex items-center gap-2 flex-wrap"
           >
-            <span
-              className="inline-block w-2 h-2 rounded-full"
-              style={{ backgroundColor: activeEletiva.accent }}
-              aria-hidden="true"
-            />
-            sua escolha · {activeEletiva.nome} · {activeEletiva.professor}
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="inline-block w-2 h-2 rounded-full"
+                style={{ backgroundColor: eletivas["ia-na-pratica"].accent }}
+                aria-hidden="true"
+              />
+              ia na prática · com frattz
+            </span>
+            <span className="opacity-40">·</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="inline-block w-2 h-2 rounded-full"
+                style={{ backgroundColor: eletivas["economia-circular"].accent }}
+                aria-hidden="true"
+              />
+              economia circular · com dudu
+            </span>
           </motion.p>
           <motion.h1
             variants={heroItem}
@@ -331,32 +342,35 @@ const Index = () => {
             <span className="block">duas eletivas.</span>
             <span className="block">um nachesu.</span>
           </motion.h1>
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={`pitch-${activeTab}`}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80"
-            >
-              {activeEletiva.pitch} 20 semanas, tutor ia do lado e um projeto seu no ar no fim.
-            </motion.p>
-          </AnimatePresence>
+          <motion.p
+            variants={heroItem}
+            className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80"
+          >
+            duas portas, mesmo combinado: 20 semanas, tutor ia do lado e um projeto seu no ar no fim. escolha por onde quer entrar.
+          </motion.p>
 
-          <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
-            <Link
-              to="/auth"
-              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full text-perestroika-bege px-8 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-              style={{ backgroundColor: activeEletiva.accent }}
-            >
-              entrar em {activeEletiva.nome} <ArrowRight className="h-4 w-4" />
-            </Link>
+          <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
+            {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
+              const e = eletivas[key];
+              return (
+                <Link
+                  key={key}
+                  to="/auth"
+                  onMouseEnter={() => setActiveTab(key)}
+                  onFocus={() => setActiveTab(key)}
+                  className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full text-perestroika-bege px-7 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                  style={{ backgroundColor: e.accent }}
+                >
+                  entrar em {e.nome} <ArrowRight className="h-4 w-4" />
+                </Link>
+              );
+            })}
             <a
-              href="#trilhas"
+              href="#eletivas"
+              onClick={(ev) => handleAnchorClick(ev, "eletivas")}
               className="inline-flex items-center min-h-11 px-1 font-body text-sm sm:text-base uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
             >
-              ver as 4 trilhas ↓
+              comparar as duas ↓
             </a>
           </motion.div>
         </motion.div>
