@@ -37,6 +37,7 @@ interface TutorChatProps {
   trailId: string;
   trailTitle: string;
   trailColor: string;
+  pillContext?: { pillTitle: string; pillPrompt: string } | null;
 }
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tutor-trail-chat`;
