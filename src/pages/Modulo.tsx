@@ -292,7 +292,17 @@ const Modulo = () => {
           hasTrail={!!trail}
           onTogglePill={(p) => togglePillMutation.mutate(p)}
           togglePending={togglePillMutation.isPending}
-          onOpenTutor={() => setTutorOpen(true)}
+          onOpenTutor={(pill) => {
+            if (pill?.interaction_schema?.tutor_prompt) {
+              setTutorPillContext({
+                pillTitle: pill.title,
+                pillPrompt: pill.interaction_schema.tutor_prompt,
+              });
+            } else {
+              setTutorPillContext(null);
+            }
+            setTutorOpen(true);
+          }}
         />
 
         <ModuloFooter
