@@ -327,7 +327,7 @@ const Index = () => {
             className="font-display uppercase display-clamp-hero"
           >
             <span className="block">duas eletivas.</span>
-            <span className="block">um hub só.</span>
+            <span className="block">um nachesu.</span>
           </motion.h1>
           <AnimatePresence mode="wait">
             <motion.p
