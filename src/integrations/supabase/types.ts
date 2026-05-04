@@ -1042,6 +1042,7 @@ export type Database = {
       hub_materials: {
         Row: {
           category: string
+          course_id: string | null
           cover_url: string | null
           created_at: string
           created_by: string
@@ -1059,6 +1060,7 @@ export type Database = {
         }
         Insert: {
           category?: string
+          course_id?: string | null
           cover_url?: string | null
           created_at?: string
           created_by: string
@@ -1076,6 +1078,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          course_id?: string | null
           cover_url?: string | null
           created_at?: string
           created_by?: string
@@ -1091,7 +1094,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hub_materials_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hub_projects: {
         Row: {
