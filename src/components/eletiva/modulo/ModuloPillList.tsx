@@ -1,4 +1,5 @@
-import { CheckCircle2, Circle, Clock, ExternalLink, FileText, MessageCircle, Play } from "lucide-react";
+import { CheckCircle2, Circle, Clock, ExternalLink, FileText, MessageCircle } from "lucide-react";
+import { PillVideoPlayer } from "./PillVideoPlayer";
 
 export type ModuloPill = {
   id: string;
@@ -12,6 +13,7 @@ export type ModuloPill = {
   video_url: string | null;
   attachment_url: string | null;
   required: boolean;
+  interaction_schema?: { tutor_prompt?: string } | null;
 };
 
 const pillKindLabel: Record<ModuloPill["kind"], string> = {
