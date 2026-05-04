@@ -54,7 +54,8 @@ const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
 // FeedbackFinalGlobalNudge removido do fluxo do aluno (resíduo da imersão Chŏra).
-// Continua disponível em /app/feedback-final via MobileNav quando a flag de extras estiver ligada.
+// GlobalVotingBanner agora vive atrás de <ExtrasGate>: só aparece quando a flag
+// `eletiva_extras_enabled` estiver ligada (admin reativa quando precisar).
 
 const queryClient = new QueryClient({
   defaultOptions: {
