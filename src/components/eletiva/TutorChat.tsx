@@ -48,6 +48,7 @@ export const TutorChat = ({
   trailId,
   trailTitle,
   trailColor,
+  pillContext,
 }: TutorChatProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
