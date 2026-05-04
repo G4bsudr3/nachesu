@@ -53,11 +53,8 @@ const Eletivas = lazy(() => import("./pages/Eletivas.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
-const FeedbackFinalGlobalNudge = lazy(() =>
-  import("./components/hub/FeedbackFinalGlobalNudge").then((m) => ({
-    default: m.FeedbackFinalGlobalNudge,
-  })),
-);
+// FeedbackFinalGlobalNudge removido do fluxo do aluno (resíduo da imersão Chŏra).
+// Continua disponível em /app/feedback-final via MobileNav quando a flag de extras estiver ligada.
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -100,7 +97,6 @@ const App = () => (
           <DashboardDraftPersistence />
           <Suspense fallback={null}>
             <GlobalVotingBanner />
-            <FeedbackFinalGlobalNudge />
           </Suspense>
           <Suspense fallback={<RouteFallback />}>
             <Routes>
