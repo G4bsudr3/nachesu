@@ -1,45 +1,57 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, Users, FolderOpen, BookOpen } from "lucide-react";
-import { PageHeader } from "@/components/layout/PageHeader";
-import { supabase } from "@/integrations/supabase/client";
+import { ArrowRight, BookOpen, MessageCircle, Sparkles, Layers } from "lucide-react";
 import { motion } from "framer-motion";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
+import { useMyEnrollments } from "@/hooks/useCourses";
+import { useActiveEletiva } from "@/hooks/useActiveEletiva";
+import { supabase } from "@/integrations/supabase/client";
+import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 
-interface HubCounts {
-  builders: number;
+interface CourseCounts {
   materials: number;
   materialsNew: number;
-  projects: number;
+  modules: number;
 }
 
-const useHubCounts = () => {
-  const [counts, setCounts] = useState<HubCounts>({ builders: 0, materials: 0, materialsNew: 0, projects: 0 });
+const useCourseCounts = (courseId: string | null) => {
+  const [counts, setCounts] = useState<CourseCounts>({ materials: 0, materialsNew: 0, modules: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
+    if (!courseId) {
+      setCounts({ materials: 0, materialsNew: 0, modules: 0 });
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
     (async () => {
       const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      const [builders, mats, matsNew, projs, subs] = await Promise.all([
-        supabase.from("builder_cards").select("id", { count: "exact", head: true }).eq("is_published", true).eq("status", "pronta"),
-        supabase.from("hub_materials").select("id", { count: "exact", head: true }).eq("published", true),
-        supabase.from("hub_materials").select("id", { count: "exact", head: true }).eq("published", true).gte("created_at", sevenDaysAgo),
-        supabase.from("hub_projects").select("id", { count: "exact", head: true }),
-        supabase.from("mission_submissions").select("id", { count: "exact", head: true }),
+      // materiais do curso + globais
+      const filter = `course_id.eq.${courseId},course_id.is.null`;
+      const [mats, matsNew, mods] = await Promise.all([
+        supabase.from("hub_materials").select("id", { count: "exact", head: true }).eq("published", true).or(filter),
+        supabase.from("hub_materials").select("id", { count: "exact", head: true }).eq("published", true).gte("created_at", sevenDaysAgo).or(filter),
+        supabase
+          .from("modules")
+          .select("id, trails!inner(course_id)", { count: "exact", head: true })
+          .eq("published", true)
+          .eq("trails.course_id", courseId),
       ]);
       if (cancelled) return;
       setCounts({
-        builders: builders.count ?? 0,
         materials: mats.count ?? 0,
         materialsNew: matsNew.count ?? 0,
-        projects: (projs.count ?? 0) + (subs.count ?? 0),
+        modules: mods.count ?? 0,
       });
       setLoading(false);
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [courseId]);
 
   return { counts, loading };
 };
@@ -90,29 +102,35 @@ const PortaCard = ({ to, title, copy, hint, icon, accent, delay = 0 }: PortaCard
 );
 
 const HubIndex = () => {
-  const { counts, loading } = useHubCounts();
+  const { data: enrollments } = useMyEnrollments();
+  const { slug: activeSlug } = useActiveEletiva();
+  const { data: extrasEnabled } = useEletivaExtras();
+
+  const activeEnrollment = useMemo(() => {
+    if (!enrollments?.length) return null;
+    if (activeSlug) {
+      const match = enrollments.find((e) => e.course?.slug === activeSlug);
+      if (match) return match;
+    }
+    return enrollments[0];
+  }, [enrollments, activeSlug]);
+
+  const activeCourse = activeEnrollment?.course ?? null;
+  const { counts, loading } = useCourseCounts(activeCourse?.id ?? null);
 
   const portas: PortaCardProps[] = [
     {
-      to: "/app/hub/galeria",
-      title: "galeria",
-      copy: "as cartas de quem tá construindo com a gente",
-      hint: loading ? "carregando…" : `${counts.builders} builders · 6 arquétipos`,
-      icon: <Sparkles className="h-7 w-7" />,
+      to: activeCourse ? `/app/trilhas?eletiva=${activeCourse.slug}` : "/app/trilhas",
+      title: "trilhas",
+      copy: "as 4 trilhas e os módulos da sua eletiva",
+      hint: loading ? "carregando…" : `${counts.modules} módulos publicados`,
+      icon: <Layers className="h-7 w-7" />,
       accent: "linear-gradient(135deg, #f756a6 0%, #6f77fc 100%)",
-    },
-    {
-      to: "/app/hub/turma",
-      title: "turma",
-      copy: "panorama da turma, mascotes e o coletivo",
-      hint: "qual mascote vai ganhar?",
-      icon: <Users className="h-7 w-7" />,
-      accent: "linear-gradient(135deg, #fe7b02 0%, #fd4644 100%)",
     },
     {
       to: "/app/hub/materiais",
       title: "materiais",
-      copy: "apresentações, leituras e referências da imersão",
+      copy: "leituras, slides e referências da sua eletiva",
       hint: loading
         ? "carregando…"
         : counts.materialsNew > 0
@@ -122,11 +140,19 @@ const HubIndex = () => {
       accent: "linear-gradient(135deg, #6f77fc 0%, #f756a6 100%)",
     },
     {
-      to: "/app/hub/projetos",
-      title: "projetos",
-      copy: "o feed da turma. reaja, comente, poste o seu",
-      hint: loading ? "carregando…" : `${counts.projects} no feed`,
-      icon: <FolderOpen className="h-7 w-7" />,
+      to: "/app/tutor",
+      title: "tutor IA",
+      copy: "tira dúvida do conteúdo a qualquer hora",
+      hint: "respostas guiadas pela trilha",
+      icon: <MessageCircle className="h-7 w-7" />,
+      accent: "linear-gradient(135deg, #fe7b02 0%, #fd4644 100%)",
+    },
+    {
+      to: "/app/entregas",
+      title: "entregas",
+      copy: "tuas missões e entregáveis dessa eletiva",
+      hint: "acompanhe o que falta",
+      icon: <Sparkles className="h-7 w-7" />,
       accent: "linear-gradient(135deg, #fd4644 0%, #fe7b02 100%)",
     },
   ];
@@ -147,26 +173,46 @@ const HubIndex = () => {
       />
 
       <main className="container max-w-6xl py-8 sm:py-12">
-        <header className="mb-8 sm:mb-12">
+        <header className="mb-6 sm:mb-10">
           <p className="mb-3 font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
-            hub da turma
+            seu hub
           </p>
           <h1 className="font-display text-5xl uppercase leading-[0.9] sm:text-7xl">
-            tudo que rola<br />entre nós<br />tá aqui
+            tudo da sua<br />eletiva<br />num lugar só
           </h1>
-          <p className="mt-4 max-w-xl font-body text-base text-perestroika-preto/75 sm:text-lg">
-            galeria, materiais, projetos e a turma toda. escolhe por onde começar 🤙
-          </p>
+          {activeCourse && (
+            <p className="mt-4 max-w-xl font-body text-base text-perestroika-preto/75 sm:text-lg">
+              você tá vendo o conteúdo de <strong className="font-semibold">{activeCourse.title.toLowerCase()}</strong>. troca abaixo se quiser ir pra outra.
+            </p>
+          )}
         </header>
 
-        {/* banners de fotos e carta pro futuro removidos do fluxo do aluno (resíduos Chŏra). */}
+        {(enrollments?.length ?? 0) > 1 && (
+          <div className="mb-6 sm:mb-8">
+            <EletivaSwitcher />
+          </div>
+        )}
 
-        {/* 4 portas */}
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
           {portas.map((p, i) => (
             <PortaCard key={p.to} {...p} delay={i * 0.06} />
           ))}
         </div>
+
+        {extrasEnabled && (
+          <div className="mt-10 rounded-2xl border border-perestroika-preto/10 bg-white/40 p-5 text-sm text-perestroika-preto/70">
+            <p className="font-body">
+              <strong className="font-semibold">extras Chŏra ligados:</strong>{" "}
+              <Link to="/app/hub/galeria" className="underline hover:text-perestroika-preto">galeria</Link>
+              {" · "}
+              <Link to="/app/hub/projetos" className="underline hover:text-perestroika-preto">projetos</Link>
+              {" · "}
+              <Link to="/app/hub/turma" className="underline hover:text-perestroika-preto">turma</Link>
+              {" · "}
+              <Link to="/app/hub/album" className="underline hover:text-perestroika-preto">álbum</Link>
+            </p>
+          </div>
+        )}
       </main>
     </div>
   );
