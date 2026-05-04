@@ -167,6 +167,14 @@ const App = () => (
                 }
               />
               <Route
+                path="/app/eletiva/:slug"
+                element={
+                  <ProtectedRoute>
+                    <EletivaHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/app/trilhas"
                 element={
                   <ProtectedRoute>
