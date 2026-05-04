@@ -107,7 +107,6 @@ export const ModuloPillList = ({
             </p>
           )}
 
-          <div className="flex flex-wrap items-center gap-2 mt-4">
           {pill.video_url && (
             <PillVideoPlayer url={pill.video_url} trailColor={trailColor} />
           )}
