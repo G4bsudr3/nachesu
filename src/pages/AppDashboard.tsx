@@ -22,6 +22,7 @@ import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
+import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
@@ -33,13 +34,16 @@ const AppDashboard = () => {
   const { data: enrollments } = useMyEnrollments();
   const { slug: activeSlug } = useActiveEletiva();
   // se aluno tem só 1 matrícula, escopa pelo único curso.
-  // se tem mais, usa a slug "atual" escolhida em /app/eletivas (se existir).
+  // se tem 2+, usa a slug "atual" escolhida no switcher (com fallback pra primeira).
+  const hasMultiple = (enrollments?.length ?? 0) > 1;
   const activeEnrollment =
     enrollments && enrollments.length === 1
       ? enrollments[0]
-      : enrollments?.find((e) => e.course?.slug === activeSlug) ?? null;
-  const singleCourseId = activeEnrollment?.course_id ?? null;
-  const { data: eletiva } = useEletivaProgress(singleCourseId);
+      : enrollments?.find((e) => e.course?.slug === activeSlug) ??
+        enrollments?.[0] ??
+        null;
+  const activeCourseId = activeEnrollment?.course_id ?? null;
+  const { data: eletiva } = useEletivaProgress(activeCourseId);
   const status = usePostEventStatus();
   const { enabled: extrasEnabled } = useEletivaExtras();
 
