@@ -104,7 +104,7 @@ const PortaCard = ({ to, title, copy, hint, icon, accent, delay = 0 }: PortaCard
 const HubIndex = () => {
   const { data: enrollments } = useMyEnrollments();
   const { slug: activeSlug } = useActiveEletiva();
-  const { data: extrasEnabled } = useEletivaExtras();
+  const { enabled: extrasEnabled } = useEletivaExtras();
 
   const activeEnrollment = useMemo(() => {
     if (!enrollments?.length) return null;
