@@ -50,6 +50,7 @@ const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
 const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
 const Eletivas = lazy(() => import("./pages/Eletivas.tsx"));
+const EletivaHome = lazy(() => import("./pages/EletivaHome.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
