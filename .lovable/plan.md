@@ -1,77 +1,160 @@
-## Limpar a experiência do aluno e dar caminho claro pras 2 eletivas
+## Diagnóstico: o que faz sentido, o que não faz
 
-A captura mostra dois banners legados sobrando no dashboard: o sticky "responder pesquisa" (FeedbackFinalGlobalNudge) e o card grande "fotos do chora lovable" no `/app/hub`. Esses são resíduos da imersão Chŏra. Pra eletiva sebrae eles confundem.
+### O que está bom (manter)
+- **Schema multi-curso já correto:** `courses` → `trails` → `modules` → `module_pills`, com `enrollments(user_id, course_id)`. Os 2 cursos estão lá com as 4 trilhas cada (IA: 19 módulos vs 20 prometidos no PDF; Eco: 20). Hook `useEletivaProgress(courseId)` escopa por curso. Isso é a fundação certa pra hospedar duas eletivas.
+- **Camada de identidade:** `EletivaSymbol` com 6 poses, `NachesULogo`, `EletivaFooter`, paleta Perestroika + azul Sebrae bem amarradas via tokens.
+- **Flag `eletiva_extras_enabled`** isolando tudo que é resíduo Chŏra (galeria, álbum, projetos, builder, carta-futuro, votação, mascote, pesquisa final). Bem feito conceitualmente. `ExtrasGate` no router protege rotas.
+- **`useActiveEletiva` + `EletivaSwitcher`** pra alternar quando há 2 matrículas. Mobile-first, persistente em localStorage.
+- **Lazy loading** das rotas secundárias no `App.tsx`.
+- **`MyCoursesList`, `EletivaCard`, `TrailsProgress`** são bem fatorados.
 
-Além disso, o usuário não consegue ter a "visão de aluno cadastrado nas duas eletivas" porque hoje o banco está vazio (0 enrollments, 0 profiles) — mateusfrattezi entrou mas nunca foi matriculado em curso nenhum.
+### O que está bagunçado (problema)
 
-Por fim, o fluxo "matriculado em duas eletivas" está incompleto: o dashboard mostra `MyCoursesList` (lista bonita), mas perde o **próximo passo** (`EletivaCard`) que só aparece quando tem 1 matrícula. Isso quebra a regra de UX de "1 próximo passo único em destaque" e deixa o aluno sem orientação clara.
+**1. Identidade do produto está confusa em código vs UI.**
+A base segue chamando tudo de "chora", "perestroika", "imersão", "turma", "futuro" enquanto a UI já é NachesU/Sebrae. Vai ficar pior à medida que evoluir. Pelo menos 30+ arquivos misturando os dois mundos.
 
-### Escopo
+**2. Pasta `pages/` virou despensa (37 arquivos).** Conviveriam: páginas core da eletiva (AppDashboard, Trilhas, Modulo, MinhasEletivas, Eletivas, AccountSettings) + páginas legadas Chŏra (HubAlbum, HubBuilder, HubGallery, HubProjetos, HubProjetosRanking, HubTurma, FutureLetter, FeedbackFinal, Certificado, Missions, Tutorial, MinhaCarta, CartaPublica, Onboarding, OnboardingDialogPage, Prework, ChoraBot). **17 das 37 páginas são legadas.** Tudo gated por `ExtrasGate`, mas continuam no bundle (lazy mas presentes), continuam nos resultados de busca, continuam confundindo quem lê o código.
 
-**1. Remover banners legados que poluem a tela do aluno**
+**3. Hub é Chŏra puro. Não tem hub-de-eletiva.**
+`HubIndex` ainda fala "tudo que rola entre nós", mostra "galeria/turma/materiais/projetos" como 4 portas iguais, sendo que 3 dessas 4 são extras-gateadas. Aluno chega lá, clica "galeria" e é redirecionado pro `/app`. UX quebrada por padrão.
 
-- Tirar `<FeedbackFinalGlobalNudge />` do `App.tsx` (vira lixo enquanto a eletiva tá rolando, e o caminho pra pesquisa final continua pelo `MobileNav` quando a flag de extras estiver ligada).
-- Remover o card "fotos do chora lovable" e o `<FutureLetterBanner />` do `HubIndex.tsx`. Eles são da imersão antiga. Se algum dia voltar a fazer sentido, a flag `eletiva_extras_enabled` reativa via admin.
-- Manter `<GlobalVotingBanner />` como está — ele já se auto-esconde quando não há sessão de votação aberta, então não polui em estado normal.
+**4. `Eletivas.tsx` (catálogo público) duplica os dados de trilhas que estão hardcoded em `Index.tsx`.** Duas fontes de verdade pra mesma coisa. Quando o curso evoluir, vai dessincar.
 
-**2. Matricular mateusfrattezi nas duas eletivas (via migration)**
+**5. Tutor IA é genérico, não tem contexto de eletiva.**
+- Rota `/app/tutor` aponta pra `ChoraBot` (pergunta sobre Chŏra Lovable).
+- Já existe `tutor-trail-chat` edge function + componente `TutorChat` no `Modulo.tsx`, escopado por trilha. Ótimo no módulo, mas o ícone "tutor" do MobileNav abre o bot Chŏra. Aluno fica perdido.
 
-Migration que insere os dois `enrollments` pra esse `user_id` específico (busco no `auth.users` por email/metadata e faço `INSERT ... SELECT` pegando os dois course_ids `ia-na-pratica` e `economia-circular`). Idempotente via `ON CONFLICT (user_id, course_id) DO NOTHING`.
+**6. Mismatch IA na Prática: PDF tem 20 módulos, banco tem 19** (falta o módulo 1). Confirma faltando módulo de boas-vindas/abertura.
 
-Com isso, ao entrar no `/app`, ele vê a "visão dual" real, não mock.
+**7. Banner de votação global ainda no `App.tsx`** pra todo aluno logado, mesmo com extras desligado. Auto-esconde quando não tem sessão, mas é uma chamada de query desnecessária pra todo aluno.
 
-**3. Reformular o dashboard pra quem tem 2 eletivas**
+**8. Caminho do aluno não tem onboarding contextual por eletiva.** Quando matricula em IA, não há "boas-vindas, aqui está sua semana 1". Só cai no dashboard. PDF da IA descreve um "módulo zero / pílula a" de orientação que não existe.
 
-Hoje quando `enrollments.length > 1`, o `AppDashboard` só mostra `MyCoursesList` e some com o `EletivaCard`. Isso quebra a hierarquia "1 próximo passo único".
+**9. `Modulo.tsx` (559 linhas) faz tudo:** fetch, mutations, render de pills, tutor, certificate. Precisa quebrar em pelo menos: header, lista-de-pills, painel-tutor, footer-de-progresso.
 
-Nova lógica em `AppDashboard.tsx`:
+**10. `Index.tsx` (924 linhas) está obeso.** Hero + dois cards + sobre + facilitadores + faq numa única página. Funciona, mas qualquer ajuste pequeno custa caro.
+
+**11. Naming das rotas inconsistente:**
+- `/app/missoes` e `/app/entregas` apontam pra mesma página
+- `/app/inicio` e `/app/onboarding` apontam pra páginas diferentes (uma é pré-curso, outra é dialog)
+- `/app/carta` (Chŏra) ainda acessível mesmo com extras off
+
+**12. Conteúdo dos módulos incompleto.** Banco tem títulos, mas faltam as pílulas (`module_pills`) populadas a partir dos PDFs anexados. Sem isso, o módulo abre vazio.
+
+---
+
+## Plano de reorganização
+
+Quatro frentes em ordem de prioridade.
+
+### Frente 1 — Limpar a casa (alto impacto, baixo risco)
+
+**1.1 Renomear semanticamente sem quebrar imports:**
+Mover páginas legadas Chŏra pra `src/pages/legacy/` e atualizar imports no `App.tsx`. Mantém funcional, mas sinaliza visualmente "esse código não é da eletiva".
+```text
+src/pages/legacy/
+  HubAlbum, HubBuilder, HubGallery, HubProjetos, HubProjetosRanking,
+  HubTurma, FutureLetter, FeedbackFinal, Missions, Tutorial,
+  MinhaCarta, CartaPublica, Onboarding, OnboardingDialogPage, Prework, ChoraBot
+```
+Idem `src/components/` → mover `hub/`, `carta/`, `chora-bot/`, `prework/`, `tutorial/`, `onboarding/` pra `legacy/`. `eletiva/`, `dashboard/`, `brand/`, `layout/`, `auth/`, `ui/` ficam.
+
+**1.2 Remover rota `/app/tutor` apontando pro ChoraBot.** Tutor virou a aba do módulo (TutorChat já existe). Deixar `/app/chora-bot` só atrás da flag extras.
+
+**1.3 Tirar `<GlobalVotingBanner />` do `App.tsx`** ou trancar atrás da flag. Hoje toda sessão de aluno faz query inútil.
+
+**1.4 Padronizar rotas:** remover alias `/app/missoes` (vira `/app/entregas`), tirar `/app/inicio` se não usado, padronizar a pasta `dinamica/` atrás da flag.
+
+### Frente 2 — Tornar o hub um hub-de-eletiva, não um hub-Chŏra
+
+**2.1 Reescrever `HubIndex.tsx`** com 3 portas reais:
+- **materiais da eletiva ativa** (filtra `hub_materials` por `course_id`, hoje é global)
+- **tutor IA da trilha atual** (link contextual pra última trilha aberta)
+- **minhas entregas** (renomeia `mission_submissions` por aluno na eletiva ativa)
+
+Quando flag extras ON, somam-se as 4 portas legadas.
+
+**2.2 Adicionar `course_id` em `hub_materials`** (migration). Materiais hoje são globais. Precisamos filtrar por eletiva, senão aluno de IA vê material de Eco.
+
+**2.3 Criar `<EletivaContextBanner />`** nas páginas de hub mostrando "você está em ia na prática · trocar". Reaproveita `EletivaSwitcher`.
+
+### Frente 3 — Caminho do aluno por eletiva (UX core)
+
+**3.1 Onboarding contextual por matrícula.** Primeira visita ao `/app/trilhas?eletiva=ia-na-pratica`, mostrar overlay de boas-vindas: "oi, isso aqui é seu mapa. liberamos 1 módulo por semana. clica no primeiro pra começar". Persistir flag por (user_id, course_id) em `profiles.onboarded_courses jsonb`.
+
+**3.2 "Próximo passo único" honesto no dashboard:**
+- Hoje o `EletivaCard` mostra "próximo módulo" mas com 2 matrículas e ambas no módulo 5, fica ambíguo. Adicionar selo "atual" claro + ação primária "continuar módulo X de IA na Prática".
+- Mostrar nº da semana esperada vs nº onde o aluno está (lag/avanço). Ex: "estamos na semana 4. você completou 2".
+
+**3.3 `Modulo.tsx` quebrado em 4 componentes:**
+```text
+src/components/eletiva/modulo/
+  ModuloHeader.tsx       (título, trilha, voltar, número)
+  ModuloPillList.tsx     (pílulas + check)
+  ModuloTutorPanel.tsx   (TutorChat existente, só envolve)
+  ModuloFooter.tsx       (próximo módulo, certificado, voltar pro mapa)
+```
+`Modulo.tsx` vira ~120 linhas só de orquestração.
+
+**3.4 Página de aterrissagem por eletiva:** `/app/eletiva/:slug` (overview da eletiva: pitch, professor, calendário, próximos 3 módulos). Hoje só tem `/app/trilhas` (mapa cru) e `/app/eletivas` (gerenciar). Falta o "home da eletiva".
+
+**3.5 MobileNav contextual:** trocar ícone "tutor" pra "minha eletiva" → link pra `/app/eletiva/:slug-ativa`. Tutor permanece dentro do módulo (que é onde faz sentido).
+
+### Frente 4 — Conteúdo das eletivas (sem isso, nada vive)
+
+**4.1 Migration pra criar módulo 1 da IA na Prática** (faltando no banco), espelhando o PDF: título, objetivo, posicionar como módulo de boas-vindas/abertura na trilha 1.
+
+**4.2 Migration popular `module_pills`** dos 40 módulos (20 IA + 20 Eco) a partir dos PDFs anexados. Estrutura padrão por módulo:
+- pílula A (aula curta), pílula B, pílula C
+- exercicio_pbl
+- registro/evidência
+
+Volume grande mas mecânico — gerar SQL via script lendo os PDFs já parseados. Aprovação separada antes de executar.
+
+**4.3 Padronizar `hub_materials` com `course_id`** (migration da frente 2.2) e popular materiais iniciais por eletiva (links curados que cada professor enviar).
+
+**4.4 Calendário de release semanal:** `module_releases(course_id, module_id, release_at)` já existe. Popular pra ambas eletivas com início em março/2026, 1 por semana.
+
+---
+
+## Arquivos tocados (resumo, sem detalhar cada migration)
 
 ```text
-greeting
-↓
-[ se 2+ matrículas ]
-  hero contextual da eletiva ATIVA  (EletivaCard com snapshot da slug ativa)
-  ↓
-  "alternar eletiva" — chip horizontal, mobile-first, mostra a outra eletiva
-  como toggle (1 toque pra trocar a ativa, atualiza localStorage)
-  ↓
-  TrailsProgress da ativa
-↓
-[ se 1 matrícula ]
-  comportamento atual (EletivaCard + TrailsProgress)
-↓
-[ se 0 matrículas ]
-  estado vazio do MyCoursesList
-↓
-HubGateway (sempre)
+move:    pages/{Hub*,Future*,Feedback*,Missions,Tutorial,MinhaCarta,
+                CartaPublica,Onboarding,OnboardingDialogPage,Prework,ChoraBot}.tsx
+         → pages/legacy/
+move:    components/{hub,carta,chora-bot,prework,tutorial,onboarding}
+         → components/legacy/
+edit:    App.tsx (remove rotas duplicadas, ajusta imports, tira GlobalVotingBanner global)
+edit:    pages/HubIndex.tsx (vira hub-de-eletiva)
+edit:    components/dashboard/EletivaCard.tsx (próximo passo + lag de semana)
+edit:    components/layout/MobileNav.tsx (tutor → minha eletiva)
+edit:    pages/Modulo.tsx (quebra em 4 componentes)
+create:  pages/EletivaHome.tsx (/app/eletiva/:slug)
+create:  components/eletiva/modulo/{ModuloHeader,ModuloPillList,ModuloTutorPanel,ModuloFooter}.tsx
+create:  components/eletiva/EletivaContextBanner.tsx
+create:  components/eletiva/EletivaOnboardingOverlay.tsx
+migrations:
+  - add courses.id FK em hub_materials
+  - add profiles.onboarded_courses jsonb default '[]'
+  - insert módulo 1 IA na Prática
+  - populate module_pills (todos os 40 módulos) — script lendo PDFs
+  - populate module_releases (calendário semanal)
+delete:  data hardcoded de trilhas em Index.tsx (pull do banco)
 ```
 
-Componente novo enxuto: `EletivaSwitcher` (mobile-first horizontal scroll de pills, accent-bar por eletiva, marca "atual" com ring rosa). Ele aparece tanto no `/app` quanto no `/app/trilhas` no topo, pra trocar de mapa rápido. No desktop, ocupa o canto superior direito do hero como segmented control. Usa o hook `useActiveEletiva` que já existe.
+## Fora deste plano (intencional)
 
-A página `/app/eletivas` (`MinhasEletivas`) continua existindo como "gerenciar matrículas" detalhado, mas o switch rápido vira inline.
+- Não excluir páginas legadas Chŏra. Mover pra `legacy/` mantém histórico e permite reativação via flag.
+- Não mexer no design system (paleta, fontes, EletivaSymbol). Está sólido.
+- Não tocar em auth, RLS, ou edge functions de Chŏra (carta, mascote, votação) — ficam dormindo.
 
-**4. Trilhas: indicar de qual eletiva é**
+## Como vou tocar isso
 
-Em `Trilhas.tsx`, no header já mostra "eletiva ia na prática", mas a barra de cor topo do `EletivaSwitcher` ajuda a confirmar visualmente. Quando o aluno troca a eletiva ativa pelo switcher, a página de trilhas reflete na hora (já é a lógica atual via `useEletivaProgress`).
+Ordem sugerida em 4 entregas separadas (cada uma aprovável):
+1. **Frente 1** (limpar + reorganizar pastas) — 1 entrega, baixo risco.
+2. **Frente 4** (conteúdo dos módulos) — 1 entrega, é o que destrava tudo.
+3. **Frente 3** (caminho do aluno + Modulo refatorado) — 1 entrega.
+4. **Frente 2** (hub-de-eletiva) — 1 entrega final.
 
-**5. Mobile-first é o default — só checar**
-
-Tudo já é mobile-first. Confirmar que o novo `EletivaSwitcher` respeita touch target 44px, scroll horizontal sem corte, e se ajusta a desktop como segmented control via media query.
-
-### Arquivos tocados
-
-```text
-edit:    src/App.tsx                              (remove FeedbackFinalGlobalNudge)
-edit:    src/pages/HubIndex.tsx                   (remove banner fotos + carta futuro)
-edit:    src/pages/AppDashboard.tsx               (novo fluxo p/ 2 matrículas: hero + switcher + trilhas)
-edit:    src/pages/Trilhas.tsx                    (adiciona EletivaSwitcher no topo)
-create:  src/components/dashboard/EletivaSwitcher.tsx
-migration: insere enrollments pro user mateusfrattezi nas 2 eletivas
-```
-
-### Não faz parte deste plano
-
-- Refazer copy ou layout do hero/EletivaCard (já está sólido).
-- Mexer em `HubGateway`, `MobileNav`, `ChoraBotFab` — funcionam bem e respeitam a flag `eletiva_extras_enabled`.
-- Apagar arquivos de extras (`FutureLetterBanner`, banner fotos do hub) — só desconectar do fluxo. Ficam disponíveis pro modo Chŏra legado.
-- Tocar no `Index.tsx` (landing) — fora do escopo de "experiência do aluno logado".
+Posso ir entregando uma por vez pra você validar entre cada, ou puxar tudo de uma vez. Diz como prefere.

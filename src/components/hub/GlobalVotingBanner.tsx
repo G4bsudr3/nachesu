@@ -4,21 +4,25 @@ import { Vote, Sparkles, Rocket, X } from "lucide-react";
 import { useActiveVotingSession, useMyVote } from "@/features/votacao/useProjectVoting";
 import { useMyProjects } from "@/features/hub/useMyProjects";
 import { useAuth } from "@/contexts/AuthContext";
+import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { cn } from "@/lib/utils";
 
 /**
- * Banner global que aparece em todas as páginas /app enquanto a votação
- * tá aberta. Esconde nas páginas que já tem o VotingBanner próprio
- * (HubProjetos e ranking) pra não duplicar.
+ * Banner global de votação. Resíduo da imersão Chŏra: só aparece quando
+ * a flag `eletiva_extras_enabled` estiver ligada. Auto-esconde também
+ * sem sessão aberta, sem login ou fora de /app.
  */
 export const GlobalVotingBanner = () => {
   const { user } = useAuth();
   const location = useLocation();
+  const { enabled: extrasEnabled } = useEletivaExtras();
   const { session } = useActiveVotingSession();
   const { vote } = useMyVote(session?.id ?? null);
   const { projects, loading: loadingProjects } = useMyProjects();
   const [dismissed, setDismissed] = useState(false);
 
+  // gate por flag: enquanto a eletiva sebrae roda, votação fica off
+  if (!extrasEnabled) return null;
   // só mostra logado, em rotas /app, com sessão aberta
   if (!user) return null;
   if (!location.pathname.startsWith("/app")) return null;
