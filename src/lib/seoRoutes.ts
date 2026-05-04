@@ -13,54 +13,54 @@ export type RouteSeo = {
 };
 
 const baseDesc =
-  "duas eletivas da escola sebrae em parceria com a naches u. ia na prática (frattz) e economia circular (dudu). 20 semanas, tutor ia do lado.";
+  "nachesu, a plataforma de eletivas da naches pro ensino médio. ia na prática (frattz) e economia circular (dudu obregon). 20 semanas, tutor ia do lado.";
 
 export const ROUTE_SEO: Record<string, RouteSeo> = {
   "/": {
-    title: "eletivas escola sebrae · ia na prática + economia circular",
+    title: "nachesu · eletivas de ia + economia circular pro ensino médio",
     description: `${baseDesc} vai lá e cria.`,
     image: DEFAULT_OG,
     index: true,
   },
   "/eletivas": {
-    title: "escolha sua eletiva · ia na prática ou economia circular",
+    title: "escolha sua eletiva nachesu · ia ou economia circular",
     description:
-      "duas eletivas da escola sebrae: ia na prática (frattz) e economia circular (dudu). escolha por onde começar.",
+      "duas eletivas nachesu: ia na prática (frattz) e economia circular (dudu). escolha por onde começar.",
     image: DEFAULT_OG,
     index: true,
   },
   "/auth": {
-    title: "entrar · eletiva ia na prática",
-    description: "acesse sua eletiva pra continuar a trilha.",
+    title: "entrar · nachesu",
+    description: "acesse sua eletiva nachesu pra continuar a trilha.",
     index: true,
   },
   "/forms": {
-    title: "formulário · eletiva ia na prática",
-    description: "responda o formulário pra entrar na eletiva.",
+    title: "formulário · nachesu",
+    description: "responda o formulário pra entrar numa eletiva nachesu.",
     index: true,
   },
   "/app": {
-    title: "meu painel · eletivas escola sebrae",
+    title: "meu painel · nachesu",
     description: "seu progresso na eletiva escolhida e o próximo módulo liberado.",
   },
   "/app/eletivas": {
-    title: "minhas eletivas · escola sebrae",
+    title: "minhas eletivas · nachesu",
     description: "veja suas matrículas em ia na prática e economia circular e escolha qual acessar agora.",
   },
   "/app/trilhas": {
-    title: "trilhas · eletivas escola sebrae",
+    title: "trilhas · nachesu",
     description: "as 4 trilhas da sua eletiva e os 20 módulos liberados conforme você avança.",
   },
   "/app/tutor": {
-    title: "tutor ia · eletivas escola sebrae",
+    title: "tutor ia · nachesu",
     description: "converse com o tutor da sua trilha e desbloqueie o próximo passo.",
   },
   "/app/chora-bot": {
-    title: "tutor ia · eletivas escola sebrae",
+    title: "tutor ia · nachesu",
     description: "converse com o tutor da sua trilha e desbloqueie o próximo passo.",
   },
   "/app/conta": {
-    title: "minha conta · eletivas escola sebrae",
+    title: "minha conta · nachesu",
     description: "atualize seus dados e preferências.",
   },
 };
@@ -99,7 +99,7 @@ export function getRouteSeo(pathname: string): RouteSeo {
   if (prefixes[0]) return ROUTE_SEO[prefixes[0]];
 
   return {
-    title: "eletivas escola sebrae · naches u",
+    title: "nachesu · naches",
     description: baseDesc,
     image: DEFAULT_OG,
   };

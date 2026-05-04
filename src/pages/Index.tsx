@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ArrowRight, Clock } from "lucide-react";
-import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
+import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
@@ -144,7 +144,7 @@ const Index = () => {
   // observa qual seção (#eletivas / #trilhas) está visível pra destacar no menu
   const [activeSection, setActiveSection] = useState<string | null>(null);
   useEffect(() => {
-    const ids = ["eletivas", "trilhas"];
+    const ids = ["eletivas", "facilitadores", "trilhas"];
     const sections = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => !!el);
@@ -182,6 +182,7 @@ const Index = () => {
 
   const navItems: { id: string; label: string }[] = [
     { id: "eletivas", label: "eletivas" },
+    { id: "facilitadores", label: "facilitadores" },
     { id: "trilhas", label: "trilhas" },
   ];
 
@@ -197,7 +198,7 @@ const Index = () => {
         className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85 border-b border-perestroika-preto/10"
       >
         <div className="container flex items-center justify-between gap-4 py-4">
-          <ChoraLogo variant="dark" />
+          <NachesULogo variant="dark" />
 
           {/* seletor central */}
           <div
@@ -326,7 +327,7 @@ const Index = () => {
             className="font-display uppercase display-clamp-hero"
           >
             <span className="block">duas eletivas.</span>
-            <span className="block">um hub só.</span>
+            <span className="block">um nachesu.</span>
           </motion.h1>
           <AnimatePresence mode="wait">
             <motion.p
@@ -585,6 +586,134 @@ const Index = () => {
         </div>
       </section>
 
+      {/* facilitadores */}
+      <section
+        id="facilitadores"
+        className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-15%" }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 sm:mb-16 max-w-2xl"
+        >
+          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+            quem conduz cada eletiva
+          </p>
+          <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
+            dois facilitadores,<br />um jeito só.
+          </h2>
+          <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
+            cada eletiva tem um nome de gente por trás. ninguém aqui é palestrante de slide. eles constroem com a turma.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+          {[
+            {
+              key: "ia-na-pratica" as EletivaKey,
+              eletivaLabel: "ia na prática",
+              nick: "frattz",
+              nome: "Mateus Frattezi",
+              tagline: "embaixador global lovable · ceo naches",
+              quote:
+                "construo na frente da turma, com a turma decidindo o caminho. saio deixando algo rodando.",
+              bio: "lidera a naches, b2b saas de gamificação com ia pra educação. trouxe o jeito mão-na-massa do lovable pra dentro da sala de aula, do bett ao instituto caldeira.",
+              tags: ["embaixador global lovable", "ceo naches", "construindo ao vivo"],
+              accent: "#f756a6",
+              initials: "fz",
+            },
+            {
+              key: "economia-circular" as EletivaKey,
+              eletivaLabel: "economia circular",
+              nick: "dudu",
+              nome: "Eduardo Obregon",
+              tagline: "empreendedorismo & aprendizagem",
+              quote:
+                "ajudo gente e empresa a voar mais alto. carreira em três frentes: empreender, facilitar aprendizagem e mentorar.",
+              bio: "ex-perestroika, ex-500 global, hoje sócio as a service. mistura bagagem de empreendedor com olhar clínico pra metodologia de aprendizagem.",
+              tags: ["ex-perestroika", "ex-500 global", "sócio as a service", "stanford"],
+              accent: "#6f77fc",
+              initials: "do",
+            },
+          ].map((f, i) => (
+            <motion.article
+              key={f.key}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-9 flex flex-col"
+            >
+              <div
+                className="absolute inset-x-0 top-0 h-1.5"
+                style={{ backgroundColor: f.accent }}
+                aria-hidden="true"
+              />
+              <div className="flex items-start gap-5 mb-6">
+                <div
+                  className="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center font-display text-3xl sm:text-4xl uppercase"
+                  style={{ backgroundColor: f.accent, color: "#f2e4d8" }}
+                  aria-hidden="true"
+                >
+                  {f.initials}
+                </div>
+                <div className="min-w-0">
+                  <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
+                    facilitador · {f.eletivaLabel}
+                  </p>
+                  <h3 className="font-display uppercase text-3xl sm:text-4xl leading-none">
+                    {f.nick}
+                  </h3>
+                  <p className="font-body text-sm text-perestroika-preto/60 mt-1">
+                    {f.nome}
+                  </p>
+                  <p className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/70 mt-2">
+                    {f.tagline}
+                  </p>
+                </div>
+              </div>
+              <p
+                className="font-body italic text-base sm:text-lg text-perestroika-preto/85 leading-relaxed border-l-2 pl-4 mb-5"
+                style={{ borderColor: `${f.accent}66` }}
+              >
+                "{f.quote}"
+              </p>
+              <p className="font-body text-sm sm:text-base text-perestroika-preto/75 leading-relaxed mb-5">
+                {f.bio}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-7">
+                {f.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="font-body text-[11px] uppercase tracking-wide px-2.5 py-1 rounded-full border"
+                    style={{
+                      borderColor: `${f.accent}55`,
+                      color: "#090909",
+                      backgroundColor: `${f.accent}1a`,
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <a
+                href="#trilhas"
+                onClick={(ev) => {
+                  setActiveTab(f.key);
+                  handleAnchorClick(ev, "trilhas");
+                }}
+                className="mt-auto inline-flex items-center gap-2 font-body text-sm uppercase tracking-wide self-start hover:opacity-70 transition-opacity"
+                style={{ color: f.accent }}
+              >
+                ver trilhas de {f.eletivaLabel} <ArrowRight className="h-4 w-4" />
+              </a>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
       {/* tutor joão-de-barro */}
       <section className="relative bg-perestroika-preto text-perestroika-bege py-20 sm:py-28 overflow-hidden">
         <div className="container relative grid grid-cols-1 md:grid-cols-[auto_1fr] gap-10 md:gap-14 items-center">
@@ -754,7 +883,7 @@ const Index = () => {
 
       <footer className="container py-10 text-center">
         <p className="font-body text-xs text-perestroika-preto/55">
-          hub das eletivas · escola sebrae × naches u · 1º ano em
+          nachesu · uma plataforma naches · em parceria com escola sebrae
         </p>
       </footer>
     </div>

@@ -29,7 +29,7 @@ export const EletivaFooter = ({ className, tone = "muted" }: EletivaFooterProps)
         className,
       )}
     >
-      eletiva sebrae · escola sebrae · 1º ano EM
+      nachesu · uma plataforma naches · em parceria com escola sebrae
     </p>
   );
 };
