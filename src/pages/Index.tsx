@@ -340,7 +340,7 @@ const Index = () => {
             className="font-display uppercase display-clamp-hero"
           >
             <span className="block">duas eletivas.</span>
-            <span className="block">um naches u.</span>
+            <span className="block">uma naches u.</span>
           </motion.h1>
           <motion.p
             variants={heroItem}
