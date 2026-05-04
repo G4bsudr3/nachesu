@@ -32,7 +32,7 @@ interface Props {
   hasTrail: boolean;
   onTogglePill: (pill: ModuloPill) => void;
   togglePending: boolean;
-  onOpenTutor: () => void;
+  onOpenTutor: (pill?: ModuloPill) => void;
 }
 
 export const ModuloPillList = ({
