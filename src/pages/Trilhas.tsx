@@ -10,6 +10,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { TrilhaColumn } from "@/components/eletiva/TrilhaColumn";
+import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
@@ -112,16 +113,19 @@ const Trilhas = () => {
             voltar
           </Link>
 
-          <header className="mb-8 sm:mb-10">
-            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2">
-              eletiva {activeCourse.title.toLowerCase()}
-            </p>
-            <h1 className="font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.9] mb-3">
-              o mapa inteiro
-            </h1>
-            <p className="font-body text-base text-perestroika-preto/75 max-w-2xl">
-              com {activeCourse.professor_name.toLowerCase()}. {totalCompleted} de {totalPublished} módulos liberados já são seus.
-            </p>
+          <header className="mb-8 sm:mb-10 space-y-4">
+            <div>
+              <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2">
+                eletiva {activeCourse.title.toLowerCase()}
+              </p>
+              <h1 className="font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.9] mb-3">
+                o mapa inteiro
+              </h1>
+              <p className="font-body text-base text-perestroika-preto/75 max-w-2xl">
+                com {activeCourse.professor_name.toLowerCase()}. {totalCompleted} de {totalPublished} módulos liberados já são seus.
+              </p>
+            </div>
+            <EletivaSwitcher />
           </header>
 
           {trails.length === 0 ? (
