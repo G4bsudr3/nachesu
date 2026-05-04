@@ -108,16 +108,11 @@ export const ModuloPillList = ({
           )}
 
           <div className="flex flex-wrap items-center gap-2 mt-4">
-            {pill.video_url && (
-              <a
-                href={pill.video_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1.5 font-body text-xs uppercase tracking-wide hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
-              >
-                <Play className="h-3.5 w-3.5" /> assistir
-              </a>
-            )}
+          {pill.video_url && (
+            <PillVideoPlayer url={pill.video_url} trailColor={trailColor} />
+          )}
+
+          <div className="flex flex-wrap items-center gap-2 mt-4">
             {pill.attachment_url && (
               <a
                 href={pill.attachment_url}
@@ -129,10 +124,10 @@ export const ModuloPillList = ({
                 <ExternalLink className="h-3 w-3" />
               </a>
             )}
-            {pill.kind === "exercicio_pbl" && hasTrail && (
+            {(pill.kind === "exercicio_pbl" || pill.interaction_schema?.tutor_prompt) && hasTrail && (
               <button
                 type="button"
-                onClick={onOpenTutor}
+                onClick={() => onOpenTutor(pill)}
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:scale-105 active:scale-95 transition-transform"
                 style={{ backgroundColor: trailColor }}
               >
