@@ -66,12 +66,12 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!invited) {
-      // não tá em invited_participants, mas se já submeteu fbi público, pode entrar no app
+      // acesso aberto: qualquer email pode entrar (cria conta via magic link se não existir)
       return new Response(
         JSON.stringify({
           valid: false,
           prefill: null,
-          can_enter: fbiSubmitted,
+          can_enter: true,
           already_submitted: fbiSubmitted,
           has_user: !!existing?.user_id || accountExists,
           account_exists: accountExists,
