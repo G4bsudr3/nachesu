@@ -31,6 +31,10 @@ const Modulo = () => {
   const queryClient = useQueryClient();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress();
   const [tutorOpen, setTutorOpen] = useState(false);
+  const [tutorPillContext, setTutorPillContext] = useState<{
+    pillTitle: string;
+    pillPrompt: string;
+  } | null>(null);
 
   const moduleRow = useMemo(
     () => snapshot?.modules.find((m) => m.number === moduleNumber) ?? null,
