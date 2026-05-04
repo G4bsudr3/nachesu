@@ -317,10 +317,14 @@ const Modulo = () => {
       {trail && (
         <TutorChat
           open={tutorOpen}
-          onOpenChange={setTutorOpen}
+          onOpenChange={(o) => {
+            setTutorOpen(o);
+            if (!o) setTutorPillContext(null);
+          }}
           trailId={trail.id}
           trailTitle={trail.title}
           trailColor={trailColor}
+          pillContext={tutorPillContext}
         />
       )}
 
