@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Camera, Sparkles, Users, FolderOpen, BookOpen } from "lucide-react";
+import { ArrowRight, Sparkles, Users, FolderOpen, BookOpen } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import { FutureLetterBanner } from "@/components/hub/FutureLetterBanner";
-
 
 interface HubCounts {
   builders: number;
