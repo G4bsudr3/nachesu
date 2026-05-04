@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ArrowRight, Clock } from "lucide-react";
-import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
+import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
@@ -144,7 +144,7 @@ const Index = () => {
   // observa qual seção (#eletivas / #trilhas) está visível pra destacar no menu
   const [activeSection, setActiveSection] = useState<string | null>(null);
   useEffect(() => {
-    const ids = ["eletivas", "trilhas"];
+    const ids = ["eletivas", "facilitadores", "trilhas"];
     const sections = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => !!el);
@@ -182,6 +182,7 @@ const Index = () => {
 
   const navItems: { id: string; label: string }[] = [
     { id: "eletivas", label: "eletivas" },
+    { id: "facilitadores", label: "facilitadores" },
     { id: "trilhas", label: "trilhas" },
   ];
 
@@ -197,7 +198,7 @@ const Index = () => {
         className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85 border-b border-perestroika-preto/10"
       >
         <div className="container flex items-center justify-between gap-4 py-4">
-          <ChoraLogo variant="dark" />
+          <NachesULogo variant="dark" />
 
           {/* seletor central */}
           <div
@@ -754,7 +755,7 @@ const Index = () => {
 
       <footer className="container py-10 text-center">
         <p className="font-body text-xs text-perestroika-preto/55">
-          hub das eletivas · escola sebrae × naches u · 1º ano em
+          nachesu · uma plataforma naches · em parceria com escola sebrae
         </p>
       </footer>
     </div>
