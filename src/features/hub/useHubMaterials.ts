@@ -73,7 +73,7 @@ export function autoThumbUrl(m: HubMaterial): string | null {
   return null;
 }
 
-export const useHubMaterials = (opts?: { adminMode?: boolean }) => {
+export const useHubMaterials = (opts?: { adminMode?: boolean; courseId?: string | null; includeGlobal?: boolean }) => {
   const [materials, setMaterials] = useState<HubMaterial[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -81,6 +81,15 @@ export const useHubMaterials = (opts?: { adminMode?: boolean }) => {
     setLoading(true);
     let q = supabase.from("hub_materials").select("*").order("order_index", { ascending: true }).order("created_at", { ascending: false });
     if (!opts?.adminMode) q = q.eq("published", true);
+    // escopo por eletiva: se courseId for passado, filtra por aquele curso
+    // (incluindo materiais globais quando includeGlobal !== false).
+    if (opts?.courseId !== undefined && opts.courseId !== null) {
+      if (opts.includeGlobal === false) {
+        q = q.eq("course_id", opts.courseId);
+      } else {
+        q = q.or(`course_id.eq.${opts.courseId},course_id.is.null`);
+      }
+    }
     const { data, error } = await q;
     if (error) {
       logger.error("[useHubMaterials]", error);
@@ -89,7 +98,7 @@ export const useHubMaterials = (opts?: { adminMode?: boolean }) => {
       setMaterials(data ?? []);
     }
     setLoading(false);
-  }, [opts?.adminMode]);
+  }, [opts?.adminMode, opts?.courseId, opts?.includeGlobal]);
 
   useEffect(() => {
     refresh();
