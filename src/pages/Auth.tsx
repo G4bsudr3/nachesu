@@ -15,7 +15,7 @@ import { resolveAuthError, readAuthErrorFromUrl, t } from "@/lib/authErrors";
 const EMAIL_LS_KEY = "chora.lastEmail";
 
 const SOON_MESSAGE =
-  "esse email não tá na lista. se você respondeu o fbi ou foi convidado, confere se digitou certo. caso contrário, fala com a gente no whatsapp 🤙";
+  "não consegui validar esse email agora. confere se digitou certo ou tenta de novo em alguns segundos.";
 
 interface EmailValidationResult {
   can_enter: boolean;
