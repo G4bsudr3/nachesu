@@ -1,38 +1,77 @@
-## Home neutra com dois CTAs no hero
+## Limpar a experiência do aluno e dar caminho claro pras 2 eletivas
 
-Hoje o hero da home se "veste" da eletiva ativa: kicker, parágrafo e botão único trocam pra ia na prática ou economia circular conforme o seletor. Isso confunde quem cai na home pela primeira vez — parece que a página é só de uma das duas.
+A captura mostra dois banners legados sobrando no dashboard: o sticky "responder pesquisa" (FeedbackFinalGlobalNudge) e o card grande "fotos do chora lovable" no `/app/hub`. Esses são resíduos da imersão Chŏra. Pra eletiva sebrae eles confundem.
 
-A mudança deixa o hero **neutro** (fala das duas) e mantém **dois botões fixos**, um pra cada eletiva. O resto da página (seção `#eletivas` com cards, comparação lado a lado, `#facilitadores`, `#trilhas`) continua igual e segue respondendo ao seletor.
+Além disso, o usuário não consegue ter a "visão de aluno cadastrado nas duas eletivas" porque hoje o banco está vazio (0 enrollments, 0 profiles) — mateusfrattezi entrou mas nunca foi matriculado em curso nenhum.
 
-### O que muda no hero (`src/pages/Index.tsx`, ~315-362)
+Por fim, o fluxo "matriculado em duas eletivas" está incompleto: o dashboard mostra `MyCoursesList` (lista bonita), mas perde o **próximo passo** (`EletivaCard`) que só aparece quando tem 1 matrícula. Isso quebra a regra de UX de "1 próximo passo único em destaque" e deixa o aluno sem orientação clara.
 
-**Kicker** — em vez de "sua escolha · ia na prática · com frattz", mostra os dois rótulos com bolinhas de cor:
-- bolinha rosa + "ia na prática · com frattz"
-- separador
-- bolinha azul + "economia circular · com dudu"
+### Escopo
 
-**Título** — mantém "duas eletivas. um nachesu." (já é neutro, ✓).
+**1. Remover banners legados que poluem a tela do aluno**
 
-**Subtítulo** — vira fixo, sem `AnimatePresence`/troca por aba:
-> duas portas, mesmo combinado: 20 semanas, tutor ia do lado e um projeto seu no ar no fim. escolha por onde quer entrar.
+- Tirar `<FeedbackFinalGlobalNudge />` do `App.tsx` (vira lixo enquanto a eletiva tá rolando, e o caminho pra pesquisa final continua pelo `MobileNav` quando a flag de extras estiver ligada).
+- Remover o card "fotos do chora lovable" e o `<FutureLetterBanner />` do `HubIndex.tsx`. Eles são da imersão antiga. Se algum dia voltar a fazer sentido, a flag `eletiva_extras_enabled` reativa via admin.
+- Manter `<GlobalVotingBanner />` como está — ele já se auto-esconde quando não há sessão de votação aberta, então não polui em estado normal.
 
-**CTAs** — dois botões lado a lado (empilham no mobile), cada um com a cor da própria eletiva:
-- rosa "entrar em ia na prática →" (rosa `#f756a6`)
-- azul "entrar em economia circular →" (azul `#6f77fc`)
-- link secundário "comparar as duas ↓" rolando pra `#eletivas` (em vez do "ver as 4 trilhas" atual, porque a comparação faz mais sentido como próximo passo neutro)
+**2. Matricular mateusfrattezi nas duas eletivas (via migration)**
 
-Cada botão, no hover/focus, ainda atualiza o `activeTab` (via `setActiveTab`) pra que se o usuário voltar pra cima depois de explorar uma eletiva o seletor reflita a última intenção. Mas a navegação principal (`/auth`) é a mesma — quem clica vai pro fluxo de entrada.
+Migration que insere os dois `enrollments` pra esse `user_id` específico (busco no `auth.users` por email/metadata e faço `INSERT ... SELECT` pegando os dois course_ids `ia-na-pratica` e `economia-circular`). Idempotente via `ON CONFLICT (user_id, course_id) DO NOTHING`.
 
-### O que NÃO muda
+Com isso, ao entrar no `/app`, ele vê a "visão dual" real, não mock.
 
-- Seletor de eletiva no header sticky (mobile + desktop) continua existindo. Ele agora serve pras seções de baixo (`#eletivas` cards, comparação, `#facilitadores`, `#trilhas`), não pro hero.
-- Mascote `celebrating` no canto superior direito do hero, fixo.
-- Todas as outras seções continuam reagindo ao `activeTab` como hoje.
+**3. Reformular o dashboard pra quem tem 2 eletivas**
 
-### Arquivo tocado
+Hoje quando `enrollments.length > 1`, o `AppDashboard` só mostra `MyCoursesList` e some com o `EletivaCard`. Isso quebra a hierarquia "1 próximo passo único".
+
+Nova lógica em `AppDashboard.tsx`:
 
 ```text
-edit: src/pages/Index.tsx  (apenas o bloco do hero, linhas ~315-362)
+greeting
+↓
+[ se 2+ matrículas ]
+  hero contextual da eletiva ATIVA  (EletivaCard com snapshot da slug ativa)
+  ↓
+  "alternar eletiva" — chip horizontal, mobile-first, mostra a outra eletiva
+  como toggle (1 toque pra trocar a ativa, atualiza localStorage)
+  ↓
+  TrailsProgress da ativa
+↓
+[ se 1 matrícula ]
+  comportamento atual (EletivaCard + TrailsProgress)
+↓
+[ se 0 matrículas ]
+  estado vazio do MyCoursesList
+↓
+HubGateway (sempre)
 ```
 
-Sem mudanças de schema, rotas, componentes novos ou copy fora do hero.
+Componente novo enxuto: `EletivaSwitcher` (mobile-first horizontal scroll de pills, accent-bar por eletiva, marca "atual" com ring rosa). Ele aparece tanto no `/app` quanto no `/app/trilhas` no topo, pra trocar de mapa rápido. No desktop, ocupa o canto superior direito do hero como segmented control. Usa o hook `useActiveEletiva` que já existe.
+
+A página `/app/eletivas` (`MinhasEletivas`) continua existindo como "gerenciar matrículas" detalhado, mas o switch rápido vira inline.
+
+**4. Trilhas: indicar de qual eletiva é**
+
+Em `Trilhas.tsx`, no header já mostra "eletiva ia na prática", mas a barra de cor topo do `EletivaSwitcher` ajuda a confirmar visualmente. Quando o aluno troca a eletiva ativa pelo switcher, a página de trilhas reflete na hora (já é a lógica atual via `useEletivaProgress`).
+
+**5. Mobile-first é o default — só checar**
+
+Tudo já é mobile-first. Confirmar que o novo `EletivaSwitcher` respeita touch target 44px, scroll horizontal sem corte, e se ajusta a desktop como segmented control via media query.
+
+### Arquivos tocados
+
+```text
+edit:    src/App.tsx                              (remove FeedbackFinalGlobalNudge)
+edit:    src/pages/HubIndex.tsx                   (remove banner fotos + carta futuro)
+edit:    src/pages/AppDashboard.tsx               (novo fluxo p/ 2 matrículas: hero + switcher + trilhas)
+edit:    src/pages/Trilhas.tsx                    (adiciona EletivaSwitcher no topo)
+create:  src/components/dashboard/EletivaSwitcher.tsx
+migration: insere enrollments pro user mateusfrattezi nas 2 eletivas
+```
+
+### Não faz parte deste plano
+
+- Refazer copy ou layout do hero/EletivaCard (já está sólido).
+- Mexer em `HubGateway`, `MobileNav`, `ChoraBotFab` — funcionam bem e respeitam a flag `eletiva_extras_enabled`.
+- Apagar arquivos de extras (`FutureLetterBanner`, banner fotos do hub) — só desconectar do fluxo. Ficam disponíveis pro modo Chŏra legado.
+- Tocar no `Index.tsx` (landing) — fora do escopo de "experiência do aluno logado".

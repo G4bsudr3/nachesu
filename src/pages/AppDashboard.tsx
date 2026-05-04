@@ -22,6 +22,7 @@ import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
+import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
@@ -33,13 +34,16 @@ const AppDashboard = () => {
   const { data: enrollments } = useMyEnrollments();
   const { slug: activeSlug } = useActiveEletiva();
   // se aluno tem só 1 matrícula, escopa pelo único curso.
-  // se tem mais, usa a slug "atual" escolhida em /app/eletivas (se existir).
+  // se tem 2+, usa a slug "atual" escolhida no switcher (com fallback pra primeira).
+  const hasMultiple = (enrollments?.length ?? 0) > 1;
   const activeEnrollment =
     enrollments && enrollments.length === 1
       ? enrollments[0]
-      : enrollments?.find((e) => e.course?.slug === activeSlug) ?? null;
-  const singleCourseId = activeEnrollment?.course_id ?? null;
-  const { data: eletiva } = useEletivaProgress(singleCourseId);
+      : enrollments?.find((e) => e.course?.slug === activeSlug) ??
+        enrollments?.[0] ??
+        null;
+  const activeCourseId = activeEnrollment?.course_id ?? null;
+  const { data: eletiva } = useEletivaProgress(activeCourseId);
   const status = usePostEventStatus();
   const { enabled: extrasEnabled } = useEletivaExtras();
 
@@ -127,11 +131,36 @@ const AppDashboard = () => {
             daysSinceLastActivity={daysSinceLastActivity}
           />
 
-          {/* mais de uma matrícula → mostra hub de eletivas (sem hero) */}
-          {(enrollments?.length ?? 0) > 1 && <MyCoursesList />}
+          {/* 2+ matrículas → switcher mobile-first + hero da eletiva ATIVA + progresso */}
+          {hasMultiple && (
+            <>
+              <section aria-label="suas eletivas" className="space-y-3">
+                <div className="flex items-end justify-between gap-3">
+                  <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+                    suas eletivas · escolha a atual
+                  </p>
+                  <Link
+                    to="/app/eletivas"
+                    className="font-body text-xs uppercase tracking-wider text-perestroika-preto/70 hover:text-perestroika-preto"
+                  >
+                    gerenciar →
+                  </Link>
+                </div>
+                <EletivaSwitcher />
+              </section>
+              {activeCourseId && (
+                <>
+                  <EletivaCard snapshot={eletiva ?? undefined} />
+                  {eletiva && eletiva.totalPublished > 0 && (
+                    <TrailsProgress snapshot={eletiva} />
+                  )}
+                </>
+              )}
+            </>
+          )}
 
-          {/* uma única matrícula → hero + progresso da eletiva */}
-          {singleCourseId && (
+          {/* 1 matrícula → hero direto + progresso */}
+          {!hasMultiple && activeCourseId && (
             <>
               <EletivaCard snapshot={eletiva ?? undefined} />
               {eletiva && eletiva.totalPublished > 0 && (
@@ -140,7 +169,7 @@ const AppDashboard = () => {
             </>
           )}
 
-          {/* nenhuma matrícula */}
+          {/* 0 matrículas → estado vazio */}
           {enrollments && enrollments.length === 0 && <MyCoursesList />}
 
           {/* 4. apoio: tutor IA + materiais (e extras se admin ligar a flag) */}

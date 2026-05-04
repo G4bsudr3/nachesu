@@ -10,6 +10,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { TrilhaColumn } from "@/components/eletiva/TrilhaColumn";
+import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
@@ -22,15 +23,15 @@ const Trilhas = () => {
   const { signOut } = useAuth();
   const { isAdmin } = useUserRole();
   const [params] = useSearchParams();
-  const slug = params.get("eletiva") ?? undefined;
+  const urlSlug = params.get("eletiva") ?? undefined;
   const { data: enrollments } = useMyEnrollments();
   const { slug: activeSlug } = useActiveEletiva();
-  const { data: course, isLoading: courseLoading } = useCourseBySlug(slug);
-  // fallback: slug ativa salva > primeira matrícula
-  const fallbackCourse = !slug
-    ? enrollments?.find((e) => e.course?.slug === activeSlug)?.course ??
-      enrollments?.[0]?.course ??
-      null
+  // prioridade: slug ativa do switcher > slug da URL > primeira matrícula
+  // (o switcher atualiza activeSlug, mas a URL pode ter sido aberta direto via link)
+  const effectiveSlug = activeSlug ?? urlSlug;
+  const { data: course, isLoading: courseLoading } = useCourseBySlug(effectiveSlug);
+  const fallbackCourse = !effectiveSlug
+    ? enrollments?.[0]?.course ?? null
     : null;
   const activeCourse = course ?? fallbackCourse;
   const { data, isLoading } = useEletivaProgress(activeCourse?.id ?? null);
@@ -112,16 +113,19 @@ const Trilhas = () => {
             voltar
           </Link>
 
-          <header className="mb-8 sm:mb-10">
-            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2">
-              eletiva {activeCourse.title.toLowerCase()}
-            </p>
-            <h1 className="font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.9] mb-3">
-              o mapa inteiro
-            </h1>
-            <p className="font-body text-base text-perestroika-preto/75 max-w-2xl">
-              com {activeCourse.professor_name.toLowerCase()}. {totalCompleted} de {totalPublished} módulos liberados já são seus.
-            </p>
+          <header className="mb-8 sm:mb-10 space-y-4">
+            <div>
+              <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2">
+                eletiva {activeCourse.title.toLowerCase()}
+              </p>
+              <h1 className="font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.9] mb-3">
+                o mapa inteiro
+              </h1>
+              <p className="font-body text-base text-perestroika-preto/75 max-w-2xl">
+                com {activeCourse.professor_name.toLowerCase()}. {totalCompleted} de {totalPublished} módulos liberados já são seus.
+              </p>
+            </div>
+            <EletivaSwitcher />
           </header>
 
           {trails.length === 0 ? (

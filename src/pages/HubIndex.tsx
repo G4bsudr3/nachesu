@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Camera, Sparkles, Users, FolderOpen, BookOpen } from "lucide-react";
+import { ArrowRight, Sparkles, Users, FolderOpen, BookOpen } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import { FutureLetterBanner } from "@/components/hub/FutureLetterBanner";
-
 
 interface HubCounts {
   builders: number;
@@ -161,47 +159,7 @@ const HubIndex = () => {
           </p>
         </header>
 
-        {/* fotos do chora lovable - álbum coletivo */}
-        <Link
-          to="/app/hub/album"
-          className="group relative mb-10 block overflow-hidden rounded-3xl border border-perestroika-preto/15 p-5 sm:p-6 transition-all hover:-translate-y-0.5 hover:shadow-xl"
-          style={{
-            background: "linear-gradient(110deg, #fe7b02 0%, #fd4644 35%, #f756a6 70%, #6f77fc 100%)",
-          }}
-        >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-20 mix-blend-overlay"
-            style={{
-              backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)",
-              backgroundSize: "12px 12px",
-            }}
-          />
-          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-4 sm:items-center">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-perestroika-bege/95 text-perestroika-preto shadow-lg transition-transform group-hover:scale-110 group-hover:-rotate-6">
-                <Camera className="h-7 w-7" />
-              </div>
-              <div className="min-w-0">
-                <p className="mb-1 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-bege/85">
-                  álbum coletivo
-                </p>
-                <h2 className="font-display text-3xl uppercase leading-none text-perestroika-bege sm:text-4xl">
-                  fotos do chora lovable
-                </h2>
-                <p className="mt-2 max-w-md font-body text-sm text-perestroika-bege/90">
-                  mande as suas fotos e veja o álbum que a turma tá montando 📸
-                </p>
-              </div>
-            </div>
-            <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-perestroika-preto px-4 py-2.5 font-body text-xs uppercase tracking-wide text-perestroika-bege transition-colors group-hover:bg-perestroika-bege group-hover:text-perestroika-preto sm:self-center">
-              entrar no álbum <ArrowRight className="h-3.5 w-3.5" />
-            </span>
-          </div>
-        </Link>
-
-        {/* convite carta pro futuro - se auto-esconde se não tem sessão aberta */}
-        <FutureLetterBanner />
+        {/* banners de fotos e carta pro futuro removidos do fluxo do aluno (resíduos Chŏra). */}
 
         {/* 4 portas */}
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
