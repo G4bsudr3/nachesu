@@ -241,7 +241,7 @@ const Index = () => {
 
           <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
             <Link
-              to="/auth"
+              to="/comecar"
               className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-8 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
               começar agora <ArrowRight className="h-4 w-4" />
