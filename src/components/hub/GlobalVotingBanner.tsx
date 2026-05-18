@@ -4,7 +4,7 @@ import { Vote, Sparkles, Rocket, X } from "lucide-react";
 import { useActiveVotingSession, useMyVote } from "@/features/votacao/useProjectVoting";
 import { useMyProjects } from "@/features/hub/useMyProjects";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
+import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { cn } from "@/lib/utils";
 
 /**
