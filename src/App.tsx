@@ -106,6 +106,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/eletivas" element={<Eletivas />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/comecar" element={<Comecar />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/forms" element={<PublicForm />} />
               <Route path="/carta/:token" element={<CartaPublica />} />
