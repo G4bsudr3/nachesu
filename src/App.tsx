@@ -51,6 +51,7 @@ const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
 const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
 const Eletivas = lazy(() => import("./pages/Eletivas.tsx"));
 const EletivaHome = lazy(() => import("./pages/EletivaHome.tsx"));
+const Comecar = lazy(() => import("./pages/Comecar.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
@@ -105,6 +106,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/eletivas" element={<Eletivas />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/comecar" element={<Comecar />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/forms" element={<PublicForm />} />
               <Route path="/carta/:token" element={<CartaPublica />} />
