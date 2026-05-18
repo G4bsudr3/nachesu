@@ -133,6 +133,7 @@ const Index = () => {
     { id: "como-funciona", label: "como funciona" },
     { id: "eletivas", label: "eletivas" },
     { id: "tutor", label: "tutor" },
+    { id: "faq", label: "faq" },
   ];
 
   const activeEletiva = eletivas[activeTab];
