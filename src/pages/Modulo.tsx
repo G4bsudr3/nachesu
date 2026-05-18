@@ -248,8 +248,18 @@ const Modulo = () => {
     );
   }
 
+  const totalPills = pills?.length ?? 0;
+  const donePills = pills?.filter((p) => completedPillIds.has(p.id)).length ?? 0;
+
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
+      <ModuloProgressBar
+        total={totalPills}
+        done={donePills}
+        trailColor={trailColor}
+        moduleNumber={moduleRow.number}
+        moduleTitle={moduleRow.title}
+      />
       <PageHeader
         showLogo
         logoLink="/app"
