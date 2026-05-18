@@ -106,7 +106,7 @@ const Index = () => {
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
   useEffect(() => {
-    const ids = ["como-funciona", "eletivas", "tutor", "trilhas"];
+    const ids = ["como-funciona", "eletivas", "tutor", "trilhas", "faq"];
     const sections = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
     if (sections.length === 0) return;
 
