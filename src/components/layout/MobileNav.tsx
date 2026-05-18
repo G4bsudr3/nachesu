@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Map, MessageCircleHeart, Sparkles } from "lucide-react";
 import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
+import { FeedbackBadge } from "@/components/dashboard/FeedbackBadge";
 
 interface NavItem {
   to: string;
@@ -8,10 +9,12 @@ interface NavItem {
   icon: React.ReactNode;
   /** rota é considerada ativa quando começa com esse prefixo */
   matchPrefix?: string;
+  /** mostra bolinha de feedback novo sobre o ícone */
+  showFeedbackBadge?: boolean;
 }
 
 const baseItems: NavItem[] = [
-  { to: "/app", label: "início", icon: <Home className="h-5 w-5" /> },
+  { to: "/app", label: "início", icon: <Home className="h-5 w-5" />, showFeedbackBadge: true },
   { to: "/app/trilhas", label: "trilhas", icon: <Map className="h-5 w-5" />, matchPrefix: "/app/trilhas" },
   { to: "/app/tutor", label: "tutor", icon: <Sparkles className="h-5 w-5" />, matchPrefix: "/app/tutor" },
 ];
@@ -61,7 +64,10 @@ export const MobileNav = () => {
                 }`}
                 aria-current={active ? "page" : undefined}
               >
-                <span className={active ? "text-perestroika-laranja" : ""}>{item.icon}</span>
+                <span className={`relative ${active ? "text-perestroika-laranja" : ""}`}>
+                  {item.icon}
+                  {item.showFeedbackBadge && <FeedbackBadge />}
+                </span>
                 {item.label}
               </Link>
             </li>

@@ -15,6 +15,7 @@ import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
 import { ModuloProgressBar } from "@/components/eletiva/modulo/ModuloProgressBar";
+import { ModuloFeedbackCard } from "@/components/eletiva/modulo/ModuloFeedbackCard";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
@@ -83,6 +84,17 @@ const Modulo = () => {
       });
   }, [user, moduleRow, isStarted, queryClient]);
 
+  const submitDeliverableIfExists = async () => {
+    if (!user || !moduleRow) return;
+    // se existe deliverable em rascunho/enviado, marca submitted_at
+    await supabase
+      .from("module_deliverables")
+      .update({ status: "enviado", submitted_at: new Date().toISOString() })
+      .eq("user_id", user.id)
+      .eq("module_id", moduleRow.id)
+      .is("reviewed_at", null);
+  };
+
   const completeMutation = useMutation({
     mutationFn: async () => {
       if (!user || !moduleRow) throw new Error("sem contexto");
@@ -97,6 +109,7 @@ const Modulo = () => {
         { onConflict: "user_id,module_id" },
       );
       if (error) throw error;
+      await submitDeliverableIfExists();
     },
     onSuccess: () => {
       const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
@@ -155,6 +168,7 @@ const Modulo = () => {
           },
           { onConflict: "user_id,module_id" },
         );
+        await submitDeliverableIfExists();
         const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
         const nextWasLocked =
           next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
@@ -283,6 +297,8 @@ const Modulo = () => {
         >
           <ArrowLeft className="h-3.5 w-3.5" /> meu início
         </Link>
+
+        <ModuloFeedbackCard moduleId={moduleRow.id} trailColor={trailColor} />
 
         <ModuloHeader
           trailTitle={trail?.title ?? null}
