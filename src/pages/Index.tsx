@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Clock, Linkedin, Calendar, Sparkles, Rocket } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
 import frattzPhoto from "@/assets/facilitadores/frattz.png";
