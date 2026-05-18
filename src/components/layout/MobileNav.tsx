@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Map, MessageCircleHeart, Sparkles } from "lucide-react";
-import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
+import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 
 interface NavItem {
   to: string;
