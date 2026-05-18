@@ -125,10 +125,10 @@ export const EletivaCard = ({ snapshot }: Props = {}) => {
         </p>
         {fechouTudo && (
           <Link
-            to="/app/projeto"
+            to="/app/trilhas"
             className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
           >
-            ver meu projeto <ArrowRight className="h-4 w-4" />
+            revisitar a trilha <ArrowRight className="h-4 w-4" />
           </Link>
         )}
         {!fechouTudo && (
