@@ -291,6 +291,7 @@ const Modulo = () => {
           completedPillIds={completedPillIds}
           trailColor={trailColor}
           hasTrail={!!trail}
+          moduleId={moduleRow.id}
           onTogglePill={(p) => togglePillMutation.mutate(p)}
           togglePending={togglePillMutation.isPending}
           onOpenTutor={(pill) => {
@@ -300,7 +301,7 @@ const Modulo = () => {
                 pillPrompt: pill.interaction_schema.tutor_prompt,
               });
             } else {
-              setTutorPillContext(null);
+              setTutorPillContext(pill ? { pillTitle: pill.title, pillPrompt: pill.body_md ?? "" } : null);
             }
             setTutorOpen(true);
           }}
