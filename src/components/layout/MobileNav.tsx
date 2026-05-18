@@ -64,7 +64,10 @@ export const MobileNav = () => {
                 }`}
                 aria-current={active ? "page" : undefined}
               >
-                <span className={active ? "text-perestroika-laranja" : ""}>{item.icon}</span>
+                <span className={`relative ${active ? "text-perestroika-laranja" : ""}`}>
+                  {item.icon}
+                  {item.showFeedbackBadge && <FeedbackBadge />}
+                </span>
                 {item.label}
               </Link>
             </li>
