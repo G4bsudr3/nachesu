@@ -63,11 +63,17 @@ export function usePendingDeliverables(opts: {
         (profs ?? []).map((p) => [p.user_id, p as ProfileLite]),
       );
 
-      return list.map((r) => ({
-        ...r,
-        module: modMap.get(r.module_id) ?? null,
-        profile: profMap.get(r.user_id) ?? null,
-      })) as DeliverableInbox[];
+      return list.map((r) => {
+        const mod = modMap.get(r.module_id) ?? null;
+        const trail = mod ? trailMap.get(mod.trail_id) ?? null : null;
+        return {
+          ...r,
+          module: mod,
+          trail,
+          course_id: trail?.course_id ?? null,
+          profile: profMap.get(r.user_id) ?? null,
+        };
+      }) as DeliverableInbox[];
     },
   });
 
@@ -76,7 +82,7 @@ export function usePendingDeliverables(opts: {
     return data.filter((d) => {
       if (status === "pendentes" && d.reviewed_at !== null) return false;
       if (status === "revisados" && d.reviewed_at === null) return false;
-      if (courseId && d.module?.course_id !== courseId) return false;
+      if (courseId && d.course_id !== courseId) return false;
       if (moduleId && d.module_id !== moduleId) return false;
       return true;
     });
