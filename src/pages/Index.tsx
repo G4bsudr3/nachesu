@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowRight, Clock, Linkedin } from "lucide-react";
+import { ArrowRight, Clock, Linkedin, Calendar, Sparkles, Rocket } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
@@ -29,34 +29,10 @@ const eletivas: Record<
     pitch: "construa seu primeiro app com ia, do problema ao mvp no ar.",
     accent: "#f756a6",
     trilhas: [
-      {
-        n: "01",
-        titulo: "fundamentos & ia",
-        desc: "o que ia faz hoje, como conversar com ela, quando usar no-code.",
-        color: "#fe7b02",
-        range: "módulos 1-5",
-      },
-      {
-        n: "02",
-        titulo: "problema & decisão",
-        desc: "achar uma dor real, escolher a sua, escopar e vender em 60 segundos.",
-        color: "#fd4644",
-        range: "módulos 6-10",
-      },
-      {
-        n: "03",
-        titulo: "construção no lovable",
-        desc: "do briefing ao mvp, ux que faz sentido, ia dentro do seu app.",
-        color: "#f756a6",
-        range: "módulos 11-15",
-      },
-      {
-        n: "04",
-        titulo: "validação & evolução",
-        desc: "testa com gente real, itera com base no feedback, entrega.",
-        color: "#6f77fc",
-        range: "módulos 16-20",
-      },
+      { n: "01", titulo: "fundamentos & ia", desc: "o que ia faz hoje, como conversar com ela, quando usar no-code.", color: "#fe7b02", range: "módulos 1-5" },
+      { n: "02", titulo: "problema & decisão", desc: "achar uma dor real, escolher a sua, escopar e vender em 60 segundos.", color: "#fd4644", range: "módulos 6-10" },
+      { n: "03", titulo: "construção no lovable", desc: "do briefing ao mvp, ux que faz sentido, ia dentro do seu app.", color: "#f756a6", range: "módulos 11-15" },
+      { n: "04", titulo: "validação & evolução", desc: "testa com gente real, itera com base no feedback, entrega.", color: "#6f77fc", range: "módulos 16-20" },
     ],
   },
   "economia-circular": {
@@ -66,50 +42,35 @@ const eletivas: Record<
     pitch: "desenhe um negócio que regenera, do sistema ao protótipo validado.",
     accent: "#6f77fc",
     trilhas: [
-      {
-        n: "01",
-        titulo: "enxergar",
-        desc: "abrir o olho pro sistema. ver fluxos, resíduos e oportunidades onde os outros veem rotina.",
-        color: "#fe7b02",
-        range: "módulos 1-5",
-      },
-      {
-        n: "02",
-        titulo: "entender",
-        desc: "mapear causas, atores e ciclos. desenhar o sistema antes de propor solução.",
-        color: "#fd4644",
-        range: "módulos 6-10",
-      },
-      {
-        n: "03",
-        titulo: "criar",
-        desc: "prototipar negócios regenerativos, com ia te ajudando a iterar rápido.",
-        color: "#f756a6",
-        range: "módulos 11-15",
-      },
-      {
-        n: "04",
-        titulo: "validar",
-        desc: "testa com gente real, mede impacto, ajusta o modelo. dossiê final pronto.",
-        color: "#6f77fc",
-        range: "módulos 16-20",
-      },
+      { n: "01", titulo: "enxergar", desc: "abrir o olho pro sistema. ver fluxos, resíduos e oportunidades onde os outros veem rotina.", color: "#fe7b02", range: "módulos 1-5" },
+      { n: "02", titulo: "entender", desc: "mapear causas, atores e ciclos. desenhar o sistema antes de propor solução.", color: "#fd4644", range: "módulos 6-10" },
+      { n: "03", titulo: "criar", desc: "prototipar negócios regenerativos, com ia te ajudando a iterar rápido.", color: "#f756a6", range: "módulos 11-15" },
+      { n: "04", titulo: "validar", desc: "testa com gente real, mede impacto, ajusta o modelo. dossiê final pronto.", color: "#6f77fc", range: "módulos 16-20" },
     ],
   },
 };
 
-const heroContainer = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+const facilitadores: Record<EletivaKey, { nick: string; nome: string; frase: string; photo: string; linkedin: string }> = {
+  "ia-na-pratica": {
+    nick: "frattz",
+    nome: "Mateus Frattezi",
+    frase: "constrói na frente da turma, com a turma decidindo o caminho.",
+    photo: frattzPhoto,
+    linkedin: "https://www.linkedin.com/in/frattin/",
+  },
+  "economia-circular": {
+    nick: "dudu",
+    nome: "Eduardo Obregon",
+    frase: "ex-perestroika, ex-500 global. junta empreender com aprender.",
+    photo: duduPhoto,
+    linkedin: "https://www.linkedin.com/in/duduobregon/",
+  },
 };
 
+const heroContainer = { hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } } };
 const heroItem = {
   hidden: { opacity: 0, y: 20 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
-  },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
 const STORAGE_KEY = "home:eletiva-preferida";
@@ -120,16 +81,11 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<EletivaKey>(() => {
     if (typeof window === "undefined") return "ia-na-pratica";
     const saved = window.localStorage.getItem(STORAGE_KEY);
-    return saved === "economia-circular" || saved === "ia-na-pratica"
-      ? saved
-      : "ia-na-pratica";
+    return saved === "economia-circular" || saved === "ia-na-pratica" ? saved : "ia-na-pratica";
   });
 
-  // se um magic link cair na home com erro, manda pro /auth pra tratar
   useEffect(() => {
-    const hash = window.location.hash.startsWith("#")
-      ? window.location.hash.slice(1)
-      : "";
+    const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "";
     if (!hash) return;
     const hashParams = new URLSearchParams(hash);
     if (hashParams.get("error") || hashParams.get("error_code")) {
@@ -137,62 +93,47 @@ const Index = () => {
     }
   }, [navigate]);
 
-  // persiste a eletiva escolhida pra próxima visita
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.localStorage.setItem(STORAGE_KEY, activeTab);
   }, [activeTab]);
 
-  // observa qual seção (#eletivas / #trilhas) está visível pra destacar no menu
   const [activeSection, setActiveSection] = useState<string | null>(null);
   useEffect(() => {
-    const ids = ["eletivas", "facilitadores", "trilhas"];
-    const sections = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => !!el);
+    const ids = ["como-funciona", "eletivas", "tutor", "trilhas"];
+    const sections = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
     if (sections.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // pega a entrada mais visível dentre as que estão intersectando
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (visible) setActiveSection(visible.target.id);
       },
-      {
-        // descarta o header sticky no topo (~120px) e dá margem inferior
-        rootMargin: "-120px 0px -55% 0px",
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      },
+      { rootMargin: "-120px 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
   }, []);
 
-  // scroll suave respeitando prefers-reduced-motion
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
     e.preventDefault();
-    el.scrollIntoView({
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-      block: "start",
-    });
+    el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
     history.replaceState(null, "", `#${id}`);
   };
 
   const navItems: { id: string; label: string }[] = [
+    { id: "como-funciona", label: "como funciona" },
     { id: "eletivas", label: "eletivas" },
-    { id: "facilitadores", label: "facilitadores" },
-    { id: "trilhas", label: "trilhas" },
+    { id: "tutor", label: "tutor" },
   ];
 
   const activeEletiva = eletivas[activeTab];
 
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
-      {/* topbar com seletor de eletiva */}
+      {/* topbar */}
       <motion.header
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -201,36 +142,6 @@ const Index = () => {
       >
         <div className="container flex items-center justify-between gap-4 py-4">
           <NachesULogo variant="dark" />
-
-          {/* seletor central */}
-          <div
-            role="tablist"
-            aria-label="escolha sua eletiva"
-            className="hidden md:inline-flex rounded-full border-2 border-perestroika-preto/15 bg-perestroika-bege p-1 relative"
-          >
-            {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
-              const isActive = activeTab === key;
-              return (
-                <button
-                  key={key}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActiveTab(key)}
-                  className="relative z-10 px-4 lg:px-5 py-2 rounded-full font-body text-xs lg:text-sm uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-                  style={{ color: isActive ? "#f2e4d8" : undefined }}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="header-tab-bg"
-                      className="absolute inset-0 rounded-full bg-perestroika-preto -z-10"
-                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                    />
-                  )}
-                  <span className="relative">{eletivas[key].nome}</span>
-                </button>
-              );
-            })}
-          </div>
 
           <nav className="flex items-center gap-4 sm:gap-6" aria-label="seções da página">
             {navItems.map((item) => {
@@ -242,9 +153,7 @@ const Index = () => {
                   onClick={(e) => handleAnchorClick(e, item.id)}
                   aria-current={isActive ? "true" : undefined}
                   className={`hidden sm:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
-                    isActive
-                      ? "opacity-100 text-perestroika-preto"
-                      : "opacity-70 hover:opacity-100"
+                    isActive ? "opacity-100 text-perestroika-preto" : "opacity-70 hover:opacity-100"
                   }`}
                 >
                   {item.label}
@@ -258,46 +167,15 @@ const Index = () => {
                 </a>
               );
             })}
-            <Link
-              to="/auth"
-              className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
-            >
+            <Link to="/auth" className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity">
               entrar
             </Link>
           </nav>
         </div>
-
-        {/* seletor mobile */}
-        <div className="md:hidden border-t border-perestroika-preto/10">
-          <div
-            role="tablist"
-            aria-label="escolha sua eletiva"
-            className="container flex gap-2 py-2 overflow-x-auto"
-          >
-            {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
-              const isActive = activeTab === key;
-              return (
-                <button
-                  key={key}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActiveTab(key)}
-                  className={`shrink-0 rounded-full px-4 py-2 font-body text-xs uppercase tracking-wide border transition-colors ${
-                    isActive
-                      ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                      : "border-perestroika-preto/20 text-perestroika-preto/70"
-                  }`}
-                >
-                  {eletivas[key].nome}
-                </button>
-              );
-            })}
-          </div>
-        </div>
       </motion.header>
 
       {/* hero */}
-      <section className="container relative pt-10 pb-20 sm:pt-16 sm:pb-28">
+      <section className="container relative pt-12 pb-20 sm:pt-20 sm:pb-28">
         <motion.div
           className="absolute right-2 top-0 sm:right-12 sm:top-6 pointer-events-none z-0"
           animate={prefersReducedMotion ? undefined : { rotate: [10, 16, 10] }}
@@ -313,298 +191,38 @@ const Index = () => {
         </motion.div>
 
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
-          <motion.p
-            variants={heroItem}
-            className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6 inline-flex items-center gap-2 flex-wrap"
-          >
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                className="inline-block w-2 h-2 rounded-full"
-                style={{ backgroundColor: eletivas["ia-na-pratica"].accent }}
-                aria-hidden="true"
-              />
-              ia na prática · com frattz
-            </span>
-            <span className="opacity-40">·</span>
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                className="inline-block w-2 h-2 rounded-full"
-                style={{ backgroundColor: eletivas["economia-circular"].accent }}
-                aria-hidden="true"
-              />
-              economia circular · com dudu
-            </span>
+          <motion.p variants={heroItem} className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
+            uma plataforma naches · em parceria com escola sebrae
           </motion.p>
-          <motion.h1
-            variants={heroItem}
-            className="font-display uppercase display-clamp-hero"
-          >
+          <motion.h1 variants={heroItem} className="font-display uppercase display-clamp-hero">
             <span className="block">duas eletivas.</span>
             <span className="block">uma naches u.</span>
           </motion.h1>
-          <motion.p
-            variants={heroItem}
-            className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80"
-          >
-            duas portas, mesmo combinado: 20 semanas, tutor ia do lado e um projeto seu no ar no fim. escolha por onde quer entrar.
+          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80">
+            o lugar onde você aprende construindo. uma aula curta por semana, um tutor ia do seu lado e, no fim do ano, um projeto seu de verdade no ar.
           </motion.p>
 
-          <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
-            {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
-              const e = eletivas[key];
-              return (
-                <Link
-                  key={key}
-                  to="/auth"
-                  onMouseEnter={() => setActiveTab(key)}
-                  onFocus={() => setActiveTab(key)}
-                  className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full text-perestroika-bege px-7 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-                  style={{ backgroundColor: e.accent }}
-                >
-                  entrar em {e.nome} <ArrowRight className="h-4 w-4" />
-                </Link>
-              );
-            })}
+          <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+            <Link
+              to="/auth"
+              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-8 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+            >
+              começar agora <ArrowRight className="h-4 w-4" />
+            </Link>
             <a
-              href="#eletivas"
-              onClick={(ev) => handleAnchorClick(ev, "eletivas")}
+              href="#como-funciona"
+              onClick={(ev) => handleAnchorClick(ev, "como-funciona")}
               className="inline-flex items-center min-h-11 px-1 font-body text-sm sm:text-base uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
             >
-              comparar as duas ↓
+              como funciona ↓
             </a>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* as duas eletivas */}
-      <section id="eletivas" className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-15%" }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 sm:mb-16 max-w-2xl"
-        >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
-            duas portas, mesmo método
-          </p>
-          <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
-            ideia boa é<br />ideia construída.
-          </h2>
-          <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
-            duas eletivas distintas, dois professores, um mesmo combinado: você sai com algo no ar. escolha a sua e cai dentro.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-          {(Object.keys(eletivas) as EletivaKey[]).map((key, i) => {
-            const e = eletivas[key];
-            return (
-              <motion.a
-                key={key}
-                href="#trilhas"
-                onClick={() => setActiveTab(key)}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-10%" }}
-                transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={prefersReducedMotion ? undefined : { y: -4 }}
-                className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-9 hover:border-perestroika-preto transition-colors block"
-              >
-                <div
-                  className="absolute inset-x-0 top-0 h-1.5"
-                  style={{ backgroundColor: e.accent }}
-                  aria-hidden="true"
-                />
-                <div className="flex items-baseline justify-between gap-3 mb-6">
-                  <span
-                    className="font-display text-7xl sm:text-8xl leading-none"
-                    style={{ color: e.accent }}
-                  >
-                    {e.n}
-                  </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55">
-                    {e.professor}
-                  </span>
-                </div>
-                <h3 className="font-display uppercase text-3xl sm:text-4xl mb-4 leading-tight">
-                  {e.nome}
-                </h3>
-                <p className="font-body text-base sm:text-lg text-perestroika-preto/75 leading-relaxed mb-6">
-                  {e.pitch}
-                </p>
-                <p className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/60 inline-flex items-center gap-1.5">
-                  <Clock className="h-3 w-3" aria-hidden="true" />
-                  4 trilhas · 20 módulos · tutor ia
-                </p>
-              </motion.a>
-            );
-          })}
-        </div>
-
-        {/* comparação lado a lado */}
-        <div className="mt-16 sm:mt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.55 }}
-            className="mb-8 sm:mb-10 max-w-2xl"
-          >
-            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
-              compare lado a lado
-            </p>
-            <h3 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
-              o que muda entre uma e outra
-            </h3>
-          </motion.div>
-
-          {/* mobile: pares de cards. desktop: tabela editorial */}
-          <div className="overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege">
-            {/* cabeçalho */}
-            <div className="grid grid-cols-3 border-b-2 border-perestroika-preto/15">
-              <div className="hidden md:block p-5 sm:p-6" />
-              <div className="col-span-3 md:col-span-1 grid grid-cols-2 md:contents">
-                {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
-                  const e = eletivas[key];
-                  const isActive = activeTab === key;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setActiveTab(key)}
-                      className={`relative text-left p-5 sm:p-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-0 ${
-                        isActive ? "bg-perestroika-preto/[0.04]" : "hover:bg-perestroika-preto/[0.02]"
-                      }`}
-                    >
-                      <span
-                        className="absolute inset-x-0 top-0 h-1.5"
-                        style={{ backgroundColor: e.accent }}
-                        aria-hidden="true"
-                      />
-                      <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
-                        eletiva {e.n}
-                      </p>
-                      <p className="font-display uppercase text-xl sm:text-2xl leading-tight">
-                        {e.nome}
-                      </p>
-                      <p className="font-body text-xs text-perestroika-preto/60 mt-1">
-                        {e.professor}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* linhas */}
-            {[
-              {
-                label: "objetivo",
-                values: {
-                  "ia-na-pratica": "sair com um app real publicado, resolvendo uma dor sua.",
-                  "economia-circular": "desenhar um modelo de negócio regenerativo, validado com gente real.",
-                },
-              },
-              {
-                label: "duração",
-                values: {
-                  "ia-na-pratica": "20 semanas · 1 módulo de 50 min por semana",
-                  "economia-circular": "20 semanas · 1 módulo de 50 min por semana",
-                },
-              },
-              {
-                label: "entregáveis",
-                values: {
-                  "ia-na-pratica": "mvp publicado, prompt-deck pessoal, demo de 60 segundos.",
-                  "economia-circular": "mapa de sistema, protótipo regenerativo, dossiê de validação.",
-                },
-              },
-              {
-                label: "professor",
-                values: {
-                  "ia-na-pratica": "frattz · ceo da naches, embaixador global lovable.",
-                  "economia-circular": "dudu · estrategista em circularidade e negócios regenerativos.",
-                },
-              },
-              {
-                label: "tutor ia",
-                values: {
-                  "ia-na-pratica": "joão-de-barro provocador-builder, te empurra pro próximo mvp.",
-                  "economia-circular": "joão-de-barro investigativo-sistêmico, te puxa pra ver o ciclo todo.",
-                },
-              },
-            ].map((row, i) => (
-              <motion.div
-                key={row.label}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-5%" }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="grid grid-cols-3 border-b border-perestroika-preto/10 last:border-b-0"
-              >
-                <div className="col-span-3 md:col-span-1 px-5 sm:px-6 pt-5 md:py-6 md:border-r border-perestroika-preto/10">
-                  <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-                    {row.label}
-                  </p>
-                </div>
-                {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
-                  const e = eletivas[key];
-                  return (
-                    <div
-                      key={key}
-                      className="px-5 sm:px-6 py-4 md:py-6 border-t md:border-t-0 md:border-l border-perestroika-preto/10 first-of-type:border-l-0 md:first-of-type:border-l"
-                    >
-                      <p className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/45 mb-1.5 md:hidden">
-                        {e.nome}
-                      </p>
-                      <p className="font-body text-sm sm:text-base text-perestroika-preto/85 leading-relaxed">
-                        {row.values[key]}
-                      </p>
-                    </div>
-                  );
-                })}
-              </motion.div>
-            ))}
-
-            {/* rodapé com CTAs */}
-            <div className="grid grid-cols-3 bg-perestroika-preto/[0.03]">
-              <div className="hidden md:block p-5 sm:p-6" />
-              {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
-                const e = eletivas[key];
-                return (
-                  <div
-                    key={key}
-                    className="col-span-3 md:col-span-1 p-5 sm:p-6 border-t md:border-t-0 md:border-l border-perestroika-preto/10 first-of-type:border-l-0 md:first-of-type:border-l flex flex-col sm:flex-row md:flex-col gap-2 sm:gap-3 md:gap-2"
-                  >
-                    <a
-                      href="#trilhas"
-                      onClick={(ev) => {
-                        setActiveTab(key);
-                        handleAnchorClick(ev, "trilhas");
-                      }}
-                      className="inline-flex items-center justify-center gap-2 min-h-11 rounded-full text-perestroika-bege px-5 py-2.5 font-body text-xs sm:text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-                      style={{ backgroundColor: e.accent }}
-                    >
-                      ver trilhas <ArrowRight className="h-3.5 w-3.5" />
-                    </a>
-                    <Link
-                      to="/auth"
-                      className="inline-flex items-center justify-center min-h-11 px-3 font-body text-xs sm:text-sm uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
-                    >
-                      entrar
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* facilitadores */}
+      {/* o que é o nachesu */}
       <section
-        id="facilitadores"
+        id="como-funciona"
         className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32"
       >
         <motion.div
@@ -615,138 +233,174 @@ const Index = () => {
           className="mb-12 sm:mb-16 max-w-2xl"
         >
           <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
-            quem conduz cada eletiva
+            o que é o nachesu
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
-            dois facilitadores,<br />um jeito só.
+            aqui você aprende<br />fazendo.
           </h2>
           <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
-            cada eletiva tem um nome de gente por trás. ninguém aqui é palestrante de slide. eles constroem com a turma.
+            esqueça aula longa e prova no fim. toda semana você abre um módulo curto, faz uma coisinha de verdade, e essa coisinha vai virando seu projeto. no fim do ano, você tem algo seu pra mostrar.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
           {[
             {
-              key: "ia-na-pratica" as EletivaKey,
-              eletivaLabel: "ia na prática",
-              nick: "frattz",
-              nome: "Mateus Frattezi",
-              tagline: "palestrante & educador em ia · embaixador lovable · cofundador da naches",
-              quote:
-                "construo na frente da turma, com a turma decidindo o caminho. saio deixando algo rodando.",
-              bio: "cria experiências de aprendizado com ia e game design pra quem quer sair do consumo passivo e começar a fazer. cofundador da naches, embaixador global do lovable e palestrante. mostra ao vivo, com a turma junto, como tirar uma ideia da cabeça e colocar no ar.",
-              tags: ["embaixador global lovable", "cofundador naches", "ia + game design", "construindo ao vivo"],
-              accent: "#f756a6",
-              photo: frattzPhoto,
-              linkedin: "https://www.linkedin.com/in/frattin/",
+              icon: Calendar,
+              pose: "resting" as const,
+              titulo: "no seu ritmo",
+              desc: "1 aula por semana, 50 minutinhos. dá pra fazer no contraturno, sem sufoco.",
             },
             {
-              key: "economia-circular" as EletivaKey,
-              eletivaLabel: "economia circular",
-              nick: "dudu",
-              nome: "Eduardo Obregon",
-              tagline: "empreendedorismo & aprendizagem",
-              quote:
-                "ajudo gente e empresa a voar mais alto. carreira em três frentes: empreender, facilitar aprendizagem e mentorar.",
-              bio: "ex-perestroika, ex-500 global, hoje sócio as a service. mistura bagagem de empreendedor com olhar clínico pra metodologia de aprendizagem.",
-              tags: ["ex-perestroika", "ex-500 global", "sócio as a service", "stanford"],
-              accent: "#6f77fc",
-              photo: duduPhoto,
-              linkedin: "https://www.linkedin.com/in/duduobregon/",
+              icon: Sparkles,
+              pose: "talking" as const,
+              titulo: "tutor ia 24/7",
+              desc: "o joão (nosso tutor de ia) tá ali pra tirar dúvida, dar exemplo e te empurrar pra frente.",
             },
-          ].map((f, i) => (
-            <motion.article
-              key={f.key}
-              initial={{ opacity: 0, y: 24 }}
+            {
+              icon: Rocket,
+              pose: "celebrating" as const,
+              titulo: "projeto de verdade",
+              desc: "no fim do ano você sai com algo publicado. não é trabalho de escola. é portfólio.",
+            },
+          ].map((card, i) => (
+            <motion.div
+              key={card.titulo}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
-              transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-9 flex flex-col"
+              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="relative rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-8"
             >
-              <div
-                className="absolute inset-x-0 top-0 h-1.5"
-                style={{ backgroundColor: f.accent }}
-                aria-hidden="true"
-              />
-              <div className="flex items-start gap-5 mb-6">
-                <img
-                  src={f.photo}
-                  alt={f.nome}
-                  className="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover ring-2"
-                  style={{ boxShadow: `0 0 0 4px ${f.accent}22`, borderColor: f.accent }}
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
-                      facilitador · {f.eletivaLabel}
-                    </p>
-                    <a
-                      href={f.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`linkedin de ${f.nick}`}
-                      className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-perestroika-preto/15 text-perestroika-preto/70 hover:text-perestroika-bege transition-colors"
-                      style={{ backgroundColor: "transparent" }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = f.accent)}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                    >
-                      <Linkedin className="w-4 h-4" />
-                    </a>
-                  </div>
-                  <h3 className="font-display uppercase text-3xl sm:text-4xl leading-none">
-                    {f.nick}
-                  </h3>
-                  <p className="font-body text-sm text-perestroika-preto/60 mt-1">
-                    {f.nome}
-                  </p>
-                  <p className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/70 mt-2">
-                    {f.tagline}
-                  </p>
+              <div className="flex items-start justify-between mb-5">
+                <div className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-perestroika-preto text-perestroika-bege">
+                  <card.icon className="w-5 h-5" aria-hidden="true" />
                 </div>
+                <EletivaSymbol size={56} pose={card.pose} rotate={-4} />
               </div>
-              <p
-                className="font-body italic text-base sm:text-lg text-perestroika-preto/85 leading-relaxed border-l-2 pl-4 mb-5"
-                style={{ borderColor: `${f.accent}66` }}
-              >
-                "{f.quote}"
+              <h3 className="font-display uppercase text-2xl sm:text-3xl leading-tight mb-3">
+                {card.titulo}
+              </h3>
+              <p className="font-body text-base text-perestroika-preto/75 leading-relaxed">
+                {card.desc}
               </p>
-              <p className="font-body text-sm sm:text-base text-perestroika-preto/75 leading-relaxed mb-5">
-                {f.bio}
-              </p>
-              <div className="flex flex-wrap gap-2 mb-7">
-                {f.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-body text-[11px] uppercase tracking-wide px-2.5 py-1 rounded-full border"
-                    style={{
-                      borderColor: `${f.accent}55`,
-                      color: "#090909",
-                      backgroundColor: `${f.accent}1a`,
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <a
-                href="#trilhas"
-                onClick={(ev) => {
-                  setActiveTab(f.key);
-                  handleAnchorClick(ev, "trilhas");
-                }}
-                className="mt-auto inline-flex items-center gap-2 font-body text-sm uppercase tracking-wide self-start hover:opacity-70 transition-opacity"
-                style={{ color: f.accent }}
-              >
-                ver trilhas de {f.eletivaLabel} <ArrowRight className="h-4 w-4" />
-              </a>
-            </motion.article>
+            </motion.div>
           ))}
         </div>
       </section>
 
-      {/* tutor joão-de-barro */}
-      <section className="relative bg-perestroika-preto text-perestroika-bege py-20 sm:py-28 overflow-hidden">
+      {/* eletivas + facilitadores enxutos */}
+      <section
+        id="eletivas"
+        className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-15%" }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 sm:mb-16 max-w-2xl"
+        >
+          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+            escolha sua eletiva
+          </p>
+          <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
+            duas portas,<br />um mesmo combinado.
+          </h2>
+          <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
+            mesma duração, mesmo método, mesmo tutor. o que muda é por onde você quer entrar e quem te conduz.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+          {(Object.keys(eletivas) as EletivaKey[]).map((key, i) => {
+            const e = eletivas[key];
+            const f = facilitadores[key];
+            return (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10%" }}
+                transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-9 flex flex-col"
+              >
+                <div className="absolute inset-x-0 top-0 h-1.5" style={{ backgroundColor: e.accent }} aria-hidden="true" />
+
+                <div className="flex items-baseline justify-between gap-3 mb-5">
+                  <span className="font-display text-7xl sm:text-8xl leading-none" style={{ color: e.accent }}>
+                    {e.n}
+                  </span>
+                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55 inline-flex items-center gap-1.5">
+                    <Clock className="h-3 w-3" aria-hidden="true" />
+                    20 semanas
+                  </span>
+                </div>
+
+                <h3 className="font-display uppercase text-3xl sm:text-4xl mb-4 leading-tight">
+                  {e.nome}
+                </h3>
+                <p className="font-body text-base sm:text-lg text-perestroika-preto/75 leading-relaxed mb-6">
+                  {e.pitch}
+                </p>
+
+                {/* bloco facilitador enxuto */}
+                <div className="flex items-center gap-4 pt-5 mt-auto border-t border-perestroika-preto/10">
+                  <img
+                    src={f.photo}
+                    alt={f.nome}
+                    className="shrink-0 w-14 h-14 rounded-full object-cover"
+                    style={{ boxShadow: `0 0 0 3px ${e.accent}33` }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-display uppercase text-xl leading-none">{f.nick}</p>
+                      <a
+                        href={f.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`linkedin de ${f.nick}`}
+                        className="text-perestroika-preto/50 hover:text-perestroika-preto transition-colors"
+                      >
+                        <Linkedin className="w-4 h-4" />
+                      </a>
+                    </div>
+                    <p className="font-body text-xs text-perestroika-preto/65 mt-1 leading-snug">
+                      {f.frase}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="#trilhas"
+                    onClick={(ev) => {
+                      setActiveTab(key);
+                      handleAnchorClick(ev, "trilhas");
+                    }}
+                    className="inline-flex items-center justify-center gap-2 min-h-11 rounded-full text-perestroika-bege px-5 py-2.5 font-body text-xs sm:text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                    style={{ backgroundColor: e.accent }}
+                  >
+                    ver trilhas <ArrowRight className="h-3.5 w-3.5" />
+                  </a>
+                  <Link
+                    to="/auth"
+                    className="inline-flex items-center justify-center min-h-11 px-3 font-body text-xs sm:text-sm uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
+                  >
+                    entrar
+                  </Link>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* tutor joão-de-barro com história */}
+      <section
+        id="tutor"
+        className="relative bg-perestroika-preto text-perestroika-bege py-20 sm:py-28 overflow-hidden scroll-mt-32"
+      >
         <div className="container relative grid grid-cols-1 md:grid-cols-[auto_1fr] gap-10 md:gap-14 items-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -755,12 +409,7 @@ const Index = () => {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto md:mx-0 w-44 sm:w-56 md:w-64"
           >
-            <img
-              src={joaoTutor}
-              alt="joão-de-barro tutor da eletiva"
-              className="w-full h-auto"
-              loading="lazy"
-            />
+            <img src={joaoTutor} alt="joão-de-barro tutor da naches u" className="w-full h-auto" loading="lazy" />
           </motion.div>
 
           <motion.div
@@ -771,15 +420,22 @@ const Index = () => {
             className="text-center md:text-left"
           >
             <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-bege/60 mb-4">
-              quem te acompanha
+              o tutor da escola
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
-              <span className="block">cada eletiva</span>
-              <span className="block">tem seu tutor.</span>
+              por que um<br />joão-de-barro?
             </h2>
-            <p className="mt-6 max-w-lg font-body text-base sm:text-lg text-perestroika-bege/80 mx-auto md:mx-0">
-              o joão te acompanha nas duas. com ia da naches por trás, ele muda de tom: provocador-builder na ia na prática, investigativo-sistêmico na economia circular.
-            </p>
+            <div className="mt-6 max-w-xl space-y-4 font-body text-base sm:text-lg text-perestroika-bege/85 mx-auto md:mx-0">
+              <p>
+                o joão-de-barro é o pássaro construtor do brasil. ele pega barro, palha e paciência e levanta uma casa firme, pedaço por pedaço. ninguém ensinou. ele aprende fazendo, com o que tem na mão.
+              </p>
+              <p>
+                é exatamente isso que a gente faz aqui. cada semana você coloca mais um tijolinho. no fim, você olha pra trás e tem uma obra sua.
+              </p>
+              <p className="text-perestroika-bege/70 text-sm sm:text-base">
+                e tem mais: o joão é nosso tutor de ia. ele te acompanha nas duas eletivas, muda de tom em cada uma e tá disponível 24/7 pra te ajudar quando travar.
+              </p>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -793,20 +449,45 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-10 sm:mb-12 max-w-2xl"
         >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4 inline-flex items-center gap-2">
-            <span
-              className="inline-block w-2 h-2 rounded-full"
-              style={{ backgroundColor: activeEletiva.accent }}
-              aria-hidden="true"
-            />
-            trilhas de {activeEletiva.nome}
+          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+            por dentro das trilhas
           </p>
-          <h2 className="font-display uppercase display-clamp-section mb-4 leading-[0.95]">
-            4 trilhas, 20 módulos, 1 projeto seu
+          <h2 className="font-display uppercase display-clamp-section mb-6 leading-[0.95]">
+            4 trilhas,<br />20 módulos,<br />1 projeto seu.
           </h2>
-          <p className="font-body text-base sm:text-lg text-perestroika-preto/75">
-            cada módulo tem 50 minutos, sai um por semana. troque a eletiva no topo pra ver as trilhas da outra.
+          <p className="font-body text-base sm:text-lg text-perestroika-preto/75 mb-6">
+            cada eletiva tem 4 trilhas. cada trilha tem 5 módulos. cada módulo tem 50 minutos. troque ali embaixo pra ver a outra.
           </p>
+
+          {/* tab inline simples */}
+          <div
+            role="tablist"
+            aria-label="escolha sua eletiva"
+            className="inline-flex rounded-full border-2 border-perestroika-preto/15 bg-perestroika-bege p-1"
+          >
+            {(Object.keys(eletivas) as EletivaKey[]).map((key) => {
+              const isActive = activeTab === key;
+              return (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveTab(key)}
+                  className="relative z-10 px-4 sm:px-5 py-2 rounded-full font-body text-xs sm:text-sm uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                  style={{ color: isActive ? "#f2e4d8" : undefined }}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="trilhas-tab-bg"
+                      className="absolute inset-0 rounded-full bg-perestroika-preto -z-10"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative">{eletivas[key].nome}</span>
+                </button>
+              );
+            })}
+          </div>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -827,16 +508,9 @@ const Index = () => {
                 whileHover={prefersReducedMotion ? undefined : { y: -4 }}
                 className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-8 hover:border-perestroika-preto transition-colors"
               >
-                <div
-                  className="absolute inset-x-0 top-0 h-1.5"
-                  style={{ backgroundColor: t.color }}
-                  aria-hidden="true"
-                />
+                <div className="absolute inset-x-0 top-0 h-1.5" style={{ backgroundColor: t.color }} aria-hidden="true" />
                 <div className="flex items-baseline justify-between gap-3 mb-5">
-                  <span
-                    className="font-display text-6xl sm:text-7xl leading-none"
-                    style={{ color: t.color }}
-                  >
+                  <span className="font-display text-6xl sm:text-7xl leading-none" style={{ color: t.color }}>
                     {t.n}
                   </span>
                   <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55 inline-flex items-center gap-1.5">
@@ -856,27 +530,6 @@ const Index = () => {
         </AnimatePresence>
       </section>
 
-      {/* manifesto */}
-      <section className="relative container py-24 sm:py-36 border-t border-perestroika-preto/10">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-15%" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative max-w-3xl"
-        >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
-            o jeito da escola
-          </p>
-          <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
-            aprender fazendo,<br />criar pra valer.
-          </h2>
-          <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
-            você não precisa saber tudo antes de começar. ao longo do ano, semana a semana, você vai construindo o seu projeto e aprendendo na prática. é assim que a eletiva funciona.
-          </p>
-        </motion.div>
-      </section>
-
       {/* cta final */}
       <section className="relative bg-gradient-screen py-24 sm:py-36 overflow-hidden">
         <div className="container flex flex-col items-center text-center gap-8 sm:gap-10">
@@ -887,11 +540,10 @@ const Index = () => {
             transition={{ duration: 0.6 }}
             className="font-display uppercase display-clamp-hero leading-[0.95] max-w-3xl"
           >
-            bora construir {activeEletiva.nome}?
+            bora colocar<br />o primeiro tijolo?
           </motion.h2>
 
           <motion.div
-            key={`cta-${activeTab}`}
             initial={{ opacity: 0, scale: 0.85 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-20%" }}
@@ -899,15 +551,14 @@ const Index = () => {
           >
             <Link
               to="/auth"
-              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full text-perestroika-bege px-10 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-              style={{ backgroundColor: activeEletiva.accent }}
+              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-10 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
-              entrar em {activeEletiva.nome} <ArrowRight className="h-4 w-4" />
+              entrar na naches u <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
 
           <p className="font-body text-xs sm:text-sm text-perestroika-preto/60 max-w-md">
-            já é {activeEletiva.professor}? o login reconhece sua matrícula e te leva direto pra trilha certa.
+            já tem matrícula? o login reconhece e te leva direto pra sua eletiva.
           </p>
         </div>
       </section>
