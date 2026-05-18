@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export const GlobalVotingBanner = () => {
   const { user } = useAuth();
   const location = useLocation();
-  const { enabled: extrasEnabled } = useEletivaExtras();
+  const { enabled: extrasEnabled } = useActiveEletivaExtras();
   const { session } = useActiveVotingSession();
   const { vote } = useMyVote(session?.id ?? null);
   const { projects, loading: loadingProjects } = useMyProjects();
