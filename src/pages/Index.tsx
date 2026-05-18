@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Clock, Linkedin, Calendar, Sparkles, Rocket } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import joaoTutor from "@/assets/joao-de-barro-tutor.png";
 import frattzPhoto from "@/assets/facilitadores/frattz.png";
@@ -100,7 +106,7 @@ const Index = () => {
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
   useEffect(() => {
-    const ids = ["como-funciona", "eletivas", "tutor", "trilhas"];
+    const ids = ["como-funciona", "eletivas", "tutor", "trilhas", "faq"];
     const sections = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
     if (sections.length === 0) return;
 
@@ -127,6 +133,7 @@ const Index = () => {
     { id: "como-funciona", label: "como funciona" },
     { id: "eletivas", label: "eletivas" },
     { id: "tutor", label: "tutor" },
+    { id: "faq", label: "faq" },
   ];
 
   const activeEletiva = eletivas[activeTab];
@@ -567,6 +574,85 @@ const Index = () => {
             ))}
           </motion.div>
         </AnimatePresence>
+      </section>
+
+      {/* faq */}
+      <section
+        id="faq"
+        className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-15%" }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-10 md:gap-16 items-start"
+        >
+          <div className="md:sticky md:top-32">
+            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+              perguntas frequentes
+            </p>
+            <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
+              tira a<br />dúvida.
+            </h2>
+            <p className="mt-6 font-body text-base sm:text-lg text-perestroika-preto/75 max-w-sm">
+              o que mais perguntam por aqui. clica pra abrir.
+            </p>
+            <div className="mt-6 hidden md:block">
+              <EletivaSymbol size={120} pose="thinking" rotate={-6} />
+            </div>
+          </div>
+
+          <Accordion type="single" collapsible className="w-full">
+            {[
+              {
+                q: "preciso saber programar pra entrar?",
+                a: "não. a maioria dos alunos começa do zero. a gente usa ferramentas de no-code e ia que fazem o trabalho pesado. você foca em pensar, decidir e construir.",
+              },
+              {
+                q: "como funciona a aula na prática?",
+                a: "toda semana abre 1 módulo novo, com 50 minutos no total. tem vídeo curto, exercício pra fazer ali na hora e o tutor ia te acompanhando. você faz no seu tempo, dentro da semana.",
+              },
+              {
+                q: "quem é o joão e quando eu falo com ele?",
+                a: "o joão é o tutor de ia da naches u, e ele tá disponível 24/7 dentro da plataforma. quando travar num exercício, quando quiser um exemplo, quando precisar de ideia, é só chamar. ele responde em segundos.",
+              },
+              {
+                q: "o joão substitui o professor?",
+                a: "não. o joão tira dúvida na hora, mas o frattz e o dudu conduzem a turma, dão feedback no que você entrega e aparecem em momentos ao vivo. um não tira o outro.",
+              },
+              {
+                q: "o que eu entrego no fim do ano?",
+                a: "um projeto seu de verdade, publicado e funcionando. na ia na prática é um app no ar resolvendo uma dor. na economia circular é um modelo de negócio regenerativo com protótipo e validação.",
+              },
+              {
+                q: "e se eu perder uma semana?",
+                a: "tranquilo. o conteúdo fica disponível pra você recuperar quando der. só não deixa acumular muito, senão o projeto final fica apertado no fim.",
+              },
+              {
+                q: "posso fazer as duas eletivas?",
+                a: "no momento você escolhe uma por vez. quando matricular, foca naquela. a outra continua ali, esperando.",
+              },
+              {
+                q: "tenho que ter computador?",
+                a: "ajuda bastante, principalmente na ia na prática (você vai construir um app). dá pra fazer parte das coisas no celular, mas pros módulos de construção um computador faz diferença.",
+              },
+            ].map((item, i) => (
+              <AccordionItem
+                key={item.q}
+                value={`faq-${i}`}
+                className="border-b border-perestroika-preto/15 last:border-b-0"
+              >
+                <AccordionTrigger className="font-display uppercase text-left text-xl sm:text-2xl leading-tight tracking-wide hover:no-underline py-5">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="font-body text-base text-perestroika-preto/75 leading-relaxed pb-5">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </motion.div>
       </section>
 
       {/* cta final */}
