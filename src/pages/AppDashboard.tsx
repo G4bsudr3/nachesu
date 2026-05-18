@@ -43,7 +43,7 @@ const AppDashboard = () => {
   const activeCourseId = activeEnrollment?.course_id ?? null;
   const { data: eletiva } = useEletivaProgress(activeCourseId);
   const status = usePostEventStatus();
-  const { enabled: extrasEnabled } = useEletivaExtras();
+  const { enabled: extrasEnabled } = useEletivaExtras(activeCourseId);
 
   const nickname = dashboard?.nicknameDisplay ?? "";
   const hasPassword = dashboard?.profile?.has_password ?? true;

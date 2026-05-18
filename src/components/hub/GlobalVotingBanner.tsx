@@ -4,7 +4,7 @@ import { Vote, Sparkles, Rocket, X } from "lucide-react";
 import { useActiveVotingSession, useMyVote } from "@/features/votacao/useProjectVoting";
 import { useMyProjects } from "@/features/hub/useMyProjects";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
+import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { cn } from "@/lib/utils";
 
 /**
@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export const GlobalVotingBanner = () => {
   const { user } = useAuth();
   const location = useLocation();
-  const { enabled: extrasEnabled } = useEletivaExtras();
+  const { enabled: extrasEnabled } = useActiveEletivaExtras();
   const { session } = useActiveVotingSession();
   const { vote } = useMyVote(session?.id ?? null);
   const { projects, loading: loadingProjects } = useMyProjects();

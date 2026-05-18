@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
-import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
+import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useUserRole } from "@/hooks/useUserRole";
 
 interface ExtrasGateProps {
@@ -15,7 +15,7 @@ interface ExtrasGateProps {
  * - aluno + flag on: passa
  */
 export const ExtrasGate = ({ children }: ExtrasGateProps) => {
-  const { enabled, isLoading } = useEletivaExtras();
+  const { enabled, isLoading } = useActiveEletivaExtras();
   const { isAdmin, loading: roleLoading } = useUserRole();
 
   if (isLoading || roleLoading) return null;

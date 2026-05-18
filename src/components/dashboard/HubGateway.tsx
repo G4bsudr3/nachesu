@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
-import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
+import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 
 interface GatewayLink {
   to: string;
@@ -48,7 +48,7 @@ const extrasLinks: GatewayLink[] = [
 ];
 
 export const HubGateway = () => {
-  const { enabled: extrasEnabled } = useEletivaExtras();
+  const { enabled: extrasEnabled } = useActiveEletivaExtras();
   const links = extrasEnabled ? [...baseLinks, ...extrasLinks] : baseLinks;
 
   return (
