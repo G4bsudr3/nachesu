@@ -1,17 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowUp, Loader2, Plus, Trash2, Star } from "lucide-react";
+import { ArrowLeft, ArrowUp, Loader2, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
-import { BotAvatar } from "@/components/chora-bot/BotAvatar";
-import { BotCard } from "@/components/chora-bot/BotCard";
 import { BotMessage } from "@/components/chora-bot/BotMessage";
 import { UserMessage } from "@/components/chora-bot/UserMessage";
-import { ToneChips } from "@/components/chora-bot/ToneChips";
-import { DownloadConversation } from "@/components/chora-bot/DownloadConversation";
 import { HistoryPanel } from "@/components/chora-bot/HistoryPanel";
 import { toast } from "sonner";
 import {
@@ -26,13 +21,6 @@ type Conv = { id: string; title: string; updated_at: string; is_favorite: boolea
 const MIN_PROMPT_LENGTH = 2;
 const MAX_PROMPT_LENGTH = 2000;
 
-const SUGGESTIONS = [
-  "como começo um projeto no Lovable?",
-  "me explica o que é um prompt bom",
-  "como faço deploy do meu projeto?",
-  "me ajuda a destravar uma ideia",
-];
-
 const ChoraBot = () => {
   const { user } = useAuth();
   const [convs, setConvs] = useState<Conv[]>([]);
@@ -45,21 +33,12 @@ const ChoraBot = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // tom do bot — persistido em localStorage entre sessões
-  const [tone, setTone] = useState<ChoraBotTone>(() => {
+  // tom preservado (persistido), mas sem UI: vai junto na request
+  const [tone] = useState<ChoraBotTone>(() => {
     if (typeof window === "undefined") return "padrao";
     const stored = window.localStorage.getItem(TONE_STORAGE_KEY);
     return isChoraBotTone(stored) ? stored : "padrao";
   });
-
-  const handleToneChange = (next: ChoraBotTone) => {
-    setTone(next);
-    try {
-      window.localStorage.setItem(TONE_STORAGE_KEY, next);
-    } catch {
-      // localStorage indisponível (modo privado, etc) — silencia, vira só sessão atual
-    }
-  };
 
   // pré-preenche prompt vindo da landing page (?prompt=...)
   useEffect(() => {
@@ -67,16 +46,14 @@ const ChoraBot = () => {
     const prefill = params.get("prompt");
     if (prefill) {
       setInput(prefill);
-      // limpa o param da URL pra não repetir em refresh
       const url = new URL(window.location.href);
       url.searchParams.delete("prompt");
       window.history.replaceState({}, "", url.toString());
-      // foca o textarea pro usuário só apertar enter
       requestAnimationFrame(() => textareaRef.current?.focus());
     }
   }, []);
 
-  // settings
+  // settings (welcome + cutoff)
   useEffect(() => {
     supabase
       .from("chora_bot_settings")
@@ -93,7 +70,6 @@ const ChoraBot = () => {
       });
   }, []);
 
-  // conversations list
   const reloadConvs = async () => {
     if (!user) return;
     const { data } = await supabase
@@ -109,7 +85,6 @@ const ChoraBot = () => {
     reloadConvs();
   }, [user]);
 
-  // load messages of active
   useEffect(() => {
     if (!activeId) {
       setMessages([]);
@@ -133,30 +108,11 @@ const ChoraBot = () => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, streaming]);
 
-  const newConv = async () => {
-    if (!user) return;
-    const { data, error } = await supabase
-      .from("chora_bot_conversations")
-      .insert({ user_id: user.id, title: "nova conversa" })
-      .select("id, title, updated_at, is_favorite")
-      .single();
-    if (error || !data) {
-      toast.error("não consegui criar conversa");
-      return;
-    }
-    setConvs((prev) => [data as Conv, ...prev]);
-    setActiveId(data.id);
+  const newConv = () => {
+    // simplesmente reseta a conversa ativa; a row real é criada no primeiro send
+    setActiveId(null);
     setMessages([]);
-  };
-
-  const removeConv = async (id: string) => {
-    if (!confirm("apagar essa conversa?")) return;
-    await supabase.from("chora_bot_conversations").delete().eq("id", id);
-    if (activeId === id) {
-      setActiveId(null);
-      setMessages([]);
-    }
-    reloadConvs();
+    requestAnimationFrame(() => textareaRef.current?.focus());
   };
 
   const removeConvNoConfirm = async (id: string) => {
@@ -169,10 +125,7 @@ const ChoraBot = () => {
   };
 
   const toggleFavorite = async (id: string, next: boolean) => {
-    // optimistic
-    setConvs((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, is_favorite: next } : c)),
-    );
+    setConvs((prev) => prev.map((c) => (c.id === id ? { ...c, is_favorite: next } : c)));
     const { error } = await supabase
       .from("chora_bot_conversations")
       .update({
@@ -182,30 +135,21 @@ const ChoraBot = () => {
       .eq("id", id);
     if (error) {
       toast.error("não consegui salvar favorito");
-      // rollback
-      setConvs((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, is_favorite: !next } : c)),
-      );
+      setConvs((prev) => prev.map((c) => (c.id === id ? { ...c, is_favorite: !next } : c)));
       return;
     }
-    toast.success(next ? "favoritada ★" : "removida dos favoritos");
+    toast.success(next ? "favoritada" : "removida dos favoritos");
   };
 
   const send = async () => {
     if (streaming) return;
     const text = input.trim();
-    if (text.length === 0) {
-      toast.error("escreve uma pergunta antes de mandar");
-      textareaRef.current?.focus();
-      return;
-    }
     if (text.length < MIN_PROMPT_LENGTH) {
-      toast.error("a pergunta tá curta demais, dá mais contexto");
       textareaRef.current?.focus();
       return;
     }
     if (text.length > MAX_PROMPT_LENGTH) {
-      toast.error(`máximo ${MAX_PROMPT_LENGTH} caracteres, quebra em partes menores`);
+      toast.error(`máximo ${MAX_PROMPT_LENGTH} caracteres`);
       return;
     }
     setInput("");
@@ -257,7 +201,6 @@ const ChoraBot = () => {
         throw new Error(body.error || "ia falhou");
       }
 
-      // append empty assistant
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       const reader = resp.body.getReader();
@@ -303,7 +246,6 @@ const ChoraBot = () => {
     }
   };
 
-  // iniciais do user pra mostrar nos balões
   const userInitials = (() => {
     const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
     const name =
@@ -318,14 +260,13 @@ const ChoraBot = () => {
 
   if (closed) {
     return (
-      <div className="min-h-screen bg-perestroika-bege flex flex-col items-center justify-center px-6 text-center">
-        <BotCard size="hero" tilt className="mb-8 mx-auto" />
-        <h1 className="font-display uppercase text-5xl sm:text-7xl leading-none mb-4">
+      <div className="min-h-dvh bg-perestroika-bege flex flex-col items-center justify-center px-6 text-center">
+        <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none mb-4">
           até logo
         </h1>
         <p className="max-w-md text-perestroika-preto/70 mb-8 font-body">{closed}</p>
         <Button asChild className="bg-perestroika-preto text-perestroika-bege">
-          <Link to="/app">voltar pro hub</Link>
+          <Link to="/app">voltar</Link>
         </Button>
       </div>
     );
@@ -334,23 +275,21 @@ const ChoraBot = () => {
   const canSend = !streaming && input.trim().length >= MIN_PROMPT_LENGTH;
 
   return (
-    <div className="min-h-screen bg-perestroika-bege flex flex-col">
-      {/* header editorial — minimalista */}
+    <div className="min-h-dvh bg-perestroika-bege flex flex-col">
+      {/* header mínimo: voltar · título · histórico · nova */}
       <header className="border-b border-perestroika-preto/10 px-4 py-3 flex items-center justify-between bg-perestroika-bege sticky top-0 z-10">
         <Link
           to="/app"
+          aria-label="voltar"
           className="flex items-center gap-2 text-xs font-display uppercase tracking-[0.2em] text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          hub
+          voltar
         </Link>
-        <div className="flex items-center gap-2.5">
-          <BotAvatar size={28} ring={false} />
-          <span className="font-display uppercase tracking-[0.15em] text-lg sm:text-xl text-perestroika-preto">
-            chŏra bot
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
+        <span className="font-display uppercase tracking-[0.15em] text-base sm:text-lg text-perestroika-preto">
+          tutor ia
+        </span>
+        <div className="flex items-center gap-1">
           <HistoryPanel
             activeId={activeId}
             convs={convs}
@@ -359,131 +298,30 @@ const ChoraBot = () => {
             onDelete={removeConvNoConfirm}
             onToggleFavorite={toggleFavorite}
           />
-          {messages.length > 0 && (
-            <DownloadConversation
-              messages={messages}
-              defaultTitle={
-                convs.find((c) => c.id === activeId)?.title ||
-                `tutor-ia ${new Date().toLocaleDateString("pt-BR")}`
-              }
-            />
-          )}
-          <ChoraLogo className="h-5 w-auto opacity-70 hidden lg:block" />
+          <button
+            onClick={newConv}
+            aria-label="nova conversa"
+            title="nova conversa"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-perestroika-preto/70 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
         </div>
       </header>
 
-      <div className="flex-1 flex flex-col md:flex-row max-w-6xl w-full mx-auto">
-        {/* sidebar de conversas */}
-        <aside className="md:w-60 md:border-r border-b md:border-b-0 border-perestroika-preto/10 p-3 md:max-h-[calc(100vh-65px)] md:overflow-y-auto">
-          <button
-            onClick={newConv}
-            className="w-full mb-4 flex items-center gap-2 px-3 py-2.5 rounded-xl border border-perestroika-preto/15 hover:border-perestroika-preto/40 bg-perestroika-bege transition-colors group"
-          >
-            <span className="w-6 h-6 rounded-full bg-perestroika-preto text-perestroika-bege flex items-center justify-center">
-              <Plus className="w-3.5 h-3.5" />
-            </span>
-            <span className="font-display uppercase text-[11px] tracking-[0.2em] text-perestroika-preto/70 group-hover:text-perestroika-preto">
-              nova conversa
-            </span>
-          </button>
-
-          {convs.length > 0 && (
-            <p className="px-2 mb-1.5 font-display uppercase text-[9px] tracking-[0.25em] text-perestroika-preto/40">
-              últimas
-            </p>
-          )}
-          <div className="space-y-0.5">
-            {convs.map((c) => (
-              <div
-                key={c.id}
-                className={`group flex items-center gap-1.5 px-2.5 py-2 rounded-lg cursor-pointer text-sm font-body transition-colors ${
-                  activeId === c.id
-                    ? "bg-perestroika-preto text-perestroika-bege"
-                    : "text-perestroika-preto/70 hover:bg-perestroika-preto/5 hover:text-perestroika-preto"
-                }`}
-                onClick={() => setActiveId(c.id)}
-              >
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(c.id, !c.is_favorite);
-                  }}
-                  aria-label={c.is_favorite ? "desfavoritar" : "favoritar"}
-                  className={`shrink-0 transition-transform hover:scale-110 ${
-                    c.is_favorite
-                      ? "text-perestroika-laranja opacity-100"
-                      : activeId === c.id
-                      ? "text-perestroika-bege/40 hover:text-perestroika-bege opacity-0 group-hover:opacity-100"
-                      : "text-perestroika-preto/30 hover:text-perestroika-preto opacity-0 group-hover:opacity-100"
-                  }`}
-                >
-                  <Star
-                    className="w-3.5 h-3.5"
-                    fill={c.is_favorite ? "currentColor" : "none"}
-                    strokeWidth={2}
-                  />
-                </button>
-                <span className="flex-1 truncate">{c.title}</span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeConv(c.id);
-                  }}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                  aria-label="apagar conversa"
-                >
-                  <Trash2 className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </aside>
-
-        {/* chat area */}
-        <main className="flex-1 flex flex-col min-w-0">
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-10 space-y-5">
-            {messages.length === 0 && (
-              <div className="max-w-3xl mx-auto py-6">
-                <div className="grid md:grid-cols-[auto,1fr] gap-8 md:gap-10 items-center">
-                  <div className="flex justify-center">
-                    <BotCard size="hero" tilt />
-                  </div>
-                  <div className="text-center md:text-left">
-                    <p className="font-display uppercase text-[10px] tracking-[0.3em] text-perestroika-preto/50 mb-3">
-                      o sétimo arquétipo
-                    </p>
-                    <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] mb-4 text-perestroika-preto">
-                      oi, eu sou
-                      <br />
-                      o chŏra bot.
-                    </h1>
-                    <p className="font-body text-perestroika-preto/80 mb-6 leading-relaxed">
-                      {welcome || "tire suas dúvidas sobre o que rolou nas aulas. tô por aqui sempre."}
-                    </p>
-                    <div className="space-y-2">
-                      <p className="font-display uppercase text-[10px] tracking-[0.25em] text-perestroika-preto/50">
-                        começa por aqui
-                      </p>
-                      <div className="grid sm:grid-cols-2 gap-2">
-                        {SUGGESTIONS.map((s) => (
-                          <button
-                            key={s}
-                            onClick={() => {
-                              setInput(s);
-                              textareaRef.current?.focus();
-                            }}
-                            className="text-left text-sm font-body p-3 rounded-xl bg-perestroika-bege border border-perestroika-preto/10 hover:border-perestroika-preto/40 hover:bg-perestroika-preto/[0.03] transition-all text-perestroika-preto/80 hover:text-perestroika-preto"
-                          >
-                            {s}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
+      {/* mensagens */}
+      <main className="flex-1 flex flex-col min-w-0">
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-10"
+        >
+          {messages.length === 0 ? (
+            <div className="max-w-2xl mx-auto h-full flex items-center justify-center py-12">
+              <p className="font-body text-perestroika-preto/60 text-center text-base sm:text-lg leading-relaxed">
+                {welcome || "manda sua dúvida que eu te ajudo."}
+              </p>
+            </div>
+          ) : (
             <div className="max-w-3xl mx-auto space-y-5">
               {messages.map((m, i) => {
                 const isLast = i === messages.length - 1;
@@ -502,67 +340,53 @@ const ChoraBot = () => {
                 <BotMessage content="" streaming />
               )}
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* input area */}
-          <div className="border-t border-perestroika-preto/10 px-4 py-3 md:px-6 md:py-4 bg-perestroika-bege">
-            <div className="max-w-3xl mx-auto space-y-3">
-              <ToneChips value={tone} onChange={handleToneChange} />
-
-              <div className="relative flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege focus-within:border-perestroika-preto/40 transition-colors p-2">
-                <Textarea
-                  ref={textareaRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value.slice(0, MAX_PROMPT_LENGTH))}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      send();
-                    }
-                  }}
-                  placeholder="mande sua dúvida..."
-                  rows={1}
-                  maxLength={MAX_PROMPT_LENGTH}
-                  aria-label="pergunta pro tutor IA"
-                  className="resize-none min-h-[44px] max-h-32 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-body text-perestroika-preto placeholder:text-perestroika-preto/40 px-2"
-                  disabled={streaming}
-                />
-                <button
-                  onClick={send}
-                  disabled={!canSend}
-                  aria-label="enviar pergunta"
-                  className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed enabled:hover:scale-105 enabled:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-                  style={{
-                    background: canSend
-                      ? "linear-gradient(135deg, #fe7b02 0%, #fd4644 30%, #f756a6 60%, #6f77fc 100%)"
-                      : "rgba(9,9,9,0.08)",
-                  }}
-                >
-                  {streaming ? (
-                    <Loader2 className="w-4 h-4 animate-spin text-perestroika-bege" />
-                  ) : (
-                    <ArrowUp className={`w-4 h-4 ${canSend ? "text-perestroika-bege" : "text-perestroika-preto/40"}`} />
-                  )}
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between gap-2 px-1 text-[10px] font-body text-perestroika-preto/40">
-                <span>enter envia · shift+enter quebra · ativo até 26.05.2026</span>
-                <span
-                  className={
-                    input.length >= MAX_PROMPT_LENGTH * 0.9
-                      ? "text-perestroika-vermelho font-medium tabular-nums"
-                      : "tabular-nums"
+        {/* input minimalista */}
+        <div className="border-t border-perestroika-preto/10 px-4 py-3 md:px-6 md:py-4 bg-perestroika-bege">
+          <div className="max-w-3xl mx-auto">
+            <div className="relative flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege focus-within:border-perestroika-preto/40 transition-colors p-2">
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value.slice(0, MAX_PROMPT_LENGTH))}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    send();
                   }
-                  aria-live="polite"
-                >
-                  {input.length}/{MAX_PROMPT_LENGTH}
-                </span>
-              </div>
+                }}
+                placeholder="mande sua dúvida..."
+                rows={1}
+                maxLength={MAX_PROMPT_LENGTH}
+                aria-label="pergunta pro tutor ia"
+                className="resize-none min-h-[44px] max-h-32 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-body text-perestroika-preto placeholder:text-perestroika-preto/40 px-2"
+                disabled={streaming}
+              />
+              <button
+                onClick={send}
+                disabled={!canSend}
+                aria-label="enviar pergunta"
+                className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed enabled:hover:scale-105 enabled:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                style={{
+                  background: canSend
+                    ? "linear-gradient(135deg, #fe7b02 0%, #fd4644 30%, #f756a6 60%, #6f77fc 100%)"
+                    : "rgba(9,9,9,0.08)",
+                }}
+              >
+                {streaming ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-perestroika-bege" />
+                ) : (
+                  <ArrowUp
+                    className={`w-4 h-4 ${canSend ? "text-perestroika-bege" : "text-perestroika-preto/40"}`}
+                  />
+                )}
+              </button>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };
