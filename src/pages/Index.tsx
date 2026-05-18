@@ -273,21 +273,24 @@ const Index = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {[
             {
+              step: "01",
               icon: Calendar,
               pose: "resting" as const,
               titulo: "no seu ritmo",
               desc: "1 aula por semana, 50 minutinhos. dá pra fazer no contraturno, sem sufoco.",
             },
             {
+              step: "02",
               icon: Sparkles,
               pose: "talking" as const,
               titulo: "tutor ia 24/7",
               desc: "o joão (nosso tutor de ia) tá ali pra tirar dúvida, dar exemplo e te empurrar pra frente.",
             },
             {
+              step: "03",
               icon: Rocket,
               pose: "celebrating" as const,
               titulo: "projeto de verdade",
@@ -300,18 +303,24 @@ const Index = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="relative rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-8"
+              className="relative rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8"
             >
-              <div className="flex items-start justify-between mb-5">
-                <div className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-perestroika-preto text-perestroika-bege">
-                  <card.icon className="w-5 h-5" aria-hidden="true" />
+              {/* topo: passo + mascote */}
+              <div className="flex items-start justify-between mb-4 sm:mb-5">
+                <div className="flex items-center gap-3">
+                  <span className="font-display text-3xl sm:text-4xl leading-none text-perestroika-preto/30">
+                    {card.step}
+                  </span>
+                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-perestroika-preto text-perestroika-bege">
+                    <card.icon className="w-4 h-4" aria-hidden="true" />
+                  </div>
                 </div>
-                <EletivaSymbol size={56} pose={card.pose} rotate={-4} />
+                <EletivaSymbol size={52} pose={card.pose} rotate={-4} />
               </div>
-              <h3 className="font-display uppercase text-2xl sm:text-3xl leading-tight mb-3">
+              <h3 className="font-display uppercase text-3xl sm:text-3xl leading-[0.95] mb-2 sm:mb-3">
                 {card.titulo}
               </h3>
-              <p className="font-body text-base text-perestroika-preto/75 leading-relaxed">
+              <p className="font-body text-[15px] sm:text-base text-perestroika-preto/75 leading-relaxed">
                 {card.desc}
               </p>
             </motion.div>
