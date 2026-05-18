@@ -168,6 +168,7 @@ const Modulo = () => {
           },
           { onConflict: "user_id,module_id" },
         );
+        await submitDeliverableIfExists();
         const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
         const nextWasLocked =
           next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
