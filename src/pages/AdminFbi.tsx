@@ -536,6 +536,10 @@ const AdminFbi = () => {
             <TabsContent value="tutor">
               <AdminTutor />
             </TabsContent>
+
+            <TabsContent value="feedback">
+              <AdminFeedbackInbox />
+            </TabsContent>
           </Tabs>
         </motion.div>
       </main>
