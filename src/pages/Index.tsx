@@ -675,15 +675,18 @@ const Index = () => {
             transition={{ duration: 0.6 }}
           >
             <Link
-              to="/auth"
+              to="/comecar"
               className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-10 py-4 font-body font-medium text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
-              entrar na naches u <ArrowRight className="h-4 w-4" />
+              começar agora <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
 
           <p className="font-body text-xs sm:text-sm text-perestroika-preto/60 max-w-md">
-            já tem matrícula? o login reconhece e te leva direto pra sua eletiva.
+            já tem matrícula?{" "}
+            <Link to="/auth" className="underline underline-offset-4 hover:text-perestroika-preto">
+              entrar direto
+            </Link>
           </p>
         </div>
       </section>
