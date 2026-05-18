@@ -13,11 +13,9 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { NextActionHero } from "@/components/dashboard/NextActionHero";
 import { JourneyChips } from "@/components/dashboard/JourneyChips";
-import { HubGateway } from "@/components/dashboard/HubGateway";
 import { ArchiveSection } from "@/components/dashboard/ArchiveSection";
 import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
-import { TrailsProgress } from "@/components/dashboard/TrailsProgress";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
@@ -131,7 +129,7 @@ const AppDashboard = () => {
             daysSinceLastActivity={daysSinceLastActivity}
           />
 
-          {/* 2+ matrículas → switcher mobile-first + hero da eletiva ATIVA + progresso */}
+          {/* 2+ matrículas → switcher mobile-first + hero da eletiva ATIVA */}
           {hasMultiple && (
             <>
               <section aria-label="suas eletivas" className="space-y-3">
@@ -148,34 +146,19 @@ const AppDashboard = () => {
                 </div>
                 <EletivaSwitcher />
               </section>
-              {activeCourseId && (
-                <>
-                  <EletivaCard snapshot={eletiva ?? undefined} />
-                  {eletiva && eletiva.totalPublished > 0 && (
-                    <TrailsProgress snapshot={eletiva} />
-                  )}
-                </>
-              )}
+              {activeCourseId && <EletivaCard snapshot={eletiva ?? undefined} />}
             </>
           )}
 
-          {/* 1 matrícula → hero direto + progresso */}
+          {/* 1 matrícula → hero direto (CTA leva pro módulo atual) */}
           {!hasMultiple && activeCourseId && (
-            <>
-              <EletivaCard snapshot={eletiva ?? undefined} />
-              {eletiva && eletiva.totalPublished > 0 && (
-                <TrailsProgress snapshot={eletiva} />
-              )}
-            </>
+            <EletivaCard snapshot={eletiva ?? undefined} />
           )}
 
           {/* 0 matrículas → estado vazio */}
           {enrollments && enrollments.length === 0 && <MyCoursesList />}
 
-          {/* 4. apoio: tutor IA + materiais (e extras se admin ligar a flag) */}
-          <HubGateway />
-
-          {/* 5. extras pós-evento Chŏra: só com flag ligada (admin reativa quando precisar) */}
+          {/* extras pós-evento Chŏra: só com flag ligada (admin reativa quando precisar) */}
           {extrasEnabled && (
             <>
               <NextActionHero nickname={nickname} status={status} />

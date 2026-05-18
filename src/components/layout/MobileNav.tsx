@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, LayoutGrid, Map, MessageCircleHeart, Sparkles } from "lucide-react";
+import { Home, Map, MessageCircleHeart, Sparkles } from "lucide-react";
 import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 
 interface NavItem {
@@ -14,7 +14,6 @@ const baseItems: NavItem[] = [
   { to: "/app", label: "início", icon: <Home className="h-5 w-5" /> },
   { to: "/app/trilhas", label: "trilhas", icon: <Map className="h-5 w-5" />, matchPrefix: "/app/trilhas" },
   { to: "/app/tutor", label: "tutor", icon: <Sparkles className="h-5 w-5" />, matchPrefix: "/app/tutor" },
-  { to: "/app/hub", label: "hub", icon: <LayoutGrid className="h-5 w-5" />, matchPrefix: "/app/hub" },
 ];
 
 const extrasItem: NavItem = {
@@ -39,7 +38,8 @@ export const MobileNav = () => {
   const { pathname } = useLocation();
   const { enabled: extrasEnabled } = useEletivaExtras();
   const items = extrasEnabled ? [...baseItems, extrasItem] : baseItems;
-  const cols = items.length === 5 ? "grid-cols-5" : "grid-cols-4";
+  const cols =
+    items.length === 5 ? "grid-cols-5" : items.length === 4 ? "grid-cols-4" : "grid-cols-3";
 
   return (
     <nav
