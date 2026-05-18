@@ -14,6 +14,7 @@ import { TutorChat } from "@/components/eletiva/TutorChat";
 import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
+import { ModuloProgressBar } from "@/components/eletiva/modulo/ModuloProgressBar";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
@@ -247,8 +248,18 @@ const Modulo = () => {
     );
   }
 
+  const totalPills = pills?.length ?? 0;
+  const donePills = pills?.filter((p) => completedPillIds.has(p.id)).length ?? 0;
+
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
+      <ModuloProgressBar
+        total={totalPills}
+        done={donePills}
+        trailColor={trailColor}
+        moduleNumber={moduleRow.number}
+        moduleTitle={moduleRow.title}
+      />
       <PageHeader
         showLogo
         logoLink="/app"
@@ -290,6 +301,7 @@ const Modulo = () => {
           completedPillIds={completedPillIds}
           trailColor={trailColor}
           hasTrail={!!trail}
+          moduleId={moduleRow.id}
           onTogglePill={(p) => togglePillMutation.mutate(p)}
           togglePending={togglePillMutation.isPending}
           onOpenTutor={(pill) => {
@@ -299,7 +311,7 @@ const Modulo = () => {
                 pillPrompt: pill.interaction_schema.tutor_prompt,
               });
             } else {
-              setTutorPillContext(null);
+              setTutorPillContext(pill ? { pillTitle: pill.title, pillPrompt: pill.body_md ?? "" } : null);
             }
             setTutorOpen(true);
           }}

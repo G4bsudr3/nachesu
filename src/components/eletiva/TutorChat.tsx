@@ -468,6 +468,30 @@ export const TutorChat = ({
           }}
           className="p-4 border-t border-perestroika-preto/15 bg-perestroika-bege"
         >
+          {!streaming && (messages.length === 0 || !!pillContext) && (
+            <div
+              className="flex gap-1.5 overflow-x-auto pb-2 mb-2 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              role="group"
+              aria-label="atalhos de pergunta"
+            >
+              {[
+                pillContext ? "explica essa pílula de novo, mais simples" : "explica de novo, mais simples",
+                "me dá um exemplo prático",
+                "me questiona como um professor faria",
+                "resume isso em 3 bullets",
+              ].map((chip) => (
+                <button
+                  key={chip}
+                  type="button"
+                  onClick={() => void runSend(chip)}
+                  disabled={streaming}
+                  className="shrink-0 rounded-full border border-perestroika-preto/25 bg-white/60 px-3 py-1.5 font-body text-[11px] text-perestroika-preto/85 hover:bg-perestroika-preto hover:text-perestroika-bege hover:border-perestroika-preto transition-colors disabled:opacity-50"
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto bg-white/70 p-2">
             <textarea
               value={input}

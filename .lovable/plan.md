@@ -1,113 +1,113 @@
+# Análise crítica + plano pedagógico
+
 ## diagnóstico
 
-### jornada do aluno hoje
-quatro páginas competem pelo mesmo papel:
-- `/app` (dashboard) mostra saudação + switcher de eletivas + EletivaCard + TrailsProgress + HubGateway. é o ponto de entrada.
-- `/app/eletiva/:slug` mostra hero + "próximo passo" + atalhos pra trilhas/tutor. também é entrada.
-- `/app/trilhas` mostra o mapa completo.
-- `/app/modulo/:n` é onde o aluno realmente aprende.
+a base é sólida (módulo → trilha → eletiva, sequencial unlock, progresso por aluno, painel /admin/aula com métricas e entregas). a jornada está enxuta após o último refactor. **o que falta é o coração pedagógico**: a aula é passiva, o tutor é genérico, o professor não vê pessoa nenhuma, e o aluno não tem ciclo de prática-feedback-reflexão.
 
-resultado: o aluno cai no dashboard, vê duas seções de progresso, dois CTAs ("continuar de onde parou" no card e no hero da eletiva), três caminhos pra mesma coisa e ainda um bloco "quando travar, vem aqui" com tutor + materiais que repete o que aparece dentro da eletiva. nav mobile tem 4 ícones (início, trilhas, tutor, hub), e "hub" leva pra uma página que basicamente repete materiais + tutor.
+### 10 falhas pedagógicas encontradas (lado aluno)
 
-verificação no banco: 0 respostas FBI, 0 prework_progress, 0 mission_submissions, 4 matrículas em 2 cursos com 40 módulos / 200 pílulas. **a base toda é módulo+pílula. tudo de FBI, missões, prework, cartas, carta-futuro, votação, feedback-d1/final, chora-bot é legado da imersão Chŏra e nunca foi usado pela NachesU.**
+1. **pílulas são passivas.** `Modulo.tsx` renderiza tudo como artigo com botão "marcar concluída". todos os 5 tipos de pílula (`pilula_a/b/c`, `exercicio_pbl`, `registro`) viram o mesmo card. **descoberta crítica: existe um sistema completo de componentes interativos em `src/components/eletiva/pills/` (PillAbertura, PillConteudoCurado, PillRadar, PillQuiz, PillBonus, RadarFinal, EvidenceUploader, useDeliverable com autosave) que nunca foi conectado.** banco confirma: 0 entregas em `module_deliverables`, 0 ratings.
+2. **zero feedback formativo.** coluna `module_deliverables.feedback` existe, nunca foi escrita. sem rubrica, sem comentário, sem sinal de "fui visto".
+3. **tutor IA descontextualizado.** `/app/tutor` é chat genérico. não puxa título/objetivo/corpo da pílula atual, não tem prompts pré-feitos ("explica de novo", "me questiona como professor", "me dá um exemplo").
+4. **sem metacognição.** nenhuma pergunta de confiança, nenhuma reflexão de fechamento. tipo de pílula `registro` existe mas é renderizado como texto morto.
+5. **sem spaced retrieval.** 40 módulos repetem o padrão a/b/c. base perfeita pra micro-cards de recall ao retomar (ebbinghaus). nada implementado.
+6. **celebração rasa.** toast no fim do módulo. fim de trilha (5 módulos) e fim de eletiva: nada. faltam signature moments proporcionais.
+7. **sem "skill map".** aluno vê `module_number` mas não a competência que está construindo. falta outcome trail.
+8. **PBL adormecido.** `trails.pbl_prompt` e `exercicio_pbl` existem como dados, mas viram pílula passiva. a escola sebrae é PBL. é o coração e está dormindo.
+9. **sem progresso intra-módulo.** pílula 3 de 5 só aparece após rolar. precisa indicador no topo.
+10. **texto-corrido em celular.** EM 1º ano lê no mobile. faltam callouts, chunks, variação visual.
 
-### admin hoje
-`/admin` tem 19 abas numa única `TabsList` que quebra linha. menos da metade serve à NachesU:
+### 7 falhas no lado professor
 
-**ativas pra NachesU:** eletivas, eletiva (settings), trilha, tutor IA, materiais, pendentes, usuários
-**legado Chŏra (zero uso):** fbi, pré-work (legado), missões (legado), cartas, artworks, convidados, emails (log), feedback-d1, pesquisa final, carta-futuro, votação projetos, chora-bot
+1. **sem ficha do aluno.** admin vê números agregados, não vê pessoa. não sabe onde a maria parou.
+2. **sem fila de "o que revisar hoje".** entregas chegam (quando chegam) e somem. nenhum inbox.
+3. **`student_alerts` (tabela) existe mas não é populada.** ninguém vê aluno em risco.
+4. **editor de pílula com 982 linhas.** sem templates ("inserir quiz", "inserir reflexão"). atrito alto pra professor não-dev.
+5. **métricas pontuais, sem heatmap.** "qual pílula trava mais gente?" não tem resposta.
+6. **sem broadcast.** professor não consegue mandar nudge contextual sem sair do admin.
+7. **sem timeline.** stats só mostram totais. evolução semana a semana invisível.
 
-19 abas dão impressão de que tudo é igualmente importante. nada sinaliza o que faz sentido tocar hoje.
+---
 
-### best practices que ancoram a reforma
-síntese dos guias 2025 de LMS/self-paced (Lazarev, Selleo/SIIT, TPLEX, OpenFieldX):
-1. **uma ação por tela.** drop-off acontece nos primeiros 10 min se o aluno precisa decidir entre múltiplos caminhos.
-2. **progressive disclosure.** mostra só o módulo atual em destaque; o mapa completo é zoom-out opcional, não tela principal.
-3. **progresso visível e significativo.** um único indicador por contexto (não dois).
-4. **continuidade > navegação.** "continuar de onde parou" tem que ser o CTA dominante; tudo o mais é secundário.
-5. **navegação enxuta.** 3-5 destinos no máximo. cada um precisa de razão clara.
-6. **admin minimalista.** tarefas por frequência, não por feature. abas que ninguém abre viram menu secundário ou somem.
+## plano em 7 ondas
 
-## plano
+cada onda gera valor sozinha. ondas 1+2+3 já dobram a percepção de qualidade.
 
-### parte 1 — jornada do aluno
+### onda 1 — ativar pílulas interativas (HIGHEST IMPACT, faz tudo o resto importar)
 
-**1.1 dashboard `/app` vira realmente um "hub de entrada", sem competir com a eletiva.**
-- mantém: saudação curta + switcher (só quando 2+ matrículas).
-- remove do dashboard: `EletivaCard` duplicado, `TrailsProgress` duplicado, `HubGateway` (vira atalho na nav).
-- adiciona: 1 ou 2 cards "minhas eletivas" (1 matrícula vira direct-link) com **um único CTA grande "continuar"** que leva direto pra `/app/modulo/:n` do módulo atual, pulando a tela intermediária quando o aluno só tem uma trilha em andamento.
-- aluno com 0 matrículas vê `MyCoursesList` (mantém).
-- toda a sessão de `extrasEnabled` (NextActionHero, JourneyChips, ArchiveSection) sai do dashboard. fica só atrás de admin/flag.
+- reescrever `src/pages/Modulo.tsx` substituindo `ModuloPillList` por roteador por `kind`:
+  - `pilula_a` → `PillAbertura`
+  - `pilula_b` / `pilula_c` → `PillConteudoCurado` + micro-quiz inline opcional via `interaction_schema`
+  - `exercicio_pbl` → `PillRadar` (já consome `EvidenceUploader`)
+  - `registro` → `PillBonus` (reflexão escrita autosave)
+- conectar `useDeliverable` (já pronto, já escreve em `module_deliverables`)
+- conclusão automática da pílula quando o engagement mínimo é atingido (não só clique manual)
+- indicador "pílula 3 de 5" sticky no topo do módulo
 
-**1.2 `/app/eletiva/:slug` vira a "home da eletiva", única fonte de verdade dentro do curso.**
-- mantém hero + próximo passo + barra de progresso (um lugar só).
-- atalhos viram 3: **mapa de trilhas**, **tutor IA**, **materiais** (hoje materiais não aparece aqui, deveria).
-- onboarding overlay continua na primeira visita.
+### onda 2 — loop de feedback formativo
 
-**1.3 mobile nav enxuga de 4 (+1) pra 3 itens fixos.**
-proposta: `início` → `trilhas` → `tutor`. "hub" sai (era agregador de materiais+tutor; vira atalho dentro de cada eletiva). "pesquisa" continua atrás de extras-flag.
+- `/admin/feedback` (nova rota): inbox de `module_deliverables` com `submitted_at not null` e sem `reviewed_at`. filtros por curso, módulo, aluno
+- tela de revisão única: ver entrega + textarea de feedback + 3-5 rubric-chips ("clareza ✓", "evidência forte ✓", "aprofundar X") + status aprovar/revisar
+- lado aluno: pílula com entrega revisada ganha card "feedback de [professor]" no topo; badge na MobileNav quando há feedback novo
 
-**1.4 página `/app/hub` vira redirect.**
-hoje é `HubIndex` repetindo cards. vira `Navigate` pra `/app` ou pra eletiva ativa. `/app/hub/materiais` continua porque é destino real, mas só linkado de dentro da eletiva.
+### onda 3 — tutor IA contextual (signature moment)
 
-**1.5 rotas legadas escondidas atrás de `ExtrasGate`.**
-hoje só `galeria/projetos/album/turma/builder/carta-futuro` estão atrás da gate. mover pra dentro da gate também: `/app/prework`, `/app/missoes`, `/app/entregas`, `/app/carta`, `/app/tutorial`, `/app/inicio`, `/app/onboarding`, `/app/feedback-final`, `/app/certificado`. ficam acessíveis só com a flag `eletiva_extras_enabled` ligada (ou admin) — a infra pra reativar Chŏra fica de pé, mas o aluno NachesU não tropeça nelas.
+- transformar o botão "tutor IA" das pílulas em chat contextual: injetar título do módulo, objetivo da trilha, título e body da pílula no system prompt
+- 4 chips pré-feitos no input: "explica de novo", "me dá um exemplo", "me questiona como professor", "resume em 3 bullets"
+- conversa contextual salva em `chora_bot_conversations` com referência à pílula → vira "histórico de dúvidas" recuperável
 
-**1.6 microcopy de continuidade.**
-no card da eletiva no dashboard: "**módulo 03 · {título}** · continuar" em vez de "{course.title}" abstrato. cumpre o princípio 4 (continuidade > navegação).
+### onda 4 — metacognição + spaced retrieval
 
-### parte 2 — admin
+- ao concluir módulo: modal de 5 segundos com "confiança 1-5" + "o que você levou? (1 frase)". salva em `module_ratings` (tabela já existe)
+- ao retomar após 3+ dias: 1 micro-card de recall no dashboard ("lembra disto do módulo 02?")
+- aba "minha trilha de skills" no dashboard: skills extraídas de `objective` dos módulos, com domínio = autoavaliação + entrega revisada
 
-**2.1 reorganizar `/admin` em 2 grupos visuais, não 19 abas em fila.**
+### onda 5 — visão professor (admin)
 
-grupo **operação NachesU** (sempre visível, ordem por frequência de uso):
-1. eletivas (cursos)
-2. trilha (editar módulos/pílulas)
-3. tutor IA
-4. materiais
-5. pendentes (aprovar alunos)
-6. usuários
-7. settings (renomeada de "eletiva")
+- **ficha do aluno** `/admin/aluno/:id`: timeline (módulos concluídos, entregas, feedbacks, alertas, última atividade)
+- **dashboard professor reposicionado**: troca os cards atuais (totais) por "o que demanda sua atenção hoje": N entregas a revisar / N alunos parados 7+ dias / N pílulas com abandono > 30%
+- **heatmap intra-aula** em `/admin/aula/:n`: % de aluno que termina cada pílula, tempo médio, distribuição de respostas de quiz
+- **templates no editor de pílula**: botão "inserir bloco" abre menu (reflexão, quiz 3 alt, radar, link curado, vídeo)
 
-grupo **legado / experimental** (collapsed atrás de um toggle "ver ferramentas Chŏra"):
-fbi, prework, missões, cartas, artworks, convidados, emails, feedback-d1, pesquisa final, carta-futuro, votação projetos, chora-bot.
+### onda 6 — celebração proporcional
 
-implementação: dois `TabsList` separados ou um único com um divider "— legado —" e as últimas abas escondidas por default, lembradas em localStorage.
+- conclusão de módulo: animação curta com mascote pose `celebrating` + frase do contexto
+- conclusão de trilha (5 módulos): tela full-screen com badge + frase do professor + atalho pra próxima
+- conclusão de eletiva: reconectar `hub_certificates` ao fluxo aluno (hoje tá atrás de ExtrasGate, esconde celebração real)
 
-**2.2 conectar dashboard admin ao real.**
-`AdminStats` hoje provavelmente mostra contadores FBI (todos 0). substituir o card de FBI por:
-- alunos ativos (com `enrollments`)
-- pendentes a aprovar (link direto)
-- módulos publicados / em rascunho por eletiva
-- pílulas com problemas (sem body, vídeo quebrado) — opcional, segunda iteração
+### onda 7 — alertas + broadcast
 
-**2.3 breadcrumb e header do admin.**
-o título "fbi · respostas" como default da rota `/admin` é resíduo Chŏra. tab default vira `eletivas`. o `ChoraLogo` no header do admin troca pra `NachesULogo` (já existe).
+- edge function `compute-student-alerts` (cron diário): popula `student_alerts` com inatividade 7+ dias, abandono no meio, autoavaliação baixa
+- admin vê alertas no dashboard; aluno vê nudge gentil contextual
+- professor envia mensagem direta pro aluno via admin (email + in-app card no próximo login)
 
-### parte 3 — o que NÃO entra agora
+---
 
-- não apaga rotas legadas, só esconde atrás de gate. Chŏra ainda pode ser reativada.
-- não mexe em `Modulo.tsx` ou no player de pílula — funcionam bem, é onde o aluno passa o tempo.
-- não troca o `EletivaOnboardingOverlay`.
-- não muda schema do banco.
-- nada de novo componente visual além de reagrupamentos e remoções.
+## o que NÃO entra agora
 
-### escopo de arquivos previstos
+- peer review (segunda fase)
+- gamificação de XP / níveis (foco é aprendizado, não score)
+- mudanças no schema base (`modules`, `trails`, `module_pills`) — só usa o que já existe
+- troca do player de vídeo
+
+## escopo de arquivos previsto (ondas 1-3, prioridade)
 
 ```text
-src/pages/AppDashboard.tsx       remove EletivaCard duplicado, TrailsProgress, HubGateway, extras-only sections
-src/components/layout/MobileNav.tsx   3 itens base (início, trilhas, tutor)
-src/pages/HubIndex.tsx           vira redirect
-src/pages/EletivaHome.tsx        adiciona atalho "materiais"; copy de continuidade
-src/App.tsx                      envolve rotas legadas em <ExtrasGate>
-src/pages/AdminFbi.tsx           reagrupa tabs em "operação" + "legado", troca default tab, troca logo
-src/features/admin/AdminStats.tsx   stats relevantes pra NachesU (alunos, pendentes, módulos)
+src/pages/Modulo.tsx                              roteador por kind, progresso intra-módulo
+src/components/eletiva/modulo/ModuloPillList.tsx  refeito como dispatcher
+src/components/eletiva/pills/*                    conectados (já existem)
+src/components/eletiva/TutorChat.tsx              prompts contextuais + chips
+src/pages/ChoraBot.tsx                            herda chips (consistência)
+src/features/admin/AdminFeedbackInbox.tsx         (novo) fila de revisão
+src/pages/AdminFbi.tsx                            adiciona aba "feedback" no grupo operação
+src/components/dashboard/FeedbackBadge.tsx        (novo) sinal de feedback novo
+supabase/migrations/                              índice em deliverables(submitted_at) onde reviewed_at IS NULL
 ```
 
-nenhuma migration. nenhuma edge function nova.
+ondas 4-7 detalhadas após validação das 1-3.
 
-### resultado esperado
+## resultado esperado
 
-aluno: abre `/app`, vê 1 card por eletiva com 1 CTA "continuar", 1 clique pra dentro do módulo. nav inferior com 3 ícones. zero rotas mortas no caminho.
+**aluno**: cada pílula vira interação (não leitura), ganha feedback humano com nome, tem tutor que conhece a aula, vê evolução de skill, é celebrado a cada marco. ciclo prática → feedback → reflexão fechado.
 
-admin: abre `/admin`, cai em "eletivas", vê 7 abas operacionais em uma linha + um toggle pro legado. stats refletem a realidade (matrículas, pendentes, módulos), não FBI zerada.
+**professor**: abre admin e vê "12 entregas pra revisar, 3 alunos parados, pílula 03/módulo 04 com abandono alto". clica em qualquer card e age. ficha de aluno disponível. templates aceleram criação de aula.
