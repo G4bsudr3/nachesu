@@ -36,7 +36,7 @@ const isActive = (pathname: string, item: NavItem) => {
  */
 export const MobileNav = () => {
   const { pathname } = useLocation();
-  const { enabled: extrasEnabled } = useEletivaExtras();
+  const { enabled: extrasEnabled } = useActiveEletivaExtras();
   const items = extrasEnabled ? [...baseItems, extrasItem] : baseItems;
   const cols =
     items.length === 5 ? "grid-cols-5" : items.length === 4 ? "grid-cols-4" : "grid-cols-3";
