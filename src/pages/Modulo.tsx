@@ -298,6 +298,8 @@ const Modulo = () => {
           <ArrowLeft className="h-3.5 w-3.5" /> meu início
         </Link>
 
+        <ModuloFeedbackCard moduleId={moduleRow.id} trailColor={trailColor} />
+
         <ModuloHeader
           trailTitle={trail?.title ?? null}
           trailColor={trailColor}
