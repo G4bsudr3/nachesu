@@ -138,6 +138,23 @@ const AdminFbi = () => {
   const [cidadeFilter, setCidadeFilter] = useUrlState("fbi_cidade", "todas");
   const [expFilter, setExpFilter] = useUrlState("fbi_exp", "todos");
   const [selected, setSelected] = useState<FbiRow | null>(null);
+  const LEGACY_TABS = ["fbi","prework","missoes","cartas","artworks","convidados","emails","feedback-d1","feedback-final","carta-futuro","votacao-projetos","chora-bot"];
+  const [showLegacy, setShowLegacy] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const stored = localStorage.getItem("admin_show_legacy");
+    if (stored !== null) return stored === "true";
+    return LEGACY_TABS.includes(currentTab);
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("admin_show_legacy", String(showLegacy));
+    }
+  }, [showLegacy]);
+  // se navegar pra aba legado via URL, abre a seção
+  useEffect(() => {
+    if (LEGACY_TABS.includes(currentTab) && !showLegacy) setShowLegacy(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab]);
 
   useEffect(() => {
     let cancelled = false;
