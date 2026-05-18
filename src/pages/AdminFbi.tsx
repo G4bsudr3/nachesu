@@ -312,6 +312,7 @@ const AdminFbi = () => {
               <TabsTrigger value="eletivas" className="uppercase tracking-wide text-xs">eletivas</TabsTrigger>
               <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
               <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
+              <TabsTrigger value="feedback" className="uppercase tracking-wide text-xs">feedback</TabsTrigger>
               <TabsTrigger value="materiais" className="uppercase tracking-wide text-xs">materiais</TabsTrigger>
               <TabsTrigger value="pending" className="uppercase tracking-wide text-xs">pendentes</TabsTrigger>
               <TabsTrigger value="usuarios" className="uppercase tracking-wide text-xs">usuários</TabsTrigger>
