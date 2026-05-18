@@ -48,7 +48,7 @@ const extrasLinks: GatewayLink[] = [
 ];
 
 export const HubGateway = () => {
-  const { enabled: extrasEnabled } = useEletivaExtras();
+  const { enabled: extrasEnabled } = useActiveEletivaExtras();
   const links = extrasEnabled ? [...baseLinks, ...extrasLinks] : baseLinks;
 
   return (
