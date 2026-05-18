@@ -14,6 +14,7 @@ import { TutorChat } from "@/components/eletiva/TutorChat";
 import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
+import { ModuloProgressBar } from "@/components/eletiva/modulo/ModuloProgressBar";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
