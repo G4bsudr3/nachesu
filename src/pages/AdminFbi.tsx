@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ChevronRight, Copy, Download, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { NachesULogo } from "@/components/brand/NachesULogo";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -113,7 +113,7 @@ const AdminFbi = () => {
   const tabRaw = tabFromPath ?? searchParams.get("tab") ?? "";
   const currentTab: AdminTab = (VALID_TABS as readonly string[]).includes(tabRaw)
     ? (tabRaw as AdminTab)
-    : "fbi";
+    : "eletivas";
 
   // Mantém URL canônica: /admin/:tab (move ?tab= legacy pro path).
   useEffect(() => {
@@ -231,7 +231,7 @@ const AdminFbi = () => {
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
       <header className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between pt-8 pb-4">
         <div className="flex items-center gap-6">
-          <ChoraLogo variant="dark" />
+          <NachesULogo variant="dark" />
           <Badge className="bg-perestroika-preto text-perestroika-bege uppercase tracking-wide">
             admin
           </Badge>
