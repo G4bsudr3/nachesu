@@ -137,7 +137,9 @@ const App = () => (
                 path="/app/prework"
                 element={
                   <ProtectedRoute>
-                    <Prework />
+                    <ExtrasGate>
+                      <Prework />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
@@ -145,16 +147,20 @@ const App = () => (
                 path="/app/missoes"
                 element={
                   <ProtectedRoute>
-                    <Missions />
+                    <ExtrasGate>
+                      <Missions />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
-              {/* alias novo (eletiva): /app/entregas → mesma página */}
+              {/* alias novo (eletiva): /app/entregas → mesma página, atrás da mesma gate */}
               <Route
                 path="/app/entregas"
                 element={
                   <ProtectedRoute>
-                    <Missions />
+                    <ExtrasGate>
+                      <Missions />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
@@ -194,7 +200,9 @@ const App = () => (
                 path="/app/carta"
                 element={
                   <ProtectedRoute>
-                    <MinhaCarta />
+                    <ExtrasGate>
+                      <MinhaCarta />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
@@ -202,7 +210,9 @@ const App = () => (
                 path="/app/tutorial"
                 element={
                   <ProtectedRoute>
-                    <Tutorial />
+                    <ExtrasGate>
+                      <Tutorial />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
@@ -210,7 +220,9 @@ const App = () => (
                 path="/app/inicio"
                 element={
                   <ProtectedRoute>
-                    <Onboarding />
+                    <ExtrasGate>
+                      <Onboarding />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
@@ -218,7 +230,9 @@ const App = () => (
                 path="/app/onboarding"
                 element={
                   <ProtectedRoute>
-                    <OnboardingDialogPage />
+                    <ExtrasGate>
+                      <OnboardingDialogPage />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
@@ -246,7 +260,9 @@ const App = () => (
                 path="/app/feedback-final"
                 element={
                   <ProtectedRoute>
-                    <FeedbackFinal />
+                    <ExtrasGate>
+                      <FeedbackFinal />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />
@@ -254,7 +270,9 @@ const App = () => (
                 path="/app/certificado"
                 element={
                   <ProtectedRoute>
-                    <Certificado />
+                    <ExtrasGate>
+                      <Certificado />
+                    </ExtrasGate>
                   </ProtectedRoute>
                 }
               />

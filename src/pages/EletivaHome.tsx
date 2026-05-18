@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, Compass, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Compass, MessageCircle, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
@@ -175,7 +175,7 @@ const EletivaHome = () => {
         )}
 
         {/* atalhos */}
-        <section className="grid gap-4 sm:grid-cols-2">
+        <section className="grid gap-4 sm:grid-cols-3">
           <Link
             to={`/app/trilhas?eletiva=${course.slug}`}
             className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
@@ -184,9 +184,9 @@ const EletivaHome = () => {
               <Compass className="h-5 w-5" />
             </div>
             <div className="flex-1">
-              <p className="font-display uppercase text-2xl leading-tight">mapa de trilhas</p>
+              <p className="font-display uppercase text-2xl leading-tight">mapa</p>
               <p className="font-body text-sm text-perestroika-preto/70 mt-1">
-                4 trilhas, 5 módulos cada. veja o caminho inteiro.
+                4 trilhas, 5 módulos cada.
               </p>
             </div>
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
@@ -202,7 +202,23 @@ const EletivaHome = () => {
             <div className="flex-1">
               <p className="font-display uppercase text-2xl leading-tight">tutor IA</p>
               <p className="font-body text-sm text-perestroika-preto/70 mt-1">
-                tira dúvida do conteúdo a qualquer hora.
+                tira dúvida a qualquer hora.
+              </p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
+          </Link>
+
+          <Link
+            to="/app/hub/materiais"
+            className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
+          >
+            <div className="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-perestroika-preto text-perestroika-bege">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <p className="font-display uppercase text-2xl leading-tight">materiais</p>
+              <p className="font-body text-sm text-perestroika-preto/70 mt-1">
+                leituras, slides, referências.
               </p>
             </div>
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />

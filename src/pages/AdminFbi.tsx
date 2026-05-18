@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useUrlState } from "@/hooks/useUrlState";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronRight, Copy, Download, Search } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Copy, Download, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { ChoraLogo } from "@/components/brand/ChoraLogo";
+import { NachesULogo } from "@/components/brand/NachesULogo";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -113,7 +113,7 @@ const AdminFbi = () => {
   const tabRaw = tabFromPath ?? searchParams.get("tab") ?? "";
   const currentTab: AdminTab = (VALID_TABS as readonly string[]).includes(tabRaw)
     ? (tabRaw as AdminTab)
-    : "fbi";
+    : "eletivas";
 
   // Mantém URL canônica: /admin/:tab (move ?tab= legacy pro path).
   useEffect(() => {
@@ -138,6 +138,23 @@ const AdminFbi = () => {
   const [cidadeFilter, setCidadeFilter] = useUrlState("fbi_cidade", "todas");
   const [expFilter, setExpFilter] = useUrlState("fbi_exp", "todos");
   const [selected, setSelected] = useState<FbiRow | null>(null);
+  const LEGACY_TABS = ["fbi","prework","missoes","cartas","artworks","convidados","emails","feedback-d1","feedback-final","carta-futuro","votacao-projetos","chora-bot"];
+  const [showLegacy, setShowLegacy] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const stored = localStorage.getItem("admin_show_legacy");
+    if (stored !== null) return stored === "true";
+    return LEGACY_TABS.includes(currentTab);
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("admin_show_legacy", String(showLegacy));
+    }
+  }, [showLegacy]);
+  // se navegar pra aba legado via URL, abre a seção
+  useEffect(() => {
+    if (LEGACY_TABS.includes(currentTab) && !showLegacy) setShowLegacy(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab]);
 
   useEffect(() => {
     let cancelled = false;
@@ -231,7 +248,7 @@ const AdminFbi = () => {
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
       <header className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between pt-8 pb-4">
         <div className="flex items-center gap-6">
-          <ChoraLogo variant="dark" />
+          <NachesULogo variant="dark" />
           <Badge className="bg-perestroika-preto text-perestroika-bege uppercase tracking-wide">
             admin
           </Badge>
@@ -288,27 +305,45 @@ const AdminFbi = () => {
             onValueChange={handleTabChange}
             className="w-full"
           >
-            <TabsList className="bg-perestroika-preto/5 mb-6 inline-flex flex-wrap h-auto">
+            {/* operação NachesU (sempre visível, ordem por frequência de uso) */}
+            <TabsList className="bg-perestroika-preto/5 mb-3 inline-flex flex-wrap h-auto">
               <TabsTrigger value="eletivas" className="uppercase tracking-wide text-xs">eletivas</TabsTrigger>
-              <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">eletiva</TabsTrigger>
               <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
               <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
-              <TabsTrigger value="fbi" className="uppercase tracking-wide text-xs">fbi</TabsTrigger>
-              <TabsTrigger value="prework" className="uppercase tracking-wide text-xs">pré-work</TabsTrigger>
-              <TabsTrigger value="missoes" className="uppercase tracking-wide text-xs">missões</TabsTrigger>
-              <TabsTrigger value="cartas" className="uppercase tracking-wide text-xs">cartas</TabsTrigger>
-              <TabsTrigger value="artworks" className="uppercase tracking-wide text-xs">artworks</TabsTrigger>
               <TabsTrigger value="materiais" className="uppercase tracking-wide text-xs">materiais</TabsTrigger>
               <TabsTrigger value="pending" className="uppercase tracking-wide text-xs">pendentes</TabsTrigger>
               <TabsTrigger value="usuarios" className="uppercase tracking-wide text-xs">usuários</TabsTrigger>
-              <TabsTrigger value="convidados" className="uppercase tracking-wide text-xs">convidados</TabsTrigger>
-              <TabsTrigger value="emails" className="uppercase tracking-wide text-xs">emails</TabsTrigger>
-              <TabsTrigger value="feedback-d1" className="uppercase tracking-wide text-xs">feedback dia 1</TabsTrigger>
-              <TabsTrigger value="feedback-final" className="uppercase tracking-wide text-xs">pesquisa final</TabsTrigger>
-              <TabsTrigger value="carta-futuro" className="uppercase tracking-wide text-xs">carta futuro</TabsTrigger>
-              <TabsTrigger value="votacao-projetos" className="uppercase tracking-wide text-xs">votação projetos</TabsTrigger>
-              <TabsTrigger value="chora-bot" className="uppercase tracking-wide text-xs">chora bot</TabsTrigger>
+              <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">settings</TabsTrigger>
             </TabsList>
+
+            <button
+              type="button"
+              onClick={() => setShowLegacy((v) => !v)}
+              className="mb-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto transition-colors"
+            >
+              <ChevronDown
+                className={`w-3 h-3 transition-transform ${showLegacy ? "" : "-rotate-90"}`}
+              />
+              ferramentas Chŏra (legado)
+            </button>
+
+            {showLegacy && (
+              <TabsList className="bg-perestroika-preto/[0.03] border border-dashed border-perestroika-preto/15 mb-6 inline-flex flex-wrap h-auto">
+                <TabsTrigger value="fbi" className="uppercase tracking-wide text-xs">fbi</TabsTrigger>
+                <TabsTrigger value="prework" className="uppercase tracking-wide text-xs">pré-work</TabsTrigger>
+                <TabsTrigger value="missoes" className="uppercase tracking-wide text-xs">missões</TabsTrigger>
+                <TabsTrigger value="cartas" className="uppercase tracking-wide text-xs">cartas</TabsTrigger>
+                <TabsTrigger value="artworks" className="uppercase tracking-wide text-xs">artworks</TabsTrigger>
+                <TabsTrigger value="convidados" className="uppercase tracking-wide text-xs">convidados</TabsTrigger>
+                <TabsTrigger value="emails" className="uppercase tracking-wide text-xs">emails</TabsTrigger>
+                <TabsTrigger value="feedback-d1" className="uppercase tracking-wide text-xs">feedback dia 1</TabsTrigger>
+                <TabsTrigger value="feedback-final" className="uppercase tracking-wide text-xs">pesquisa final</TabsTrigger>
+                <TabsTrigger value="carta-futuro" className="uppercase tracking-wide text-xs">carta futuro</TabsTrigger>
+                <TabsTrigger value="votacao-projetos" className="uppercase tracking-wide text-xs">votação projetos</TabsTrigger>
+                <TabsTrigger value="chora-bot" className="uppercase tracking-wide text-xs">chora bot</TabsTrigger>
+              </TabsList>
+            )}
+            {!showLegacy && <div className="mb-3" />}
 
             <TabsContent value="fbi">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">

@@ -14,3 +14,4 @@ Produto vivo é a Eletiva Sebrae (20 módulos, 4 trilhas). Vocabulário Chŏra (
 - [Responsive rules](mem://design/responsive-rules.md) — Regras anti-regressão de layout, scrollbar, touch targets, decoração
 - [Onboarding states](mem://content/onboarding-states.md) — 3 estados do OnboardingDialog Eletiva (primeiro-acesso-aberto / primeiro-acesso-fechado / retorno)
 - [Voice rule](mem://content/voice.md) — Regra de "você" não "tu", overrides do project knowledge
+- [Jornada minimalista](mem://project/jornada-minimalista.md) — Hierarquia única aluno (dashboard → eletiva → módulo), nav 3 itens, admin operação + legado collapsible, HubIndex é redirect
