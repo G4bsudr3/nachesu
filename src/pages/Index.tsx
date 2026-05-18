@@ -143,7 +143,7 @@ const Index = () => {
         <div className="container flex items-center justify-between gap-4 py-4">
           <NachesULogo variant="dark" />
 
-          <nav className="flex items-center gap-4 sm:gap-6" aria-label="seções da página">
+          <nav className="flex items-center gap-5 sm:gap-6" aria-label="seções da página">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
@@ -152,7 +152,7 @@ const Index = () => {
                   href={`#${item.id}`}
                   onClick={(e) => handleAnchorClick(e, item.id)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`hidden sm:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
+                  className={`hidden md:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
                     isActive ? "opacity-100 text-perestroika-preto" : "opacity-70 hover:opacity-100"
                   }`}
                 >
@@ -167,11 +167,41 @@ const Index = () => {
                 </a>
               );
             })}
-            <Link to="/auth" className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity">
+            <Link
+              to="/auth"
+              className="inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+            >
               entrar
             </Link>
           </nav>
         </div>
+
+        {/* sub-nav mobile (scroll horizontal) */}
+        <nav
+          aria-label="seções da página"
+          className="md:hidden border-t border-perestroika-preto/10"
+        >
+          <div className="container flex gap-1 py-2 overflow-x-auto -mx-1 px-1">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => handleAnchorClick(e, item.id)}
+                  aria-current={isActive ? "true" : undefined}
+                  className={`shrink-0 rounded-full px-3.5 py-1.5 font-body text-[11px] uppercase tracking-wide border transition-colors ${
+                    isActive
+                      ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
+                      : "border-perestroika-preto/20 text-perestroika-preto/70"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </div>
+        </nav>
       </motion.header>
 
       {/* hero */}
