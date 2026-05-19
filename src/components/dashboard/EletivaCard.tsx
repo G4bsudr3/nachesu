@@ -82,7 +82,7 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
           <EletivaSymbol size={160} rotate={8} pose="building" />
         </div>
         <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-4">
-          eletiva ia na prática
+          {eyebrowEletiva}
         </p>
         <h2 className="font-display uppercase text-5xl sm:text-7xl mb-4 leading-[0.9] text-balance max-w-2xl">
           sua eletiva tá aquecendo
