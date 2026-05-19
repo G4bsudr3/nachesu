@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
-import { ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, RefreshCw, Sparkles, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, RefreshCw, Sparkles, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useHubMaterials, MATERIAL_CATEGORIES, MATERIAL_KIND_LABELS, type MaterialCategory, type HubMaterial, type MaterialKind, detectKind, materialOpenUrl, autoThumbUrl } from "@/features/hub/useHubMaterials";
@@ -127,11 +127,77 @@ const resolvePlayer = (
   return { mode: "none" };
 };
 
+/**
+ * iframe com fallback: se o embed não carregar em até 6s, mostra um aviso
+ * com cta pra abrir em nova aba. cobre casos de X-Frame-Options/CSP que
+ * silenciosamente bloqueiam o embed sem disparar onError.
+ */
+const EmbedWithFallback = ({
+  src,
+  title,
+  externalUrl,
+  className,
+}: {
+  src: string;
+  title: string;
+  externalUrl: string | null;
+  className?: string;
+}) => {
+  const [loaded, setLoaded] = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+    setTimedOut(false);
+    const t = setTimeout(() => setTimedOut(true), 6000);
+    return () => clearTimeout(t);
+  }, [src]);
+
+  const showFallback = timedOut && !loaded;
+
+  return (
+    <div className={cn("relative", className)}>
+      <iframe
+        src={src}
+        title={title}
+        className="h-full w-full"
+        allowFullScreen
+        referrerPolicy="no-referrer"
+        sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox allow-forms"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        onLoad={() => setLoaded(true)}
+      />
+      {showFallback && (
+        <div
+          role="status"
+          className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-perestroika-bege/95 p-6 text-center"
+        >
+          <AlertCircle className="h-6 w-6 text-perestroika-preto/60" />
+          <p className="max-w-xs font-body text-sm text-perestroika-preto/75">
+            esse material não pôde ser carregado aqui dentro. abre em nova aba pra continuar.
+          </p>
+          {externalUrl && (
+            <a
+              href={externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:opacity-90"
+            >
+              abrir em nova aba <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void }) => {
   const kind = (m.kind as MaterialKind) || detectKind(materialOpenUrl(m), m.file_mime);
   const url = materialOpenUrl(m);
   const cat = MATERIAL_CATEGORIES.find((c) => c.value === m.category);
   const player = resolvePlayer(url, kind);
+  const isExternalOnly = player.mode === "none";
 
   return (
     <AnimatePresence>
@@ -178,20 +244,15 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
         <div className="flex-1 overflow-y-auto p-5 sm:p-6">
           {/* player por formato */}
           {player.mode === "iframe" && player.src && (
-            <div
+            <EmbedWithFallback
+              src={player.src}
+              title={m.title}
+              externalUrl={url}
               className={cn(
                 "mb-6 w-full overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-preto/5",
                 kind === "pdf" ? "h-[70vh]" : "aspect-video",
               )}
-            >
-              <iframe
-                src={player.src}
-                title={m.title}
-                className="h-full w-full"
-                allowFullScreen
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              />
-            </div>
+            />
           )}
           {player.mode === "video" && player.src && (
             <div className="mb-6 overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-preto">
@@ -211,19 +272,34 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
               className="mb-6 max-h-[70vh] w-full rounded-2xl object-contain"
             />
           )}
-          {player.mode === "none" && (
-            <div className="mb-6 rounded-2xl border border-dashed border-perestroika-preto/20 bg-white/40 p-6 text-center">
-              <p className="font-body text-sm text-perestroika-preto/70">
-                esse formato abre fora da plataforma. use o botão abaixo pra ler.
+          {isExternalOnly && (
+            <div className="mb-6 rounded-2xl border-2 border-dashed border-perestroika-preto/20 bg-white/50 p-6 text-center">
+              <ExternalLink className="mx-auto mb-2 h-6 w-6 text-perestroika-preto/55" />
+              <p className="mb-4 font-body text-sm text-perestroika-preto/75">
+                {kind === "doc"
+                  ? "documento externo. abre numa aba nova pra leitura confortável."
+                  : kind === "link"
+                    ? "esse material vive fora da plataforma. abre numa aba nova pra continuar."
+                    : "esse formato não embute aqui dentro. abre numa aba nova pra usar."}
               </p>
+              {url && (
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:opacity-90"
+                >
+                  abrir em nova aba <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              )}
             </div>
           )}
 
-          {url && (
+          {url && !isExternalOnly && (
             <a
               href={url}
               target="_blank"
-              rel="noreferrer noopener"
+              rel="noopener noreferrer"
               className="mb-8 inline-flex items-center gap-2 rounded-full bg-perestroika-preto px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:opacity-90"
             >
               abrir em nova aba <ExternalLink className="h-3.5 w-3.5" />
