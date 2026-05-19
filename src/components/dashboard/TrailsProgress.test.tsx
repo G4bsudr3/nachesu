@@ -6,8 +6,8 @@ import type { EletivaSnapshot } from "@/hooks/useEletivaProgress";
 
 const buildSnapshot = (overrides: Partial<EletivaSnapshot> = {}): EletivaSnapshot => {
   const trails = [
-    { id: "t1", order_index: 1, title: "Fundamentos", description: null, color: null },
-    { id: "t2", order_index: 2, title: "Prompts", description: null, color: null },
+    { id: "t1", order_index: 1, title: "Fundamentos", description: null, color: null, course_id: null },
+    { id: "t2", order_index: 2, title: "Prompts", description: null, color: null, course_id: null },
   ];
   const modules = [
     { id: "m1", number: 1, trail_id: "t1", title: "m1", objective: null, total_minutes: null, available_from: null, published: true },
@@ -116,8 +116,8 @@ describe("TrailsProgress", () => {
   it("mostra 'em breve' quando uma trilha não tem módulos publicados", () => {
     const snap = buildSnapshot({
       trails: [
-        { id: "t1", order_index: 1, title: "Fundamentos", description: null, color: null },
-        { id: "t2", order_index: 2, title: "Vazia", description: null, color: null },
+        { id: "t1", order_index: 1, title: "Fundamentos", description: null, color: null, course_id: null },
+        { id: "t2", order_index: 2, title: "Vazia", description: null, color: null, course_id: null },
       ],
       modules: [
         { id: "m1", number: 1, trail_id: "t1", title: "m1", objective: null, total_minutes: null, available_from: null, published: true },

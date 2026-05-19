@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { trailMessages } from "@/lib/trailMessages";
 
 interface Props {
   fromTrailTitle: string;
@@ -11,23 +12,6 @@ interface Props {
   trailColor: string;
 }
 
-const trailMessages: Record<number, { eyebrow: string; head: string; sub: string }> = {
-  2: {
-    eyebrow: "fim da trilha 1 · começo da trilha 2",
-    head: "você passou de enxergar pra entender",
-    sub: "as próximas 5 semanas mergulham fundo no que você viu. sai do panorama, entra no detalhe.",
-  },
-  3: {
-    eyebrow: "fim da trilha 2 · começo da trilha 3",
-    head: "agora é hora de criar",
-    sub: "você já entende o problema. as próximas 5 semanas são pra ideação e prototipação. mão na massa.",
-  },
-  4: {
-    eyebrow: "fim da trilha 3 · começo da trilha 4",
-    head: "última volta · hora de validar",
-    sub: "o que você criou precisa encontrar o mundo. as próximas 5 semanas são teste, evidência e entrega final.",
-  },
-};
 
 /**
  * marco visual no início dos módulos 6, 11 e 16. aparece uma única vez por trilha

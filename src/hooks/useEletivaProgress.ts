@@ -8,6 +8,7 @@ export type EletivaTrail = {
   title: string;
   description: string | null;
   color: string | null;
+  course_id: string | null;
 };
 
 export type EletivaModule = {
