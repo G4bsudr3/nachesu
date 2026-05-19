@@ -51,6 +51,42 @@ const Modulo = () => {
   );
   const trailColor = trailColorByOrder[trail?.order_index ?? 1] ?? trail?.color ?? "#fe7b02";
 
+  // slug do curso (pra navegar pro marco entre trilhas)
+  const { data: courseSlug } = useQuery({
+    queryKey: ["course-slug", trail?.course_id],
+    enabled: !!trail?.course_id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("courses")
+        .select("slug")
+        .eq("id", trail!.course_id!)
+        .maybeSingle();
+      return data?.slug ?? null;
+    },
+  });
+
+  // detecta se um módulo é o último da sua trilha e devolve order_index da trilha
+  const trailFinishedOrder = (justCompletedModuleId: string): number | null => {
+    if (!snapshot) return null;
+    const m = snapshot.modules.find((x) => x.id === justCompletedModuleId);
+    if (!m) return null;
+    const trailModules = snapshot.modules
+      .filter((x) => x.trail_id === m.trail_id)
+      .sort((a, b) => a.number - b.number);
+    const last = trailModules[trailModules.length - 1];
+    if (last?.id !== m.id) return null;
+    const t = snapshot.trails.find((tr) => tr.id === m.trail_id);
+    return t?.order_index ?? null;
+  };
+
+  const goToMarcoIfTrailFinished = () => {
+    if (!moduleRow || !courseSlug) return false;
+    const order = trailFinishedOrder(moduleRow.id);
+    if (!order) return false;
+    navigate(`/app/eletiva/${courseSlug}/marco/${order}`);
+    return true;
+  };
+
   const { data: pills, isLoading: pillsLoading } = useQuery({
     queryKey: ["module-pills", moduleRow?.id],
     enabled: !!moduleRow?.id,
