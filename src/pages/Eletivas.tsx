@@ -158,7 +158,7 @@ const Eletivas = () => {
 
                 <p className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/60 inline-flex items-center gap-1.5 mb-5">
                   <Clock className="h-3 w-3" aria-hidden="true" />
-                  4 trilhas · 20 módulos · tutor ia
+                  {e.tag}
                 </p>
 
                 {/* trilhas */}
