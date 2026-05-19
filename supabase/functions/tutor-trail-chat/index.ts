@@ -181,6 +181,32 @@ Deno.serve(async (req) => {
           return p?.started_at && !p?.completed_at;
         }) ?? null;
 
+    const activeModuleId = moduleId ?? currentModule?.id ?? null;
+
+    // pílulas da sessão atual: ajuda o tutor a não re-explicar o que o aluno já viu
+    let sessionPills: { title: string; done: boolean }[] = [];
+    if (activeModuleId) {
+      const [sessionPillsRes, donePillsRes] = await Promise.all([
+        admin
+          .from("module_pills")
+          .select("id, title, order_index")
+          .eq("module_id", activeModuleId)
+          .eq("published", true)
+          .order("order_index"),
+        admin
+          .from("student_pill_progress")
+          .select("pill_id")
+          .eq("user_id", userId),
+      ]);
+      const doneSet = new Set<string>(
+        (donePillsRes.data ?? []).map((p: { pill_id: string }) => p.pill_id),
+      );
+      sessionPills = (sessionPillsRes.data ?? []).map((p: { id: string; title: string }) => ({
+        title: p.title,
+        done: doneSet.has(p.id),
+      }));
+    }
+
     const systemPrompt = buildSystemPrompt({
       trailTitle: trail.title,
       trailDescription: trail.description,
@@ -191,6 +217,7 @@ Deno.serve(async (req) => {
       completedModules,
       pillPrompt,
       pillTitle,
+      sessionPills,
     });
 
     const history = (convRes.data?.messages ?? []) as ChatMessage[];
