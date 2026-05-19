@@ -5,7 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { cn } from "@/lib/utils";
 import { useNotifications, AppNotification } from "@/features/notifications/useNotifications";
 import { useAuth } from "@/contexts/AuthContext";
@@ -73,7 +73,7 @@ export const NotificationBell = () => {
           )}
         </div>
 
-        <ScrollArea className="max-h-[60vh]">
+        <div className="max-h-[60vh] overflow-y-auto">
           {loading ? (
             <div className="p-6 text-center font-body text-sm text-perestroika-preto/55">
               carregando...
@@ -133,7 +133,7 @@ export const NotificationBell = () => {
               ))}
             </ul>
           )}
-        </ScrollArea>
+        </div>
 
         <div className="p-2 border-t border-perestroika-preto/10">
           <Button
