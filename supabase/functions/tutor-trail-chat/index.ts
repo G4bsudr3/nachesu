@@ -28,6 +28,7 @@ const buildSystemPrompt = (ctx: {
   completedModules: { number: number; title: string }[];
   pillPrompt: string | null;
   pillTitle: string | null;
+  sessionPills: { title: string; done: boolean }[];
 }): string => {
   const completedList = ctx.completedModules.length
     ? ctx.completedModules
@@ -40,6 +41,12 @@ const buildSystemPrompt = (ctx: {
         ctx.currentModule.objective ? `\nobjetivo: ${ctx.currentModule.objective}` : ""
       }`
     : "(nenhum módulo em andamento agora)";
+
+  const sessionBlock = ctx.sessionPills.length
+    ? `\n\n## pílulas DESSE módulo (sessão atual do aluno)\n\n${ctx.sessionPills
+        .map((p) => `${p.done ? "[concluída]" : "[pendente]"} ${p.title}`)
+        .join("\n")}\n\nnão re-explique o que está "[concluída]". referencie pelo nome se precisar.`
+    : "";
 
   const pillBlock = ctx.pillPrompt
     ? `\n\n## EXERCÍCIO ATIVO AGORA (prioridade máxima)\n\no aluno acabou de abrir o exercício "${ctx.pillTitle ?? "sem título"}". siga estas instruções específicas pra esse exercício, elas vencem qualquer coisa do system prompt geral:\n\n${ctx.pillPrompt}`
@@ -62,7 +69,7 @@ módulos que ele já fechou nessa trilha:
 ${completedList}
 
 módulo atual:
-${current}
+${current}${sessionBlock}
 
 ## como responder
 
@@ -102,6 +109,7 @@ Deno.serve(async (req) => {
     const message = typeof body?.message === "string" ? body.message.trim() : "";
     const pillPrompt = typeof body?.pill_prompt === "string" && body.pill_prompt.trim().length > 0 ? body.pill_prompt : null;
     const pillTitle = typeof body?.pill_title === "string" && body.pill_title.trim().length > 0 ? body.pill_title : null;
+    const moduleId = typeof body?.module_id === "string" && body.module_id.length > 0 ? body.module_id : null;
 
     if (!trailId || message.length < 2) {
       return new Response(
