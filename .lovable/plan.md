@@ -1,115 +1,59 @@
-## Reescrever o project knowledge pra NachesU
+## Plano — 3 primeiras aulas de IA na Prática
 
-O knowledge atual ainda fala de "Chŏra Lovable Hub", FBI, carta de arquétipo, evento de 25-26 abril em Porto Alegre, ~40 participantes, Helena/Fernanda admins, formulário de 19 perguntas, etc. Tudo isso é **legado Chŏra**, hoje atrás de `eletiva_extras_enabled`. O produto vivo é **NachesU**, extensão do ensino médio da Naches em parceria com a Escola Sebrae BH.
+Tudo acontece no banco (insert/update em `module_pills`, `modules`, `module_releases`). Zero código novo — a infra de pílula/PBL/registro já tá pronta.
 
-Vou substituir o knowledge inteiro pelo bloco abaixo. Memory files do projeto (`.lovable/memory/...`) já estão alinhados, então não precisam mudar.
+### Módulo 1 — boas-vindas: por que ia agora
+Já completo, publicado e liberado. Vou **dar uma revisada leve** no body_md das pílulas pra:
+- alinhar tom (você, não tu; remover qualquer em-dash residual)
+- garantir que a pílula C de vídeo (oficial Lovable) ainda tem URL válida
+- ajustar o exercício PBL pra dizer claramente que o tutor responde dentro da plataforma
 
-### O que o knowledge novo precisa dizer
+Sem mudar estrutura nem tempos.
 
-**Identidade do produto**
-- Nome: **NachesU** (Naches University), plataforma educacional própria
-- Parceria: Naches × Escola Sebrae (BH)
-- Proponente: Mateus Frattezi (frattz), CEO Naches, ex-aluno Sebrae
-- Público: estudantes do 1º ano do Ensino Médio (14-15 anos), cursos técnicos integrados de Administração e Marketing
-- Início: março/2026
-- Formato: online assíncrono, mobile-first, plataforma própria, acesso por e-mail institucional Sebrae
-- Carga: 16h40min por eletiva (1.000 min), 20 módulos semanais de 50 min, 1 liberado por semana
-- Metodologia: PBL + microlearning
-- Tagline herdada: "vai lá e cria"
+### Módulo 2 — conversando com a máquina
+Já tem o esqueleto das 5 pílulas no banco (sem corpo). Vou escrever:
 
-**As duas eletivas (estrutura idêntica: 4 trilhas × 5 módulos × 50 min)**
+| pílula | título | conteúdo |
+|---|---|---|
+| A (4-5 min) | o que é um prompt | texto: prompt como pedido estruturado, comparação prompt vago × prompt preciso, exemplo escolar |
+| B (6-7 min) | os 4 pilares de um bom prompt | contexto, papel, tarefa, formato. exemplo guiado refazendo um pedido de redação |
+| C (5-6 min) | iteração: prompt nunca nasce pronto | ciclo prompt → análise → refino. 3 versões do mesmo pedido lado a lado |
+| PBL (20-25 min) | refazendo um prompt teu | escolhe 1 pedido real (dever, pesquisa, criação de texto), roda o ciclo completo, cola as 3 versões |
+| Registro (5-7 min) | o que ficou | resposta curta: qual pilar mais mudou seu resultado |
 
-Eletiva 01 — **IA na Prática** (com frattz)
-- Pitch: pensar, prototipar e validar soluções reais com IA
-- Cada estudante constrói uma plataforma simples no Lovable resolvendo um problema real da rotina escolar/pessoal
-- Trilha 1 Fundamentos & IA (mód 1-5): o que IA faz hoje, como conversar com ela, prompt como habilidade cognitiva, regra de ouro "IA ajuda a pensar, não substitui pensar"
-- Trilha 2 Problema & Decisão (mód 6-10): achar dor real, definir usuário, proposta de valor, canvas, pitch antes de construir
-- Trilha 3 Construção no Lovable (mód 11-15): do briefing ao MVP, MLP (mínimo lovable), simplificação, IA integrada ao produto sem ser decorativa
-- Trilha 4 Validação & Evolução (mód 16-20): MVT (mínima tração viável), teste com gente real, iteração com evidência, entrega + reflexão final
-- Entregável final: link do projeto V-final + pitch (texto ou áudio) + reflexão registrada pra certificação
+**Tutor IA aqui faz sentido:** depois que o estudante cola as 3 versões do prompt, o tutor (Gemini 2.5 Flash via Lovable AI) devolve análise no formato "**o que melhorou:** / **ainda dá pra refinar:** / **próximo passo:**". Mesma edge function `tutor-trail-chat` já existe — só plugo `interaction_schema` com o `tutor_prompt` próprio.
 
-Eletiva 02 — **Economia Circular e Negócios Regenerativos** (com Dudu)
-- Pitch: desenhar negócio regenerativo do sistema ao protótipo validado, usando a própria Escola Sebrae BH como laboratório
-- Trilha 1 Enxergar (encontros 1-5): BH como laboratório regenerativo, diferença linear × circular × regenerativo, pensar em sistemas, escolher problema e fluxo
-- Trilha 2 Entender (encontros 6-10): mapear fluxos, princípios da Economia Circular (Ellen MacArthur), stakeholders, oportunidades
-- Trilha 3 Criar (encontros 11-15): ideação guiada (20 ideias em 20 min), canvas de proposta de valor regenerativa, modelo de negócio
-- Trilha 4 Validar (encontros 16-20): planejar experimento de baixo custo, testar, iterar V2, preparar pitch de impacto, entrega
-- Entregável final: Mini-Dossiê de Negócio Regenerativo (digital) + Pitch de 2-3 min
+### Módulo 3 — comparando modelos
+Já tem o esqueleto. Vou escrever:
 
-**Anatomia padrão de um módulo (mesma nos dois cursos)**
-Pílula A (aula curta) + Pílula B (aula curta) + Pílula C (aula curta) + Exercício PBL (mão na massa, 18-28 min) + Registro/evidência (síntese curta enviada na plataforma). Tempos aproximados, ritmo do estudante manda. Bônus opcional na Economia Circular.
+| pílula | título | conteúdo |
+|---|---|---|
+| A (5-6 min) | os modelos do mercado | mapa rápido: GPT-5, Gemini 3, Claude 4.7, Llama. famílias, donos, pra que cada um brilha |
+| B (6-7 min) | quando usar cada um | tabela de critérios: raciocínio longo, código, criatividade, custo, multimodal |
+| C (5-7 min) | multimodal: texto, imagem, voz, código | exemplos curtos do que cada um aceita de entrada/saída |
+| PBL (18-22 min) | benchmark pessoal | escolhe 1 pergunta real, roda em pelo menos 2 modelos (recomendo ChatGPT free + Gemini free + opcional Claude), cola as 2 respostas, escolhe vencedora e justifica |
+| Registro (6-8 min) | o que ficou | qual modelo virou seu default e por quê |
 
-**Identidade visual**
-- Marca atual: `<NachesULogo />` (alias `<EletivaLogo />` mantido pra compat). `<ChoraLogo />` só dentro de fluxo legado atrás de `eletiva_extras_enabled`
-- Paleta Perestroika primária (`--primary` rosa, bege #f2e4d8, laranja, vermelho, rosa, azul, preto)
-- Accent institucional Sebrae azul #1E2BB8 em assinaturas e elementos institucionais (`--accent`)
-- Mascotes mantêm paleta Perestroika mesmo no contexto Sebrae. Não pintar mascote de azul institucional
-- Tutor IA: mascote **joão-de-barro** ("o pássaro que constrói", referência direta a "vai lá e cria"). 6 poses narrativas via `<EletivaSymbol pose="..." />`: building, thinking, talking, celebrating, resting, peeking. Nunca repetir a mesma pose em todo lugar
-- 6 arquétipos de builder (`builder_archetype` enum) usam outros 6 animais via `archetype_artworks` + `builder_cards` + edge function `generate-archetype-artwork`. Não criar tabela nova pra isso
-- Fontes: League Gothic (display) + Urbanist (body). Sem Inter/Roboto
-- Componentes assinatura existentes que continuam válidos: `<LagrimaGradient />`, `<BalaoSerrado />`, `<CaixaPrompt />`, `<EstrelaPerestroika />`
-- Mood: editorial brasileiro, tipografia protagonista, cor em accent, generoso bege
+**Tutor IA aqui não entra** — o exercício já é comparação crítica do próprio estudante. Tutor seria redundante.
 
-**Stack**
-Lovable Cloud (Postgres + Auth + Edge Functions + AI Gateway). Magic link + senha opcional. React + TS + Tailwind + Framer Motion. Lovable AI pra geração de carta de arquétipo (fluxo legado).
+### Publicação
+Depois de escrever o conteúdo:
+- `UPDATE modules SET published=true` nos módulos 2 e 3
+- `INSERT INTO module_releases` pra liberar os dois pros alunos matriculados
+- Módulo 1 já tá liberado, nada a fazer
 
-**Personas**
-- **Estudante** (nunca "aluno"): 14-15 anos, ensino médio Sebrae BH, cursos técnicos. Mobile-first. Zero a iniciante em tech
-- **Educador** (nunca só "professor"): Dudu (Economia Circular), frattz (IA na Prática)
-- **Admin** (`is_admin=true` em profiles): frattz. Aprova pendentes, publica módulos, libera via `module_releases`, vê respostas
+### Ordem de execução
+1. Revisar body_md das 5 pílulas do M1 (update)
+2. Escrever as 5 pílulas do M2 + `interaction_schema` do tutor no PBL (update)
+3. Escrever as 5 pílulas do M3 (update)
+4. Publicar M2 e M3 + liberar via `module_releases`
+5. Eu te aviso e você abre o /app pra conferir as 3 aulas como aluno
 
-**Hierarquia de jornada (regra dura, não regredir)**
-- `/app` → saudação + switcher (se 2+ matrículas) + EletivaCard com CTA único pro próximo módulo
-- `/app/eletiva/:slug` → fallback com 3 atalhos: mapa, tutor IA, materiais
-- `/app/modulo/:n` → módulo em si (pílulas + PBL + registro)
-- `/app/hub` → redirect, NÃO recriar como página
-- Mobile nav fixa em 3 itens: início, trilhas, tutor
-- Vocabulário Chŏra (FBI, carta de builder, carta pro futuro, pré-work, missões, tutorial, certificado, pesquisa final) só renderiza atrás de `useEletivaExtras().enabled`. Não trazer pro fluxo NachesU
-- Fonte de verdade viva do dashboard: `.lovable/plan.md`
+### O que vou precisar de você (depois)
+- Conferir tom e exemplos dos 3 módulos depois que eu escrever — você ajusta o que não tiver a tua cara
+- Se quiser gravar vídeo curto de qualquer pílula depois, é só me passar URL Loom/YouTube e eu plugo
 
-**Tom de voz**
-- Lowercase em copy. CSS pode forçar uppercase em display
-- **"você"**, não "tu" (regra atualizada pro contexto Sebrae, override do prompt frattz)
-- Frases curtas. Zero em-dash, zero hashtag, zero emoji em UI
-- Zero corporativês. Sem "prezado", "à disposição"
-- Vocabulário Naches: "estudante" não "aluno", "educador" não "professor"
-- Microcopy tutorial embutido onde tem fricção, nunca FAQ separado (FAQ na home pública é exceção, já existe)
-- Empty states convidam, nunca dizem "vazio"
-
-**Schema relevante (não mexer sem pedir)**
-- `profiles`, `user_roles`, `courses`, `trails`, `modules`, `pills`, `module_releases`, `module_progress`, `enrollments`
-- Tabelas legado Chŏra (`fbi_responses`, `missions`, `prework_*`, `builder_cards`, `archetype_artworks`) continuam mas só renderizadas atrás da flag
-- RLS sempre. Módulo só fica visível pro estudante depois de aparecer em `module_releases`
-
-**Guardrails (regras de não fazer)**
-- Não trazer vocabulário Chŏra pro fluxo NachesU
-- Não pintar mascote no azul institucional
-- Não usar Inter/Roboto/fontes genéricas
-- Não usar SaaS genérico (Linear/Arc/shadcn cru)
-- Não criar tabela nova pra arquétipo, usar a infra existente
-- Não duplicar CTA/progresso entre dashboard e EletivaHome
-- Responsivo mobile-first é obrigatório (público acessa de celular)
-- Toda nova tabela com RLS habilitada
-
-**Princípios de UX/didática (manter)**
-1. 1 próximo passo único em destaque
-2. Progressão visível sem gamificação artificial
-3. Copy fala com a pessoa, não com "usuário"
-4. Microcopy onde tem fricção
-5. Empty states com personalidade
-6. Estado persistente com reconhecimento
-7. Tempo estimado explícito em toda ação
-8. Falhar deve parecer seguro (resposta errada não vira tela vermelha)
-
-### O que cai do knowledge antigo
-- Toda menção a Chŏra Lovable Hub como produto vivo
-- Evento 25-26 abril Porto Alegre Instituto Caldeira, contagem de ~40 participantes
-- Helena Kich e Fernanda Vaz como admins
-- FBI 19 perguntas em 4 seções, pre-fill da planilha Perestroika
-- Carta de arquétipo gerada na submissão do FBI (continua existindo no legado, mas não é o fluxo principal)
-- Domínio chora.lovable.app como referência (atual: nachesu.lovable.app)
-- "Tu" como regra (vira "você")
-- Lista de emojis permitidos em UI (vira zero emoji em UI)
-
-### O que faço nesse plano
-Reescrevo o bloco de **project knowledge** completo. Nenhum arquivo de código muda. Memórias do projeto em `.lovable/memory/` já estão coerentes com o knowledge novo, então só preciso garantir que continuem batendo.
+### Detalhes técnicos
+- Só uso `supabase--insert` (updates de body_md + publish + module_releases). Sem migração de schema.
+- `tutor-trail-chat` edge function já existe e funciona com `interaction_schema.tutor_prompt`.
+- Todo conteúdo em lowercase pt-BR, frases 1-3 linhas, zero em-dash/hashtag/emoji, "você" não "tu".
