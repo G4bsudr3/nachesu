@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Sparkles } from "lucide-react";
 import { useEletivaProgress, type EletivaSnapshot } from "@/hooks/useEletivaProgress";
+import { useMyEnrollments } from "@/hooks/useCourses";
+import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 const trailColorByOrder: Record<number, string> = {
@@ -18,12 +20,29 @@ interface Props {
    * snapshot na mesma render.
    */
   snapshot?: EletivaSnapshot;
+  /**
+   * título do curso ativo, usado no eyebrow. se não vier, resolve via
+   * useMyEnrollments + useActiveEletiva. nunca hardcodar nome de eletiva.
+   */
+  courseTitle?: string;
 }
 
-export const EletivaCard = ({ snapshot }: Props = {}) => {
+export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
   const query = useEletivaProgress();
   const data = snapshot ?? query.data;
   const isLoading = !snapshot && query.isLoading;
+
+  const { data: enrollments } = useMyEnrollments();
+  const { slug: activeSlug } = useActiveEletiva();
+  const resolvedTitle =
+    courseTitle ??
+    (enrollments && enrollments.length === 1
+      ? enrollments[0].course?.title
+      : enrollments?.find((e) => e.course?.slug === activeSlug)?.course?.title) ??
+    "";
+  const eyebrowEletiva = resolvedTitle
+    ? `eletiva ${resolvedTitle.toLowerCase()}`
+    : "sua eletiva";
 
   if (isLoading) {
     return (
@@ -63,7 +82,7 @@ export const EletivaCard = ({ snapshot }: Props = {}) => {
           <EletivaSymbol size={160} rotate={8} pose="building" />
         </div>
         <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-4">
-          eletiva ia na prática
+          {eyebrowEletiva}
         </p>
         <h2 className="font-display uppercase text-5xl sm:text-7xl mb-4 leading-[0.9] text-balance max-w-2xl">
           sua eletiva tá aquecendo

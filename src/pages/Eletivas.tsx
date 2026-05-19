@@ -16,6 +16,7 @@ const eletivas: Record<
     pitch: string;
     descLonga: string;
     accent: string;
+    tag: string;
     trilhas: { n: string; titulo: string; desc: string; color: string; range: string }[];
   }
 > = {
@@ -27,6 +28,7 @@ const eletivas: Record<
     descLonga:
       "uma jornada de 20 semanas pra você sair da ideia ao app publicado, com tutor ia provocando builder do seu lado.",
     accent: "#f756a6",
+    tag: "4 trilhas · 20 módulos · tutor ia",
     trilhas: [
       { n: "01", titulo: "fundamentos & ia", desc: "o que ia faz hoje, como conversar com ela, quando usar no-code.", color: "#fe7b02", range: "módulos 1-5" },
       { n: "02", titulo: "problema & decisão", desc: "achar uma dor real, escolher a sua, escopar e vender em 60 segundos.", color: "#fd4644", range: "módulos 6-10" },
@@ -40,12 +42,13 @@ const eletivas: Record<
     professor: "com dudu",
     pitch: "desenhe um negócio que regenera, do sistema ao protótipo validado.",
     descLonga:
-      "20 semanas pra enxergar o sistema, mapear ciclos e prototipar negócios regenerativos com ia te ajudando a iterar.",
+      "20 semanas pra enxergar fluxos, mapear ciclos e prototipar negócios regenerativos usando a escola sebrae bh como laboratório vivo.",
     accent: "#6f77fc",
+    tag: "4 trilhas · 20 módulos · pbl real",
     trilhas: [
       { n: "01", titulo: "enxergar", desc: "abrir o olho pro sistema. ver fluxos, resíduos e oportunidades onde os outros veem rotina.", color: "#fe7b02", range: "módulos 1-5" },
       { n: "02", titulo: "entender", desc: "mapear causas, atores e ciclos. desenhar o sistema antes de propor solução.", color: "#fd4644", range: "módulos 6-10" },
-      { n: "03", titulo: "criar", desc: "prototipar negócios regenerativos, com ia te ajudando a iterar rápido.", color: "#f756a6", range: "módulos 11-15" },
+      { n: "03", titulo: "criar", desc: "ideação guiada, proposta de valor regenerativa, protótipo tangível pra mostrar pra alguém.", color: "#f756a6", range: "módulos 11-15" },
       { n: "04", titulo: "validar", desc: "testa com gente real, mede impacto, ajusta o modelo. dossiê final pronto.", color: "#6f77fc", range: "módulos 16-20" },
     ],
   },
@@ -155,7 +158,7 @@ const Eletivas = () => {
 
                 <p className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/60 inline-flex items-center gap-1.5 mb-5">
                   <Clock className="h-3 w-3" aria-hidden="true" />
-                  4 trilhas · 20 módulos · tutor ia
+                  {e.tag}
                 </p>
 
                 {/* trilhas */}
