@@ -160,6 +160,8 @@ const Modulo = () => {
         toast.success("módulo concluído. bom demais.");
       }
       queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+      // signature moment: se acabou a última da trilha, abre a tela de marco
+      setTimeout(() => { goToMarcoIfTrailFinished(); }, 250);
     },
     onError: (e: Error) => toast.error(e.message ?? "deu ruim ao concluir"),
   });
