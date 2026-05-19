@@ -30,8 +30,9 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
 
   return (
     <section
-      aria-label="feedback do professor"
-      className="rounded-2xl border-2 p-5 sm:p-6 mb-6"
+      id="feedback-do-educador"
+      aria-label="feedback do educador"
+      className="rounded-2xl border-2 p-5 sm:p-6 mb-6 scroll-mt-24 transition-shadow"
       style={{ borderColor: trailColor, backgroundColor: `${trailColor}10` }}
     >
       <div className="flex items-center gap-2 mb-3">
