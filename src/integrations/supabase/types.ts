@@ -2104,6 +2104,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      assert_module_in_scope: {
+        Args: { _module_id: string }
+        Returns: undefined
+      }
       can_submit_public_fbi: { Args: { _email: string }; Returns: boolean }
       compute_module_metrics: { Args: { _module_id: string }; Returns: Json }
       delete_email: {
@@ -2268,6 +2272,7 @@ export type Database = {
           submitted_at: string
         }[]
       }
+      scope_forbidden_terms: { Args: { _slug: string }; Returns: string[] }
       seal_future_letter: {
         Args: {
           _letter_text: string
