@@ -301,9 +301,9 @@ const Modulo = () => {
           );
         })()}
 
-        <ModuloFeedbackCard moduleId={moduleRow.id} trailColor={trailColor} />
-
         <DeliverableStatusPill moduleId={moduleRow.id} />
+
+        <ModuloFeedbackCard moduleId={moduleRow.id} trailColor={trailColor} />
 
         <ModuloHeader
           trailTitle={trail?.title ?? null}

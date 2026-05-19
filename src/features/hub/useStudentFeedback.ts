@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Database } from "@/integrations/supabase/types";
@@ -38,6 +38,31 @@ const isSeen = (deliverableId: string, reviewedAt: string | null) => {
  */
 export function useStudentFeedback(opts?: { moduleId?: string | null }) {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  // realtime: assina entregas do próprio usuário pra refletir feedback na hora
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`student-feedback-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "module_deliverables",
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["student-feedback"] });
+          queryClient.invalidateQueries({ queryKey: ["module-deliverable-status"] });
+        },
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
   const { moduleId = null } = opts ?? {};
   const [tick, setTick] = useState(0);
 
