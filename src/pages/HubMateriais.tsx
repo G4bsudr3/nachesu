@@ -195,7 +195,13 @@ const HubMateriais = () => {
     enrollments && enrollments.length === 1
       ? enrollments[0].course?.title
       : enrollments?.find((e) => e.course?.slug === activeSlug)?.course?.title ?? null;
-  const { materials, loading } = useHubMaterials({ courseId: activeCourseId ?? undefined });
+  // só materiais da eletiva ativa. globais (course_id null) ficam de fora
+  // pra evitar mistura entre as duas eletivas com conteúdo de naturezas
+  // bem distintas (ia na prática vs economia circular).
+  const { materials, loading } = useHubMaterials({
+    courseId: activeCourseId ?? undefined,
+    includeGlobal: false,
+  });
   const [activeCategory, setActiveCategory] = useState<MaterialCategory | "todos">("todos");
   const [selected, setSelected] = useState<HubMaterial | null>(null);
 
