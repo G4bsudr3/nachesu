@@ -224,12 +224,14 @@ const HubMateriais = () => {
 
       <main className="container max-w-6xl py-8 sm:py-12">
         <header className="mb-8">
-          <p className="mb-2 font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">hub · materiais</p>
+          <p className="mb-2 font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
+            {activeCourseTitle ? `materiais · ${activeCourseTitle.toLowerCase()}` : "materiais"}
+          </p>
           <h1 className="font-display text-5xl uppercase leading-[0.9] sm:text-7xl">
             material<br />pra mastigar
           </h1>
           <p className="mt-4 max-w-xl font-body text-base text-perestroika-preto/75 sm:text-lg">
-            apresentações, leituras, ferramentas e referências da imersão. tudo num lugar só.
+            apresentações, leituras, ferramentas e referências{activeCourseTitle ? ` dessa eletiva` : ""}. tudo num lugar só.
           </p>
         </header>
 
