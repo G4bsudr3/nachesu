@@ -87,6 +87,7 @@ type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
   eletivas: "eletivas · cursos",
+  review: "eletivas · revisão",
   eletiva: "eletiva · settings",
   trilha: "eletiva · trilha",
   tutor: "eletiva · tutor IA",
