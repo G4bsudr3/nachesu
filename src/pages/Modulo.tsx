@@ -16,6 +16,9 @@ import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/Mod
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
 import { ModuloProgressBar } from "@/components/eletiva/modulo/ModuloProgressBar";
 import { ModuloFeedbackCard } from "@/components/eletiva/modulo/ModuloFeedbackCard";
+import { ModuloLockedHero } from "@/components/eletiva/modulo/ModuloLockedHero";
+import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
+import { TrailTransitionBanner } from "@/components/eletiva/modulo/TrailTransitionBanner";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
@@ -230,34 +233,12 @@ const Modulo = () => {
     return (
       <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
         <PageHeader showLogo logoLink="/app" />
-        <main className="container max-w-2xl pt-10 pb-20 text-center">
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
-            módulo {String(moduleRow.number).padStart(2, "0")}
-          </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl mb-3 leading-[0.95]">
-            esse módulo abre quando você fechar o anterior
-          </h1>
-          <p className="font-body text-perestroika-preto/70 mb-7 max-w-md mx-auto">
-            a eletiva é em escada. termina o módulo {String(moduleNumber - 1).padStart(2, "0")} e
-            esse aqui libera na hora.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            {prevModule && (
-              <Link
-                to={`/app/modulo/${prevModule.number}`}
-                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
-              >
-                <ArrowLeft className="h-4 w-4" /> ir pro módulo {String(prevModule.number).padStart(2, "0")}
-              </Link>
-            )}
-            <Link
-              to="/app/trilhas"
-              className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-6 py-3 font-body text-sm uppercase tracking-wide hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
-            >
-              ver mapa completo
-            </Link>
-          </div>
-        </main>
+        <ModuloLockedHero
+          moduleNumber={moduleRow.number}
+          prevModuleNumber={prevModule?.number ?? null}
+          prevModuleTitle={prevModule?.title ?? null}
+          availableFrom={moduleRow.available_from}
+        />
       </div>
     );
   }
@@ -298,7 +279,31 @@ const Modulo = () => {
           <ArrowLeft className="h-3.5 w-3.5" /> meu início
         </Link>
 
+        {/* marco de transição: aparece nos primeiros módulos das trilhas 2/3/4
+            (números 6, 11, 16) quando a trilha anterior está completa */}
+        {trail && prevModule && (() => {
+          const prevTrail = snapshot?.trails.find((t) => t.id === prevModule.trail_id) ?? null;
+          const isFirstOfNewTrail =
+            prevTrail && prevTrail.id !== trail.id && trail.order_index >= 2;
+          if (!isFirstOfNewTrail || !prevTrail) return null;
+          const prevTrailDone = snapshot?.modules
+            .filter((m) => m.trail_id === prevTrail.id)
+            .every((m) => snapshot?.progressByModuleId[m.id]?.completed_at);
+          if (!prevTrailDone) return null;
+          return (
+            <TrailTransitionBanner
+              fromTrailTitle={prevTrail.title}
+              toTrailTitle={trail.title}
+              toTrailIndex={trail.order_index}
+              storageKey={`trail-transition-${trail.id}`}
+              trailColor={trailColor}
+            />
+          );
+        })()}
+
         <ModuloFeedbackCard moduleId={moduleRow.id} trailColor={trailColor} />
+
+        <DeliverableStatusPill moduleId={moduleRow.id} />
 
         <ModuloHeader
           trailTitle={trail?.title ?? null}
@@ -353,6 +358,7 @@ const Modulo = () => {
           trailTitle={trail.title}
           trailColor={trailColor}
           pillContext={tutorPillContext}
+          moduleId={moduleRow.id}
         />
       )}
 

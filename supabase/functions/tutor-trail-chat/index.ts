@@ -28,6 +28,7 @@ const buildSystemPrompt = (ctx: {
   completedModules: { number: number; title: string }[];
   pillPrompt: string | null;
   pillTitle: string | null;
+  sessionPills: { title: string; done: boolean }[];
 }): string => {
   const completedList = ctx.completedModules.length
     ? ctx.completedModules
@@ -40,6 +41,12 @@ const buildSystemPrompt = (ctx: {
         ctx.currentModule.objective ? `\nobjetivo: ${ctx.currentModule.objective}` : ""
       }`
     : "(nenhum módulo em andamento agora)";
+
+  const sessionBlock = ctx.sessionPills.length
+    ? `\n\n## pílulas DESSE módulo (sessão atual do aluno)\n\n${ctx.sessionPills
+        .map((p) => `${p.done ? "[concluída]" : "[pendente]"} ${p.title}`)
+        .join("\n")}\n\nnão re-explique o que está "[concluída]". referencie pelo nome se precisar.`
+    : "";
 
   const pillBlock = ctx.pillPrompt
     ? `\n\n## EXERCÍCIO ATIVO AGORA (prioridade máxima)\n\no aluno acabou de abrir o exercício "${ctx.pillTitle ?? "sem título"}". siga estas instruções específicas pra esse exercício, elas vencem qualquer coisa do system prompt geral:\n\n${ctx.pillPrompt}`
@@ -62,7 +69,7 @@ módulos que ele já fechou nessa trilha:
 ${completedList}
 
 módulo atual:
-${current}
+${current}${sessionBlock}
 
 ## como responder
 
@@ -102,6 +109,7 @@ Deno.serve(async (req) => {
     const message = typeof body?.message === "string" ? body.message.trim() : "";
     const pillPrompt = typeof body?.pill_prompt === "string" && body.pill_prompt.trim().length > 0 ? body.pill_prompt : null;
     const pillTitle = typeof body?.pill_title === "string" && body.pill_title.trim().length > 0 ? body.pill_title : null;
+    const moduleId = typeof body?.module_id === "string" && body.module_id.length > 0 ? body.module_id : null;
 
     if (!trailId || message.length < 2) {
       return new Response(
@@ -173,6 +181,32 @@ Deno.serve(async (req) => {
           return p?.started_at && !p?.completed_at;
         }) ?? null;
 
+    const activeModuleId = moduleId ?? currentModule?.id ?? null;
+
+    // pílulas da sessão atual: ajuda o tutor a não re-explicar o que o aluno já viu
+    let sessionPills: { title: string; done: boolean }[] = [];
+    if (activeModuleId) {
+      const [sessionPillsRes, donePillsRes] = await Promise.all([
+        admin
+          .from("module_pills")
+          .select("id, title, order_index")
+          .eq("module_id", activeModuleId)
+          .eq("published", true)
+          .order("order_index"),
+        admin
+          .from("student_pill_progress")
+          .select("pill_id")
+          .eq("user_id", userId),
+      ]);
+      const doneSet = new Set<string>(
+        (donePillsRes.data ?? []).map((p: { pill_id: string }) => p.pill_id),
+      );
+      sessionPills = (sessionPillsRes.data ?? []).map((p: { id: string; title: string }) => ({
+        title: p.title,
+        done: doneSet.has(p.id),
+      }));
+    }
+
     const systemPrompt = buildSystemPrompt({
       trailTitle: trail.title,
       trailDescription: trail.description,
@@ -183,6 +217,7 @@ Deno.serve(async (req) => {
       completedModules,
       pillPrompt,
       pillTitle,
+      sessionPills,
     });
 
     const history = (convRes.data?.messages ?? []) as ChatMessage[];

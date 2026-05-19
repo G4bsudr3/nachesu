@@ -7,6 +7,8 @@ import { useHubMaterials, MATERIAL_CATEGORIES, MATERIAL_KIND_LABELS, type Materi
 import { ReactionBar } from "@/components/hub/ReactionBar";
 import { CommentThread } from "@/components/hub/CommentThread";
 import { cn } from "@/lib/utils";
+import { useMyEnrollments } from "@/hooks/useCourses";
+import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const KIND_ICON: Record<MaterialKind, React.ComponentType<{ className?: string }>> = {
   pdf: FileText,
@@ -180,7 +182,20 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
 };
 
 const HubMateriais = () => {
-  const { materials, loading } = useHubMaterials();
+  // escopa materiais pela eletiva ativa do aluno (única matrícula ou
+  // a que ele escolheu no switcher). materiais globais (course_id null)
+  // continuam aparecendo via `includeGlobal=true` (default do hook).
+  const { data: enrollments } = useMyEnrollments();
+  const { slug: activeSlug } = useActiveEletiva();
+  const activeCourseId =
+    enrollments && enrollments.length === 1
+      ? enrollments[0].course_id
+      : enrollments?.find((e) => e.course?.slug === activeSlug)?.course_id ?? null;
+  const activeCourseTitle =
+    enrollments && enrollments.length === 1
+      ? enrollments[0].course?.title
+      : enrollments?.find((e) => e.course?.slug === activeSlug)?.course?.title ?? null;
+  const { materials, loading } = useHubMaterials({ courseId: activeCourseId ?? undefined });
   const [activeCategory, setActiveCategory] = useState<MaterialCategory | "todos">("todos");
   const [selected, setSelected] = useState<HubMaterial | null>(null);
 
@@ -209,12 +224,14 @@ const HubMateriais = () => {
 
       <main className="container max-w-6xl py-8 sm:py-12">
         <header className="mb-8">
-          <p className="mb-2 font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">hub · materiais</p>
+          <p className="mb-2 font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
+            {activeCourseTitle ? `materiais · ${activeCourseTitle.toLowerCase()}` : "materiais"}
+          </p>
           <h1 className="font-display text-5xl uppercase leading-[0.9] sm:text-7xl">
             material<br />pra mastigar
           </h1>
           <p className="mt-4 max-w-xl font-body text-base text-perestroika-preto/75 sm:text-lg">
-            apresentações, leituras, ferramentas e referências da imersão. tudo num lugar só.
+            apresentações, leituras, ferramentas e referências{activeCourseTitle ? ` dessa eletiva` : ""}. tudo num lugar só.
           </p>
         </header>
 

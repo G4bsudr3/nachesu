@@ -38,6 +38,12 @@ interface TutorChatProps {
   trailTitle: string;
   trailColor: string;
   pillContext?: { pillTitle: string; pillPrompt: string } | null;
+  /**
+   * id do módulo atual em que o aluno está. usado pelo tutor pra saber
+   * quais pílulas dessa sessão já foram concluídas e não explicar de novo
+   * o que ele acabou de ver.
+   */
+  moduleId?: string | null;
 }
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tutor-trail-chat`;
@@ -49,6 +55,7 @@ export const TutorChat = ({
   trailTitle,
   trailColor,
   pillContext,
+  moduleId,
 }: TutorChatProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -163,6 +170,7 @@ export const TutorChat = ({
           message: text,
           pill_prompt: pillContext?.pillPrompt ?? null,
           pill_title: pillContext?.pillTitle ?? null,
+          module_id: moduleId ?? null,
         }),
       });
 

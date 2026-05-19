@@ -21,6 +21,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
 import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
+import { WeekCadenceStrip } from "@/components/dashboard/WeekCadenceStrip";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
@@ -128,6 +129,9 @@ const AppDashboard = () => {
             totalPublished={eletiva?.totalPublished ?? 0}
             daysSinceLastActivity={daysSinceLastActivity}
           />
+
+          {/* 1.5 cadência da semana: tempo restante + próximo release */}
+          {activeCourseId && <WeekCadenceStrip snapshot={eletiva ?? null} />}
 
           {/* 2+ matrículas → switcher mobile-first + hero da eletiva ATIVA */}
           {hasMultiple && (
