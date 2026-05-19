@@ -1,46 +1,103 @@
-# Tela de marco entre trilhas
+## plano: corrigir avisos do linter de segurança
 
-Hoje só existe um banner inline (`TrailTransitionBanner`) no topo do primeiro módulo da próxima trilha. O signature moment combinado no plano crítico anterior é uma **tela cheia dedicada**, disparada **ao concluir** o último módulo de uma trilha, com mascote em pose `celebrating`. Esta tarefa cria essa tela e mantém o banner como reforço pra quem pular.
+uma única migration consolidando todas as correções. nada de mudança em código front, só DB.
 
-## Rota e arquivo
-- Nova rota `/app/eletiva/:slug/marco/:trail` (trail = order_index da trilha que acabou: 1 | 2 | 3 | 4) em `src/App.tsx`, protegida por `ProtectedRoute`, lazy import.
-- Novo arquivo `src/pages/Marco.tsx`.
+### 1. search_path mutável (3 funções)
 
-## Disparo
-Em `src/pages/Modulo.tsx`, no `onSuccess` da `completeMutation` (e também no auto-complete do `togglePillMutation` quando todas as pílulas obrigatórias viram done):
-- Após `invalidateQueries`, recalcular se o módulo recém-concluído é o **último** da trilha (maior `order_index` dentro do `trail_id`).
-- Se sim e existir próxima trilha (não é a última do curso), `navigate(\`/app/eletiva/${slug}/marco/${trail.order_index}\`, { replace: false })`.
-- Se for a última trilha do curso (toda a eletiva completa), navegar pro mesmo path com `trail = 4` mas variante "fim da eletiva" (a página decide pelo conteúdo).
+adicionar `SET search_path = public` (ou `public, extensions` pras que usam vector) via `ALTER FUNCTION`:
 
-Sem estado novo no banco: a tela apenas exibe; a "memória" de já ter visto continua sendo o `localStorage` (mesma chave do banner, pra banner não reaparecer).
+- `public.scope_forbidden_terms(text)`
+- `public.trg_module_publish_scope_check()`
+- `public.trg_release_scope_check()`
 
-## Tela `Marco.tsx`
-- `PageShell` sem `PageHeader` (imersivo). `min-h-dvh`, fundo `bg-perestroika-preto text-perestroika-bege`, faixa colorida no topo com a cor da trilha concluída.
-- Sequência com Framer Motion:
-  1. Eyebrow `fim da trilha N · {título}` (fade-in 0.1s).
-  2. `<EletivaSymbol pose="celebrating" size={220} />` com leve `scale-in` + rotação sutil (0.2s).
-  3. H1 League Gothic gigante (até 7xl), mensagem por trilha (reusa o mapa de `trailMessages` já em `TrailTransitionBanner` — extraído pra `src/lib/trailMessages.ts`).
-  4. Sub em Urbanist (max-w-lg).
-  5. Linha de progresso visual: 4 chips de trilha (preenchidos até a trilha concluída).
-  6. Bloco "o que vem a seguir": título + primeira frase da próxima trilha.
-  7. CTA primário "começar trilha {N+1}" → navega pro primeiro módulo da próxima trilha. CTA secundário "voltar pro início" → `/app`.
-  - Variante "fim da eletiva" (trail = última do curso): mensagem específica, sem "próxima trilha", CTA primário "ver minha eletiva" → `/app/eletiva/:slug`.
-- Carregamento: usa `useEletivaProgress(slug)` (hook existente) pra descobrir trilhas, próxima trilha e primeiro módulo dela. Skeleton enquanto carrega.
-- Acessibilidade: respeitar `prefers-reduced-motion` (variants curtos). Mascote com `role="img" aria-label="joão-de-barro celebrando"`.
-- Marca o `localStorage` `trail-transition-{nextTrailId}` ao montar (pra suprimir o banner duplicado no próximo módulo).
+(as outras já estão com `SET search_path TO 'public'` — confirmado via `pg_proc.proconfig`)
 
-## Refatoração mínima
-- Extrair `trailMessages` pra `src/lib/trailMessages.ts` e importar tanto em `TrailTransitionBanner.tsx` quanto em `Marco.tsx` (única fonte de verdade pra copy).
+### 2. extensão `vector` em public (1)
 
-## Não-objetivos
-- Sem migration de banco (sem `trail_milestones` table). Persistência só em localStorage, idêntico ao banner.
-- Sem confetti/áudio/Lottie (ficaria pra polish posterior). Pose `celebrating` + tipografia gigante já entregam o signature moment.
-- Sem alteração no banner existente (continua funcionando como fallback no primeiro módulo da próxima trilha).
-- Sem mudança em RLS ou edge function.
+mover pgvector pra schema dedicado:
 
-## Arquivos
-- novo: `src/pages/Marco.tsx`
-- novo: `src/lib/trailMessages.ts`
-- editado: `src/App.tsx` (rota + lazy import)
-- editado: `src/pages/Modulo.tsx` (disparo do navigate no `onSuccess` das duas mutations)
-- editado: `src/components/eletiva/modulo/TrailTransitionBanner.tsx` (passar a importar `trailMessages` de `@/lib/trailMessages`)
+```sql
+CREATE SCHEMA IF NOT EXISTS extensions;
+GRANT USAGE ON SCHEMA extensions TO postgres, anon, authenticated, service_role;
+ALTER EXTENSION vector SET SCHEMA extensions;
+```
+
+risco: colunas `vector(N)` continuam funcionando porque o tipo é resolvido pelo OID, mas funções RPC/SQL que referenciam `vector` sem qualificar precisam de `search_path` incluindo `extensions`. já vou ajustar `match_chora_bot_chunks` e qualquer função que usa o tipo pra incluir `extensions` no search_path.
+
+### 3. funções `SECURITY DEFINER` executáveis por anon/authenticated (76 warnings)
+
+a regra: trigger functions e funções internas **não** devem ter EXECUTE pra `PUBLIC`/`anon`/`authenticated`. funções RPC legítimas (chamadas do cliente) mantêm.
+
+**revogar EXECUTE de PUBLIC, anon, authenticated** (apenas service_role/postgres chamam, ou são triggers):
+
+- triggers: `auto_link_builder_card_user`, `auto_link_fbi_user`, `claim_course_invites_on_signup`, `cleanup_hub_engagement_for_target`, `enforce_chora_bot_cutoff`, `enforce_single_active_enrollment`, `handle_new_user`, `notify_deliverable_reviewed`, `notify_module_released`, `recompute_module_progress`, `validate_admin_role_mutation`, `validate_hub_engagement_target`, `validate_project_vote`, `trg_module_publish_scope_check`, `trg_release_scope_check`
+- internas/admin: `assert_module_in_scope`, `compute_module_metrics`, `scope_check_course`, `admin_list_users`, `admin_list_pending_profiles`, `read_email_batch`, `enqueue_email`, `delete_email`, `move_to_dlq`
+
+**manter EXECUTE pra authenticated apenas** (revogar de anon):
+
+- `get_my_card_state`, `get_my_future_letter_group`, `get_my_future_letter_response`, `get_my_project_vote_result`, `save_future_letter_response`, `seal_future_letter`, `is_future_letter_group_member`, `is_future_letter_group_open`, `is_future_letter_group_open_and_owned`, `has_role`, `match_chora_bot_chunks`, `get_project_voting_top_ten`
+
+**manter EXECUTE pra anon+authenticated** (chamadas pré-login):
+
+- `lookup_user_by_email`, `lookup_invited_canonical`, `can_submit_public_fbi`, `get_public_card_by_token`, `mark_card_first_view`
+
+padrão por função:
+```sql
+REVOKE EXECUTE ON FUNCTION public.<fn>(<args>) FROM PUBLIC, anon, authenticated;
+```
+
+e quando precisar restaurar pra um role específico:
+```sql
+GRANT EXECUTE ON FUNCTION public.<fn>(<args>) TO authenticated;
+```
+
+### 4. buckets públicos listáveis (7 warnings)
+
+buckets `public=true` com policy SELECT abrangente em `storage.objects` permitem `list()`. nenhum desses precisa ser listado pelo cliente — leitura é sempre por URL direta conhecida.
+
+solução: trocar as policies SELECT abrangentes (tipo `bucket_id = 'X'`) por policies que exigem `name` específico OU restringir listing. abordagem prática: adicionar `WITH CHECK (false)` não funciona pra SELECT; em vez disso, manter SELECT por URL pública (que vai pelo CDN e não chama `list()`) e **revogar** policies de listing autenticado:
+
+- `auth lista hub-materials` → drop
+- `auth lista hub-project-covers` → drop
+- demais policies de leitura ficam, mas a leitura via URL pública não passa por essas policies (o CDN serve direto)
+
+obs: buckets `public=true` no Supabase **sempre** permitem GET via URL — o warning é só sobre `list()`. removendo as policies "lista" anônimas/auth, o `list()` para de funcionar e o warning some sem quebrar leitura por URL.
+
+policies a revisar e ajustar:
+- `builder-card-images`, `email-assets`, `builder-card-og`, `archetype-artworks`, `turma-mascots`, `hub-materials`, `hub-project-covers`, `hub-album`, `hub-certificates`, `pill-attachments` — pra cada, manter apenas policies escopadas por path/owner; remover policies SELECT amplas tipo `bucket_id = 'X'` sem outra restrição.
+
+### entregável
+
+1 migration `supabase/migrations/<ts>_security_linter_fixes.sql` com:
+
+```text
+-- 1. fix search_path
+ALTER FUNCTION public.scope_forbidden_terms(text) SET search_path = public;
+ALTER FUNCTION public.trg_module_publish_scope_check() SET search_path = public;
+ALTER FUNCTION public.trg_release_scope_check() SET search_path = public;
+
+-- 2. mover vector
+CREATE SCHEMA IF NOT EXISTS extensions;
+GRANT USAGE ON SCHEMA extensions TO postgres, anon, authenticated, service_role;
+ALTER EXTENSION vector SET SCHEMA extensions;
+ALTER FUNCTION public.match_chora_bot_chunks(...) SET search_path = public, extensions;
+
+-- 3. revogar execute em ~25 funções internas + ajustar grants nas demais
+REVOKE EXECUTE ON FUNCTION public.<fn>(...) FROM PUBLIC, anon, authenticated;
+...
+
+-- 4. dropar policies SELECT amplas em storage.objects
+DROP POLICY "auth lista hub-materials" ON storage.objects;
+DROP POLICY "auth lista hub-project-covers" ON storage.objects;
+... (auditar uma a uma as 7 buckets flagadas)
+```
+
+depois rodo o linter de novo e itero no que sobrar.
+
+### riscos
+
+- mover pgvector: já mitigado fixando `search_path` da função que usa o tipo. RLS/queries via Supabase JS não são afetadas (não usam tipo direto).
+- revogar EXECUTE em funções de trigger é seguro — triggers rodam como owner. mas se alguma edge function chama RPC sem `service_role`, vai quebrar. vou checar callers em `supabase/functions/**` antes de revogar.
+- remover policies de listing pode quebrar telas que chamam `supabase.storage.from('x').list()`. vou grepar por `.list(` antes.
+
+quer que eu execute essa migration ou prefere revisar antes de algum passo específico (ex: mover pgvector é o mais arriscado)?
