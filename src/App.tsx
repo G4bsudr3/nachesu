@@ -220,6 +220,14 @@ const App = () => (
               />
 
               <Route
+                path="/app/eletiva/:slug/marco/:trail"
+                element={
+                  <ProtectedRoute>
+                    <Marco />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/app/modulo/:number"
                 element={
                   <ProtectedRoute>
