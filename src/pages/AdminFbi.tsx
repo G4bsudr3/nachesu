@@ -311,6 +311,7 @@ const AdminFbi = () => {
             {/* operação NachesU (sempre visível, ordem por frequência de uso) */}
             <TabsList className="bg-perestroika-preto/5 mb-3 inline-flex flex-wrap h-auto">
               <TabsTrigger value="eletivas" className="uppercase tracking-wide text-xs">eletivas</TabsTrigger>
+              <TabsTrigger value="review" className="uppercase tracking-wide text-xs">revisão</TabsTrigger>
               <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
               <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
               <TabsTrigger value="feedback" className="uppercase tracking-wide text-xs">feedback</TabsTrigger>
