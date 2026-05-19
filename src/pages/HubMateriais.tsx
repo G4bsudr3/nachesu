@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
-import { ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, RefreshCw, Sparkles, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { AlertCircle, ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, RefreshCw, Sparkles, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useHubMaterials, MATERIAL_CATEGORIES, MATERIAL_KIND_LABELS, type MaterialCategory, type HubMaterial, type MaterialKind, detectKind, materialOpenUrl, autoThumbUrl } from "@/features/hub/useHubMaterials";
