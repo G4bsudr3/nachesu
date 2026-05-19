@@ -2272,6 +2272,18 @@ export type Database = {
           submitted_at: string
         }[]
       }
+      scope_check_course: {
+        Args: { _course_id: string }
+        Returns: {
+          module_id: string
+          module_number: number
+          module_title: string
+          pill_id: string
+          pill_kind: string
+          pill_title: string
+          term: string
+        }[]
+      }
       scope_forbidden_terms: { Args: { _slug: string }; Returns: string[] }
       seal_future_letter: {
         Args: {
