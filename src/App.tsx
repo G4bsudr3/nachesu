@@ -51,6 +51,8 @@ const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
 const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
 const Eletivas = lazy(() => import("./pages/Eletivas.tsx"));
 const EletivaHome = lazy(() => import("./pages/EletivaHome.tsx"));
+const Notificacoes = lazy(() => import("./pages/Notificacoes.tsx"));
+const AdminRisco = lazy(() => import("./pages/AdminRisco.tsx"));
 const Comecar = lazy(() => import("./pages/Comecar.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
@@ -190,6 +192,23 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/app/notificacoes"
+                element={
+                  <ProtectedRoute>
+                    <Notificacoes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/risco"
+                element={
+                  <AdminRoute>
+                    <AdminRisco />
+                  </AdminRoute>
+                }
+              />
+
               <Route
                 path="/app/modulo/:number"
                 element={
