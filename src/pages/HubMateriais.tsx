@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
-import { ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, Wrench, Sparkles, X } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, RefreshCw, Sparkles, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useHubMaterials, MATERIAL_CATEGORIES, MATERIAL_KIND_LABELS, type MaterialCategory, type HubMaterial, type MaterialKind, detectKind, materialOpenUrl, autoThumbUrl } from "@/features/hub/useHubMaterials";
@@ -9,6 +9,7 @@ import { CommentThread } from "@/components/hub/CommentThread";
 import { cn } from "@/lib/utils";
 import { useMyEnrollments } from "@/hooks/useCourses";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 const KIND_ICON: Record<MaterialKind, React.ComponentType<{ className?: string }>> = {
   pdf: FileText,
@@ -261,10 +262,19 @@ const HubMateriais = () => {
   // só materiais da eletiva ativa. globais (course_id null) ficam de fora
   // pra evitar mistura entre as duas eletivas com conteúdo de naturezas
   // bem distintas (ia na prática vs economia circular).
-  const { materials, loading } = useHubMaterials({
+  const { materials, loading, refresh } = useHubMaterials({
     courseId: activeCourseId ?? undefined,
     includeGlobal: false,
   });
+  const [refreshing, setRefreshing] = useState(false);
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refresh();
+    } finally {
+      setRefreshing(false);
+    }
+  };
   const [activeCategory, setActiveCategory] = useState<MaterialCategory | "todos">("todos");
   const [selected, setSelected] = useState<HubMaterial | null>(null);
 
@@ -338,11 +348,57 @@ const HubMateriais = () => {
         )}
 
         {!loading && filtered.length === 0 && (
-          <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/30 p-12 text-center">
-            <p className="font-display text-3xl uppercase text-perestroika-preto/60">vazio por aqui</p>
-            <p className="mt-2 font-body text-sm text-perestroika-preto/55">
-              ainda não tem material nessa categoria. o admin vai postar em breve, ou avisa o suporte da escola 🤙
-            </p>
+          <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/40 p-8 sm:p-12 text-center">
+            <div className="mx-auto mb-5 w-28 sm:w-32" aria-hidden="true">
+              <EletivaSymbol pose="resting" />
+            </div>
+            {materials.length === 0 ? (
+              <>
+                <p className="font-display text-3xl sm:text-4xl uppercase text-perestroika-preto/75 leading-none">
+                  o ninho ainda tá vazio
+                </p>
+                <p className="mx-auto mt-3 max-w-md font-body text-sm text-perestroika-preto/65">
+                  {activeCourseTitle
+                    ? `nenhum material publicado em ${activeCourseTitle.toLowerCase()} por enquanto. o(a) educador(a) solta os primeiros antes do módulo 1.`
+                    : "ainda não tem material publicado por aqui. assim que o(a) educador(a) postar, aparece nessa lista."}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-display text-3xl sm:text-4xl uppercase text-perestroika-preto/75 leading-none">
+                  nada nessa categoria
+                </p>
+                <p className="mx-auto mt-3 max-w-md font-body text-sm text-perestroika-preto/65">
+                  tenta voltar pra "tudo" e dar uma olhada nas outras categorias.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveCategory("todos")}
+                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-white/70 px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/80 hover:border-perestroika-preto/50"
+                >
+                  ver tudo
+                </button>
+              </>
+            )}
+
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+              <button
+                type="button"
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-bege transition hover:opacity-90 disabled:opacity-60"
+              >
+                <RefreshCw className={cn("h-3.5 w-3.5", refreshing && "animate-spin")} />
+                {refreshing ? "atualizando" : "atualizar lista"}
+              </button>
+              <Link
+                to="/app"
+                className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/25 bg-white/70 px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-preto/80 hover:border-perestroika-preto/60"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                voltar pro hub
+              </Link>
+            </div>
           </div>
         )}
 
