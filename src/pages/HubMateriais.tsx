@@ -182,7 +182,20 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
 };
 
 const HubMateriais = () => {
-  const { materials, loading } = useHubMaterials();
+  // escopa materiais pela eletiva ativa do aluno (única matrícula ou
+  // a que ele escolheu no switcher). materiais globais (course_id null)
+  // continuam aparecendo via `includeGlobal=true` (default do hook).
+  const { data: enrollments } = useMyEnrollments();
+  const { slug: activeSlug } = useActiveEletiva();
+  const activeCourseId =
+    enrollments && enrollments.length === 1
+      ? enrollments[0].course_id
+      : enrollments?.find((e) => e.course?.slug === activeSlug)?.course_id ?? null;
+  const activeCourseTitle =
+    enrollments && enrollments.length === 1
+      ? enrollments[0].course?.title
+      : enrollments?.find((e) => e.course?.slug === activeSlug)?.course?.title ?? null;
+  const { materials, loading } = useHubMaterials({ courseId: activeCourseId ?? undefined });
   const [activeCategory, setActiveCategory] = useState<MaterialCategory | "todos">("todos");
   const [selected, setSelected] = useState<HubMaterial | null>(null);
 
