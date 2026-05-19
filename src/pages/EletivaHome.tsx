@@ -202,7 +202,11 @@ const EletivaHome = () => {
             <div className="flex-1">
               <p className="font-display uppercase text-2xl leading-tight">tutor IA</p>
               <p className="font-body text-sm text-perestroika-preto/70 mt-1">
-                tira dúvida a qualquer hora.
+                {course.slug === "economia-circular"
+                  ? "discute hipótese, sistema, evidência."
+                  : course.slug === "ia-na-pratica"
+                    ? "tira dúvida de prompt, código, escopo."
+                    : "tira dúvida a qualquer hora."}
               </p>
             </div>
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
