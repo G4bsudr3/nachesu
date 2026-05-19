@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
@@ -15,6 +16,8 @@ interface PageHeaderProps {
   logoLink?: string;
   /** classes extras pro <header>. */
   className?: string;
+  /** oculta o sino de notificações (default: false). */
+  hideBell?: boolean;
 }
 
 /**
@@ -29,6 +32,7 @@ export const PageHeader = ({
   showLogo = true,
   logoLink,
   className,
+  hideBell = false,
 }: PageHeaderProps) => {
   const logo = (
     <ChoraLogo variant="dark" />
@@ -71,6 +75,7 @@ export const PageHeader = ({
         {back && showLogo && (
           <span className="hidden sm:inline-flex items-center">{logo}</span>
         )}
+        {!hideBell && <NotificationBell />}
         {actions}
       </div>
     </header>
