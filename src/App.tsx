@@ -209,6 +209,14 @@ const App = () => (
                   </AdminRoute>
                 }
               />
+              <Route
+                path="/admin/turma/:courseId"
+                element={
+                  <AdminRoute>
+                    <AdminTurma />
+                  </AdminRoute>
+                }
+              />
 
               <Route
                 path="/app/modulo/:number"
