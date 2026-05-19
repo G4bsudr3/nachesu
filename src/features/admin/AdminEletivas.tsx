@@ -159,24 +159,47 @@ function InvitesPanel({ courseId }: { courseId: string }) {
       const matched = (existingUsers ?? []).filter((u: any) =>
         list.includes(String(u.email).toLowerCase())
       );
+      const conflicts: string[] = [];
       if (matched.length > 0) {
-        await supabase.from("enrollments").upsert(
-          matched.map((u: any) => ({ user_id: u.user_id, course_id: courseId })),
-          { onConflict: "user_id,course_id", ignoreDuplicates: true }
-        );
-        // marca esses convites como claimed
-        await supabase
-          .from("course_invites")
-          .update({ claimed_at: new Date().toISOString() })
-          .eq("course_id", courseId)
-          .in("email_normalized", matched.map((u: any) => String(u.email).toLowerCase()));
+        for (const u of matched as any[]) {
+          const { error: enrollErr } = await supabase
+            .from("enrollments")
+            .upsert(
+              { user_id: u.user_id, course_id: courseId },
+              { onConflict: "user_id,course_id", ignoreDuplicates: true },
+            );
+          if (enrollErr) {
+            if ((enrollErr as any).code === "23514" || /outra eletiva/i.test(enrollErr.message)) {
+              conflicts.push(String(u.email).toLowerCase());
+              continue;
+            }
+            throw enrollErr;
+          }
+        }
+        // marca convites como claimed só para quem foi de fato matriculado
+        const enrolledEmails = (matched as any[])
+          .map((u) => String(u.email).toLowerCase())
+          .filter((e) => !conflicts.includes(e));
+        if (enrolledEmails.length > 0) {
+          await supabase
+            .from("course_invites")
+            .update({ claimed_at: new Date().toISOString() })
+            .eq("course_id", courseId)
+            .in("email_normalized", enrolledEmails);
+        }
       }
 
       // enrollments futuros virão automaticamente no signup pelo trigger.
-      return list.length;
+      return { total: list.length, conflicts };
     },
-    onSuccess: (n) => {
-      toast.success(`${n} convite(s) enviado(s)`);
+    onSuccess: (res) => {
+      toast.success(`${res.total} convite(s) enviado(s)`);
+      if (res.conflicts.length > 0) {
+        toast.error(
+          `${res.conflicts.length} já matriculado(s) em outra eletiva — não migrado(s): ${res.conflicts.join(", ")}`,
+          { duration: 8000 },
+        );
+      }
       setEmails("");
       qc.invalidateQueries({ queryKey: ["course-invites", courseId] });
     },
