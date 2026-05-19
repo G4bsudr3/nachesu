@@ -1,14 +1,144 @@
 import { useEffect } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, BookOpen, Compass, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, MessageCircle, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
-import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { useEletivaProgress, type EletivaSnapshot } from "@/hooks/useEletivaProgress";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { EletivaOnboardingOverlay } from "@/components/eletiva/EletivaOnboardingOverlay";
+import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
+
+const trailColorByOrder: Record<number, string> = {
+  1: "#fe7b02",
+  2: "#fd4644",
+  3: "#f756a6",
+  4: "#6f77fc",
+};
+
+type ModuleState = "done" | "current" | "available" | "scheduled" | "locked";
+
+const moduleState = (
+  m: EletivaSnapshot["modules"][number],
+  snapshot: EletivaSnapshot,
+): ModuleState => {
+  const prog = snapshot.progressByModuleId[m.id];
+  if (prog?.completed_at) return "done";
+  const available = m.published && (!m.available_from || new Date(m.available_from).getTime() <= Date.now());
+  if (!available) return "scheduled";
+  if (!snapshot.unlockedModuleIds.has(m.id)) return "locked";
+  if (snapshot.currentModule?.id === m.id) return "current";
+  return "available";
+};
+
+const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPick: (n: number) => void }) => {
+  if (!snapshot.trails.length) return null;
+  return (
+    <section
+      aria-labelledby="modulos-title"
+      className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/55 p-5 sm:p-6"
+    >
+      <header className="mb-5">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-1">
+          mapa da eletiva
+        </p>
+        <h2 id="modulos-title" className="font-display uppercase text-2xl sm:text-3xl leading-none">
+          módulos liberados pra você
+        </h2>
+      </header>
+
+      <div className="space-y-6">
+        {snapshot.trails.map((trail) => {
+          const trailModules = snapshot.modules
+            .filter((m) => m.trail_id === trail.id)
+            .sort((a, b) => a.number - b.number);
+          if (!trailModules.length) return null;
+          const color = trail.color ?? trailColorByOrder[trail.order_index] ?? "#090909";
+          const done = trailModules.filter((m) => snapshot.progressByModuleId[m.id]?.completed_at).length;
+          return (
+            <div key={trail.id}>
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-2 font-body text-sm">
+                  <span aria-hidden className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+                  <span className="font-display uppercase text-base">{trail.title.toLowerCase()}</span>
+                </span>
+                <span className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55 tabular-nums">
+                  {done}/{trailModules.length}
+                </span>
+              </div>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {trailModules.map((m) => {
+                  const state = moduleState(m, snapshot);
+                  const clickable = state === "current" || state === "available" || state === "done";
+                  const Icon =
+                    state === "done"
+                      ? CheckCircle2
+                      : state === "scheduled"
+                        ? Clock
+                        : state === "locked"
+                          ? Lock
+                          : ArrowRight;
+                  const stateLabel =
+                    state === "done"
+                      ? "concluído"
+                      : state === "current"
+                        ? "continuar"
+                        : state === "available"
+                          ? "abrir"
+                          : state === "scheduled"
+                            ? m.available_from
+                              ? `libera ${new Date(m.available_from).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}`
+                              : "em breve"
+                            : "termine o anterior";
+                  const base =
+                    "group flex items-center justify-between gap-3 rounded-xl border px-3 py-3 text-left transition-colors";
+                  const variant =
+                    state === "current"
+                      ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege"
+                      : state === "done"
+                        ? "border-perestroika-preto/20 bg-perestroika-bege"
+                        : state === "available"
+                          ? "border-perestroika-preto/30 bg-perestroika-bege hover:border-perestroika-preto"
+                          : "border-perestroika-preto/10 bg-perestroika-preto/[0.03] text-perestroika-preto/55 cursor-not-allowed";
+                  return (
+                    <li key={m.id}>
+                      <button
+                        type="button"
+                        disabled={!clickable}
+                        onClick={() => clickable && onPick(m.number)}
+                        className={`${base} ${variant} w-full`}
+                        aria-label={`módulo ${m.number} ${m.title} — ${stateLabel}`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span
+                            aria-hidden
+                            className="font-display text-xl shrink-0 tabular-nums"
+                            style={{ color: state === "current" ? undefined : color }}
+                          >
+                            {String(m.number).padStart(2, "0")}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="font-body text-sm font-medium truncate">{m.title.toLowerCase()}</p>
+                            <p className="font-body text-[10px] uppercase tracking-wide opacity-70">
+                              {stateLabel}
+                            </p>
+                          </div>
+                        </div>
+                        <Icon className="h-4 w-4 shrink-0 opacity-70 group-hover:translate-x-0.5 transition-transform" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
 
 const EletivaHome = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -18,7 +148,6 @@ const EletivaHome = () => {
   const { data: enrollments, isLoading: enrollmentsLoading } = useMyEnrollments();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress(course?.id ?? null);
 
-  // sincroniza switcher quando o aluno entra direto via /app/eletiva/:slug
   useEffect(() => {
     if (slug) setSlug(slug);
   }, [slug, setSlug]);
@@ -83,6 +212,7 @@ const EletivaHome = () => {
   const totalCompleted = snapshot?.totalCompleted ?? 0;
   const totalPublished = snapshot?.totalPublished ?? 0;
   const progressPct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
+  const tutorTo = current ? `/app/tutor?module=${current.number}` : "/app/tutor";
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
@@ -93,7 +223,7 @@ const EletivaHome = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-bege p-6 sm:p-10 mb-8"
+          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-bege p-6 sm:p-10 mb-6"
         >
           <p className="font-body text-xs uppercase tracking-[0.3em] text-perestroika-preto/55 mb-3">
             sua eletiva
@@ -145,13 +275,13 @@ const EletivaHome = () => {
           )}
         </motion.section>
 
-        {/* próximo passo único */}
+        {/* próximo passo único + estado da entrega */}
         {!snapLoading && current && (
           <motion.section
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-3xl border-2 border-perestroika-preto bg-perestroika-preto text-perestroika-bege p-6 sm:p-8 mb-8"
+            className="rounded-3xl border-2 border-perestroika-preto bg-perestroika-preto text-perestroika-bege p-6 sm:p-8 mb-6"
           >
             <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-bege/60 mb-2 inline-flex items-center gap-1">
               <Sparkles className="h-3 w-3" /> próximo passo
@@ -171,29 +301,25 @@ const EletivaHome = () => {
             >
               continuar de onde parou <ArrowRight className="h-4 w-4" />
             </button>
+
+            {/* status da entrega do módulo atual */}
+            <div className="mt-6 bg-perestroika-bege text-perestroika-preto rounded-2xl">
+              <DeliverableStatusPill moduleId={current.id} />
+            </div>
           </motion.section>
         )}
 
-        {/* atalhos */}
-        <section className="grid gap-4 sm:grid-cols-3">
-          <Link
-            to={`/app/trilhas?eletiva=${course.slug}`}
-            className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
-          >
-            <div className="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-perestroika-preto text-perestroika-bege">
-              <Compass className="h-5 w-5" />
-            </div>
-            <div className="flex-1">
-              <p className="font-display uppercase text-2xl leading-tight">mapa</p>
-              <p className="font-body text-sm text-perestroika-preto/70 mt-1">
-                4 trilhas, 5 módulos cada.
-              </p>
-            </div>
-            <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
-          </Link>
+        {/* mapa de módulos com estado */}
+        {snapshot && (
+          <div className="mb-6">
+            <ModulesByTrail snapshot={snapshot} onPick={(n) => navigate(`/app/modulo/${n}`)} />
+          </div>
+        )}
 
+        {/* atalhos */}
+        <section className="grid gap-4 sm:grid-cols-2">
           <Link
-            to="/app/tutor"
+            to={tutorTo}
             className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
           >
             <div className="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-perestroika-preto text-perestroika-bege">
@@ -202,11 +328,11 @@ const EletivaHome = () => {
             <div className="flex-1">
               <p className="font-display uppercase text-2xl leading-tight">tutor IA</p>
               <p className="font-body text-sm text-perestroika-preto/70 mt-1">
-                {course.slug === "economia-circular"
-                  ? "discute hipótese, sistema, evidência."
-                  : course.slug === "ia-na-pratica"
-                    ? "tira dúvida de prompt, código, escopo."
-                    : "tira dúvida a qualquer hora."}
+                {current
+                  ? `com contexto das pílulas do módulo ${String(current.number).padStart(2, "0")}.`
+                  : course.slug === "economia-circular"
+                    ? "discute hipótese, sistema, evidência."
+                    : "tira dúvida de prompt, código, escopo."}
               </p>
             </div>
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
@@ -222,7 +348,7 @@ const EletivaHome = () => {
             <div className="flex-1">
               <p className="font-display uppercase text-2xl leading-tight">materiais</p>
               <p className="font-body text-sm text-perestroika-preto/70 mt-1">
-                leituras, slides, referências.
+                leituras, slides, referências dessa eletiva.
               </p>
             </div>
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
