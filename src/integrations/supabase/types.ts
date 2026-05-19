@@ -568,6 +568,39 @@ export type Database = {
           },
         ]
       }
+      evasion_nudges: {
+        Row: {
+          course_id: string
+          days_inactive: number
+          email_sent: boolean
+          id: string
+          level: string
+          notification_id: string | null
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          days_inactive: number
+          email_sent?: boolean
+          id?: string
+          level: string
+          notification_id?: string | null
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          days_inactive?: number
+          email_sent?: boolean
+          id?: string
+          level?: string
+          notification_id?: string | null
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       fbi_responses: {
         Row: {
           algo_mais: string | null
@@ -1595,6 +1628,42 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          link: string | null
+          metadata: Json
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          link?: string | null
+          metadata?: Json
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          link?: string | null
+          metadata?: Json
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       prework_items: {
         Row: {
           created_at: string
@@ -2078,7 +2147,26 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      student_engagement_risk: {
+        Row: {
+          course_id: string | null
+          days_inactive: number | null
+          done_count: number | null
+          last_activity_at: string | null
+          released_count: number | null
+          risk_level: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       admin_list_pending_profiles: {
@@ -2311,6 +2399,11 @@ export type Database = {
       deliverable_status: "rascunho" | "enviado" | "revisado"
       future_letter_session_status: "draft" | "open" | "closed" | "sent"
       mission_status: "pendente" | "aprovada" | "ajustar"
+      notification_kind:
+        | "deliverable_reviewed"
+        | "module_released"
+        | "evasion_nudge"
+        | "system"
       pill_kind:
         | "pilula_a"
         | "pilula_b"
@@ -2459,6 +2552,12 @@ export const Constants = {
       deliverable_status: ["rascunho", "enviado", "revisado"],
       future_letter_session_status: ["draft", "open", "closed", "sent"],
       mission_status: ["pendente", "aprovada", "ajustar"],
+      notification_kind: [
+        "deliverable_reviewed",
+        "module_released",
+        "evasion_nudge",
+        "system",
+      ],
       pill_kind: [
         "pilula_a",
         "pilula_b",
