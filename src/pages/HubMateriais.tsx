@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
-import { ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, Wrench, Sparkles, X } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, RefreshCw, Sparkles, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useHubMaterials, MATERIAL_CATEGORIES, MATERIAL_KIND_LABELS, type MaterialCategory, type HubMaterial, type MaterialKind, detectKind, materialOpenUrl, autoThumbUrl } from "@/features/hub/useHubMaterials";
@@ -9,6 +9,7 @@ import { CommentThread } from "@/components/hub/CommentThread";
 import { cn } from "@/lib/utils";
 import { useMyEnrollments } from "@/hooks/useCourses";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 const KIND_ICON: Record<MaterialKind, React.ComponentType<{ className?: string }>> = {
   pdf: FileText,
