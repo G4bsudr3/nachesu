@@ -81,20 +81,56 @@ const MaterialCard = ({ m, onOpen }: CardProps) => {
   );
 };
 
+/**
+ * resolve qual player usar pra cada material.
+ * - vídeo youtube/vimeo → iframe embed
+ * - vídeo direto (.mp4/.webm/.mov) → <video> nativo com controles
+ * - pdf hospedado por nós → <iframe> com #toolbar=1 pra leitor inline
+ * - slides google/canva/pitch → iframe embed
+ * - imagem → <img> contido
+ * - doc/link/other → não embute (drawer mostra CTA "abrir em nova aba")
+ */
+const resolvePlayer = (
+  url: string | null,
+  kind: MaterialKind,
+): { mode: "iframe" | "video" | "image" | "none"; src?: string } => {
+  if (!url) return { mode: "none" };
+
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/);
+  if (yt) return { mode: "iframe", src: `https://www.youtube.com/embed/${yt[1]}?rel=0` };
+
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeo) return { mode: "iframe", src: `https://player.vimeo.com/video/${vimeo[1]}` };
+
+  if (kind === "video" && /\.(mp4|webm|mov)(\?|$)/i.test(url)) {
+    return { mode: "video", src: url };
+  }
+
+  if (kind === "pdf") {
+    // #toolbar=1 ativa controles nativos do chrome/edge
+    return { mode: "iframe", src: `${url}#toolbar=1&view=FitH` };
+  }
+
+  if (kind === "slides") {
+    if (url.includes("docs.google.com/presentation")) {
+      return { mode: "iframe", src: url.replace("/edit", "/embed").replace("/pub", "/embed") };
+    }
+    if (url.includes("canva.com/design")) {
+      return { mode: "iframe", src: url.replace("/view", "/view?embed").includes("?embed") ? url : `${url}?embed` };
+    }
+    if (url.includes("pitch.com")) return { mode: "iframe", src: url };
+  }
+
+  if (kind === "image") return { mode: "image", src: url };
+
+  return { mode: "none" };
+};
+
 const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void }) => {
   const kind = (m.kind as MaterialKind) || detectKind(materialOpenUrl(m), m.file_mime);
   const url = materialOpenUrl(m);
   const cat = MATERIAL_CATEGORIES.find((c) => c.value === m.category);
-
-  // youtube/vimeo embed
-  const ytMatch = url?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/);
-  const embedSrc = ytMatch
-    ? `https://www.youtube.com/embed/${ytMatch[1]}`
-    : kind === "pdf"
-      ? url ?? undefined
-      : kind === "slides" && url?.includes("docs.google.com/presentation")
-        ? url.replace("/edit", "/embed").replace("/pub", "/embed")
-        : undefined;
+  const player = resolvePlayer(url, kind);
 
   return (
     <AnimatePresence>
@@ -139,11 +175,16 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
         </header>
 
         <div className="flex-1 overflow-y-auto p-5 sm:p-6">
-          {/* preview */}
-          {embedSrc && (
-            <div className="mb-6 aspect-video w-full overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-preto/5">
+          {/* player por formato */}
+          {player.mode === "iframe" && player.src && (
+            <div
+              className={cn(
+                "mb-6 w-full overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-preto/5",
+                kind === "pdf" ? "h-[70vh]" : "aspect-video",
+              )}
+            >
               <iframe
-                src={embedSrc}
+                src={player.src}
                 title={m.title}
                 className="h-full w-full"
                 allowFullScreen
@@ -151,8 +192,30 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
               />
             </div>
           )}
-          {!embedSrc && kind === "image" && url && (
-            <img src={url} alt={m.title} className="mb-6 max-h-[60vh] w-full rounded-2xl object-contain" />
+          {player.mode === "video" && player.src && (
+            <div className="mb-6 overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-preto">
+              <video
+                src={player.src}
+                controls
+                preload="metadata"
+                className="aspect-video w-full"
+                aria-label={m.title}
+              />
+            </div>
+          )}
+          {player.mode === "image" && player.src && (
+            <img
+              src={player.src}
+              alt={m.title}
+              className="mb-6 max-h-[70vh] w-full rounded-2xl object-contain"
+            />
+          )}
+          {player.mode === "none" && (
+            <div className="mb-6 rounded-2xl border border-dashed border-perestroika-preto/20 bg-white/40 p-6 text-center">
+              <p className="font-body text-sm text-perestroika-preto/70">
+                esse formato abre fora da plataforma. use o botão abaixo pra ler.
+              </p>
+            </div>
           )}
 
           {url && (
