@@ -279,7 +279,31 @@ const Modulo = () => {
           <ArrowLeft className="h-3.5 w-3.5" /> meu início
         </Link>
 
+        {/* marco de transição: aparece nos primeiros módulos das trilhas 2/3/4
+            (números 6, 11, 16) quando a trilha anterior está completa */}
+        {trail && prevModule && (() => {
+          const prevTrail = snapshot?.trails.find((t) => t.id === prevModule.trail_id) ?? null;
+          const isFirstOfNewTrail =
+            prevTrail && prevTrail.id !== trail.id && trail.order_index >= 2;
+          if (!isFirstOfNewTrail || !prevTrail) return null;
+          const prevTrailDone = snapshot?.modules
+            .filter((m) => m.trail_id === prevTrail.id)
+            .every((m) => snapshot?.progressByModuleId[m.id]?.completed_at);
+          if (!prevTrailDone) return null;
+          return (
+            <TrailTransitionBanner
+              fromTrailTitle={prevTrail.title}
+              toTrailTitle={trail.title}
+              toTrailIndex={trail.order_index}
+              storageKey={`trail-transition-${trail.id}`}
+              trailColor={trailColor}
+            />
+          );
+        })()}
+
         <ModuloFeedbackCard moduleId={moduleRow.id} trailColor={trailColor} />
+
+        <DeliverableStatusPill moduleId={moduleRow.id} />
 
         <ModuloHeader
           trailTitle={trail?.title ?? null}
@@ -334,6 +358,7 @@ const Modulo = () => {
           trailTitle={trail.title}
           trailColor={trailColor}
           pillContext={tutorPillContext}
+          moduleId={moduleRow.id}
         />
       )}
 
