@@ -146,6 +146,14 @@ const AdminRisco = () => {
           </Select>
 
           <div className="flex gap-2 ml-auto">
+            {courseFilter !== "all" && (
+              <Link
+                to={`/admin/turma/${courseFilter}`}
+                className="inline-flex items-center px-3 h-9 rounded-md font-body text-xs uppercase tracking-wide border border-perestroika-preto/15 text-perestroika-preto hover:bg-perestroika-bege/60"
+              >
+                abrir dashboard da turma
+              </Link>
+            )}
             <Button onClick={load} variant="outline" size="sm" className="font-body text-xs uppercase">
               <RefreshCw className="h-3.5 w-3.5 mr-1.5" /> atualizar
             </Button>
