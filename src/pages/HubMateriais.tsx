@@ -7,6 +7,8 @@ import { useHubMaterials, MATERIAL_CATEGORIES, MATERIAL_KIND_LABELS, type Materi
 import { ReactionBar } from "@/components/hub/ReactionBar";
 import { CommentThread } from "@/components/hub/CommentThread";
 import { cn } from "@/lib/utils";
+import { useMyEnrollments } from "@/hooks/useCourses";
+import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const KIND_ICON: Record<MaterialKind, React.ComponentType<{ className?: string }>> = {
   pdf: FileText,
