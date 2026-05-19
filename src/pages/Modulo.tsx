@@ -219,6 +219,7 @@ const Modulo = () => {
             : "rodou todas as pílulas. módulo concluído.",
         );
         queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+        setTimeout(() => { goToMarcoIfTrailFinished(); }, 250);
       }
     },
     onError: (e: Error) => toast.error(e.message ?? "deu ruim ao salvar"),
