@@ -527,6 +527,10 @@ const AdminFbi = () => {
               <AdminEletivas />
             </TabsContent>
 
+            <TabsContent value="review">
+              <AdminEletivaReview />
+            </TabsContent>
+
             <TabsContent value="eletiva">
               <AdminEletivaSettings />
             </TabsContent>
