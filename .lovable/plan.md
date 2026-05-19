@@ -1,177 +1,120 @@
+# revisão crítica — o que falta de altíssimo impacto
 
-# revisão pedagógica — nachesu
+o estado atual (pós-onda 1): materiais escopados, deliverable rascunho→enviado→revisado, EletivaHome atualizada, fila de revisão pro educador, tutor com pílulas da sessão. boa base. o que falta agora não é "feature a mais", é **fechar 3 ciclos quebrados** que comprometem a tese do produto.
 
-leitura do produto como **eletiva online assíncrona** de 20 semanas pra estudante de 1º ano EM (14-15 anos), mobile-first, com PBL como espinha. abaixo: o que está bom, onde fura, e proposta de correção em ondas.
-
----
-
-## 1. o fluxo faz sentido?
-
-### o que está bom
-- hierarquia limpa: dashboard → eletiva → módulo. um próximo passo único.
-- switcher só aparece com 2+ matrículas. matrícula única bloqueada por trigger (já implementada).
-- desbloqueio sequencial garante ritmo semanal sem precisar de calendário rígido.
-- mascote (joão-de-barro) com 6 poses dá personalidade sem virar Duolingo genérico.
-
-### onde fura (ordenado por impacto pedagógico)
-
-**a. ritmo da eletiva não está visível.** o estudante não sabe "estou no módulo 3 da semana 3, esperado". não tem cadência semanal exposta, nem o `available_from` aparece como expectativa ("o próximo abre em 4 dias"). resultado: aluno pode achar que travou ou pode atropelar tudo em um fim de semana e perder o efeito da assincronia distribuída.
-
-**b. desbloqueio é só sequencial — não respeita janela temporal.** se o admin libera 5 módulos de uma vez por erro de operação, o aluno faz tudo num dia. e se admin atrasa um release, o aluno vê só "esse abre quando você fechar o anterior", sem data prevista. precisa combinar `module_releases.release_at` + sequencial.
-
-**c. trilhas existem na arquitetura mas estão escondidas como atalho.** o aluno entra no módulo 7 sem entender que ele faz parte da trilha 2 "problema & decisão" e que esse é o arco que vai durar 5 semanas. tem `trail` no `ModuloHeader` mas falta uma página de trilha (não só /trilhas que é o mapa inteiro frio) que ensine o arco narrativo: "agora você está entendendo. nos próximos 5 módulos…"
-
-**d. EletivaHome é página fantasma.** o dashboard já tem o CTA do próximo módulo. quem cai em /app/eletiva/:slug vê: hero + próximo passo + 3 atalhos. duplica o dashboard sem agregar nada novo. ou ela vira **a tela da eletiva ativa** (mapa de 20 + arcos das 4 trilhas + diário/anotações + tutor + materiais escopados) e o dashboard fica raso, ou ela some.
-
-**e. transição entre módulos não celebra fim de trilha.** ao terminar módulo 5 (fim da trilha 1) e abrir o 6 (trilha 2), nada acontece. perda enorme de momento pedagógico — é a hora natural pra reflexão arcada ("o que mudou pra você nessas 5 semanas?") e antecipação ("agora você vai…"). signature moment óbvio que não está sendo capturado.
-
-**f. mobile-first declarado, mas tutor é sheet lateral que ocupa tela inteira sem permitir ver o exercício PBL ao mesmo tempo.** estudante perde o briefing enquanto pergunta. fix: tutor abre como bottom-sheet ~70vh com o pill briefing fixo no header.
+ranqueei por impacto/esforço, não pela ordem original do plan.md.
 
 ---
 
-## 2. tem inteligência adequada pra entender o uso?
+## 1. detecção de evasão + nudge do joão-de-barro  *(maior alavanca isolada)*
 
-### o que tem
-- `student_pill_progress` e `student_module_progress` (started/completed timestamps).
-- `daysSinceLastActivity` calculado no dashboard.
-- tutor tem contexto de "módulos concluídos" e "em andamento" da trilha.
+**problema:** estudante de 14-15 anos, eletiva 100% assíncrona, 20 semanas. some 14 dias e nada acontece. esse é o **principal vetor de mortalidade** de qualquer LMS assíncrono pra adolescente — é literalmente o que diferencia 30% de conclusão de 70%.
 
-### o que falta (crítico pra produto educacional assíncrono)
+**hoje:** zero detecção, zero e-mail, zero alerta pro educador. `daysSinceLastActivity` só vive no dashboard do próprio aluno (quem não abre não vê).
 
-**g. zero detecção de evasão.** aluno some 14 dias e não acontece nada — sem e-mail, sem notificação, sem alerta pro educador. pra produto assíncrono isso é o principal vetor de mortalidade. precisa de:
-- job semanal que olha `daysSinceLastActivity` por aluno x eletiva
-- e-mail transacional do tutor (joão-de-barro) com tom acolhedor, não cobrança
-- dashboard admin de "alunos em risco" (já tem stub de AdminStats, falta a view de risco)
+**o que entra:**
 
-**h. tempo real x tempo estimado não é coletado.** módulo diz "50 min" mas não sabemos se o aluno típico fez em 25 ou 90. sem isso, impossível calibrar a próxima geração de módulos. já temos started_at/completed_at — só falta uma view materializada e um relatório admin.
+- view `student_engagement_risk` (low/medium/high baseada em dias parado + módulo atrasado vs `release_at` esperado).
+- edge function diária `check-student-evasion` chamada por cron (pg_cron) que dispara e-mail acolhedor assinado pelo joão-de-barro a partir do dia 7, escalando texto no dia 14 e 21. tom: "senti falta", nunca "você está atrasado".
+- bloco "alunos em risco" no admin (substitui o AdminStats stub) com filtro por eletiva, lista nome + dias parados + último módulo + botão "abrir conversa por e-mail".
+- opt-out simples (link unsubscribe respeitado).
 
-**i. tutor não sabe que pílulas o aluno já fez no módulo atual.** o contexto enviado é só "módulos concluídos da trilha", não "pílulas vistas no módulo em andamento". então tutor pode explicar algo que o aluno acabou de assistir. enriquecer `buildTrailContext` com pílulas da sessão atual.
-
-**j. nada captura "onde o aluno trava".** se aluno abre módulo 8 e fica 4 dias sem fechar, ninguém sabe se foi pílula B (vídeo) ou o PBL. precisa de evento simples `pill_opened_at` (não só completed) e um indicador "tempo médio entre abrir e concluir" por pílula. comportamento padrão em LMS sério, falta aqui.
-
-**k. reações/comentários em materiais existem; em pílulas e módulos não.** se uma pílula confunde 40% da turma, ninguém descobre até o fim da eletiva.
+**por que primeiro:** salva matrícula. nada do que vier depois importa se metade da turma evade na semana 4.
 
 ---
 
-## 3. validação dos exercícios está coerente?
+## 2. notificações in-app + closing the loop do feedback do educador
 
-### como está hoje
-- pílulas de conteúdo passivo: marca manual (botão "marcar")
-- `PillReflection`: auto-conclui em 60 chars
-- `PillPBL`: auto-conclui em 80 chars
-- módulo se conclui automaticamente quando todas as pílulas `required` estão fechadas
-- `module_deliverables.status` vai pra "enviado" automaticamente, mas não tem fluxo de review visível pro aluno
+**problema:** o ciclo "aluno entrega → educador revisa → aluno volta e lê" hoje só fecha se o aluno reabrir o módulo por conta própria. devolutiva sem notificação é devolutiva que ninguém leu, e o aluno reaprende que "ninguém revisa mesmo".
 
-### onde fura
+**hoje:** zero camada de notificação. Realtime está em `module_deliverables` mas só funciona com a aba aberta no módulo certo.
 
-**l. critério 60/80 chars é cosmético, não pedagógico.** "estou cansado e quero terminar" tem 33 chars. "fui na padaria comprar pão acho que o exercício foi legal blablabla" tem 80 e zero substância. proposta:
-- contagem mínima continua como sinal fraco
-- adicionar **rubrica leve via IA** no momento de marcar como concluído: chamada ao Gateway que devolve 1 de 3 estados (incompleto / superficial / consistente) com microfeedback de 1 frase. não bloqueia, só sugere. respeita "make failure feel safe".
-- educador vê na review o estado da IA + texto bruto.
+**o que entra:**
 
-**m. registro de "enviado" sem ciclo de devolutiva é vácuo.** se o educador nunca devolve nada, o aluno aprende que ninguém lê. precisa:
-- estado visível no módulo: rascunho → enviado → revisado (com data + 1 frase do educador)
-- tela do educador pra revisar lote por turma (Dudu e frattz não vão revisar 100 alunos individualmente, então: revisar em lote por trilha, comentário pode ser coletivo ou individual)
-- notificação leve ("seu educador respondeu seu registro do módulo 3")
+- tabela `notifications` (user_id, kind, title, body, link, read_at).
+- triggers: educador marca revisado → notifica aluno. admin libera módulo novo → notifica turma. tutor não notifica.
+- bell no `PageHeader` com badge não-lidas + dropdown últimas 10 + página `/app/notificacoes`.
+- e-mail transacional opcional só pra "educador respondeu" (não pra cada release, vira spam).
 
-**n. não tem como o aluno revisar a própria resposta consolidada.** ele escreveu reflexões em 20 módulos e não tem uma página "meu diário da eletiva" — texto solto fica preso dentro de cada módulo. proposta: `/app/eletiva/:slug/diario` que agrupa registros + PBLs por trilha. isso vira material pra recuperar pra prova de pitch final.
-
-**o. exercício PBL não tem entrega tangível final.** project knowledge diz "Mini-Dossiê de Negócio Regenerativo + pitch 2-3 min" pra econ. circular e "link do projeto V-final + pitch + reflexão" pra IA. nada disso aparece como um deliverable estruturado no fluxo. tem `module_deliverables` por módulo, mas não tem `course_deliverable` (entrega final certificada).
-
-**p. quiz/radar/curated_content_with_questions** existem como tipos de schema rico, mas não há feedback formativo no momento — só salva. quiz sem mostrar gabarito imediato é antieducacional pra 14-15 anos. confirmar comportamento atual; se for "salvou e seguiu", adicionar feedback contextual (correto/quase/refaça) sem virar prova.
+**por que segundo:** transforma a fila de revisão recém-feita em algo que o aluno **vê**. sem isso, a onda 1 vira árvore caindo em floresta vazia.
 
 ---
 
-## 4. materiais de referência em diferentes formatos
+## 3. release_at + cadência semanal visível
 
-### o que está bom
-- `/app/hub/materiais` aceita pdf, slides, link, vídeo, imagem, doc
-- drawer com preview embed pra youtube/pdf/gslides
-- categorias (apresentação, leitura, referência, ferramenta, vídeo, outro)
-- thumbnail auto + bagde "novo" 7d
-- reações + comentários por material
+**problema:** estudante não tem **expectativa temporal**. quando fecha o módulo 3, vê "módulo 4 abre quando fechar o anterior" — mas já fechou. ou vê módulo bloqueado sem saber quando abre. resultado: ou atropela tudo num fim de semana (perde efeito da assincronia distribuída de 20 semanas) ou acha que travou.
 
-### onde fura
+**hoje:** `module_releases.release_at` existe na tabela, **não aparece em lugar nenhum na UI**. EletivaHome mostra liberado/bloqueado, não quando.
 
-**q. materiais não estão escopados por eletiva no UI.** o hook `useHubMaterials` aceita `courseId`, mas `/app/hub/materiais` chama sem passar. então o estudante de econ. circular vê os materiais de IA misturados. **bug grave de coerência pedagógica** — mesmo problema que motivou o refactor de scope check nos módulos. fix de 1 linha.
+**o que entra:**
 
-**r. materiais não estão amarrados a módulos/trilhas.** material existe no plano "hub", solto. o aluno terminando o módulo 7 não vê "leituras complementares desse módulo". propor relação opcional `material -> module_id | trail_id | course_id` (3 níveis) e renderizar no rodapé do módulo + na trilha + no hub. infra já permite (campo `course_id` existe; basta adicionar `trail_id` e `module_id`).
+- card de módulo bloqueado mostra "abre {data} ({n} dias)" quando `release_at > now()`.
+- dashboard mostra estimativa da semana: "essa semana você tem ~50 min" (somando `total_minutes` dos módulos com release na semana corrente).
+- pílula "próximo módulo abre em X" no card da eletiva quando aluno já completou tudo disponível.
+- respeita lógica dupla: precisa estar liberado por release_at **e** sequencial.
 
-**s. nada distingue "obrigatório" de "complementar".** numa eletiva de 50min/semana, se o aluno achar que precisa ler 200 páginas, desiste. precisa de toggle `is_required` ou `priority` (essencial/aprofundar/opcional) visível no card.
-
-**t. drawer perde estado de leitura.** abriu um PDF, leu metade, fechou — não há "continuar de onde parou" nem "li isso". simples bool `material_read[material_id]` por user faria milagre na sensação de progresso.
-
-**u. material em áudio/podcast não tem tratamento.** detectKind reconhece vídeo mas não mp3/spotify. pra estudantes que estudam no ônibus, perda real.
-
-**v. nenhuma forma do educador postar material no contexto de uma pílula durante a semana.** se Dudu quer mandar "essa reportagem saiu hoje e cabe no módulo 4", ele precisa subir no admin global. proposta: do próprio admin do módulo, "anexar material a este módulo" puxando do bucket ou colando link.
+**por que terceiro:** define o **ritmo do produto**. baixo esforço técnico (campo já existe), altíssimo retorno pedagógico.
 
 ---
 
-## 5. o que mais falta?
+## 4. dashboard de turma pro educador  *(o admin que falta)*
 
-**w. resposta "errada" segura.** nenhum lugar mostra erro de forma acolhedora hoje. o quiz que existe não tem o tratamento "tente de novo, vamos pensar juntos". projeto educacional pra adolescente exige isso.
+**problema:** Dudu e frattz hoje conseguem ver fila de revisão e stats globais. não conseguem ver **uma turma** ("quem da Adm 2026 está em risco? quem completou trilha 2?"). pra educador que quer agir, isso é o painel.
 
-**x. estimativa de duração agregada da semana.** dashboard não diz "essa semana você tem ~50 min de eletiva". só mostra o próximo módulo. juntar `total_minutes` dos módulos disponíveis na semana corrente.
+**hoje:** AdminStats é genérico, AdminUsers é cru, sem corte por eletiva/turma + estado.
 
-**y. notificações in-app.** zero. nenhum "módulo novo liberado", nenhum "tutor respondeu", nenhum "educador devolveu". precisa de uma camada mínima — bell no PageHeader + tabela `notifications`.
+**o que entra:**
 
-**z. accessibility / motion-safe.** maior parte respeita, mas o player de vídeo lite-youtube e algumas animações framer não checam `prefers-reduced-motion`. auditoria.
+- página `/admin/turma/:courseId` com 4 blocos:
+  1. matriculados ativos + concluintes por trilha (barra de progresso)
+  2. alunos em risco (vem do item 1)
+  3. tempo médio real x estimado por módulo (já temos started_at/completed_at)
+  4. entregas aguardando revisão (link pra fila já existente)
+- export csv simples pra reunião com escola Sebrae.
 
-**aa. PWA / offline mínimo.** estudante no ônibus sem 4G perde a aula. ao menos cache de pílulas-texto e PDFs essenciais.
-
-**ab. parental/visibilidade institucional.** menores de idade. educador da escola precisa de uma view de turma com progresso por aluno + alertas (já mencionado em "g", "m").
-
-**ac. tom de voz inconsistente em pílulas legadas usa "tu".** já documentado no plan.md anterior. passe de copy.
-
-**ad. certificado final.** existe a infra legada Chŏra (certificado), mas não está conectada ao fluxo NachesU. completou os 20 módulos e entregou o deliverable final → emite. hoje, ao fechar o módulo 20, nada acontece.
-
----
-
-## 6. o que é desnecessário / desativar
-
-- **EletivaHome** como página separada do dashboard. ou vira a verdadeira "casa da eletiva ativa" (com diário, mapa, materiais escopados, tutor) ou some. duplicação atual confunde.
-- **`/app/hub` como conceito**: já redireciona, ok. mas `/app/hub/materiais` continua exposto. mover pra `/app/eletiva/:slug/materiais` reforça escopo.
-- **toda área legado Chŏra** (FBI, carta, projeto, votação, álbum, builder card, missões, prework, tutorial, feedback final, futureLetter): vivem atrás de flag — manter atrás de flag e remover dos menus default. já está, mas conferir que não vaza no mobile nav nem em settings.
-- **arquétipos/cartas de builder** como conceito visível pro estudante NachesU: confunde. manter infra (já existe), mas não promover na jornada nachesu sem decisão explícita.
+**por que quarto:** mais alavanca do **admin** sem ser feature de aluno. fecha o lado institucional que a parceria com Sebrae exige (item "ab" do plan).
 
 ---
 
-## proposta em ondas
+## 5. fim de trilha como signature moment
 
-### onda 1 — coerência (1 sprint, alta prioridade pedagógica)
-1. escopar materiais por eletiva ativa no UI (`HubMateriais` passa `courseId`).
-2. mostrar `release_at` previsto na tela de "módulo travado".
-3. cadência da semana no dashboard (próximo módulo + estimativa total).
-4. tutor recebe pílulas-da-sessão no contexto.
-5. estados visíveis de entrega: rascunho → enviado → revisado (mesmo que review ainda não exista).
-6. transição de fim de trilha: tela curta de marco entre módulo 5↔6, 10↔11, 15↔16.
+**problema:** ao fechar módulo 5 (fim trilha 1 "fundamentos") e abrir o 6 (trilha 2 "problema & decisão"), nada acontece. é o **momento natural** pra reflexão arcada e antecipação, e é onde a narrativa pedagógica vive. perder isso é perder o que diferencia NachesU de "lista de aulas".
 
-### onda 2 — inteligência (1 sprint)
-7. tabela `student_pill_events` (opened_at, completed_at) — base pra analytics.
-8. job semanal de detecção de evasão + e-mail acolhedor do joão-de-barro.
-9. dashboard educador "turma agora": progresso, alunos em risco, tempo médio.
-10. revisão em lote dos deliverables.
-11. rubrica leve via Lovable AI no submit (não bloqueia, sugere).
+**hoje:** zero marco. próximo módulo abre igual a qualquer outro.
 
-### onda 3 — profundidade pedagógica (1-2 sprints)
-12. `/app/eletiva/:slug/diario` — diário consolidado.
-13. materiais atrelados a módulo/trilha + priority (essencial/aprofundar/opcional).
-14. notificações in-app.
-15. fim de eletiva → deliverable final estruturado → certificado.
-16. quiz com feedback formativo.
-17. áudio/podcast como tipo de material.
+**o que entra:**
 
-### onda 4 — polimento
-18. EletivaHome refatorada (ou eliminada).
-19. PWA offline mínimo.
-20. Auditoria a11y + reduced-motion completa.
-21. Passe de copy "tu→você" nas pílulas de econ. circ.
+- tela curta `/app/eletiva/:slug/marco/:trail` que aparece automaticamente entre módulo 5↔6, 10↔11, 15↔16, 20↔fim.
+- conteúdo: "trilha {n} fechada. o que mudou em você nessas 5 semanas?" (campo livre, opcional, salvo) + preview narrativo da próxima trilha + joão-de-barro em pose `celebrating`.
+- bloqueia 1 vez só (flag em `student_module_progress` ou tabela `trail_milestones`).
+- ao fim das 4 trilhas → encaminha pro deliverable final + certificado (gancho pra futura onda).
+
+**por que quinto:** é o signature moment do produto. sozinho não salva ninguém, mas é o que faz lembrar da NachesU 6 meses depois.
 
 ---
 
-## perguntas antes de qualquer implementação
+## o que **não** entra agora (e por quê)
 
-1. **escopo deste loop**: você quer que eu já implemente a **onda 1** inteira (são 6 itens curtos, alta densidade pedagógica) ou prefere validar essa leitura primeiro e abrir os itens em loops separados?
-2. **deliverable final + certificado**: confirmar que o entregável final dos cursos é "mini-dossiê + pitch" (econ. circ.) e "link do projeto + pitch + reflexão" (ia na prática) — quero modelar a tabela final em cima disso.
-3. **alertas de evasão e revisão dos educadores**: Dudu e frattz vão revisar individualmente, em lote por turma, ou só consumir o "alunos em risco"? muda muito o produto admin.
-4. **EletivaHome**: descontinuar e fortalecer o dashboard, ou transformá-la na "casa da eletiva ativa" com diário/materiais escopados/tutor (e dashboard fica mais raso)?
+- **rubrica IA no submit (item l do plan):** alto risco de virar julgamento moral pra adolescente, precisa pesquisa de copy antes. adiar.
+- **diário consolidado (item n):** legal, mas só importa se o aluno chegar até lá — itens 1/2 garantem isso primeiro.
+- **PWA offline:** real, mas só vale a pena depois de validar que existe uso recorrente.
+- **quiz com feedback formativo:** só relevante se quiz estiver sendo de fato usado nas pílulas — verificar uso antes.
+- **EletivaHome refatorada vs eliminada:** decisão de produto pendente da pergunta 4 do plan, não tem ainda uma versão certa.
+
+---
+
+## ordem proposta de execução
+
+se for pra fazer tudo: 1 → 2 → 3 → 4 → 5 (mais ou menos 4 loops, evasão e notificações são os maiores; release_at e signature moment são curtos).
+
+se for pra fazer só **um**: **1 (evasão)**. é o único que muda a curva de conclusão da eletiva.
+
+se for pra fazer só **dois**: **1 + 2**. evasão + notificações se reforçam: o aluno que volta por e-mail precisa achar a devolutiva esperando.
+
+---
+
+## perguntas antes de executar
+
+1. **qual o escopo deste loop**: faço só o item 1 (detecção de evasão completa, com edge function + cron + e-mail + admin de risco), faço 1+2 juntos (evasão + notificações, ciclo fechado), ou faço 1+2+3 (já entra cadência visível também)? R: faça o que der e deixe engatilhado o que faltar.
+2. **tom do e-mail do joão-de-barro**: preciso confirmar que você quer assinatura do tutor (mascote, terceira pessoa "o joão sentiu sua falta") ou do educador da eletiva (Dudu/frattz). muda tudo. R: melhor Dudu ou frattz.
+3. **gatilho de release_at na UI**: hoje todos os 20 módulos da eletiva têm release_at preenchido com cadência semanal real, ou só os primeiros? se faltar, faço uma migration simples preenchendo a cadência padrão. R: na verdade nem vai precisar dessa cadência semanal, terão vezes que serão disponibilizadas mais de uma aula por semana.
