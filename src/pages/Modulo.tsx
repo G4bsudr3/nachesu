@@ -263,9 +263,19 @@ const Modulo = () => {
     );
   }
 
-  const prevModule = snapshot?.modules.find((m) => m.number === moduleNumber - 1) ?? null;
-  const nextModule = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
-  const totalModules = snapshot?.modules.length ?? 20;
+  // escopa prev/next/total pelos módulos da MESMA eletiva (mesmo course_id da trilha atual).
+  // sem isso, aluno com 2 matrículas via "01/40" no header e prev/next pulam entre eletivas.
+  const sameCourseTrailIds = new Set(
+    (snapshot?.trails ?? [])
+      .filter((t) => t.course_id && t.course_id === trail?.course_id)
+      .map((t) => t.id),
+  );
+  const sameCourseModules = (snapshot?.modules ?? []).filter((m) =>
+    sameCourseTrailIds.has(m.trail_id),
+  );
+  const prevModule = sameCourseModules.find((m) => m.number === moduleNumber - 1) ?? null;
+  const nextModule = sameCourseModules.find((m) => m.number === moduleNumber + 1) ?? null;
+  const totalModules = sameCourseModules.length || 20;
 
   const isUnlocked = isAdmin || (snapshot?.unlockedModuleIds.has(moduleRow.id) ?? false);
   if (!isUnlocked) {
