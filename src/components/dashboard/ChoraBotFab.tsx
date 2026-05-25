@@ -11,8 +11,14 @@ import { BotAvatar } from "@/components/chora-bot/BotAvatar";
  * prefers-reduced-motion.
  */
 export const ChoraBotFab = () => {
+  const { pathname } = useLocation();
   const [breathe, setBreathe] = useState(false);
   const [pressed, setPressed] = useState(false);
+
+  // não mostra o FAB dentro da própria tela do tutor (evita CTA apontando pra si mesmo)
+  const isOnTutorRoute =
+    pathname.startsWith("/app/tutor") || pathname.startsWith("/app/chora-bot");
+  if (isOnTutorRoute) return null;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
