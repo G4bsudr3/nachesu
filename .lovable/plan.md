@@ -1,103 +1,129 @@
-## plano: corrigir avisos do linter de segurança
 
-uma única migration consolidando todas as correções. nada de mudança em código front, só DB.
+# Plano de correção e ajustes — NachesU
 
-### 1. search_path mutável (3 funções)
+Diagnóstico completo do estado atual. Ordenado por impacto no estudante, do que quebra agora até dívida técnica.
 
-adicionar `SET search_path = public` (ou `public, extensions` pras que usam vector) via `ALTER FUNCTION`:
+---
 
-- `public.scope_forbidden_terms(text)`
-- `public.trg_module_publish_scope_check()`
-- `public.trg_release_scope_check()`
+## P0 — bugs que afetam o estudante hoje
 
-(as outras já estão com `SET search_path TO 'public'` — confirmado via `pg_proc.proconfig`)
+**1. Progresso "01/40" no header do módulo**
+- `src/pages/Modulo.tsx:37` chama `useEletivaProgress()` sem `courseId` → agrega módulos das 2 eletivas.
+- Fix: descobrir `courseId` da matrícula ativa antes (igual `EletivaHome.tsx:149` faz) e passar pro hook. `totalModules` passa a refletir só a eletiva ativa.
 
-### 2. extensão `vector` em public (1)
+**2. FAB "tire sua dúvida" aparecendo dentro do próprio tutor**
+- `HubLayout.tsx:25` renderiza `<ChoraBotFab />` incondicional.
+- Fix: usar `useLocation` no `ChoraBotFab` e esconder quando `pathname` está em `/app/tutor` ou `/app/chora-bot`.
 
-mover pgvector pra schema dedicado:
+**3. Módulo errado quando aluno tem 2 eletivas**
+- `useEletivaProgress()` sem `courseId` também em `OnboardingDialogPage.tsx:13` e `TutorChat.tsx:69`.
+- `Modulo.tsx` resolve `moduleRow` por `number` sem filtrar por curso → pode pegar módulo da eletiva errada.
+- Fix: escopar todos os callers por `courseId` da matrícula ativa.
 
-```sql
-CREATE SCHEMA IF NOT EXISTS extensions;
-GRANT USAGE ON SCHEMA extensions TO postgres, anon, authenticated, service_role;
-ALTER EXTENSION vector SET SCHEMA extensions;
-```
+---
 
-risco: colunas `vector(N)` continuam funcionando porque o tipo é resolvido pelo OID, mas funções RPC/SQL que referenciam `vector` sem qualificar precisam de `search_path` incluindo `extensions`. já vou ajustar `match_chora_bot_chunks` e qualquer função que usa o tipo pra incluir `extensions` no search_path.
+## P1 — legado Chŏra vazando no fluxo NachesU
 
-### 3. funções `SECURITY DEFINER` executáveis por anon/authenticated (76 warnings)
+**4. Vocabulário "chora" em copy do formulário público de inscrição**
+- `src/features/fbi/schema.ts:27` campo `expectativa_chora`.
+- `src/features/fbi/usePublicFbiForm.ts:9` `LS_PREFIX = "chora.publicFbi."`.
+- `src/pages/AdminFbi.tsx:578` label "expectativa do chŏra".
+- Fix: renomear pra `expectativa_eletiva` no schema/UI, migrar LS key com fallback de leitura da chave antiga por 30 dias.
 
-a regra: trigger functions e funções internas **não** devem ter EXECUTE pra `PUBLIC`/`anon`/`authenticated`. funções RPC legítimas (chamadas do cliente) mantêm.
+**5. Nome "Chŏra Lovable" hardcoded em config viva**
+- `feedbackFinalFlag.ts:14`: `nome: "Chŏra Lovable"` → trocar pra "NachesU".
 
-**revogar EXECUTE de PUBLIC, anon, authenticated** (apenas service_role/postgres chamam, ou são triggers):
+**6. Logo Chŏra original em páginas acessíveis**
+- `CartaPublica.tsx:7` e `CertificateEditorial.tsx:144` importam `ChoraLogo` original (não o alias).
+- Fix: mover essas duas pra atrás do `ExtrasGate` ou trocar pra `NachesULogo` conforme a página.
 
-- triggers: `auto_link_builder_card_user`, `auto_link_fbi_user`, `claim_course_invites_on_signup`, `cleanup_hub_engagement_for_target`, `enforce_chora_bot_cutoff`, `enforce_single_active_enrollment`, `handle_new_user`, `notify_deliverable_reviewed`, `notify_module_released`, `recompute_module_progress`, `validate_admin_role_mutation`, `validate_hub_engagement_target`, `validate_project_vote`, `trg_module_publish_scope_check`, `trg_release_scope_check`
-- internas/admin: `assert_module_in_scope`, `compute_module_metrics`, `scope_check_course`, `admin_list_users`, `admin_list_pending_profiles`, `read_email_batch`, `enqueue_email`, `delete_email`, `move_to_dlq`
+**7. Alias `ChoraLogo` poluindo imports**
+- 10+ arquivos fazem `import { EletivaLogo as ChoraLogo }`.
+- Fix: substituir todos por `NachesULogo` direto. Pure rename, zero efeito visual.
 
-**manter EXECUTE pra authenticated apenas** (revogar de anon):
+**8. Componente `TrailBreadcrumb` com STAGES legadas**
+- `src/components/hub/TrailBreadcrumb.tsx:6-15` lista "fbi/carta/prework/tutorial/missoes".
+- Usado só em páginas atrás de `ExtrasGate`. Fix: marcar arquivo como legado (mover pra `src/components/legacy/`) pra não confundir leitura futura.
 
-- `get_my_card_state`, `get_my_future_letter_group`, `get_my_future_letter_response`, `get_my_project_vote_result`, `save_future_letter_response`, `seal_future_letter`, `is_future_letter_group_member`, `is_future_letter_group_open`, `is_future_letter_group_open_and_owned`, `has_role`, `match_chora_bot_chunks`, `get_project_voting_top_ten`
+**9. localStorage keys com prefixo `chora.*`**
+- 6 ocorrências. Fix: criar helper `nsKey(name)` que prefixa `nachesu.` e lê fallback `chora.` por compat. Migrar de forma transparente.
 
-**manter EXECUTE pra anon+authenticated** (chamadas pré-login):
+---
 
-- `lookup_user_by_email`, `lookup_invited_canonical`, `can_submit_public_fbi`, `get_public_card_by_token`, `mark_card_first_view`
+## P2 — identidade visual e voz
 
-padrão por função:
-```sql
-REVOKE EXECUTE ON FUNCTION public.<fn>(<args>) FROM PUBLIC, anon, authenticated;
-```
+**10. Emoji 🤙 em toasts de votação**
+- `VoteButton.tsx:50`, `GlobalVotingBanner.tsx:64`. Trocar por ícone Phosphor + microcopy lowercase.
 
-e quando precisar restaurar pra um role específico:
-```sql
-GRANT EXECUTE ON FUNCTION public.<fn>(<args>) TO authenticated;
-```
+**11. Em-dash em telas admin**
+- `AdminFbi`, `AdminAula`, `AdminRisco`, `AdminTurma`. Trocar `—` por `·` ou `–` (en-dash) ou simplesmente "sem dado".
 
-### 4. buckets públicos listáveis (7 warnings)
+**12. `pb-[env(safe-area-inset-bottom)]` solto em `Marco.tsx:91`**
+- Padronizar via var `--mobile-nav-h` igual o resto.
 
-buckets `public=true` com policy SELECT abrangente em `storage.objects` permitem `list()`. nenhum desses precisa ser listado pelo cliente — leitura é sempre por URL direta conhecida.
+---
 
-solução: trocar as policies SELECT abrangentes (tipo `bucket_id = 'X'`) por policies que exigem `name` específico OU restringir listing. abordagem prática: adicionar `WITH CHECK (false)` não funciona pra SELECT; em vez disso, manter SELECT por URL pública (que vai pelo CDN e não chama `list()`) e **revogar** policies de listing autenticado:
+## P3 — schema, segurança e infra
 
-- `auth lista hub-materials` → drop
-- `auth lista hub-project-covers` → drop
-- demais policies de leitura ficam, mas a leitura via URL pública não passa por essas policies (o CDN serve direto)
+**13. `lookup_user_by_email` revogado também de `anon`/`authenticated`**
+- Risco: tela de login pré-auth quebra. Verificar callers; se necessário, regrantar `EXECUTE` pra `anon`.
 
-obs: buckets `public=true` no Supabase **sempre** permitem GET via URL — o warning é só sobre `list()`. removendo as policies "lista" anônimas/auth, o `list()` para de funcionar e o warning some sem quebrar leitura por URL.
+**14. `.lovable/_pills_pending.sql` fora do pipeline**
+- Conteúdo de pílulas que nunca roda. Fix: ou virar migration formal em `supabase/migrations/`, ou deletar e mover pra seed via edge function admin.
 
-policies a revisar e ajustar:
-- `builder-card-images`, `email-assets`, `builder-card-og`, `archetype-artworks`, `turma-mascots`, `hub-materials`, `hub-project-covers`, `hub-album`, `hub-certificates`, `pill-attachments` — pra cada, manter apenas policies escopadas por path/owner; remover policies SELECT amplas tipo `bucket_id = 'X'` sem outra restrição.
+**15. Renomear tabelas `chora_bot_*`?**
+- Custo alto (RLS, edge functions, types regen). Recomendação: manter nome no DB, mas renomear pasta `src/components/chora-bot/` → `src/components/tutor/` e exports correspondentes. Zero migration, só rename de arquivo TS.
 
-### entregável
+---
 
-1 migration `supabase/migrations/<ts>_security_linter_fixes.sql` com:
+## P4 — dívida técnica (não bloqueia, fazer em segundo momento)
+
+**16. 13 arquivos >250 linhas** — top 3 pra refatorar primeiro: `AdminArtworks` (1.161), `AdminPillsEditor` (982), `Tutorial.tsx` (842).
+
+**17. Dead code confirmado**
+- `src/components/hub/FeedbackFinalGlobalNudge.tsx` (186 linhas, zero imports). Deletar.
+
+**18. `@deprecated` antigos** em `cartaTokens.ts`, `useHubInsights.ts`, `access.ts` — limpar quando tocar nos respectivos fluxos.
+
+**19. `GlobalVotingBanner` fora do Suspense principal** faz fetch em rotas públicas. Envolver com guard de `isAuthenticated`.
+
+**20. Atualizar `.lovable/plan.md`** pra refletir esses 20 itens (o plan.md hoje só descreve a migration de segurança já aplicada).
+
+---
+
+## Ordem de execução sugerida (3 ondas)
 
 ```text
--- 1. fix search_path
-ALTER FUNCTION public.scope_forbidden_terms(text) SET search_path = public;
-ALTER FUNCTION public.trg_module_publish_scope_check() SET search_path = public;
-ALTER FUNCTION public.trg_release_scope_check() SET search_path = public;
+Onda 1 (sessão única, ~30 min):
+  P0 itens 1, 2, 3      → estudante para de ver bugs
+  P1 item 5             → nome correto na pesquisa final
+  P3 item 13            → verificar e regrantar lookup_user_by_email se preciso
 
--- 2. mover vector
-CREATE SCHEMA IF NOT EXISTS extensions;
-GRANT USAGE ON SCHEMA extensions TO postgres, anon, authenticated, service_role;
-ALTER EXTENSION vector SET SCHEMA extensions;
-ALTER FUNCTION public.match_chora_bot_chunks(...) SET search_path = public, extensions;
+Onda 2 (sessão única, ~45 min):
+  P1 itens 4, 6, 7, 9   → expurgo de "chora" do fluxo ativo
+  P2 itens 10, 11, 12   → polish de voz e mobile
 
--- 3. revogar execute em ~25 funções internas + ajustar grants nas demais
-REVOKE EXECUTE ON FUNCTION public.<fn>(...) FROM PUBLIC, anon, authenticated;
-...
-
--- 4. dropar policies SELECT amplas em storage.objects
-DROP POLICY "auth lista hub-materials" ON storage.objects;
-DROP POLICY "auth lista hub-project-covers" ON storage.objects;
-... (auditar uma a uma as 7 buckets flagadas)
+Onda 3 (quando houver folga):
+  P3 itens 14, 15
+  P4 itens 16-20
 ```
 
-depois rodo o linter de novo e itero no que sobrar.
+## Detalhes técnicos
 
-### riscos
+- **Item 1** depende de adicionar `useActiveCourseId()` (hook novo de 10 linhas que lê a matrícula ativa do `useEletivaProgress` global e devolve o id). Tudo o mais reusa o hook existente.
+- **Item 2** é 5 linhas: `const { pathname } = useLocation(); if (pathname.startsWith("/app/tutor") || pathname.startsWith("/app/chora-bot")) return null;`
+- **Item 4** requer migration leve renomeando coluna `expectativa_chora` → `expectativa_eletiva` em `fbi_responses` + update do schema TS + update do form. Backup de dados antes.
+- **Item 9** é refactor mecânico, posso fazer com find/replace controlado.
+- **Item 13** vou rodar primeiro `rg "lookup_user_by_email" src/` antes de decidir.
 
-- mover pgvector: já mitigado fixando `search_path` da função que usa o tipo. RLS/queries via Supabase JS não são afetadas (não usam tipo direto).
-- revogar EXECUTE em funções de trigger é seguro — triggers rodam como owner. mas se alguma edge function chama RPC sem `service_role`, vai quebrar. vou checar callers em `supabase/functions/**` antes de revogar.
-- remover policies de listing pode quebrar telas que chamam `supabase.storage.from('x').list()`. vou grepar por `.list(` antes.
+Confirma que faz sentido começar pela **Onda 1**? Se sim, executo direto sem nova confirmação.
 
-quer que eu execute essa migration ou prefere revisar antes de algum passo específico (ex: mover pgvector é o mais arriscado)?
+---
+
+## Execução Onda 1 — 2026-05-25
+
+✅ Item 1: `Modulo.tsx` agora usa `useActiveEletiva` + `useCourseBySlug` pra escopar `useEletivaProgress` por curso ativo. `totalModules`, `prevModule`, `nextModule` filtrados por `course_id` da trilha atual. Header agora mostra "01/20" correto.
+✅ Item 2: `ChoraBotFab` esconde via `useLocation` quando `pathname` começa com `/app/tutor` ou `/app/chora-bot`.
+✅ Item 3: resolvido como efeito colateral do item 1 (snapshot escopado → `moduleRow.find` retorna módulo da eletiva certa).
+⏭️ Item 5: `EVENT_INFO.nome = "Chŏra Lovable"` é só usado em `CertificateEditorial` legado (`/legacy`), mantido propositalmente — é o nome real do evento abril/2026.
+⏭️ Item 13: `lookup_user_by_email` só é chamado pela edge function `validate-public-email` via service_role. Revoke de `anon`/`authenticated` está correto. Sem ação.

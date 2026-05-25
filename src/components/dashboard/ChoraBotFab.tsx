@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { BotAvatar } from "@/components/chora-bot/BotAvatar";
 
@@ -11,10 +11,16 @@ import { BotAvatar } from "@/components/chora-bot/BotAvatar";
  * prefers-reduced-motion.
  */
 export const ChoraBotFab = () => {
+  const { pathname } = useLocation();
   const [breathe, setBreathe] = useState(false);
   const [pressed, setPressed] = useState(false);
 
+  // não mostra o FAB dentro da própria tela do tutor (evita CTA apontando pra si mesmo)
+  const isOnTutorRoute =
+    pathname.startsWith("/app/tutor") || pathname.startsWith("/app/chora-bot");
+
   useEffect(() => {
+    if (isOnTutorRoute) return;
     if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const tick = () => {
@@ -27,7 +33,9 @@ export const ChoraBotFab = () => {
       clearInterval(id);
       clearTimeout(first);
     };
-  }, []);
+  }, [isOnTutorRoute]);
+
+  if (isOnTutorRoute) return null;
 
   const handleClick = () => {
     // haptic feedback no mobile (Android suporta; iOS ignora silenciosamente)
