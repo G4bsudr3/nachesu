@@ -18,9 +18,9 @@ export const ChoraBotFab = () => {
   // não mostra o FAB dentro da própria tela do tutor (evita CTA apontando pra si mesmo)
   const isOnTutorRoute =
     pathname.startsWith("/app/tutor") || pathname.startsWith("/app/chora-bot");
-  if (isOnTutorRoute) return null;
 
   useEffect(() => {
+    if (isOnTutorRoute) return;
     if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const tick = () => {
@@ -33,7 +33,9 @@ export const ChoraBotFab = () => {
       clearInterval(id);
       clearTimeout(first);
     };
-  }, []);
+  }, [isOnTutorRoute]);
+
+  if (isOnTutorRoute) return null;
 
   const handleClick = () => {
     // haptic feedback no mobile (Android suporta; iOS ignora silenciosamente)
