@@ -36,7 +36,9 @@ const Modulo = () => {
   const { isAdmin } = useUserRole();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: snapshot, isLoading: snapLoading } = useEletivaProgress();
+  const { slug: activeSlug } = useActiveEletiva();
+  const { data: activeCourse } = useCourseBySlug(activeSlug ?? undefined);
+  const { data: snapshot, isLoading: snapLoading } = useEletivaProgress(activeCourse?.id ?? null);
   const [tutorOpen, setTutorOpen] = useState(false);
   const [tutorPillContext, setTutorPillContext] = useState<{
     pillTitle: string;
