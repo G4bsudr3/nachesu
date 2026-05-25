@@ -117,3 +117,13 @@ Onda 3 (quando houver folga):
 - **Item 13** vou rodar primeiro `rg "lookup_user_by_email" src/` antes de decidir.
 
 Confirma que faz sentido começar pela **Onda 1**? Se sim, executo direto sem nova confirmação.
+
+---
+
+## Execução Onda 1 — 2026-05-25
+
+✅ Item 1: `Modulo.tsx` agora usa `useActiveEletiva` + `useCourseBySlug` pra escopar `useEletivaProgress` por curso ativo. `totalModules`, `prevModule`, `nextModule` filtrados por `course_id` da trilha atual. Header agora mostra "01/20" correto.
+✅ Item 2: `ChoraBotFab` esconde via `useLocation` quando `pathname` começa com `/app/tutor` ou `/app/chora-bot`.
+✅ Item 3: resolvido como efeito colateral do item 1 (snapshot escopado → `moduleRow.find` retorna módulo da eletiva certa).
+⏭️ Item 5: `EVENT_INFO.nome = "Chŏra Lovable"` é só usado em `CertificateEditorial` legado (`/legacy`), mantido propositalmente — é o nome real do evento abril/2026.
+⏭️ Item 13: `lookup_user_by_email` só é chamado pela edge function `validate-public-email` via service_role. Revoke de `anon`/`authenticated` está correto. Sem ação.
