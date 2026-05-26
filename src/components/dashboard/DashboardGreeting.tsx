@@ -4,6 +4,12 @@ interface Props {
   totalPublished: number;
   /** dias desde a última atividade do aluno (null = nunca começou) */
   daysSinceLastActivity: number | null;
+  /**
+   * snapshot da eletiva ainda carregando. quando true, a linha de contexto
+   * vira um placeholder sutil pra não piscar de "a eletiva está aquecendo"
+   * pra "boa, você tá construindo. 3/5 fechados." no segundo seguinte.
+   */
+  loading?: boolean;
 }
 
 const buildContextLine = (
