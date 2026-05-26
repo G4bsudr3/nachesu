@@ -26,7 +26,7 @@ const eletivas: Record<
     professor: "com frattz",
     pitch: "construa seu primeiro app com ia, do problema ao mvp no ar.",
     descLonga:
-      "uma jornada de 20 semanas pra você sair da ideia ao app publicado, com tutor ia provocando builder do seu lado.",
+      "20 módulos curtos pra você sair da ideia ao app no ar, com o tutor ia te provocando do seu lado.",
     accent: "#f756a6",
     tag: "4 trilhas · 20 módulos · tutor ia",
     trilhas: [
