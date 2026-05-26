@@ -7,24 +7,24 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
-  Img,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
 import {
-  LOGO_URL,
-  LAGRIMA_URL,
   main,
   container,
-  logoStyle,
+  wordmark,
   h1,
   text,
   codeStyle,
-  lagrimaStyle,
+  accentBar,
   footer,
   fontImport,
+  FOOTER_LINE_1,
+  FOOTER_LINE_2,
 } from './_chora-styles.ts'
 
 interface ReauthenticationEmailProps {
@@ -36,25 +36,25 @@ export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => 
     <Head>
       <style>{fontImport}</style>
     </Head>
-    <Preview>seu código de verificação</Preview>
+    <Preview>seu código de verificação nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={LOGO_URL} alt="chŏra lovable" style={logoStyle} />
+        <Text style={wordmark}>NachesU</Text>
         <Heading style={h1}>
-          código de
+          seu
           <br />
-          verificação
+          código
         </Heading>
         <Text style={text}>usa o código abaixo pra confirmar sua identidade:</Text>
         <Text style={codeStyle}>{token}</Text>
         <Text style={text}>
-          o código expira em alguns minutos. se não foi você que pediu, ignora.
+          válido por 10 minutos. nunca compartilha com ninguém, nem com gente que diz ser da nachesu.
         </Text>
-        <Img src={LAGRIMA_URL} alt="" style={lagrimaStyle} />
+        <Hr style={accentBar} />
         <Text style={footer}>
-          vai lá e cria.
+          {FOOTER_LINE_1}
           <br />
-          chŏra lovable 2026 · 25-26 abril · porto alegre
+          {FOOTER_LINE_2}
         </Text>
       </Container>
     </Body>

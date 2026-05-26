@@ -8,24 +8,24 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
-  Img,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
 import {
-  LOGO_URL,
-  LAGRIMA_URL,
   main,
   container,
-  logoStyle,
+  wordmark,
   h1,
   text,
   button,
-  lagrimaStyle,
+  accentBar,
   footer,
   fontImport,
+  FOOTER_LINE_1,
+  FOOTER_LINE_2,
 } from './_chora-styles.ts'
 
 interface RecoveryEmailProps {
@@ -38,10 +38,10 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
     <Head>
       <style>{fontImport}</style>
     </Head>
-    <Preview>redefine sua senha do chŏra</Preview>
+    <Preview>nova senha nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={LOGO_URL} alt="chŏra lovable" style={logoStyle} />
+        <Text style={wordmark}>NachesU</Text>
         <Heading style={h1}>
           nova
           <br />
@@ -56,11 +56,11 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
         <Text style={text}>
           se não foi você que pediu, ignora esse email. sua senha continua a mesma.
         </Text>
-        <Img src={LAGRIMA_URL} alt="" style={lagrimaStyle} />
+        <Hr style={accentBar} />
         <Text style={footer}>
-          vai lá e cria.
+          {FOOTER_LINE_1}
           <br />
-          chŏra lovable 2026 · 25-26 abril · porto alegre
+          {FOOTER_LINE_2}
         </Text>
       </Container>
     </Body>
