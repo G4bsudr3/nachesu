@@ -130,9 +130,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3">
             entrega do aluno
           </p>
-          <div className="rounded-xl border border-perestroika-preto/15 bg-white/50 p-4">
-            <ContentRenderer content={(deliverable.content ?? {}) as Record<string, unknown>} />
-          </div>
+          <DeliverableAnswersList deliverable={deliverable} />
         </div>
 
         <div className="mt-6">
