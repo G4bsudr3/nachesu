@@ -1,49 +1,11 @@
 import { sendLovableEmail } from 'npm:@lovable.dev/email-js'
 import { createClient } from 'npm:@supabase/supabase-js@2'
-import * as React from 'npm:react@18.3.1'
-import { renderAsync } from 'npm:@react-email/components@0.0.22'
-
-// Import estático dos templates pra garantir que o bundler do Supabase
-// inclua os arquivos no deploy (import dinâmico não resolve _shared/).
-import { SignupEmail } from '../_shared/email-templates/signup.tsx'
-import { InviteEmail } from '../_shared/email-templates/invite.tsx'
-import { MagicLinkEmail } from '../_shared/email-templates/magic-link.tsx'
-import { RecoveryEmail } from '../_shared/email-templates/recovery.tsx'
-import { EmailChangeEmail } from '../_shared/email-templates/email-change.tsx'
-import { ReauthenticationEmail } from '../_shared/email-templates/reauthentication.tsx'
 
 const MAX_RETRIES = 5
 const DEFAULT_BATCH_SIZE = 10
 const DEFAULT_SEND_DELAY_MS = 200
 const DEFAULT_AUTH_TTL_MINUTES = 15
 const DEFAULT_TRANSACTIONAL_TTL_MINUTES = 60
-
-const AUTH_TEMPLATES: Record<string, any> = {
-  signup: SignupEmail,
-  invite: InviteEmail,
-  magiclink: MagicLinkEmail,
-  recovery: RecoveryEmail,
-  email_change: EmailChangeEmail,
-  reauthentication: ReauthenticationEmail,
-}
-
-/**
- * Renderiza o HTML do email se ele veio sem `html` mas com `email_type` +
- * `template_props` (novo formato do auth-email-hook). Devolve `null` se
- * não tiver como renderizar; nesse caso o caller decide o que fazer.
- */
-async function renderAuthEmailHtml(payload: Record<string, any>): Promise<string | null> {
-  if (typeof payload.html === 'string' && payload.html.length > 0) {
-    return payload.html
-  }
-  const emailType = payload.email_type
-  const props = payload.template_props
-  if (!emailType || !props) return null
-  const Template = AUTH_TEMPLATES[emailType]
-  if (!Template) return null
-  return await renderAsync(React.createElement(Template, props))
-}
-
 
 // Check if an error is a rate-limit (429) response.
 // Uses EmailAPIError.status when available (email-js >=0.x with structured errors),
@@ -55,8 +17,8 @@ function isRateLimited(error: unknown): boolean {
   return error instanceof Error && error.message.includes('429')
 }
 
-// Check if an error is a forbidden (403) response, which means emails are
-// disabled for this project. Retrying won't help — move straight to DLQ.
+// Check if an error is a forbidden (403) response. Retrying won't help.
+// Move straight to DLQ.
 function isForbidden(error: unknown): boolean {
   if (error && typeof error === 'object' && 'status' in error) {
     return (error as { status: number }).status === 403
@@ -92,20 +54,20 @@ function parseJwtClaims(token: string): Record<string, unknown> | null {
 
 // Move a message to the dead letter queue and log the reason.
 async function moveToDlq(
-  supabase: any,
+  supabase: ReturnType<typeof createClient>,
   queue: string,
   msg: { msg_id: number; message: Record<string, unknown> },
   reason: string
 ): Promise<void> {
-  const payload = msg.message as Record<string, any>
+  const payload = msg.message
   await supabase.from('email_send_log').insert({
     message_id: payload.message_id,
     template_name: (payload.label || queue) as string,
     recipient_email: payload.to,
     status: 'dlq',
     error_message: reason,
-  } as any)
-  const { error } = await supabase.rpc('move_to_dlq' as any, {
+  })
+  const { error } = await supabase.rpc('move_to_dlq', {
     source_queue: queue,
     dlq_name: `${queue}_dlq`,
     message_id: msg.msg_id,
@@ -194,12 +156,12 @@ Deno.serve(async (req) => {
     const messageIds = Array.from(
       new Set(
         messages
-          .map((msg: any) =>
+          .map((msg) =>
             msg?.message?.message_id && typeof msg.message.message_id === 'string'
               ? msg.message.message_id
               : null
           )
-          .filter((id: string | null): id is string => Boolean(id))
+          .filter((id): id is string => Boolean(id))
       )
     )
     const failedAttemptsByMessageId = new Map<string, number>()
@@ -287,51 +249,6 @@ Deno.serve(async (req) => {
       }
 
       try {
-        // Renderiza HTML on-demand quando o produtor (auth-email-hook)
-        // só passa email_type + template_props. Mantém compat com payloads
-        // antigos que já vinham com html pronto.
-        let html: string | undefined = payload.html
-        if (!html) {
-          try {
-            const rendered = await renderAuthEmailHtml(payload)
-            if (rendered) html = rendered
-          } catch (renderErr) {
-            console.error('Failed to render auth email template', {
-              queue,
-              msg_id: msg.msg_id,
-              email_type: payload.email_type,
-              error: renderErr instanceof Error ? renderErr.message : String(renderErr),
-            })
-          }
-        }
-
-        // Sem html e sem text não dá pra mandar — manda pra DLQ na hora
-        // pra não consumir todas as 5 tentativas com 400 garantido.
-        if (!html && !payload.text) {
-          await moveToDlq(
-            supabase,
-            queue,
-            msg,
-            `Missing html/text payload (email_type=${payload.email_type ?? 'unknown'})`
-          )
-          continue
-        }
-
-        // Lovable Email API exige `text`. Se o produtor não mandou, gera
-        // um fallback simples a partir do html (strip tags + colapsa espaços).
-        const text = payload.text ?? (html
-          ? html
-              .replace(/<style[\s\S]*?<\/style>/gi, '')
-              .replace(/<script[\s\S]*?<\/script>/gi, '')
-              .replace(/<[^>]+>/g, ' ')
-              .replace(/&nbsp;/g, ' ')
-              .replace(/&amp;/g, '&')
-              .replace(/&lt;/g, '<')
-              .replace(/&gt;/g, '>')
-              .replace(/\s+/g, ' ')
-              .trim()
-          : undefined)
-
         await sendLovableEmail(
           {
             run_id: payload.run_id,
@@ -339,14 +256,17 @@ Deno.serve(async (req) => {
             from: payload.from,
             sender_domain: payload.sender_domain,
             subject: payload.subject,
-            html: html as string,
-            text,
+            html: payload.html,
+            text: payload.text,
             purpose: payload.purpose,
             label: payload.label,
             idempotency_key: payload.idempotency_key,
             unsubscribe_token: payload.unsubscribe_token,
             message_id: payload.message_id,
           },
+          // sendUrl is optional — when LOVABLE_SEND_URL is not set, the library
+          // falls back to the default Lovable API endpoint (https://api.lovable.dev).
+          // Set LOVABLE_SEND_URL as a Supabase secret to override (e.g. for local dev).
           { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') }
         )
 
@@ -404,12 +324,12 @@ Deno.serve(async (req) => {
           )
         }
 
-        // 403 means emails are disabled for this project — retrying won't help.
-        // Move straight to DLQ and stop processing the rest of the batch.
+        // 403s are permanent configuration or authorization failures for this
+        // message, so move straight to DLQ and stop processing the rest of the batch.
         if (isForbidden(error)) {
-          await moveToDlq(supabase, queue, msg, 'Emails disabled for this project')
+          await moveToDlq(supabase, queue, msg, errorMsg.slice(0, 1000))
           return new Response(
-            JSON.stringify({ processed: totalProcessed, stopped: 'emails_disabled' }),
+            JSON.stringify({ processed: totalProcessed, stopped: 'forbidden' }),
             { headers: { 'Content-Type': 'application/json' } }
           )
         }
