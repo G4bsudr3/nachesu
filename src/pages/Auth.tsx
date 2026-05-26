@@ -275,11 +275,11 @@ const Auth = () => {
                 />
               )}
               <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none mb-3">
-                {fromCarta ? (<>abre a sua<br />carta completa</>) : (<>entrar<br />no hub</>)}
+                {fromCarta ? (<>abre a sua<br />carta completa</>) : (<>entrar<br />na nachesu</>)}
               </h1>
               <p className="font-body text-base text-perestroika-preto/70 mb-10">
                 {fromCarta
-                  ? "use o email com que você respondeu o fbi. mandamos um link mágico em segundos."
+                  ? "use o email do convite da escola sebrae. mandamos um link mágico em segundos."
                   : "tem senha? coloca os dois campos. se não, deixa só o email que a gente manda um link mágico."}
               </p>
 
@@ -380,7 +380,7 @@ const Auth = () => {
                 mandamos um link mágico para <span className="font-semibold text-perestroika-preto">{email}</span>.
               </p>
               <p className="font-body text-sm text-perestroika-preto/60">
-                clica no link e você cai direto no hub. (talvez precise olhar a caixa de spam.)
+                clica no link e você cai direto na sua eletiva. (talvez precise olhar a caixa de spam.)
               </p>
               <button
                 type="button"

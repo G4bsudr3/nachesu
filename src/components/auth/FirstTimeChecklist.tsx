@@ -15,7 +15,7 @@ const STEPS = [
     n: 1,
     color: "bg-perestroika-rosa",
     title: "coloca seu email",
-    desc: "o mesmo do fbi ou do convite",
+    desc: "o mesmo do convite da escola sebrae",
   },
   {
     n: 2,
@@ -27,7 +27,7 @@ const STEPS = [
     n: 3,
     color: "bg-perestroika-azul",
     title: "clica em entrar",
-    desc: "cai direto no hub",
+    desc: "cai direto na sua eletiva",
   },
 ];
 

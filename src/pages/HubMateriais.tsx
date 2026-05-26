@@ -371,8 +371,8 @@ const HubMateriais = () => {
         showLogo
         logoLink="/app"
         actions={
-          <Link to="/app/hub" className="inline-flex items-center gap-1 font-body text-xs uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto">
-            <ArrowLeft className="h-3.5 w-3.5" /> hub
+          <Link to="/app" className="inline-flex items-center gap-1 font-body text-xs uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto">
+            <ArrowLeft className="h-3.5 w-3.5" /> início
           </Link>
         }
       />
@@ -472,7 +472,7 @@ const HubMateriais = () => {
                 className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/25 bg-white/70 px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-preto/80 hover:border-perestroika-preto/60"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
-                voltar pro hub
+                voltar pro início
               </Link>
             </div>
           </div>
