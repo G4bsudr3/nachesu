@@ -55,10 +55,6 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     title: "tutor ia · nachesu",
     description: "converse com o tutor da sua trilha e desbloqueie o próximo passo.",
   },
-  "/app/chora-bot": {
-    title: "tutor ia · nachesu",
-    description: "converse com o tutor da sua trilha e desbloqueie o próximo passo.",
-  },
   "/app/conta": {
     title: "minha conta · nachesu",
     description: "atualize seus dados e preferências.",

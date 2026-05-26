@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Mail, ArrowRight, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
+
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { FirstTimeChecklist } from "@/components/auth/FirstTimeChecklist";
@@ -12,7 +12,8 @@ import { FirstTimeChecklist } from "@/components/auth/FirstTimeChecklist";
 import { ALLOWED_EMAILS } from "@/lib/access";
 import { resolveAuthError, readAuthErrorFromUrl, t } from "@/lib/authErrors";
 
-const EMAIL_LS_KEY = "chora.lastEmail";
+const EMAIL_LS_KEY = "nachesu.lastEmail";
+const LEGACY_EMAIL_LS_KEY = "chora.lastEmail";
 
 const SOON_MESSAGE =
   "não consegui validar esse email agora. confere se digitou certo ou tenta de novo em alguns segundos.";
@@ -82,11 +83,19 @@ const Auth = () => {
     if (fromQuery) {
       setEmail(fromQuery);
     } else {
+      // migra a chave antiga "chora.lastEmail" pra "nachesu.lastEmail" silenciosamente
       const saved = localStorage.getItem(EMAIL_LS_KEY);
-      if (saved) setEmail(saved);
+      const legacy = !saved ? localStorage.getItem(LEGACY_EMAIL_LS_KEY) : null;
+      if (saved) {
+        setEmail(saved);
+      } else if (legacy) {
+        setEmail(legacy);
+        localStorage.setItem(EMAIL_LS_KEY, legacy);
+        localStorage.removeItem(LEGACY_EMAIL_LS_KEY);
+      }
     }
     if (fromCarta && cartaToken) {
-      try { sessionStorage.setItem("chora.fromCartaToken", cartaToken); } catch { /* ignore */ }
+      try { sessionStorage.setItem("nachesu.fromCartaToken", cartaToken); } catch { /* ignore */ }
     }
 
     // Detecta erro de auth vindo do Supabase (hash ou query)
