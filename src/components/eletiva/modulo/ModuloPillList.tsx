@@ -168,6 +168,63 @@ export const ModuloPillList = ({
         const done = completedPillIds.has(pill.id);
         const schemaType = pill.interaction_schema?.type as string | undefined;
 
+        // ---- novos schemas editoriais (módulo 1 da eletiva ia na prática) ----
+        if (schemaType === "pilula_editorial") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done}>
+              <PillEditorial
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={reflections[pill.id] ?? ""}
+                reflectionsMap={reflections}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "pbl_estruturado") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done}>
+              <PillPBLEstruturado
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={(pblEstruturado[pill.id] ?? {}) as never}
+                pblMap={pblEstruturado as never}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "checklist_pacto") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done}>
+              <PillChecklistPacto
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={(checklist[pill.id] ?? { checked: [] }) as never}
+                checklistMap={checklist as never}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+
         // ---- 1. schemas ricos (quando o conteúdo é autorado) ----
         if (schemaType === "video_with_transcript") {
           return (
