@@ -147,6 +147,7 @@ const Trilhas = () => {
                     unlockedModuleIds={unlockedModuleIds}
                     fallbackColor={trailColorByOrder[trail.order_index] ?? "#090909"}
                     columnIndex={idx}
+                    courseSlug={activeCourse.slug}
                   />
                 );
               })}

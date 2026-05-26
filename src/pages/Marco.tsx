@@ -81,7 +81,7 @@ const Marco = () => {
       return;
     }
     if (nextFirstModule) {
-      navigate(`/app/modulo/${nextFirstModule.number}`);
+      navigate(`/app/eletiva/${slug}/modulo/${nextFirstModule.number}`);
       return;
     }
     navigate("/app");
