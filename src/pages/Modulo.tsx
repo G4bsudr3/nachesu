@@ -15,6 +15,8 @@ import { ModuloSkeleton } from "@/components/eletiva/modulo/ModuloSkeleton";
 import { TutorChat } from "@/components/eletiva/TutorChat";
 import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
+import { ModuloCelebration } from "@/components/eletiva/modulo/ModuloCelebration";
+
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
 import { ModuloProgressBar } from "@/components/eletiva/modulo/ModuloProgressBar";
 import { ModuloFeedbackCard } from "@/components/eletiva/modulo/ModuloFeedbackCard";
@@ -354,6 +356,19 @@ const Modulo = () => {
           totalMinutes={moduleRow.total_minutes}
           isCompleted={isCompleted}
         />
+
+        {isCompleted && (
+          <ModuloCelebration
+            moduleNumber={moduleRow.number}
+            courseSlug={courseSlug ?? null}
+            nextHint={
+              nextModule
+                ? "obrigado por entregar com presença. o próximo módulo já tá aí, é só seguir."
+                : "obrigado por entregar com presença. próximo módulo libera em breve."
+            }
+          />
+        )}
+
 
         <ModuloPillList
           pills={pills}

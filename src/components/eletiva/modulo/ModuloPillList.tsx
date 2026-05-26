@@ -8,10 +8,14 @@ import {
   PillRadar,
   PillQuiz,
   PillBonus,
+  PillEditorial,
+  PillPBLEstruturado,
+  PillChecklistPacto,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
 } from "@/components/eletiva/pills";
+
 
 export type ModuloPill = {
   id: string;
@@ -127,10 +131,13 @@ export const ModuloPillList = ({
   const content = (deliverable?.content ?? {}) as Record<string, unknown>;
   const reflections = (content.reflections ?? {}) as Record<string, string>;
   const pblResponses = (content.pbl_responses ?? {}) as Record<string, string>;
+  const pblEstruturado = (content.pbl_estruturado ?? {}) as Record<string, Record<string, unknown>>;
+  const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
   const quizAnswers = (content.quiz_answers ?? {}) as Record<string, string | string[]>;
   const bonusValue = (content.bonus ?? {}) as Record<string, string>;
+
 
   const safeSave = save ?? (async () => undefined);
 
@@ -160,6 +167,63 @@ export const ModuloPillList = ({
       {pills?.map((pill, idx) => {
         const done = completedPillIds.has(pill.id);
         const schemaType = pill.interaction_schema?.type as string | undefined;
+
+        // ---- novos schemas editoriais (módulo 1 da eletiva ia na prática) ----
+        if (schemaType === "pilula_editorial") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done}>
+              <PillEditorial
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={reflections[pill.id] ?? ""}
+                reflectionsMap={reflections}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "pbl_estruturado") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done}>
+              <PillPBLEstruturado
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={(pblEstruturado[pill.id] ?? {}) as never}
+                pblMap={pblEstruturado as never}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "checklist_pacto") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done}>
+              <PillChecklistPacto
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={(checklist[pill.id] ?? { checked: [] }) as never}
+                checklistMap={checklist as never}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
 
         // ---- 1. schemas ricos (quando o conteúdo é autorado) ----
         if (schemaType === "video_with_transcript") {
