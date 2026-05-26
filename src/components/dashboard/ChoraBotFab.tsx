@@ -15,7 +15,9 @@ export const ChoraBotFab = () => {
   const [breathe, setBreathe] = useState(false);
   const [pressed, setPressed] = useState(false);
 
-  // não mostra o FAB dentro da própria tela do tutor (evita CTA apontando pra si mesmo)
+  // não mostra o FAB dentro da própria tela do tutor (evita CTA apontando pra si mesmo).
+  // /app/chora-bot é alias legado que redireciona, mas mantemos o prefixo aqui pro caso
+  // raro de um render intermediário antes do redirect.
   const isOnTutorRoute =
     pathname.startsWith("/app/tutor") || pathname.startsWith("/app/chora-bot");
 
