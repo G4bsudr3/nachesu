@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import type { DeliverableInbox } from "./usePendingDeliverables";
+import { DeliverableAnswersList } from "./deliverableRendering/DeliverableAnswersList";
 
 const RUBRIC_CHIPS = [
   "clareza",
@@ -26,139 +27,7 @@ interface Props {
   deliverable: DeliverableInbox | null;
 }
 
-/** renderiza o conteúdo jsonb da entrega em formato leitura */
-const ContentRenderer = ({ content }: { content: Record<string, unknown> }) => {
-  const reflections = (content.reflections ?? {}) as Record<string, string>;
-  const pblResponses = (content.pbl_responses ?? {}) as Record<string, string>;
-  const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
-  const items = (content.items ?? []) as Array<Record<string, unknown>>;
-  const quizAnswers = (content.quiz_answers ?? {}) as Record<string, string | string[]>;
-  const bonus = (content.bonus ?? {}) as Record<string, string>;
-
-  const sections: Array<{ label: string; node: React.ReactNode }> = [];
-
-  if (Object.keys(reflections).length > 0) {
-    sections.push({
-      label: "reflexões",
-      node: (
-        <div className="space-y-3">
-          {Object.entries(reflections).map(([k, v]) => (
-            <div key={k} className="rounded-lg bg-perestroika-preto/[0.04] p-3">
-              <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/50 mb-1">
-                pílula {k.slice(0, 8)}
-              </p>
-              <p className="whitespace-pre-wrap text-sm">{v}</p>
-            </div>
-          ))}
-        </div>
-      ),
-    });
-  }
-
-  if (Object.keys(pblResponses).length > 0) {
-    sections.push({
-      label: "respostas pbl",
-      node: (
-        <div className="space-y-3">
-          {Object.entries(pblResponses).map(([k, v]) => (
-            <div key={k} className="rounded-lg bg-perestroika-preto/[0.04] p-3">
-              <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/50 mb-1">
-                pílula {k.slice(0, 8)}
-              </p>
-              <p className="whitespace-pre-wrap text-sm">{v}</p>
-            </div>
-          ))}
-        </div>
-      ),
-    });
-  }
-
-  if (Object.keys(guidedAnswers).length > 0) {
-    sections.push({
-      label: "respostas guiadas",
-      node: (
-        <ul className="space-y-2">
-          {Object.entries(guidedAnswers).map(([k, v]) => (
-            <li key={k} className="text-sm">
-              <span className="text-perestroika-preto/55">{k}:</span> {v}
-            </li>
-          ))}
-        </ul>
-      ),
-    });
-  }
-
-  if (items.length > 0) {
-    sections.push({
-      label: "radar",
-      node: (
-        <ul className="space-y-2">
-          {items.map((it, i) => (
-            <li key={i} className="rounded-lg bg-perestroika-preto/[0.04] p-3 text-sm">
-              {Object.entries(it).map(([k, v]) => (
-                <div key={k}>
-                  <span className="text-perestroika-preto/55">{k}:</span> {String(v)}
-                </div>
-              ))}
-            </li>
-          ))}
-        </ul>
-      ),
-    });
-  }
-
-  if (Object.keys(quizAnswers).length > 0) {
-    sections.push({
-      label: "quiz",
-      node: (
-        <ul className="space-y-1 text-sm">
-          {Object.entries(quizAnswers).map(([k, v]) => (
-            <li key={k}>
-              <span className="text-perestroika-preto/55">{k}:</span>{" "}
-              {Array.isArray(v) ? v.join(", ") : v}
-            </li>
-          ))}
-        </ul>
-      ),
-    });
-  }
-
-  if (Object.keys(bonus).length > 0) {
-    sections.push({
-      label: "bônus",
-      node: (
-        <div className="space-y-2 text-sm">
-          {Object.entries(bonus).map(([k, v]) => (
-            <p key={k}>
-              <span className="text-perestroika-preto/55">{k}:</span> {v}
-            </p>
-          ))}
-        </div>
-      ),
-    });
-  }
-
-  if (sections.length === 0) {
-    return (
-      <p className="text-sm text-perestroika-preto/50 italic">
-        sem conteúdo escrito (o aluno só marcou como concluído).
-      </p>
-    );
-  }
-
-  return (
-    <div className="space-y-5">
-      {sections.map((s) => (
-        <div key={s.label}>
-          <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
-            {s.label}
-          </p>
-          {s.node}
-        </div>
-      ))}
-    </div>
-  );
-};
+// renderer detalhado vive em ./deliverableRendering/DeliverableAnswersList
 
 export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props) => {
   const { user } = useAuth();
@@ -261,9 +130,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3">
             entrega do aluno
           </p>
-          <div className="rounded-xl border border-perestroika-preto/15 bg-white/50 p-4">
-            <ContentRenderer content={(deliverable.content ?? {}) as Record<string, unknown>} />
-          </div>
+          <DeliverableAnswersList deliverable={deliverable} />
         </div>
 
         <div className="mt-6">
