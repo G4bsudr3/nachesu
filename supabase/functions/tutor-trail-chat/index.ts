@@ -186,7 +186,7 @@ Deno.serve(async (req) => {
     const [trailRes, modulesRes, progressRes, convRes] = await Promise.all([
       admin
         .from("trails")
-        .select("id, title, description, pbl_prompt")
+        .select("id, title, description, pbl_prompt, course_id")
         .eq("id", trailId)
         .single(),
       admin
