@@ -271,7 +271,6 @@ function InvitesPanel({ courseId }: { courseId: string }) {
 
 function ModulesPanel({ courseId }: { courseId: string }) {
   const qc = useQueryClient();
-  const { user } = useAuth();
 
   const { data: modules = [] } = useQuery({
     queryKey: ["course-modules", courseId],
@@ -286,36 +285,17 @@ function ModulesPanel({ courseId }: { courseId: string }) {
     },
   });
 
-  const { data: releases = [] } = useQuery({
-    queryKey: ["module-releases", courseId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("module_releases")
-        .select("module_id");
+  const togglePublished = useMutation({
+    mutationFn: async ({ moduleId, published }: { moduleId: string; published: boolean }) => {
+      const { error } = await supabase
+        .from("modules")
+        .update({ published })
+        .eq("id", moduleId);
       if (error) throw error;
-      return (data ?? []).map((r: any) => r.module_id as string);
-    },
-  });
-
-  const releasedSet = new Set(releases);
-
-  const toggle = useMutation({
-    mutationFn: async ({ moduleId, release }: { moduleId: string; release: boolean }) => {
-      if (release) {
-        const { error } = await supabase
-          .from("module_releases")
-          .upsert({ module_id: moduleId, released_by: user?.id ?? null });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from("module_releases")
-          .delete()
-          .eq("module_id", moduleId);
-        if (error) throw error;
-      }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["module-releases", courseId] });
+      qc.invalidateQueries({ queryKey: ["course-modules", courseId] });
+      toast.success("visibilidade atualizada");
     },
     onError: (e: any) => toast.error(e.message ?? "erro"),
   });
@@ -324,15 +304,15 @@ function ModulesPanel({ courseId }: { courseId: string }) {
     <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-white space-y-4">
       <div className="flex items-center gap-2">
         <Unlock className="h-4 w-4" />
-        <h3 className="font-display text-lg uppercase">liberação de módulos</h3>
+        <h3 className="font-display text-lg uppercase">publicação de módulos</h3>
       </div>
       <p className="font-body text-xs text-perestroika-preto/60">
-        clique pra liberar/bloquear. módulo precisa estar publicado E liberado pra aluno ver.
+        clique pra publicar/despublicar. estudante matriculado vê na hora.
       </p>
 
       <div className="space-y-1 max-h-[480px] overflow-auto">
         {modules.map((m) => {
-          const released = releasedSet.has(m.id);
+          const published = m.published;
           return (
             <div
               key={m.id}
@@ -344,26 +324,26 @@ function ModulesPanel({ courseId }: { courseId: string }) {
                   {m.title}
                 </p>
                 <p className="font-body text-[11px] text-perestroika-preto/50">
-                  {m.trails?.title} · {m.published ? "publicado" : "rascunho"}
+                  {m.trails?.title}
                 </p>
               </div>
               <button
                 type="button"
-                onClick={() => toggle.mutate({ moduleId: m.id, release: !released })}
-                disabled={toggle.isPending}
+                onClick={() => togglePublished.mutate({ moduleId: m.id, published: !published })}
+                disabled={togglePublished.isPending}
                 className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-body uppercase tracking-wide border ${
-                  released
+                  published
                     ? "bg-perestroika-rosa/10 border-perestroika-rosa/30 text-perestroika-vermelho"
                     : "bg-transparent border-perestroika-preto/20 text-perestroika-preto/60"
                 }`}
               >
-                {released ? (
+                {published ? (
                   <>
-                    <Unlock className="h-3 w-3" /> liberado
+                    <Unlock className="h-3 w-3" /> publicado
                   </>
                 ) : (
                   <>
-                    <Lock className="h-3 w-3" /> bloqueado
+                    <Lock className="h-3 w-3" /> rascunho
                   </>
                 )}
               </button>
@@ -379,3 +359,4 @@ function ModulesPanel({ courseId }: { courseId: string }) {
     </div>
   );
 }
+
