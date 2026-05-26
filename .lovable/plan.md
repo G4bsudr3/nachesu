@@ -1,143 +1,93 @@
 
-# Plano de correção e ajustes — NachesU
+# Aproveitar NachesU 2.0 pra subir o curso ainda hoje
 
-Diagnóstico completo do estado atual. Ordenado por impacto no estudante, do que quebra agora até dívida técnica.
+## o que o 2.0 tem que aqui não tem
 
----
+O projeto **NachesU 2.0** é um rebuild paralelo (TanStack Start) que já matou três bloqueios que ainda travam este projeto:
 
-## P0 — bugs que afetam o estudante hoje
+1. **`content/ia-na-pratica.yaml` + `content/economia-circular.yaml`** — fonte de verdade dos **40 módulos** (4 trilhas × 5 módulos × 2 eletivas), cada um com 5 pílulas estruturadas: título, objetivo, kind, duração, `interaction_schema`. Mod 1 e parte da trilha 1 já com `body_md`; resto com placeholder `_(a preencher)_`.
+2. **`scripts/seed-content.ts`** — seeder **idempotente** (upsert por `course.slug + module.number + pill.kind`, nunca rebaixa `published`, nunca apaga pílula órfã, não sobrescreve `body_md` real com placeholder). Roda quantas vezes quiser.
+3. **`src/lib/content.schemas.ts`** — Zod schemas dos 4 `interaction_schema` ricos que este projeto já renderiza (`embed`, `curated`, `quiz`, `radar`), com `defaultInteractionForPillKind` e validação completa.
+4. **Editor admin de conteúdo** (`admin.conteudo.tsx`, `admin.conteudo.$moduleId.tsx`, `admin.conteudo.pilula.$pillId.tsx` + componentes `ModuleForm`, `InteractionEditor`, `SortableList` com `@dnd-kit`) — permite frattz/Dudu autorarem direto na UI depois do seed.
+5. **`docs/runbook.md`** — checklist operacional de lançamento (import CSV Sebrae, lotes de e-mail, rollback).
 
-**1. Progresso "01/40" no header do módulo**
-- `src/pages/Modulo.tsx:37` chama `useEletivaProgress()` sem `courseId` → agrega módulos das 2 eletivas.
-- Fix: descobrir `courseId` da matrícula ativa antes (igual `EletivaHome.tsx:149` faz) e passar pro hook. `totalModules` passa a refletir só a eletiva ativa.
-
-**2. FAB "tire sua dúvida" aparecendo dentro do próprio tutor**
-- `HubLayout.tsx:25` renderiza `<ChoraBotFab />` incondicional.
-- Fix: usar `useLocation` no `ChoraBotFab` e esconder quando `pathname` está em `/app/tutor` ou `/app/chora-bot`.
-
-**3. Módulo errado quando aluno tem 2 eletivas**
-- `useEletivaProgress()` sem `courseId` também em `OnboardingDialogPage.tsx:13` e `TutorChat.tsx:69`.
-- `Modulo.tsx` resolve `moduleRow` por `number` sem filtrar por curso → pode pegar módulo da eletiva errada.
-- Fix: escopar todos os callers por `courseId` da matrícula ativa.
+O que **não** vale portar agora: o framework (TanStack Start vs React Router/Vite daqui), as rotas inteiras (estrutura `_authenticated/_admin/` é outra), o auth (lá usa server functions). Risco alto pra ganho zero hoje.
 
 ---
 
-## P1 — legado Chŏra vazando no fluxo NachesU
+## estratégia: 3 ondas, ~90 min total
 
-**4. Vocabulário "chora" em copy do formulário público de inscrição**
-- `src/features/fbi/schema.ts:27` campo `expectativa_chora`.
-- `src/features/fbi/usePublicFbiForm.ts:9` `LS_PREFIX = "chora.publicFbi."`.
-- `src/pages/AdminFbi.tsx:578` label "expectativa do chŏra".
-- Fix: renomear pra `expectativa_eletiva` no schema/UI, migrar LS key com fallback de leitura da chave antiga por 30 dias.
+### Onda A — Conteúdo no ar (40-50 min) · gate único pro lançamento
 
-**5. Nome "Chŏra Lovable" hardcoded em config viva**
-- `feedbackFinalFlag.ts:14`: `nome: "Chŏra Lovable"` → trocar pra "NachesU".
+Objetivo: estudante consegue navegar 40 módulos com title/objective reais e 5 pílulas cada (algumas com body real, resto esqueleto honesto).
 
-**6. Logo Chŏra original em páginas acessíveis**
-- `CartaPublica.tsx:7` e `CertificateEditorial.tsx:144` importam `ChoraLogo` original (não o alias).
-- Fix: mover essas duas pra atrás do `ExtrasGate` ou trocar pra `NachesULogo` conforme a página.
+1. **Copiar yaml** — `content/ia-na-pratica.yaml` e `content/economia-circular.yaml` pro repo atual via `cross_project--copy_project_asset`. Zero edição: a estrutura `course → trails → modules → pills` já bate com o schema deste projeto (`courses`, `trails`, `modules`, `pills`).
+2. **Portar `content.schemas.ts`** pra `src/lib/content.schemas.ts`. Já valida exatamente os 4 kinds que `ModuloPillList.tsx` dispatcha (`video_with_transcript` ≈ `embed`, `curated_content_with_questions` ≈ `curated`, `quiz`, `radar_form` ≈ `radar`).
+   - Ajuste único: mapear `kind` do schema 2.0 (`embed`/`curated`/`quiz`/`radar`) → `type` que o dispatcher atual espera (`video_with_transcript`/`curated_content_with_questions`/`quiz`/`radar_form`). Layer fina de tradução no seeder, sem mexer no renderer.
+3. **Portar `scripts/seed-content.ts`** pra `scripts/seed-content.ts` daqui. Adaptar duas coisas:
+   - nome de tabela: 2.0 usa `module_pills`, aqui é `pills` (confirmar lendo `src/integrations/supabase/types.ts` antes).
+   - tradução `interaction_schema.kind` → `interaction_schema.type` (item 2 acima).
+   - usar `SUPABASE_SERVICE_ROLE_KEY` via env (já configurado em outros scripts do projeto).
+4. **Rodar seed** pra os 2 cursos. Idempotente, então pode rodar de novo depois de qualquer ajuste no yaml.
+5. **Smoke test manual** (5 min): logar como aluno fictício, abrir `/app/modulo/1` de cada eletiva, confirmar que aparecem 5 pílulas, que o dispatcher renderiza cada kind corretamente, e que módulos 2-20 abrem com esqueleto.
 
-**7. Alias `ChoraLogo` poluindo imports**
-- 10+ arquivos fazem `import { EletivaLogo as ChoraLogo }`.
-- Fix: substituir todos por `NachesULogo` direto. Pure rename, zero efeito visual.
+**Checkpoint humano:** revisar 1 módulo de cada eletiva no preview antes de continuar. Se quebrar, ajusta o seeder, roda de novo.
 
-**8. Componente `TrailBreadcrumb` com STAGES legadas**
-- `src/components/hub/TrailBreadcrumb.tsx:6-15` lista "fbi/carta/prework/tutorial/missoes".
-- Usado só em páginas atrás de `ExtrasGate`. Fix: marcar arquivo como legado (mover pra `src/components/legacy/`) pra não confundir leitura futura.
+### Onda B — Editor admin pra continuar autorando (30-40 min) · opcional pra hoje
 
-**9. localStorage keys com prefixo `chora.*`**
-- 6 ocorrências. Fix: criar helper `nsKey(name)` que prefixa `nachesu.` e lê fallback `chora.` por compat. Migrar de forma transparente.
+Necessário só se frattz/Dudu vão escrever `body_md` real direto na UI ao invés de editar o yaml. Se a Onda A já basta (autoria via yaml + reseed), pula.
 
----
+6. **Portar 3 componentes admin** do 2.0:
+   - `src/components/admin/SortableList.tsx` (precisa `@dnd-kit/core` + `@dnd-kit/sortable` — confirmar se já estão instaladas; se não, `bun add`).
+   - `src/components/admin/ModuleForm.tsx` (formulário de metadados do módulo).
+   - `src/components/admin/InteractionEditor.tsx` (editor estruturado por kind — o coração).
+7. **Criar 3 páginas admin** equivalentes (em React Router daqui, não TanStack):
+   - `src/pages/AdminConteudo.tsx` — seletor de curso + lista de módulos com drag-to-reorder.
+   - `src/pages/AdminConteudoModulo.tsx` — detalhe do módulo + lista de pílulas.
+   - `src/pages/AdminConteudoPilula.tsx` — editor de uma pílula com preview drawer que renderiza o componente real.
+8. **Plugar no `AdminRoute`** atual + adicionar card "conteúdo" no painel `/admin` (perto de "eletivas" e "trilha").
+9. **Mutations server-side** — porta `src/lib/content.functions.ts` do 2.0 como hooks `useContentMutations` chamando `supabase-js` direto daqui (não temos server functions, e RLS já protege).
 
-## P2 — identidade visual e voz
+### Onda C — Operação (10 min) · faz junto com lançamento
 
-**10. Emoji 🤙 em toasts de votação**
-- `VoteButton.tsx:50`, `GlobalVotingBanner.tsx:64`. Trocar por ícone Phosphor + microcopy lowercase.
-
-**11. Em-dash em telas admin**
-- `AdminFbi`, `AdminAula`, `AdminRisco`, `AdminTurma`. Trocar `—` por `·` ou `–` (en-dash) ou simplesmente "sem dado".
-
-**12. `pb-[env(safe-area-inset-bottom)]` solto em `Marco.tsx:91`**
-- Padronizar via var `--mobile-nav-h` igual o resto.
+10. **Copiar `docs/runbook.md`** do 2.0 pra `docs/runbook.md` daqui. Checklist de import CSV Sebrae, regra de lote 50 e-mails/min, gatilhos de rollback, plano B se atrasar. Vira referência viva da semana de lançamento.
 
 ---
 
-## P3 — schema, segurança e infra
+## o que NÃO portar (decisão explícita)
 
-**13. `lookup_user_by_email` revogado também de `anon`/`authenticated`**
-- Risco: tela de login pré-auth quebra. Verificar callers; se necessário, regrantar `EXECUTE` pra `anon`.
-
-**14. `.lovable/_pills_pending.sql` fora do pipeline**
-- Conteúdo de pílulas que nunca roda. Fix: ou virar migration formal em `supabase/migrations/`, ou deletar e mover pra seed via edge function admin.
-
-**15. Renomear tabelas `chora_bot_*`?**
-- Custo alto (RLS, edge functions, types regen). Recomendação: manter nome no DB, mas renomear pasta `src/components/chora-bot/` → `src/components/tutor/` e exports correspondentes. Zero migration, só rename de arquivo TS.
+- **Rotas TanStack Start** (`_authenticated/_admin/*`) — incompatível com React Router daqui. Reimplementar como `src/pages/Admin*` nativo.
+- **Auth helpers do 2.0** (`auth-context.tsx`, `requireSupabaseAuth`) — daqui já tem `AuthContext` + `AdminRoute` funcionando.
+- **`components/pills/` do 2.0** — daqui já tem 5 componentes ricos equivalentes em `src/components/eletiva/pills/` (PillAbertura, PillConteudoCurado, PillQuiz, PillRadar, PillBonus). Manter os daqui, só garantir que o `interaction_schema.type` seedado bate.
+- **`components/naches/`** — provavelmente brand/layout daquele projeto; daqui já tem `<NachesULogo />`, `<EletivaFooter />`, `<EletivaSymbol />` consolidados.
+- **Editor de `module_releases`** — o gate atual é "sem row = aberto", então 40 módulos seedados já ficam visíveis. Cronograma semanal vira tarefa pós-lançamento (item da Onda 3 do plan.md original).
 
 ---
 
-## P4 — dívida técnica (não bloqueia, fazer em segundo momento)
+## detalhes técnicos
 
-**16. 13 arquivos >250 linhas** — top 3 pra refatorar primeiro: `AdminArtworks` (1.161), `AdminPillsEditor` (982), `Tutorial.tsx` (842).
-
-**17. Dead code confirmado**
-- `src/components/hub/FeedbackFinalGlobalNudge.tsx` (186 linhas, zero imports). Deletar.
-
-**18. `@deprecated` antigos** em `cartaTokens.ts`, `useHubInsights.ts`, `access.ts` — limpar quando tocar nos respectivos fluxos.
-
-**19. `GlobalVotingBanner` fora do Suspense principal** faz fetch em rotas públicas. Envolver com guard de `isAuthenticated`.
-
-**20. Atualizar `.lovable/plan.md`** pra refletir esses 20 itens (o plan.md hoje só descreve a migration de segurança já aplicada).
-
----
-
-## Ordem de execução sugerida (3 ondas)
-
-```text
-Onda 1 (sessão única, ~30 min):
-  P0 itens 1, 2, 3      → estudante para de ver bugs
-  P1 item 5             → nome correto na pesquisa final
-  P3 item 13            → verificar e regrantar lookup_user_by_email se preciso
-
-Onda 2 (sessão única, ~45 min):
-  P1 itens 4, 6, 7, 9   → expurgo de "chora" do fluxo ativo
-  P2 itens 10, 11, 12   → polish de voz e mobile
-
-Onda 3 (quando houver folga):
-  P3 itens 14, 15
-  P4 itens 16-20
-```
-
-## Detalhes técnicos
-
-- **Item 1** depende de adicionar `useActiveCourseId()` (hook novo de 10 linhas que lê a matrícula ativa do `useEletivaProgress` global e devolve o id). Tudo o mais reusa o hook existente.
-- **Item 2** é 5 linhas: `const { pathname } = useLocation(); if (pathname.startsWith("/app/tutor") || pathname.startsWith("/app/chora-bot")) return null;`
-- **Item 4** requer migration leve renomeando coluna `expectativa_chora` → `expectativa_eletiva` em `fbi_responses` + update do schema TS + update do form. Backup de dados antes.
-- **Item 9** é refactor mecânico, posso fazer com find/replace controlado.
-- **Item 13** vou rodar primeiro `rg "lookup_user_by_email" src/` antes de decidir.
-
-Confirma que faz sentido começar pela **Onda 1**? Se sim, executo direto sem nova confirmação.
+- **Diferença de schema crítica:** 2.0 chama tabela de pílulas de `module_pills`, aqui é `pills`. Confirmar via `code--view src/integrations/supabase/types.ts` antes de rodar o seeder. Resto (`courses`, `trails`, `modules`) bate.
+- **Tradução de `interaction_schema`:** lookup table no seeder:
+  ```ts
+  const kindMap = {
+    embed: "video_with_transcript",
+    curated: "curated_content_with_questions",
+    quiz: "quiz",
+    radar: "radar_form",
+  };
+  ```
+- **Idempotência de body_md:** seeder respeita `_(a preencher)_` como placeholder — nunca sobrescreve texto real já no banco. Permite frattz/Dudu editarem direto pelo admin (Onda B) sem perder progresso ao rodar seed de novo.
+- **Comando de execução:** `bun scripts/seed-content.ts content/ia-na-pratica.yaml` e idem pra economia-circular. Env vars: `SUPABASE_URL` (já em `.env`) e `SUPABASE_SERVICE_ROLE_KEY` (precisa adicionar via tool de secrets — usar só localmente, nunca no client).
+- **Tutor IA** já está funcional aqui (item P0.2 da Onda 1 corrigiu o FAB). Não precisa mexer.
 
 ---
 
-## Execução Onda 1 — 2026-05-25
+## ordem de aprovação
 
-✅ Item 1: `Modulo.tsx` agora usa `useActiveEletiva` + `useCourseBySlug` pra escopar `useEletivaProgress` por curso ativo. `totalModules`, `prevModule`, `nextModule` filtrados por `course_id` da trilha atual. Header agora mostra "01/20" correto.
-✅ Item 2: `ChoraBotFab` esconde via `useLocation` quando `pathname` começa com `/app/tutor` ou `/app/chora-bot`.
-✅ Item 3: resolvido como efeito colateral do item 1 (snapshot escopado → `moduleRow.find` retorna módulo da eletiva certa).
-⏭️ Item 5: `EVENT_INFO.nome = "Chŏra Lovable"` é só usado em `CertificateEditorial` legado (`/legacy`), mantido propositalmente — é o nome real do evento abril/2026.
-⏭️ Item 13: `lookup_user_by_email` só é chamado pela edge function `validate-public-email` via service_role. Revoke de `anon`/`authenticated` está correto. Sem ação.
+Topo de prioridade: **Onda A** sozinha já destrava aluno hoje. Confirma que executo direto:
+1. copiar 2 yaml + schemas
+2. adaptar e rodar seeder
+3. smoke test
+4. te chamo pra revisar antes de Onda B/C
 
----
-
-## Execução Onda 2 — 2026-05-26
-
-✅ Item 4 (parcial): label admin "expectativa do chŏra" → "expectativa da eletiva" em `AdminFbi.tsx`. Coluna `expectativa_chora` no DB mantida (rename custaria migration + types + 3 edge functions + tutorial.tsx legado, sem ganho pro fluxo ativo já que FBI inteiro está atrás de `eletiva_extras_enabled`).
-✅ Item 9: criado `src/lib/nsKey.ts` com helpers `nsKey`/`nsGet`/`nsSet`/`nsRemove`. Lê fallback transparente em `chora.*` e migra pra `nachesu.*` na primeira leitura. Próximos call-sites novos devem usar o helper; migração das 6 ocorrências `chora.*` existentes fica como follow-up sem urgência (dados sobrevivem via fallback).
-✅ Item 10: removidos emojis 🤙 dos toasts/labels de `VoteButton.tsx` e `GlobalVotingBanner.tsx` (os dois call-sites citados no plan).
-⏭️ Item 6: `CartaPublica` e `CertificateEditorial` ficam atrás de `/legacy/*` + `ExtrasGate`. Não vazam pro fluxo NachesU. `ChoraLogo` ali é correto (é o certificado real do evento Chŏra Lovable).
-⏭️ Item 7: aliases `EletivaLogo as ChoraLogo` em 10+ arquivos. Substituição mecânica de baixo valor (componente subjacente já é `NachesULogo`). Adiar pra refactor dedicado quando tocar PageHeader/Auth/Onboarding.
-⏭️ Item 8: `TrailBreadcrumb` é usado por Tutorial/Prework/Missions (todos legados via extras flag). Mover de pasta força updates de import sem ganho. Deixar onde está + nota.
-⏭️ Item 11: em-dash em admin é placeholder de null (`r.cidade ?? "—"`). Convenção de UI tabular padrão, não copy. Mantido.
-⏭️ Item 12: `pb-[env(safe-area-inset-bottom)]` em `Marco.tsx` está correto (página celebração não tem MobileNav). `--mobile-nav-h` se aplica só onde a nav existe.
-
+Se quiser que Onda B (editor admin) seja parte do mesmo push, falar agora — ainda cabe nas próximas ~2h.
