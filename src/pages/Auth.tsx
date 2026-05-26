@@ -12,7 +12,8 @@ import { FirstTimeChecklist } from "@/components/auth/FirstTimeChecklist";
 import { ALLOWED_EMAILS } from "@/lib/access";
 import { resolveAuthError, readAuthErrorFromUrl, t } from "@/lib/authErrors";
 
-const EMAIL_LS_KEY = "chora.lastEmail";
+const EMAIL_LS_KEY = "nachesu.lastEmail";
+const LEGACY_EMAIL_LS_KEY = "chora.lastEmail";
 
 const SOON_MESSAGE =
   "não consegui validar esse email agora. confere se digitou certo ou tenta de novo em alguns segundos.";
