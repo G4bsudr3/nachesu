@@ -1,31 +1,61 @@
-import { useCallback, useEffect, useState } from "react";
+import { useSyncExternalStore, useCallback } from "react";
 
 const KEY = "eletiva:active-slug";
 
-/**
- * slug da eletiva "atual" escolhida pelo aluno (persistido em localStorage).
- * usado pra escopar o hero/progresso do dashboard quando o aluno
- * está matriculado em mais de uma eletiva.
- */
-export function useActiveEletiva() {
-  const [slug, setSlugState] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    return window.localStorage.getItem(KEY);
+// store global no escopo do módulo: garante que toda instância do hook
+// veja a mesma slug e re-renderize quando alguém chamar setSlug.
+let currentSlug: string | null =
+  typeof window !== "undefined" ? window.localStorage.getItem(KEY) : null;
+
+const listeners = new Set<() => void>();
+
+function emit() {
+  for (const l of listeners) l();
+}
+
+function subscribe(cb: () => void) {
+  listeners.add(cb);
+  return () => {
+    listeners.delete(cb);
+  };
+}
+
+function getSnapshot() {
+  return currentSlug;
+}
+
+function getServerSnapshot(): string | null {
+  return null;
+}
+
+// sincroniza mudanças vindas de OUTRAS abas
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (e: StorageEvent) => {
+    if (e.key !== KEY) return;
+    currentSlug = e.newValue;
+    emit();
   });
+}
 
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === KEY) setSlugState(e.newValue);
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  const setSlug = useCallback((next: string | null) => {
+export function setActiveSlug(next: string | null) {
+  if (typeof window !== "undefined") {
     if (next) window.localStorage.setItem(KEY, next);
     else window.localStorage.removeItem(KEY);
-    setSlugState(next);
-  }, []);
+  }
+  currentSlug = next;
+  emit();
+}
 
+/**
+ * slug da eletiva "atual" escolhida pelo aluno (persistido em localStorage).
+ * compartilhada entre todos os consumidores via store de módulo, então
+ * `setSlug` em qualquer lugar re-renderiza tudo (dashboard, switcher,
+ * EletivaCard, Trilhas, useEletivaExtras, etc.).
+ */
+export function useActiveEletiva() {
+  const slug = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const setSlug = useCallback((next: string | null) => {
+    setActiveSlug(next);
+  }, []);
   return { slug, setSlug };
 }
