@@ -1,11 +1,7 @@
-// estilos compartilhados pros emails do chŏra
+// estilos compartilhados pros emails da nachesu
 // paleta perestroika: bege #f2e4d8, laranja #fe7b02, vermelho #fd4644,
 // rosa #f756a6, azul #6f77fc, preto #090909
-
-export const LOGO_URL =
-  'https://tfztafpdhlcaamumcdrn.supabase.co/storage/v1/object/public/email-assets/chora-logo-preta.png'
-export const LAGRIMA_URL =
-  'https://tfztafpdhlcaamumcdrn.supabase.co/storage/v1/object/public/email-assets/lagrima.png'
+// nome do arquivo mantido por compat com imports existentes.
 
 export const main = {
   backgroundColor: '#ffffff',
@@ -22,17 +18,22 @@ export const container = {
   margin: '0 auto',
 }
 
-export const logoStyle = {
-  width: '140px',
-  height: 'auto',
+// wordmark tipográfico (substitui o logo png)
+export const wordmark = {
+  fontFamily: "'League Gothic', 'Arial Black', Arial, sans-serif",
+  fontSize: '32px',
+  fontWeight: 400 as const,
+  color: '#090909',
+  textTransform: 'uppercase' as const,
+  letterSpacing: '1px',
   margin: '0 0 32px',
-  display: 'block',
+  lineHeight: '1',
 }
 
 export const h1 = {
   fontFamily: "'League Gothic', 'Arial Black', Arial, sans-serif",
-  fontSize: '44px',
-  lineHeight: '0.95',
+  fontSize: '52px',
+  lineHeight: '0.92',
   fontWeight: 400 as const,
   color: '#090909',
   textTransform: 'uppercase' as const,
@@ -75,19 +76,26 @@ export const button = {
 
 export const codeStyle = {
   fontFamily: "'League Gothic', 'Arial Black', Arial, sans-serif",
-  fontSize: '48px',
+  fontSize: '56px',
   fontWeight: 400 as const,
   color: '#fd4644',
-  letterSpacing: '8px',
+  letterSpacing: '12px',
   margin: '8px 0 28px',
   textAlign: 'center' as const,
+  backgroundColor: '#ffffff',
+  borderRadius: '12px',
+  padding: '20px 16px',
 }
 
-export const lagrimaStyle = {
-  width: '32px',
-  height: 'auto',
-  display: 'block',
-  margin: '24px 0 16px',
+// barra de gradiente decorativa (substitui a lagrima)
+export const accentBar = {
+  height: '4px',
+  width: '64px',
+  backgroundImage:
+    'linear-gradient(90deg, #fe7b02 0%, #fd4644 35%, #f756a6 70%, #6f77fc 100%)',
+  borderRadius: '4px',
+  margin: '28px 0 16px',
+  border: 'none',
 }
 
 export const footer = {
@@ -95,8 +103,12 @@ export const footer = {
   fontSize: '12px',
   color: '#090909',
   opacity: 0.7,
-  margin: '24px 0 0',
-  lineHeight: '1.5',
+  margin: '16px 0 0',
+  lineHeight: '1.6',
 }
 
 export const fontImport = `@import url('https://fonts.googleapis.com/css2?family=League+Gothic&family=Urbanist:wght@400;600;700&display=swap');`
+
+// footer padrão reutilizável como string
+export const FOOTER_LINE_1 = 'vai lá e cria.'
+export const FOOTER_LINE_2 = 'nachesu · uma plataforma naches · em parceria com escola sebrae'

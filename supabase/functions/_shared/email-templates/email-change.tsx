@@ -8,26 +8,26 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
-  Img,
   Link,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
 import {
-  LOGO_URL,
-  LAGRIMA_URL,
   main,
   container,
-  logoStyle,
+  wordmark,
   h1,
   text,
   link,
   button,
-  lagrimaStyle,
+  accentBar,
   footer,
   fontImport,
+  FOOTER_LINE_1,
+  FOOTER_LINE_2,
 } from './_chora-styles.ts'
 
 interface EmailChangeEmailProps {
@@ -49,11 +49,11 @@ export const EmailChangeEmail = ({
     <Preview>confirma seu novo email</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={LOGO_URL} alt="chŏra lovable" style={logoStyle} />
+        <Text style={wordmark}>NachesU</Text>
         <Heading style={h1}>
-          troca de
+          confirma o
           <br />
-          email
+          novo email
         </Heading>
         <Text style={text}>
           você pediu pra trocar seu email de{' '}
@@ -64,7 +64,7 @@ export const EmailChangeEmail = ({
           <Link href={`mailto:${newEmail}`} style={link}>
             {newEmail}
           </Link>
-          . clica no botão pra confirmar.
+          . clica no botão pra confirmar a troca.
         </Text>
         <Button style={button} href={confirmationUrl}>
           confirmar troca
@@ -72,11 +72,11 @@ export const EmailChangeEmail = ({
         <Text style={text}>
           se não foi você que pediu, protege sua conta agora trocando a senha.
         </Text>
-        <Img src={LAGRIMA_URL} alt="" style={lagrimaStyle} />
+        <Hr style={accentBar} />
         <Text style={footer}>
-          vai lá e cria.
+          {FOOTER_LINE_1}
           <br />
-          chŏra lovable 2026 · 25-26 abril · porto alegre
+          {FOOTER_LINE_2}
         </Text>
       </Container>
     </Body>

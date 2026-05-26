@@ -8,24 +8,24 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
-  Img,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
 import {
-  LOGO_URL,
-  LAGRIMA_URL,
   main,
   container,
-  logoStyle,
+  wordmark,
   h1,
   text,
   button,
-  lagrimaStyle,
+  accentBar,
   footer,
   fontImport,
+  FOOTER_LINE_1,
+  FOOTER_LINE_2,
 } from './_chora-styles.ts'
 
 interface SignupEmailProps {
@@ -40,27 +40,29 @@ export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
     <Head>
       <style>{fontImport}</style>
     </Head>
-    <Preview>confirma seu email pra entrar no chŏra</Preview>
+    <Preview>confirma seu email pra entrar na nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={LOGO_URL} alt="chŏra lovable" style={logoStyle} />
+        <Text style={wordmark}>NachesU</Text>
         <Heading style={h1}>
-          confirma
+          bem-vinda
           <br />
-          seu email
+          à nachesu
         </Heading>
         <Text style={text}>
-          você tá quase dentro. clica no botão pra confirmar o email e ativar sua conta no hub.
+          você tá quase dentro. clica no botão pra confirmar seu email e começar suas eletivas.
         </Text>
         <Button style={button} href={confirmationUrl}>
           confirmar email
         </Button>
-        <Text style={text}>se não foi você que se cadastrou, ignora esse email.</Text>
-        <Img src={LAGRIMA_URL} alt="" style={lagrimaStyle} />
+        <Text style={text}>
+          se não foi você que se cadastrou, ignora esse email tranquilo.
+        </Text>
+        <Hr style={accentBar} />
         <Text style={footer}>
-          vai lá e cria.
+          {FOOTER_LINE_1}
           <br />
-          chŏra lovable 2026 · 25-26 abril · porto alegre
+          {FOOTER_LINE_2}
         </Text>
       </Container>
     </Body>

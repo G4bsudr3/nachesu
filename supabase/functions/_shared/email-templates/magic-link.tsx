@@ -8,24 +8,24 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
-  Img,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
 import {
-  LOGO_URL,
-  LAGRIMA_URL,
   main,
   container,
-  logoStyle,
+  wordmark,
   h1,
   text,
   button,
-  lagrimaStyle,
+  accentBar,
   footer,
   fontImport,
+  FOOTER_LINE_1,
+  FOOTER_LINE_2,
 } from './_chora-styles.ts'
 
 interface MagicLinkEmailProps {
@@ -36,36 +36,36 @@ interface MagicLinkEmailProps {
 export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
   <Html lang="pt-BR" dir="ltr">
     <Head>
-      {/* evita pre-fetch de scanners de email (Outlook Safe Links etc) consumirem o token single-use */}
+      {/* evita pre-fetch de scanners (Outlook Safe Links etc) consumirem o token single-use */}
       <meta name="referrer" content="no-referrer" />
       <meta name="x-apple-disable-message-reformatting" />
       <meta httpEquiv="x-dns-prefetch-control" content="off" />
       <style>{fontImport}</style>
     </Head>
-    <Preview>seu link mágico pro chŏra chegou</Preview>
+    <Preview>seu link de acesso nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={LOGO_URL} alt="chŏra lovable" style={logoStyle} />
+        <Text style={wordmark}>NachesU</Text>
         <Heading style={h1}>
-          seu link
+          entra
           <br />
-          chegou 👀
+          direto
         </Heading>
         <Text style={text}>
-          clica no botão pra entrar no hub do chŏra. o link vale por 1 hora e só funciona uma vez.
+          clica no botão pra entrar na nachesu sem senha. o link vale por 1 hora e só funciona uma vez.
         </Text>
         <Button style={button} href={confirmationUrl}>
-          entrar no hub
+          entrar na nachesu
         </Button>
         <Text style={text}>
-          dica: abre o link no <strong>mesmo dispositivo</strong> onde pediu. se não funcionar, volta em chorahub.lovable.app e pede um novo.
+          dica: abre o link no <strong>mesmo dispositivo</strong> onde pediu. se não funcionar, pede um novo lá no app.
         </Text>
-        <Text style={text}>se não foi você que pediu, ignora esse email tranquilo.</Text>
-        <Img src={LAGRIMA_URL} alt="" style={lagrimaStyle} />
+        <Text style={text}>se não foi você, ignora esse email.</Text>
+        <Hr style={accentBar} />
         <Text style={footer}>
-          vai lá e cria.
+          {FOOTER_LINE_1}
           <br />
-          chŏra lovable 2026 · 25-26 abril · porto alegre
+          {FOOTER_LINE_2}
         </Text>
       </Container>
     </Body>

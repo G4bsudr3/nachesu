@@ -8,24 +8,24 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
-  Img,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
 import {
-  LOGO_URL,
-  LAGRIMA_URL,
   main,
   container,
-  logoStyle,
+  wordmark,
   h1,
   text,
   button,
-  lagrimaStyle,
+  accentBar,
   footer,
   fontImport,
+  FOOTER_LINE_1,
+  FOOTER_LINE_2,
 } from './_chora-styles.ts'
 
 interface InviteEmailProps {
@@ -39,27 +39,29 @@ export const InviteEmail = ({ confirmationUrl }: InviteEmailProps) => (
     <Head>
       <style>{fontImport}</style>
     </Head>
-    <Preview>você foi convidado pro chŏra lovable</Preview>
+    <Preview>você foi convidado pra nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={LOGO_URL} alt="chŏra lovable" style={logoStyle} />
+        <Text style={wordmark}>NachesU</Text>
         <Heading style={h1}>
-          você tá
+          você foi
           <br />
-          dentro 🚀
+          convidado
         </Heading>
         <Text style={text}>
-          você foi convidado pra imersão chŏra lovable. clica no botão pra criar sua conta no hub e começar a preparação.
+          a equipe da nachesu te convidou pras eletivas online. clica no botão pra criar sua conta e começar.
         </Text>
         <Button style={button} href={confirmationUrl}>
           aceitar convite
         </Button>
-        <Text style={text}>se isso chegou por engano, pode ignorar tranquilo.</Text>
-        <Img src={LAGRIMA_URL} alt="" style={lagrimaStyle} />
+        <Text style={text}>
+          o convite é válido só pro seu email institucional. se chegou por engano, pode ignorar.
+        </Text>
+        <Hr style={accentBar} />
         <Text style={footer}>
-          vai lá e cria.
+          {FOOTER_LINE_1}
           <br />
-          chŏra lovable 2026 · 25-26 abril · porto alegre
+          {FOOTER_LINE_2}
         </Text>
       </Container>
     </Body>
