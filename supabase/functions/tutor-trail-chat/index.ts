@@ -263,10 +263,22 @@ Deno.serve(async (req) => {
       }));
     }
 
+    // resolve slug da eletiva pra dar framing à voz do tutor
+    let courseSlug: string | null = null;
+    if (trail.course_id) {
+      const { data: courseRow } = await admin
+        .from("courses")
+        .select("slug")
+        .eq("id", trail.course_id)
+        .maybeSingle();
+      courseSlug = courseRow?.slug ?? null;
+    }
+
     const systemPrompt = buildSystemPrompt({
       trailTitle: trail.title,
       trailDescription: trail.description,
       pblPrompt: trail.pbl_prompt,
+      courseSlug,
       currentModule: currentModule
         ? { number: currentModule.number, title: currentModule.title, objective: currentModule.objective }
         : null,
