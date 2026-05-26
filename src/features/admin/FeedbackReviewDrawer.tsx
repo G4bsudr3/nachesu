@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import type { DeliverableInbox } from "./usePendingDeliverables";
+import { DeliverableAnswersList } from "./deliverableRendering/DeliverableAnswersList";
 
 const RUBRIC_CHIPS = [
   "clareza",
