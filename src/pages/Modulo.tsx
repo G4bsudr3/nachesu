@@ -235,17 +235,7 @@ const Modulo = () => {
   }
 
   if (snapLoading) {
-    return (
-      <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="motion-safe:animate-pulse">
-            <EletivaSymbol size={72} pose="building" />
-          </div>
-          <p className="font-body text-xs text-perestroika-preto/55">amassando mais um tijolinho...</p>
-          <span className="sr-only">carregando módulo</span>
-        </div>
-      </div>
-    );
+    return <ModuloSkeleton />;
   }
 
   if (!moduleRow) {
