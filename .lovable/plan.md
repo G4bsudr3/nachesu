@@ -1,117 +1,155 @@
-## objetivo
+## o problema
 
-eliminar a ambiguidade do "módulo 1 de qual eletiva?" e fechar a primeira trilha de IA na Prática com conteúdo real nos módulos 2 e 3, no mesmo nível editorial do módulo 1.
-
-## parte 1 — rota escopada por slug
-
-### problema atual
-
-`/app/modulo/:number` resolve "qual eletiva" lendo `localStorage("eletiva:active-slug")`. consequências:
-
-- link compartilhado entre estudantes de eletivas diferentes leva pra módulo errado
-- ao trocar de eletiva no switcher, atalhos antigos no histórico do navegador apontam pro conteúdo da eletiva anterior
-- impossível diferenciar em analytics qual eletiva o aluno está consumindo
-- tutor IA e SEO já são por slug, mas o módulo não, o que cria inconsistência
-
-### solução
-
-nova rota canônica: `/app/eletiva/:slug/modulo/:number`. rota antiga `/app/modulo/:number` permanece como **redirect** que resolve o slug ativo via `useActiveEletiva` e faz `<Navigate replace />` pra rota nova. nenhum link existente quebra.
-
-### mudanças
-
-1. **`src/App.tsx`**: adicionar `<Route path="/app/eletiva/:slug/modulo/:number" element={<Modulo />} />`. manter `/app/modulo/:number` apontando pra novo componente `LegacyModuloRedirect` que faz redirect com `replace`.
-
-2. **`src/pages/Modulo.tsx`**: ler `slug` de `useParams`. validar que o módulo pertence ao course com aquele slug; se não, 404 amigável ("esse módulo não faz parte da eletiva X"). passar `courseId` resolvido pra `useEletivaProgress` e pra `scopeModuleNavigation`.
-
-3. **`src/lib/moduleNavigation.ts`**: ajustar `nextModuleHref`/`prevModuleHref` pra incluir `:slug` no path gerado.
-
-4. **`src/components/dashboard/EletivaCard.tsx`** e qualquer outro CTA de módulo: gerar href já com slug (`/app/eletiva/${slug}/modulo/${n}`). buscar usos com `rg "app/modulo/" src/`.
-
-5. **`src/components/eletiva/modulo/ModuloCelebration.tsx`** e `ModuloPillList`: idem, CTAs de "próximo módulo" / "voltar pro mapa" usam slug atual.
-
-6. **`src/lib/seoRoutes.ts`**: registrar pattern `/app/eletiva/:slug/modulo/:n` com mesma policy `noindex` das outras rotas `/app`.
-
-7. **`src/components/SeoRouter.tsx`**: já detecta slug por query/localStorage; estender pra ler slug de `useParams` quando disponível, priorizando-o.
-
-8. **`useActiveEletiva`**: ao montar `Modulo.tsx` com slug na URL, sincronizar `setSlug(slug)` pra manter o resto do app consistente (dashboard, FAB do tutor etc).
-
-### fora de escopo desta parte
-
-- migrar `/app/eletiva/:slug` (já existe e funciona)
-- mudar rotas legadas atrás de `ExtrasGate`
-- pretty URLs por número nomeado (continua `/modulo/1`, não `/modulo/ia-sem-hype`)
-
-## parte 2 — conteúdo real dos módulos 2 e 3 de IA na Prática
-
-### estrutura herdada do módulo 1 (não muda)
-
-cada módulo = 5 pílulas seguindo a anatomia padrão:
+hoje o `FeedbackReviewDrawer` (revisão do educador) mostra as respostas como:
 
 ```
-pílula A   pilula_editorial      9 min   conceito + vídeo + reflexão
-pílula B   pilula_editorial      9 min   técnica + vídeo + reflexão
-pílula C   pilula_editorial      8 min   aplicação + vídeo + reflexão
-exercício  pbl_estruturado       25 min  mão na massa com prints
-registro   checklist_pacto       8 min   síntese + compromissos
+pílula abc12345
+[texto do aluno]
 ```
 
-zero schema novo, zero componente novo. só dados.
+sem o título da pílula, sem o texto da pergunta, sem o tipo (reflexão / pbl / quiz / checklist), sem ordem do módulo. o "código maluco" é o `pillId.slice(0,8)`.
 
-### módulo 2 — "prompt como pensamento: como conversar com IA de verdade"
+além disso o drawer **só renderiza 6 dos 10 campos** que as pílulas salvam. ficaram de fora:
 
-trilha 1 (fundamentos & IA), número 2.
+- `pbl_estruturado` (pílulas pbl novas com pedido a/b, prints, melhor, por_que, aprendi) — toda a entrega rica do pbl com prints não aparece pro professor
+- `checklist` (pílula de pacto) — invisível
+- `items` quando salvos como radar via novo `field: "items"` (sem schema dos fluxos)
+- prints/uploads (`evidence_kind: upload`) não viram link clicável
 
-- **pílula A** "o que é prompt (e por que você já sabe fazer)": prompt como pedido contextualizado, comparação com pedir comida pro garçom vs pedir pro robô. vídeo curto YouTube. reflexão: "descreva um pedido seu da última semana que precisou de contexto pra ser bem atendido."
-- **pílula B** "as 4 camadas de um bom prompt": papel + tarefa + contexto + formato de saída. exemplo construído ao vivo no texto, partindo de prompt ruim → prompt bom. vídeo de exemplo prático. reflexão: "reescreva um prompt ruim seu usando as 4 camadas."
-- **pílula C** "quando o prompt falha (e como corrigir sem culpa)": iteração como conversa, não como acerto único. vídeo. reflexão: "qual foi a última vez que você desistiu de uma IA porque a primeira resposta foi ruim?"
-- **exercício PBL** "duelo de prompts": estudante pega uma tarefa real da escola, escreve prompt versão 1 (intuitivo), captura print da resposta, reescreve usando as 4 camadas, captura print, escolhe vencedor e analisa.
-- **registro** "meu pacto com prompt": 7 commitments (sempre dar papel à IA, sempre dar contexto, sempre pedir formato, nunca aceitar primeira resposta sem ler, etc) + textarea de outros + reflexão final.
+resultado: pro dudu (economia circular) e pro frattz (ia na prática) revisar fica quase impossível. é o feedback que sustenta os dois cursos e está com a pior ergonomia da plataforma.
 
-### módulo 3 — "verificar antes de confiar: lidar com alucinação e viés"
+## o que vamos fazer
 
-trilha 1, número 3.
+reconstruir o renderizador de entregas pra:
 
-- **pílula A** "por que IA inventa": modelo de probabilidade, não banco de fatos. analogia: amigo que sempre tem opinião confiante. vídeo. reflexão: "lembre de uma vez que você acreditou numa info errada porque veio com confiança."
-- **pílula B** "checagem em 3 passos": fonte primária, segunda fonte independente, faz sentido no meu contexto. vídeo. reflexão: "qual informação você costuma aceitar sem checar?"
-- **pílula C** "viés: o que IA aprendeu (e o que ela esqueceu)": viés de dados, viés cultural, ausência de representação. vídeo. reflexão: "pense numa pergunta onde a resposta 'padrão' provavelmente ignora sua realidade."
-- **exercício PBL** "caça à alucinação": estudante pede pra IA uma info verificável (dado histórico, citação, estatística), captura print, checa em 2 fontes externas, registra se bateu ou não, escreve o que aprendeu sobre confiar.
-- **registro** "meu pacto com checagem": 7 commitments (nunca copiar dado sem checar, sempre citar fonte primária, etc) + textarea + reflexão.
+1. **resolver** cada chave do `content` jsonb contra `module_pills` (título, kind, order_index, interaction_schema) e mostrar pergunta + resposta lado a lado, em ordem do módulo.
+2. **cobrir 100%** dos tipos de pílula que existem hoje (10 campos).
+3. **renderizar prints/uploads** como thumbnail + link assinado.
+4. **marcar pílulas obrigatórias sem resposta** explicitamente ("não respondida"), não esconder.
+5. **persistir um snapshot** da pergunta no momento da entrega pra não quebrar se o schema da pílula mudar depois.
 
-### conteúdo bruto
+## entregas técnicas
 
-vou escrever o texto editorial completo (gancho, aprofundamento, destaque, síntese, prompts de reflexão) na hora da inserção. vídeos do YouTube: vou selecionar 6 vídeos curtos (2-4 min) em português, prioritariamente canais brasileiros de educação (Filipe Deschamps, Diolinux, etc) — se nenhum servir, deixo placeholder com instrução clara pro frattz substituir antes de publicar.
+### 1. novo módulo `src/features/admin/deliverableRendering/`
 
-### mudanças
+- `useDeliverableAnswers.ts` — hook que recebe um `DeliverableInbox`, busca todas as `module_pills` do `module_id` (campos: `id, order_index, kind, title, body_md, interaction_schema, required`), e retorna `ResolvedAnswer[]` ordenado por `order_index`:
 
-1. **migração**: `UPDATE modules` pra título/summary dos módulos 2 e 3 (que hoje estão como placeholders). publicar (`published = true`). adicionar em `module_releases` com data alinhada à cadência semanal (módulo 2 = 7 dias após módulo 1, módulo 3 = 14 dias).
+  ```ts
+  type ResolvedAnswer = {
+    pillId: string;
+    order: number;
+    kind: PillKind; // 'editorial' | 'pbl_estruturado' | 'checklist_pacto' | 'conteudo_curado' | 'quiz' | 'radar' | 'bonus' | 'abertura' | 'reflexao' | 'pbl'
+    title: string;
+    required: boolean;
+    blocks: AnswerBlock[]; // ver abaixo
+    state: 'respondida' | 'parcial' | 'nao-respondida';
+  };
+  type AnswerBlock =
+    | { kind: 'text'; question: string; answer: string }
+    | { kind: 'choice'; question: string; answer: string; optionLabel?: string }
+    | { kind: 'upload'; question: string; url: string; mime?: string; filename?: string }
+    | { kind: 'list'; question: string; items: { label: string; value: string }[] }
+    | { kind: 'checklist'; question: string; items: { label: string; checked: boolean }[] }
+    | { kind: 'empty'; question: string };
+  ```
 
-2. **insert de dados**: `DELETE FROM module_pills WHERE module_id IN (m2, m3)` + `INSERT` das 10 novas pílulas (5 por módulo), cada uma com `interaction_schema` completo seguindo os 3 shapes já implementados.
+- `resolvers/` — uma função pura por kind de pílula que recebe `(pill, content)` e devolve `AnswerBlock[]`:
+  - `editorial.ts` → lê `schema.reflexao.prompt` + `content.reflections[pillId]`
+  - `reflexao.ts` (legacy) → idem com `body_md` como fallback
+  - `pbl.ts` (legacy) → `content.pbl_responses[pillId]` com prompt = título da pílula
+  - `pblEstruturado.ts` → para cada campo em `schema.campos` (pedido_a, print_a, pedido_b, print_b, melhor, por_que, aprendi) lê `content.pbl_estruturado[pillId][campo]`, resolve `melhor` contra `options`, e para `print_*` gera um bloco `upload` com signed url do bucket `radar-evidences` ou `pill-attachments`
+  - `checklistPacto.ts` → lê `schema.itens[]` + `content.checklist[pillId]`
+  - `conteudoCurado.ts` → para cada `schema.questions[]`, casa por `q.id` com `content.guided_answers[q.id]`; resolve `single_choice` no label da option
+  - `quiz.ts` → para cada `schema.questions[]`, casa com `content.quiz_answers[q.id]`, mostra a opção escolhida + se é a resposta correta (se `q.correct` existir)
+  - `radar.ts` / `radarFinal.ts` → lê `content.items[]`, resolve `fluxo` contra dicionário do schema
+  - `bonus.ts` → lê `content.bonus[pillId]` com prompt do schema
+  - `abertura.ts` → marca como visualizada (sem entrada)
 
-3. **validação**: abrir `/app/eletiva/ia-na-pratica/modulo/2` e `/modulo/3` no preview, confirmar render das 5 pílulas, vídeos embed funcionando, autosave OK, fluxo de celebração disparando.
+  cada resolver é pequeno, isolado e testável. fica óbvio o que falta quando aparece uma pílula nova.
 
-## ordem de execução
+- `signedUrl.ts` — helper que dá `createSignedUrl(bucket, path, 3600)` com cache em memória pro escopo do drawer.
 
-1. migração de dados (módulos 2 e 3) — sem schema novo
-2. inserts de conteúdo das 10 pílulas
-3. nova rota `/app/eletiva/:slug/modulo/:number` em `App.tsx` + componente `Modulo.tsx`
-4. redirect na rota antiga
-5. ajustar `moduleNavigation.ts` e CTAs (`EletivaCard`, `ModuloCelebration`, `ModuloPillList`)
-6. ajustar `SeoRouter` e `seoRoutes` pro novo pattern
-7. teste manual: dashboard → módulo 1 → conclui → próximo (módulo 2) → conclui → próximo (módulo 3) → conclui → volta pro mapa
+### 2. novo `DeliverableAnswersList.tsx`
 
-## fora de escopo
+substitui o `ContentRenderer` atual. usa o hook e renderiza:
 
-- módulos 4-20 de IA (próxima leva)
-- qualquer módulo de Economia Circular
-- visual identity diferenciada por eletiva (heroes, cover illustrations, pose-âncora do mascote) — fica pra ciclo de polimento
-- email de notificação "próximo módulo liberado em 7 dias"
-- bucket dedicado `pbl-evidencias` (continua reaproveitando `radar-evidences`)
-- publicar módulos vazios 4-20 como "in progress" — mantemos `published=false` por enquanto
+```
+m02 · pílula 03 · pbl estruturado · obrigatória
+"duelo de prompts"
+─────────────────
+pergunta: descreva o prompt simples que você testou
+resposta: [texto do aluno em quote block]
 
-## detalhes técnicos
+pergunta: print do resultado
+resposta: [thumb 80x80 → abre signed url]
 
-- nenhuma mudança de schema (tabelas, RLS, triggers continuam intactas)
-- 1 migration só de `UPDATE`/`INSERT`/`module_releases`
-- ~5 arquivos editados pra rota: `App.tsx`, `Modulo.tsx`, `moduleNavigation.ts`, `EletivaCard.tsx`, `SeoRouter.tsx` + grep de usos residuais de `/app/modulo/`
-- 0 componentes React novos
-- compat: rota antiga continua resolvendo via redirect, então links em emails antigos, bookmarks e histórico do navegador seguem funcionando
+pergunta: qual ficou melhor? (a | b)
+resposta: b — "porque foi mais específico..."
+
+⚠ pergunta "o que você aprendeu" — não respondida
+```
+
+estilo: cada pílula é um card com header (badge kind + número + título), blocos em pares pergunta/resposta com tipografia clara. pílula sem resposta fica colapsada com um chip "não respondida". atalho "ver como aluno vê" usa o novo `/app/eletiva/:slug/modulo/:n` (já existe `moduloHref`).
+
+### 3. atualizar `FeedbackReviewDrawer.tsx`
+
+trocar `<ContentRenderer content={...} />` por `<DeliverableAnswersList deliverable={deliverable} />`. resto do drawer (rubric chips, feedback textarea, aprovar/ajustar/reabrir) fica igual.
+
+### 4. snapshot defensivo no momento da entrega
+
+acrescentar ao `useDeliverable` (ou ao `useAutoSaveField`) um campo `content.questions_snapshot` salvo na **primeira** vez que o aluno toca em qualquer campo daquela pílula. estrutura:
+
+```jsonc
+content.questions_snapshot = {
+  [pillId]: {
+    title: "...",
+    kind: "pbl_estruturado",
+    order_index: 5,
+    fields: {
+      pedido_a: "descreva o prompt simples que você testou",
+      print_a: "print do resultado",
+      melhor: { label: "qual ficou melhor?", options: [...] }
+      ...
+    }
+  }
+}
+```
+
+o resolver usa esse snapshot quando existir (resiliente a edits do schema) e cai no schema atual quando não existir (entregas antigas). zero migração de dados.
+
+### 5. preview pro educador testar
+
+adicionar atalho no `AdminEletivaReview` (que hoje só lista pílulas/escopo): botão "ver como entrega de aluno" em cada pílula → abre o `DeliverableAnswersList` com um deliverable mock construído a partir dos placeholders do schema. ajuda dudu e frattz a validarem perguntas antes de publicar.
+
+## fora de escopo desta rodada
+
+- exportar entrega em pdf
+- comentários por bloco/pergunta (hoje feedback é único por entrega)
+- timeline de revisões anteriores
+- alertas por email pro professor de fila pendente (já existe `usePendingDeliverables` count, basta consumir depois)
+
+## arquivos tocados
+
+novos:
+- `src/features/admin/deliverableRendering/useDeliverableAnswers.ts`
+- `src/features/admin/deliverableRendering/DeliverableAnswersList.tsx`
+- `src/features/admin/deliverableRendering/signedUrl.ts`
+- `src/features/admin/deliverableRendering/resolvers/*.ts` (10 arquivos pequenos)
+- `src/features/admin/deliverableRendering/types.ts`
+
+editados:
+- `src/features/admin/FeedbackReviewDrawer.tsx` — trocar o renderer
+- `src/components/eletiva/pills/useDeliverable.ts` — adicionar snapshot de perguntas
+- cada pílula em `src/components/eletiva/pills/*.tsx` e `src/components/eletiva/modulo/Pill*.tsx` — chamar `recordQuestionsSnapshot(pill)` no mount (uma linha cada)
+- `src/features/admin/AdminEletivaReview.tsx` — botão de preview por pílula
+
+zero schema novo, zero migração obrigatória.
+
+## validação
+
+depois de implementar, abrir o drawer com:
+- uma entrega real do módulo 1 ia na prática (tem `reflections` + `bonus`)
+- uma entrega do módulo 2/3 (pbl_estruturado + checklist) — pode ser criada manualmente seguindo o fluxo
+- uma entrega vazia (só `submitted_at` sem campos)
+
+cada um deve mostrar título da pílula, texto da pergunta e resposta legível ou chip "não respondida". prints abrem em nova aba.
