@@ -61,7 +61,7 @@ export const GlobalVotingBanner = () => {
     tone = "info";
   } else if (hasProject && hasVoted) {
     icon = <Sparkles className="h-4 w-4" />;
-    label = "voto registrado 🤙";
+    label = "voto registrado";
     text = "dá pra trocar enquanto a votação tá aberta.";
     cta = "ver projetos";
     ctaTo = "/app/hub/projetos";

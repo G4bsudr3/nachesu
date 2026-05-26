@@ -47,7 +47,7 @@ export const VoteButton = ({ projectId, projectOwnerId }: Props) => {
     setBusy(true);
     const r = await castVote(projectId);
     setBusy(false);
-    if (r.ok) toast.success(hasOtherVote ? "voto trocado 🤙" : "voto registrado 🤙");
+    if (r.ok) toast.success(hasOtherVote ? "voto trocado" : "voto registrado");
     else toast.error(r.error ?? "erro ao votar");
   };
 
