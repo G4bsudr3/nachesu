@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Mail, ArrowRight, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
+
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { FirstTimeChecklist } from "@/components/auth/FirstTimeChecklist";
