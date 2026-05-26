@@ -120,7 +120,7 @@ const EmailScreen = ({
 }) => (
   <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
     <header className="container max-w-5xl pt-8 pb-4">
-      <ChoraLogo variant="dark" />
+      <NachesULogo variant="dark" />
     </header>
     <main className="flex-1 container max-w-3xl flex flex-col justify-center py-20">
       <span className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/50">
@@ -398,7 +398,7 @@ const PublicFbiFormFlow = ({
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
       <header className="sticky top-0 z-30 bg-perestroika-bege/90 backdrop-blur border-b border-perestroika-preto/5">
         <div className="container max-w-5xl flex items-center justify-between pt-6 pb-3">
-          <ChoraLogo variant="dark" />
+          <NachesULogo variant="dark" />
           <div className="flex items-center gap-3">
             <SaveIndicator status={saveStatus} />
             <span className="font-body text-xs text-perestroika-preto/50 hidden sm:inline truncate max-w-[200px]">
