@@ -83,11 +83,19 @@ const Auth = () => {
     if (fromQuery) {
       setEmail(fromQuery);
     } else {
+      // migra a chave antiga "chora.lastEmail" pra "nachesu.lastEmail" silenciosamente
       const saved = localStorage.getItem(EMAIL_LS_KEY);
-      if (saved) setEmail(saved);
+      const legacy = !saved ? localStorage.getItem(LEGACY_EMAIL_LS_KEY) : null;
+      if (saved) {
+        setEmail(saved);
+      } else if (legacy) {
+        setEmail(legacy);
+        localStorage.setItem(EMAIL_LS_KEY, legacy);
+        localStorage.removeItem(LEGACY_EMAIL_LS_KEY);
+      }
     }
     if (fromCarta && cartaToken) {
-      try { sessionStorage.setItem("chora.fromCartaToken", cartaToken); } catch { /* ignore */ }
+      try { sessionStorage.setItem("nachesu.fromCartaToken", cartaToken); } catch { /* ignore */ }
     }
 
     // Detecta erro de auth vindo do Supabase (hash ou query)
