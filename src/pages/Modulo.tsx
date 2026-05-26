@@ -21,6 +21,7 @@ import { ModuloFeedbackCard } from "@/components/eletiva/modulo/ModuloFeedbackCa
 import { ModuloLockedHero } from "@/components/eletiva/modulo/ModuloLockedHero";
 import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
 import { TrailTransitionBanner } from "@/components/eletiva/modulo/TrailTransitionBanner";
+import { scopeModuleNavigation } from "@/lib/moduleNavigation";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
