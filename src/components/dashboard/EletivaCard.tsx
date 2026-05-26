@@ -48,11 +48,18 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
     return (
       <section
         aria-label="próximo passo"
+        aria-busy="true"
         className="rounded-3xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] p-8 sm:p-12 motion-safe:animate-pulse"
       >
-        <div className="h-3 w-32 bg-perestroika-preto/15 rounded mb-6" />
-        <div className="h-12 w-3/4 bg-perestroika-preto/15 rounded mb-4" />
-        <div className="h-4 w-1/2 bg-perestroika-preto/10 rounded" />
+        <div className="h-3 w-40 bg-perestroika-preto/15 rounded mb-6" />
+        <div className="h-12 sm:h-16 w-11/12 bg-perestroika-preto/15 rounded mb-3" />
+        <div className="h-12 sm:h-16 w-2/3 bg-perestroika-preto/15 rounded mb-6" />
+        <div className="h-4 w-3/4 bg-perestroika-preto/10 rounded mb-2" />
+        <div className="h-4 w-1/2 bg-perestroika-preto/10 rounded mb-8" />
+        <div className="flex flex-wrap gap-3">
+          <div className="h-12 w-48 rounded-full bg-perestroika-preto/15" />
+          <div className="h-12 w-36 rounded-full bg-perestroika-preto/10" />
+        </div>
       </section>
     );
   }

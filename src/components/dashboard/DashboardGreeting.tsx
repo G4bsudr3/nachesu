@@ -4,6 +4,12 @@ interface Props {
   totalPublished: number;
   /** dias desde a última atividade do aluno (null = nunca começou) */
   daysSinceLastActivity: number | null;
+  /**
+   * snapshot da eletiva ainda carregando. quando true, a linha de contexto
+   * vira um placeholder sutil pra não piscar de "a eletiva está aquecendo"
+   * pra "boa, você tá construindo. 3/5 fechados." no segundo seguinte.
+   */
+  loading?: boolean;
 }
 
 const buildContextLine = (
@@ -36,6 +42,7 @@ export const DashboardGreeting = ({
   totalCompleted,
   totalPublished,
   daysSinceLastActivity,
+  loading = false,
 }: Props) => {
   const contextLine = buildContextLine(
     totalCompleted,
@@ -48,9 +55,16 @@ export const DashboardGreeting = ({
       <h1 className="font-display uppercase text-3xl sm:text-4xl leading-none text-perestroika-preto">
         oi, {nickname || "builder"}.
       </h1>
-      <p className="font-body text-sm sm:text-base text-perestroika-preto/70 max-w-prose">
-        {contextLine}
-      </p>
+      {loading ? (
+        <div
+          aria-hidden="true"
+          className="h-4 sm:h-5 w-64 max-w-full rounded bg-perestroika-preto/10 motion-safe:animate-pulse"
+        />
+      ) : (
+        <p className="font-body text-sm sm:text-base text-perestroika-preto/70 max-w-prose">
+          {contextLine}
+        </p>
+      )}
     </section>
   );
 };

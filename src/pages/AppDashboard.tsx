@@ -18,7 +18,7 @@ import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
-import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
 import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
 import { WeekCadenceStrip } from "@/components/dashboard/WeekCadenceStrip";
@@ -42,26 +42,16 @@ const AppDashboard = () => {
         enrollments?.[0] ??
         null;
   const activeCourseId = activeEnrollment?.course_id ?? null;
-  const { data: eletiva } = useEletivaProgress(activeCourseId);
+  const { data: eletiva, isLoading: eletivaLoading } = useEletivaProgress(activeCourseId);
   const status = usePostEventStatus();
   const { enabled: extrasEnabled } = useEletivaExtras(activeCourseId);
 
   const nickname = dashboard?.nicknameDisplay ?? "";
   const hasPassword = dashboard?.profile?.has_password ?? true;
 
-  // estado de carregamento inicial
+  // estado de carregamento inicial: skeleton que espelha o layout real
   if (!user || dashboardLoading) {
-    return (
-      <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="motion-safe:animate-pulse">
-            <EletivaSymbol size={72} pose="building" />
-          </div>
-          <p className="font-body text-xs text-perestroika-preto/55">construindo seu ninho...</p>
-          <span className="sr-only">carregando dashboard</span>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   // calcula dias desde a última atividade (start_at ou completed_at mais recente)
@@ -128,6 +118,7 @@ const AppDashboard = () => {
             totalCompleted={eletiva?.totalCompleted ?? 0}
             totalPublished={eletiva?.totalPublished ?? 0}
             daysSinceLastActivity={daysSinceLastActivity}
+            loading={!!activeCourseId && eletivaLoading && !eletiva}
           />
 
           {/* 1.5 cadência da semana: tempo restante + próximo release */}
