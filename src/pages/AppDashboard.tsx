@@ -18,7 +18,7 @@ import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
-import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
 import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
 import { WeekCadenceStrip } from "@/components/dashboard/WeekCadenceStrip";
