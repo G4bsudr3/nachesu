@@ -273,6 +273,7 @@ const Modulo = () => {
           prevModuleNumber={prevModule?.number ?? null}
           prevModuleTitle={prevModule?.title ?? null}
           availableFrom={moduleRow.available_from}
+          courseSlug={courseSlug}
         />
       </div>
     );
