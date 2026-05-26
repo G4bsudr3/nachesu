@@ -33,14 +33,19 @@ const trailColorByOrder: Record<number, string> = {
 };
 
 const Modulo = () => {
-  const { number } = useParams<{ number: string }>();
+  const { number, slug: slugParam } = useParams<{ number: string; slug?: string }>();
   const moduleNumber = Number(number);
   const { user } = useAuth();
   const { isAdmin } = useUserRole();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { slug: activeSlug } = useActiveEletiva();
-  const { data: activeCourse } = useCourseBySlug(activeSlug ?? undefined);
+  const { slug: activeSlug, setSlug } = useActiveEletiva();
+  // slug da URL ganha de localStorage. mantém os dois sincronizados.
+  const effectiveSlug = slugParam ?? activeSlug ?? undefined;
+  useEffect(() => {
+    if (slugParam && slugParam !== activeSlug) setSlug(slugParam);
+  }, [slugParam, activeSlug, setSlug]);
+  const { data: activeCourse } = useCourseBySlug(effectiveSlug);
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress(activeCourse?.id ?? null);
   const [tutorOpen, setTutorOpen] = useState(false);
   const [tutorPillContext, setTutorPillContext] = useState<{
@@ -58,19 +63,8 @@ const Modulo = () => {
   );
   const trailColor = trailColorByOrder[trail?.order_index ?? 1] ?? trail?.color ?? "#fe7b02";
 
-  // slug do curso (pra navegar pro marco entre trilhas)
-  const { data: courseSlug } = useQuery({
-    queryKey: ["course-slug", trail?.course_id],
-    enabled: !!trail?.course_id,
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("courses")
-        .select("slug")
-        .eq("id", trail!.course_id!)
-        .maybeSingle();
-      return data?.slug ?? null;
-    },
-  });
+  // slug do curso (pra navegar pro marco entre trilhas + CTAs escopadas)
+  const courseSlug = activeCourse?.slug ?? slugParam ?? null;
 
   // detecta se um módulo é o último da sua trilha e devolve order_index da trilha
   const trailFinishedOrder = (justCompletedModuleId: string): number | null => {
@@ -398,6 +392,7 @@ const Modulo = () => {
           completePending={completeMutation.isPending}
           prevModule={prevModule}
           nextModule={nextModule}
+          courseSlug={courseSlug}
         />
       </main>
 
