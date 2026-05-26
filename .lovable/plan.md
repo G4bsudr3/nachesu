@@ -1,93 +1,71 @@
+# Plano: NachesU funcional ponta-a-ponta
 
-# Aproveitar NachesU 2.0 pra subir o curso ainda hoje
+Premissa nova: **sem trava de semana**. Admin cria módulo/pílula quando quiser e tem um toggle "publicar pro estudante". Tudo que está publicado fica visível imediatamente. Estudante avança no ritmo dele.
 
-## o que o 2.0 tem que aqui não tem
+## Estado atual (confirmado por inspeção)
+- 2 cursos seedados (`ia-na-pratica`, `economia-circular`), cada um com 4 trilhas × 5 módulos × 5 pílulas = 40 módulos, 200 pílulas
+- Conteúdo (`body_md`) em quase tudo, mas `interaction_schema` quase vazio (só `exercicio_pbl` tem). 4 em 5 pílulas caem em comportamento passivo
+- `module_releases` controla visibilidade: hoje só mód 1-3 estão liberados
+- Sem editor visual: enriquecer pílula exige SQL
+- NachesU 2.0 (projeto irmão) tem editor pronto e schemas Zod das 4 interações
 
-O projeto **NachesU 2.0** é um rebuild paralelo (TanStack Start) que já matou três bloqueios que ainda travam este projeto:
+## Onda A — Publicação por toggle (substitui release por semana)
 
-1. **`content/ia-na-pratica.yaml` + `content/economia-circular.yaml`** — fonte de verdade dos **40 módulos** (4 trilhas × 5 módulos × 2 eletivas), cada um com 5 pílulas estruturadas: título, objetivo, kind, duração, `interaction_schema`. Mod 1 e parte da trilha 1 já com `body_md`; resto com placeholder `_(a preencher)_`.
-2. **`scripts/seed-content.ts`** — seeder **idempotente** (upsert por `course.slug + module.number + pill.kind`, nunca rebaixa `published`, nunca apaga pílula órfã, não sobrescreve `body_md` real com placeholder). Roda quantas vezes quiser.
-3. **`src/lib/content.schemas.ts`** — Zod schemas dos 4 `interaction_schema` ricos que este projeto já renderiza (`embed`, `curated`, `quiz`, `radar`), com `defaultInteractionForPillKind` e validação completa.
-4. **Editor admin de conteúdo** (`admin.conteudo.tsx`, `admin.conteudo.$moduleId.tsx`, `admin.conteudo.pilula.$pillId.tsx` + componentes `ModuleForm`, `InteractionEditor`, `SortableList` com `@dnd-kit`) — permite frattz/Dudu autorarem direto na UI depois do seed.
-5. **`docs/runbook.md`** — checklist operacional de lançamento (import CSV Sebrae, lotes de e-mail, rollback).
+Trocar o modelo "liberado quando entra em `module_releases`" por **`modules.published` (booleano)**, sem perder o schema atual.
 
-O que **não** vale portar agora: o framework (TanStack Start vs React Router/Vite daqui), as rotas inteiras (estrutura `_authenticated/_admin/` é outra), o auth (lá usa server functions). Risco alto pra ganho zero hoje.
+1. Migration: adicionar `modules.published boolean default false` e `pills.published boolean default false`
+2. Backfill: marcar como `published=true` todo módulo que já está em `module_releases` hoje (mantém quem já tinha acesso)
+3. RLS de leitura do estudante: passa a ler `modules.published=true` em vez de checar `module_releases`. Admin continua vendo tudo
+4. `module_releases` fica como tabela legada (histórico de quando foi liberado), não bloqueia mais
+5. Frontend (`/app`, `/app/eletiva/:slug`, listagem de trilha): consome `published`. CTA "próximo módulo" vai pro primeiro módulo publicado não concluído
 
----
+Resultado: admin liga o toggle, estudante vê na hora.
 
-## estratégia: 3 ondas, ~90 min total
+## Onda B — Editor de conteúdo no admin
 
-### Onda A — Conteúdo no ar (40-50 min) · gate único pro lançamento
+Portar do NachesU 2.0 (adaptado pro schema atual: `pills`, `interaction_schema.type`).
 
-Objetivo: estudante consegue navegar 40 módulos com title/objective reais e 5 pílulas cada (algumas com body real, resto esqueleto honesto).
+1. `src/lib/content.schemas.ts` — Zod das 4 interações (`embed`, `curated`, `quiz`, `radar`) + `defaultInteractionForPillKind`
+2. Páginas novas em `/admin/conteudo`:
+   - lista de cursos → trilhas → módulos
+   - editor de módulo: título, ordem, **toggle publicar**, lista de pílulas drag-and-drop (`@dnd-kit`)
+   - editor de pílula: título, objetivo, tipo, duração, `body_md` (markdown), **toggle publicar**, `InteractionEditor` específico do tipo
+   - botão "criar novo módulo" e "criar nova pílula" em qualquer trilha, qualquer hora
+3. Mutations server-side via Supabase client com RLS de admin
+4. Plugar atrás do `AdminRoute` existente, item no menu admin
 
-1. **Copiar yaml** — `content/ia-na-pratica.yaml` e `content/economia-circular.yaml` pro repo atual via `cross_project--copy_project_asset`. Zero edição: a estrutura `course → trails → modules → pills` já bate com o schema deste projeto (`courses`, `trails`, `modules`, `pills`).
-2. **Portar `content.schemas.ts`** pra `src/lib/content.schemas.ts`. Já valida exatamente os 4 kinds que `ModuloPillList.tsx` dispatcha (`video_with_transcript` ≈ `embed`, `curated_content_with_questions` ≈ `curated`, `quiz`, `radar_form` ≈ `radar`).
-   - Ajuste único: mapear `kind` do schema 2.0 (`embed`/`curated`/`quiz`/`radar`) → `type` que o dispatcher atual espera (`video_with_transcript`/`curated_content_with_questions`/`quiz`/`radar_form`). Layer fina de tradução no seeder, sem mexer no renderer.
-3. **Portar `scripts/seed-content.ts`** pra `scripts/seed-content.ts` daqui. Adaptar duas coisas:
-   - nome de tabela: 2.0 usa `module_pills`, aqui é `pills` (confirmar lendo `src/integrations/supabase/types.ts` antes).
-   - tradução `interaction_schema.kind` → `interaction_schema.type` (item 2 acima).
-   - usar `SUPABASE_SERVICE_ROLE_KEY` via env (já configurado em outros scripts do projeto).
-4. **Rodar seed** pra os 2 cursos. Idempotente, então pode rodar de novo depois de qualquer ajuste no yaml.
-5. **Smoke test manual** (5 min): logar como aluno fictício, abrir `/app/modulo/1` de cada eletiva, confirmar que aparecem 5 pílulas, que o dispatcher renderiza cada kind corretamente, e que módulos 2-20 abrem com esqueleto.
+## Onda C — Renderizadores das 4 interações no estudante
 
-**Checkpoint humano:** revisar 1 módulo de cada eletiva no preview antes de continuar. Se quebrar, ajusta o seeder, roda de novo.
+Hoje só `exercicio_pbl` funciona bem. Garantir que as 4 rendem:
 
-### Onda B — Editor admin pra continuar autorando (30-40 min) · opcional pra hoje
+- `embed`: vídeo/link externo com aspect ratio + fallback
+- `curated`: lista de recursos curados com tag, descrição, link
+- `quiz`: múltipla escolha com feedback imediato + registro em `module_progress`
+- `radar`: auto-avaliação em eixos com visualização
 
-Necessário só se frattz/Dudu vão escrever `body_md` real direto na UI ao invés de editar o yaml. Se a Onda A já basta (autoria via yaml + reseed), pula.
+Componentes podem reaproveitar o que tem em `src/components/pills/` + completar o que falta.
 
-6. **Portar 3 componentes admin** do 2.0:
-   - `src/components/admin/SortableList.tsx` (precisa `@dnd-kit/core` + `@dnd-kit/sortable` — confirmar se já estão instaladas; se não, `bun add`).
-   - `src/components/admin/ModuleForm.tsx` (formulário de metadados do módulo).
-   - `src/components/admin/InteractionEditor.tsx` (editor estruturado por kind — o coração).
-7. **Criar 3 páginas admin** equivalentes (em React Router daqui, não TanStack):
-   - `src/pages/AdminConteudo.tsx` — seletor de curso + lista de módulos com drag-to-reorder.
-   - `src/pages/AdminConteudoModulo.tsx` — detalhe do módulo + lista de pílulas.
-   - `src/pages/AdminConteudoPilula.tsx` — editor de uma pílula com preview drawer que renderiza o componente real.
-8. **Plugar no `AdminRoute`** atual + adicionar card "conteúdo" no painel `/admin` (perto de "eletivas" e "trilha").
-9. **Mutations server-side** — porta `src/lib/content.functions.ts` do 2.0 como hooks `useContentMutations` chamando `supabase-js` direto daqui (não temos server functions, e RLS já protege).
+## Onda D — Smoke test + runbook
 
-### Onda C — Operação (10 min) · faz junto com lançamento
+1. Criar 1 módulo novo pelo admin do zero, publicar, ver aparecer no `/app` de um estudante de teste
+2. Editar `interaction_schema` de uma pílula existente, validar que renderiza
+3. Despublicar, validar que some
+4. Copiar `docs/runbook.md` do 2.0 (checklist de import CSV Sebrae, envio de magic link em lote, rollback)
 
-10. **Copiar `docs/runbook.md`** do 2.0 pra `docs/runbook.md` daqui. Checklist de import CSV Sebrae, regra de lote 50 e-mails/min, gatilhos de rollback, plano B se atrasar. Vira referência viva da semana de lançamento.
+## Detalhes técnicos
 
----
+- Migração é aditiva: `published` default `false` + backfill imediato. Zero downtime
+- RLS dos estudantes: trocar política de SELECT em `modules` e `pills` pra `published = true OR has_role(auth.uid(), 'admin')`
+- `module_releases` continua existindo (não dropar) — vira log de "quando foi liberado a primeira vez"
+- Editor admin não toca em conteúdo que respeita placeholder `_(a preencher)_` (não tem mais seeder, mas mantém convenção)
+- Tutor IA (joão-de-barro) continua atrás de `useEletivaExtras` igual hoje, fora do escopo
 
-## o que NÃO portar (decisão explícita)
+## Fora de escopo (não nessa rodada)
+- Vocabulário Chŏra legado (FBI, carta, missões) — segue atrás da flag
+- Sistema de gamificação extra
+- Notificação por email quando novo módulo publica (pode entrar numa onda E depois)
 
-- **Rotas TanStack Start** (`_authenticated/_admin/*`) — incompatível com React Router daqui. Reimplementar como `src/pages/Admin*` nativo.
-- **Auth helpers do 2.0** (`auth-context.tsx`, `requireSupabaseAuth`) — daqui já tem `AuthContext` + `AdminRoute` funcionando.
-- **`components/pills/` do 2.0** — daqui já tem 5 componentes ricos equivalentes em `src/components/eletiva/pills/` (PillAbertura, PillConteudoCurado, PillQuiz, PillRadar, PillBonus). Manter os daqui, só garantir que o `interaction_schema.type` seedado bate.
-- **`components/naches/`** — provavelmente brand/layout daquele projeto; daqui já tem `<NachesULogo />`, `<EletivaFooter />`, `<EletivaSymbol />` consolidados.
-- **Editor de `module_releases`** — o gate atual é "sem row = aberto", então 40 módulos seedados já ficam visíveis. Cronograma semanal vira tarefa pós-lançamento (item da Onda 3 do plan.md original).
+## Ordem de execução
+A (toggle publicar) → C (renderizadores das 4 interações) → B (editor admin) → D (smoke + runbook).
 
----
-
-## detalhes técnicos
-
-- **Diferença de schema crítica:** 2.0 chama tabela de pílulas de `module_pills`, aqui é `pills`. Confirmar via `code--view src/integrations/supabase/types.ts` antes de rodar o seeder. Resto (`courses`, `trails`, `modules`) bate.
-- **Tradução de `interaction_schema`:** lookup table no seeder:
-  ```ts
-  const kindMap = {
-    embed: "video_with_transcript",
-    curated: "curated_content_with_questions",
-    quiz: "quiz",
-    radar: "radar_form",
-  };
-  ```
-- **Idempotência de body_md:** seeder respeita `_(a preencher)_` como placeholder — nunca sobrescreve texto real já no banco. Permite frattz/Dudu editarem direto pelo admin (Onda B) sem perder progresso ao rodar seed de novo.
-- **Comando de execução:** `bun scripts/seed-content.ts content/ia-na-pratica.yaml` e idem pra economia-circular. Env vars: `SUPABASE_URL` (já em `.env`) e `SUPABASE_SERVICE_ROLE_KEY` (precisa adicionar via tool de secrets — usar só localmente, nunca no client).
-- **Tutor IA** já está funcional aqui (item P0.2 da Onda 1 corrigiu o FAB). Não precisa mexer.
-
----
-
-## ordem de aprovação
-
-Topo de prioridade: **Onda A** sozinha já destrava aluno hoje. Confirma que executo direto:
-1. copiar 2 yaml + schemas
-2. adaptar e rodar seeder
-3. smoke test
-4. te chamo pra revisar antes de Onda B/C
-
-Se quiser que Onda B (editor admin) seja parte do mesmo push, falar agora — ainda cabe nas próximas ~2h.
+Justificativa da ordem: A destrava o controle, C garante que o que admin publica realmente funciona pro estudante, B dá a ferramenta de criação, D fecha. Se eu fizesse B antes de C, admin editaria interações que não renderizam.
