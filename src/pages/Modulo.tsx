@@ -357,6 +357,19 @@ const Modulo = () => {
           isCompleted={isCompleted}
         />
 
+        {isCompleted && (
+          <ModuloCelebration
+            moduleNumber={moduleRow.number}
+            courseSlug={courseSlug ?? null}
+            nextHint={
+              nextModule
+                ? "obrigado por entregar com presença. o próximo módulo já tá aí, é só seguir."
+                : "obrigado por entregar com presença. próximo módulo libera em breve."
+            }
+          />
+        )}
+
+
         <ModuloPillList
           pills={pills}
           loading={pillsLoading}
