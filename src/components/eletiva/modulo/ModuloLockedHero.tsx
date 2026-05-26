@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, CalendarClock, Lock } from "lucide-react";
+import { moduloHref } from "@/lib/moduleHref";
 
 interface Props {
   moduleNumber: number;
   prevModuleNumber: number | null;
   prevModuleTitle: string | null;
   availableFrom: string | null;
+  courseSlug: string | null;
 }
 
 /**
@@ -21,6 +23,7 @@ export const ModuloLockedHero = ({
   prevModuleNumber,
   prevModuleTitle,
   availableFrom,
+  courseSlug,
 }: Props) => {
   const releasesInFuture = availableFrom && new Date(availableFrom).getTime() > Date.now();
   const releaseDate = releasesInFuture ? new Date(availableFrom!) : null;
@@ -67,7 +70,7 @@ export const ModuloLockedHero = ({
       <div className="flex flex-wrap items-center justify-center gap-3">
         {prevModuleNumber && (
           <Link
-            to={`/app/modulo/${prevModuleNumber}`}
+            to={moduloHref(courseSlug, prevModuleNumber)}
             className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
           >
             <ArrowLeft className="h-4 w-4" /> ir pro módulo {String(prevModuleNumber).padStart(2, "0")}
