@@ -42,7 +42,7 @@ const AppDashboard = () => {
         enrollments?.[0] ??
         null;
   const activeCourseId = activeEnrollment?.course_id ?? null;
-  const { data: eletiva } = useEletivaProgress(activeCourseId);
+  const { data: eletiva, isLoading: eletivaLoading } = useEletivaProgress(activeCourseId);
   const status = usePostEventStatus();
   const { enabled: extrasEnabled } = useEletivaExtras(activeCourseId);
 
