@@ -297,12 +297,7 @@ function CourseReview({ course }: { course: Course }) {
                         >
                           {m.published ? "publicado" : "rascunho"}
                         </Badge>
-                        <Badge
-                          variant={m.released ? "default" : "outline"}
-                          className="text-[10px]"
-                        >
-                          {m.released ? "liberado" : "trancado"}
-                        </Badge>
+
                       </div>
                     </div>
                   </AccordionTrigger>
