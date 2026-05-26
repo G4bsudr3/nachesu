@@ -3,6 +3,7 @@ import { ArrowRight, Check, ExternalLink } from "lucide-react";
 import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
+import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
 type StepLink = { label: string; url: string };
 type Step = { titulo: string; descricao: string; links?: StepLink[] };
@@ -287,12 +288,13 @@ function FieldText({
       <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {label}
       </label>
-      <textarea
+      <TextareaWithVoice
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={2}
         className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+        voiceAriaLabel={`gravar ${label} por voz`}
       />
     </div>
   );
@@ -316,12 +318,13 @@ function FieldTextarea({
       <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {label}
       </label>
-      <textarea
+      <TextareaWithVoice
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
         className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+        voiceAriaLabel={`gravar ${label} por voz`}
       />
     </div>
   );
