@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, ArrowRight, Clock } from "lucide-react";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
+import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
 type Card = {
   id: string;
@@ -146,13 +147,14 @@ export function PillConteudoCurado({
                   <span className="text-perestroika-preto/55 mr-1">{idx + 1}.</span>
                   {q.label}
                 </label>
-                <textarea
+                <TextareaWithVoice
                   id={q.id}
                   value={v}
                   onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
                   rows={3}
                   className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2.5 font-body text-sm focus:border-perestroika-preto focus:outline-none transition-colors resize-y"
-                  placeholder="escreve do teu jeito..."
+                  placeholder="escreve do teu jeito ou grave por voz..."
+                  voiceAriaLabel="gravar resposta por voz"
                 />
                 <p className="font-body text-[11px] text-perestroika-preto/55">
                   {remaining > 0

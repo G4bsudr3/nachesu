@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Circle, PenLine } from "lucide-react";
 import { SaveIndicator } from "@/components/eletiva/pills/SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "@/components/eletiva/pills/useDeliverable";
+import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
 interface Props {
   pillId: string;
@@ -73,13 +74,14 @@ export const PillReflection = ({
         </p>
       </div>
 
-      <textarea
+      <TextareaWithVoice
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="escreve aqui sem filtro. ninguém mais vê além de você e do professor."
+        placeholder="escreve aqui sem filtro. ou aperta o microfone e fala."
         rows={5}
         className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-4 py-3 font-body text-sm sm:text-base text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/60 transition-colors resize-y min-h-[120px]"
         aria-label="sua reflexão"
+        voiceAriaLabel="gravar sua reflexão por voz"
       />
 
       <div className="flex items-center justify-between gap-3">

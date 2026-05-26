@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
+import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
 type Schema = {
   type?: "checklist_pacto";
@@ -126,12 +127,13 @@ export function PillChecklistPacto({
           <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
             {schema.outros.label}
           </label>
-          <textarea
+          <TextareaWithVoice
             value={value.outros ?? ""}
             onChange={(e) => setValue((prev) => ({ ...prev, outros: e.target.value }))}
             placeholder={schema.outros.placeholder}
             rows={2}
             className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            voiceAriaLabel="gravar outro compromisso por voz"
           />
         </div>
       )}
@@ -141,12 +143,13 @@ export function PillChecklistPacto({
           <label className="block font-body text-sm text-perestroika-preto/85 mb-2 whitespace-pre-wrap">
             {schema.reflexao.label}
           </label>
-          <textarea
+          <TextareaWithVoice
             value={value.reflexao ?? ""}
             onChange={(e) => setValue((prev) => ({ ...prev, reflexao: e.target.value }))}
             placeholder={schema.reflexao.placeholder}
             rows={5}
             className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            voiceAriaLabel="gravar reflexão por voz"
           />
         </div>
       )}

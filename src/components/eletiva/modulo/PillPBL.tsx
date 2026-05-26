@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Circle, MessageCircle, Target } from "lucide-react";
 import { SaveIndicator } from "@/components/eletiva/pills/SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "@/components/eletiva/pills/useDeliverable";
+import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
 interface Props {
   pillId: string;
@@ -96,13 +97,14 @@ export const PillPBL = ({
         >
           sua resposta
         </label>
-        <textarea
+        <TextareaWithVoice
           id={`pbl-${pillId}`}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="descreva sua abordagem, hipóteses, próximos passos..."
+          placeholder="descreva sua abordagem, hipóteses, próximos passos. ou grave por voz."
           rows={6}
           className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-4 py-3 font-body text-sm sm:text-base text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/60 transition-colors resize-y min-h-[140px]"
+          voiceAriaLabel="gravar sua resposta por voz"
         />
       </div>
 

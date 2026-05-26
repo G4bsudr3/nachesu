@@ -5,6 +5,7 @@ import { PillVideoPlayer } from "@/components/eletiva/modulo/PillVideoPlayer";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
+import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
 type Schema = {
   type?: "pilula_editorial";
@@ -184,13 +185,14 @@ export function PillEditorial({
             <p className="font-body text-sm sm:text-base text-perestroika-preto/85 mb-3 whitespace-pre-wrap">
               {schema.reflexao.prompt}
             </p>
-            <textarea
+            <TextareaWithVoice
               value={reflection}
               onChange={(e) => setReflection(e.target.value)}
-              placeholder={schema.reflexao.placeholder ?? "escreve aqui..."}
+              placeholder={schema.reflexao.placeholder ?? "escreve aqui ou grave por voz..."}
               rows={4}
               className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
               aria-label="reflexão dessa pílula"
+              voiceAriaLabel="gravar reflexão por voz"
             />
           </div>
         </motion.section>

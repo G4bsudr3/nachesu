@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check, X } from "lucide-react";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
+import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
 type SingleQ = {
   id: string;
@@ -158,12 +159,13 @@ export function PillQuiz({
                   <span className="text-perestroika-preto/55 mr-1">{idx + 1}.</span>
                   {q.label}
                 </label>
-                <textarea
+                <TextareaWithVoice
                   id={q.id}
                   value={v}
                   rows={3}
                   onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
                   className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2.5 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+                  voiceAriaLabel="gravar resposta por voz"
                 />
                 <p className="font-body text-[11px] text-perestroika-preto/55">
                   {q.no_feedback && "sem certo ou errado — registro pra retomar depois. "}
