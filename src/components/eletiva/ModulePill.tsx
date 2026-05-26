@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Lock, Check } from "lucide-react";
 import { motion } from "framer-motion";
+import { moduloHref } from "@/lib/moduleHref";
 
 export type ModulePillState = "completed" | "current" | "available" | "locked" | "upcoming";
 
@@ -11,6 +12,7 @@ interface ModulePillProps {
   trailColor: string;
   availableFromLabel?: string | null;
   index: number;
+  courseSlug?: string | null;
 }
 
 const formatNumber = (n: number) => String(n).padStart(2, "0");
@@ -22,6 +24,7 @@ export const ModulePill = ({
   trailColor,
   availableFromLabel,
   index,
+  courseSlug,
 }: ModulePillProps) => {
   const isInteractive = state === "completed" || state === "current" || state === "available";
   const content = (
@@ -96,7 +99,7 @@ export const ModulePill = ({
     >
       {isInteractive ? (
         <Link
-          to={`/app/modulo/${number}`}
+          to={moduloHref(courseSlug, number)}
           className={`${baseClasses} ${stateClasses}`}
           style={wrapperStyle}
           aria-label={`módulo ${formatNumber(number)}: ${title}`}

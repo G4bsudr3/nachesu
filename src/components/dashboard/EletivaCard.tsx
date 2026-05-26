@@ -4,6 +4,7 @@ import { useEletivaProgress, type EletivaSnapshot } from "@/hooks/useEletivaProg
 import { useMyEnrollments } from "@/hooks/useCourses";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { moduloHref } from "@/lib/moduleHref";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
@@ -255,7 +256,7 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <Link
-          to={`/app/modulo/${moduleToShow.number}`}
+          to={moduloHref(activeSlug, moduleToShow.number)}
           className="inline-flex items-center justify-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-7 py-4 font-body text-sm sm:text-base uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
         >
           {ctaLabel} <ArrowRight className="h-4 w-4" />

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { moduloHref } from "@/lib/moduleHref";
 
 interface NavModule {
   number: number;
@@ -12,6 +13,7 @@ interface Props {
   completePending: boolean;
   prevModule: NavModule | null;
   nextModule: NavModule | null;
+  courseSlug: string | null;
 }
 
 export const ModuloFooter = ({
@@ -20,6 +22,7 @@ export const ModuloFooter = ({
   completePending,
   prevModule,
   nextModule,
+  courseSlug,
 }: Props) => (
   <>
     <section
@@ -48,7 +51,7 @@ export const ModuloFooter = ({
         )}
         {nextModule && (
           <Link
-            to={`/app/modulo/${nextModule.number}`}
+            to={moduloHref(courseSlug, nextModule.number)}
             className="inline-flex items-center gap-2 rounded-full border-2 border-perestroika-bege/40 px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:bg-perestroika-bege hover:text-perestroika-preto transition-colors"
           >
             próximo módulo <ArrowRight className="h-4 w-4" />
@@ -60,7 +63,7 @@ export const ModuloFooter = ({
     <nav aria-label="navegação entre módulos" className="flex justify-between gap-3">
       {prevModule ? (
         <Link
-          to={`/app/modulo/${prevModule.number}`}
+          to={moduloHref(courseSlug, prevModule.number)}
           className="group flex-1 max-w-[48%] rounded-2xl border border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
         >
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1 inline-flex items-center gap-1">
@@ -73,7 +76,7 @@ export const ModuloFooter = ({
       )}
       {nextModule ? (
         <Link
-          to={`/app/modulo/${nextModule.number}`}
+          to={moduloHref(courseSlug, nextModule.number)}
           className="group flex-1 max-w-[48%] text-right rounded-2xl border border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
         >
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1 inline-flex items-center gap-1">

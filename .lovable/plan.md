@@ -1,180 +1,117 @@
-## visão geral
+## objetivo
 
-o documento do Claude entrega bom **conteúdo** mas propõe **reconstruir a plataforma do zero** (rotas `/modulo-1/pilula-a`, paleta Naveia, Recoleta+DM Sans+Caveat, mascote jabuti, Zustand, mock backend). nada disso se aplica: o NachesU já tem rotas `/app/modulo/:n`, tabelas `modules`/`module_pills`/`module_deliverables`, sistema de pílulas com `interaction_schema`, identidade visual oficial (Perestroika + League Gothic + Urbanist + joão-de-barro) e Lovable Cloud com RLS.
+eliminar a ambiguidade do "módulo 1 de qual eletiva?" e fechar a primeira trilha de IA na Prática com conteúdo real nos módulos 2 e 3, no mesmo nível editorial do módulo 1.
 
-vou **aproveitar 100% do conteúdo** (textos, vídeos YouTube, prompts de reflexão, checklist) e **descartar 100% da arquitetura proposta**. o sinal que sobrevive intacto: ritmo editorial scroll-driven, transições cinematográficas entre momentos, signature moment de celebração no fim do módulo.
+## parte 1 — rota escopada por slug
 
-## o que muda
+### problema atual
 
-### 1. seed do módulo 1 no banco
+`/app/modulo/:number` resolve "qual eletiva" lendo `localStorage("eletiva:active-slug")`. consequências:
 
-atualizar via migração:
+- link compartilhado entre estudantes de eletivas diferentes leva pra módulo errado
+- ao trocar de eletiva no switcher, atalhos antigos no histórico do navegador apontam pro conteúdo da eletiva anterior
+- impossível diferenciar em analytics qual eletiva o aluno está consumindo
+- tutor IA e SEO já são por slug, mas o módulo não, o que cria inconsistência
 
-- `modules` (id `47d80af7…`): título → `IA sem hype: o que ela faz bem (e mal)`, summary curto.
-- `module_pills`: substituir as 5 placeholders pelos 5 marcos reais. mesma ordem, mesmo `kind`, mas com:
-  - **pílulas A, B, C** → novo schema `pilula_editorial` (ver seção 2) com 5 momentos cada (gancho + vídeo YT + texto + reflexão + síntese).
-  - **exercício PBL** → novo schema `pbl_estruturado` (ver seção 3) com form rico + uploads.
-  - **registro** → novo schema `checklist_pacto` (ver seção 4) com 7 commitments + textarea livre + reflexão final.
+### solução
 
-durações: 9/9/8/25/8 min conforme o doc.
+nova rota canônica: `/app/eletiva/:slug/modulo/:number`. rota antiga `/app/modulo/:number` permanece como **redirect** que resolve o slug ativo via `useActiveEletiva` e faz `<Navigate replace />` pra rota nova. nenhum link existente quebra.
 
-### 2. novo componente `PillEditorial`
+### mudanças
 
-arquivo `src/components/eletiva/pills/PillEditorial.tsx`. renderiza os 5 momentos verticalmente, com scroll suave e reveal Framer Motion (`fade + rise 400ms`, `cubic-bezier(0.16, 1, 0.3, 1)`, respeitando `prefers-reduced-motion`).
+1. **`src/App.tsx`**: adicionar `<Route path="/app/eletiva/:slug/modulo/:number" element={<Modulo />} />`. manter `/app/modulo/:number` apontando pra novo componente `LegacyModuloRedirect` que faz redirect com `replace`.
 
-shape do `interaction_schema.type = "pilula_editorial"`:
+2. **`src/pages/Modulo.tsx`**: ler `slug` de `useParams`. validar que o módulo pertence ao course com aquele slug; se não, 404 amigável ("esse módulo não faz parte da eletiva X"). passar `courseId` resolvido pra `useEletivaProgress` e pra `scopeModuleNavigation`.
 
-```
-{
-  type: "pilula_editorial",
-  gancho: { md: string, visual_hint?: string },
-  video: { title: string, channel: string, url: string, instruction: string, duration_min?: number },
-  aprofundamento: { md: string, destaque: string },
-  reflexao: { prompt: string, placeholder?: string },   // salva em deliverable.content.reflections[pillId]
-  sintese: { frase: string },
-  completion: { label: string }                          // "concluir pílula e seguir"
-}
-```
+3. **`src/lib/moduleNavigation.ts`**: ajustar `nextModuleHref`/`prevModuleHref` pra incluir `:slug` no path gerado.
 
-elementos visuais:
+4. **`src/components/dashboard/EletivaCard.tsx`** e qualquer outro CTA de módulo: gerar href já com slug (`/app/eletiva/${slug}/modulo/${n}`). buscar usos com `rg "app/modulo/" src/`.
 
-- cabeçalho da pílula em League Gothic uppercase (mantém identidade).
-- "momento N" como marcador minúsculo Urbanist tracking-wide, parecido com o que já existe em `ModuloPillList`.
-- `PillVideoPlayer` reaproveitado pro embed YouTube (lite-style placeholder já implementado).
-- bloco de destaque: card com fundo `--accent`/10 e tipografia display grande, usando paleta NachesU (rosa Perestroika no número/destaque, não lavender).
-- textarea de reflexão com autosave via `useDeliverable` (já existe).
-- síntese final: frase grande centralizada, view-height generoso, com `<EletivaSymbol pose="thinking" />` discreto ao lado.
-- botão de conclusão na base, fluxo igual aos outros pills.
+5. **`src/components/eletiva/modulo/ModuloCelebration.tsx`** e `ModuloPillList`: idem, CTAs de "próximo módulo" / "voltar pro mapa" usam slug atual.
 
-signature moment opcional (custo baixo): ao concluir uma pílula, fade-out de 400ms da síntese antes de redirecionar pro próximo bloco do módulo.
+6. **`src/lib/seoRoutes.ts`**: registrar pattern `/app/eletiva/:slug/modulo/:n` com mesma policy `noindex` das outras rotas `/app`.
 
-### 3. novo componente `PillPBLEstruturado`
+7. **`src/components/SeoRouter.tsx`**: já detecta slug por query/localStorage; estender pra ler slug de `useParams` quando disponível, priorizando-o.
 
-arquivo `src/components/eletiva/pills/PillPBLEstruturado.tsx`. estende a lógica de `PillPBL` mas com form rico:
+8. **`useActiveEletiva`**: ao montar `Modulo.tsx` com slug na URL, sincronizar `setSlug(slug)` pra manter o resto do app consistente (dashboard, FAB do tutor etc).
 
-- bloco contexto (2 parágrafos curtos).
-- 5 passos numerados em cards horizontais (display League Gothic no número).
-- form de entrega:
-  - textarea "pedido versão A (curto)"
-  - upload imagem "print resposta A" → via `EvidenceUploader` (já existe, usa storage Lovable Cloud)
-  - textarea "pedido versão B (com contexto)"
-  - upload imagem "print resposta B"
-  - radio "qual ficou melhor" (3 opções)
-  - textarea "por quê"
-  - textarea "o que aprendi"
-- bloco "dica de tour guide" no rodapé.
-- botão "entregar e seguir pro registro".
+### fora de escopo desta parte
 
-schema `interaction_schema.type = "pbl_estruturado"`:
+- migrar `/app/eletiva/:slug` (já existe e funciona)
+- mudar rotas legadas atrás de `ExtrasGate`
+- pretty URLs por número nomeado (continua `/modulo/1`, não `/modulo/ia-sem-hype`)
+
+## parte 2 — conteúdo real dos módulos 2 e 3 de IA na Prática
+
+### estrutura herdada do módulo 1 (não muda)
+
+cada módulo = 5 pílulas seguindo a anatomia padrão:
 
 ```
-{
-  type: "pbl_estruturado",
-  contexto_md: string,
-  passos: Array<{ titulo: string, descricao: string, links?: Array<{label, url}> }>,
-  campos: {
-    pedido_a: { label, placeholder },
-    print_a: { label },
-    pedido_b: { label, placeholder },
-    print_b: { label },
-    melhor: { label, options: string[] },
-    por_que: { label, placeholder },
-    aprendi: { label, placeholder }
-  },
-  dica_md: string,
-  completion: { label: string }
-}
+pílula A   pilula_editorial      9 min   conceito + vídeo + reflexão
+pílula B   pilula_editorial      9 min   técnica + vídeo + reflexão
+pílula C   pilula_editorial      8 min   aplicação + vídeo + reflexão
+exercício  pbl_estruturado       25 min  mão na massa com prints
+registro   checklist_pacto       8 min   síntese + compromissos
 ```
 
-estado salvo em `module_deliverables.content.pbl_estruturado[pillId]` (jsonb), com paths de storage pras imagens.
+zero schema novo, zero componente novo. só dados.
 
-**dependência**: bucket de storage `pbl-evidencias` precisa existir com RLS apropriado (user só lê/escreve em pasta `${user_id}/...`). incluído na migração.
+### módulo 2 — "prompt como pensamento: como conversar com IA de verdade"
 
-### 4. novo componente `PillChecklistPacto`
+trilha 1 (fundamentos & IA), número 2.
 
-arquivo `src/components/eletiva/pills/PillChecklistPacto.tsx`. checkboxes estilizados com paleta NachesU (`--primary` rosa quando marcado, não gold). 7 commitments + textarea opcional + textarea de reflexão final + botão de conclusão.
+- **pílula A** "o que é prompt (e por que você já sabe fazer)": prompt como pedido contextualizado, comparação com pedir comida pro garçom vs pedir pro robô. vídeo curto YouTube. reflexão: "descreva um pedido seu da última semana que precisou de contexto pra ser bem atendido."
+- **pílula B** "as 4 camadas de um bom prompt": papel + tarefa + contexto + formato de saída. exemplo construído ao vivo no texto, partindo de prompt ruim → prompt bom. vídeo de exemplo prático. reflexão: "reescreva um prompt ruim seu usando as 4 camadas."
+- **pílula C** "quando o prompt falha (e como corrigir sem culpa)": iteração como conversa, não como acerto único. vídeo. reflexão: "qual foi a última vez que você desistiu de uma IA porque a primeira resposta foi ruim?"
+- **exercício PBL** "duelo de prompts": estudante pega uma tarefa real da escola, escreve prompt versão 1 (intuitivo), captura print da resposta, reescreve usando as 4 camadas, captura print, escolhe vencedor e analisa.
+- **registro** "meu pacto com prompt": 7 commitments (sempre dar papel à IA, sempre dar contexto, sempre pedir formato, nunca aceitar primeira resposta sem ler, etc) + textarea de outros + reflexão final.
 
-schema `interaction_schema.type = "checklist_pacto"`:
+### módulo 3 — "verificar antes de confiar: lidar com alucinação e viés"
 
-```
-{
-  type: "checklist_pacto",
-  contexto_md: string,
-  commitments: string[],
-  outros: { label: string, placeholder: string },
-  reflexao: { label: string, placeholder: string },
-  completion: { label: string }
-}
-```
+trilha 1, número 3.
 
-estado salvo em `module_deliverables.content.checklist[pillId]`.
+- **pílula A** "por que IA inventa": modelo de probabilidade, não banco de fatos. analogia: amigo que sempre tem opinião confiante. vídeo. reflexão: "lembre de uma vez que você acreditou numa info errada porque veio com confiança."
+- **pílula B** "checagem em 3 passos": fonte primária, segunda fonte independente, faz sentido no meu contexto. vídeo. reflexão: "qual informação você costuma aceitar sem checar?"
+- **pílula C** "viés: o que IA aprendeu (e o que ela esqueceu)": viés de dados, viés cultural, ausência de representação. vídeo. reflexão: "pense numa pergunta onde a resposta 'padrão' provavelmente ignora sua realidade."
+- **exercício PBL** "caça à alucinação": estudante pede pra IA uma info verificável (dado histórico, citação, estatística), captura print, checa em 2 fontes externas, registra se bateu ou não, escreve o que aprendeu sobre confiar.
+- **registro** "meu pacto com checagem": 7 commitments (nunca copiar dado sem checar, sempre citar fonte primária, etc) + textarea + reflexão.
 
-### 5. dispatcher
+### conteúdo bruto
 
-atualizar `src/components/eletiva/modulo/ModuloPillList.tsx` adicionando 3 branches novas no roteador:
+vou escrever o texto editorial completo (gancho, aprofundamento, destaque, síntese, prompts de reflexão) na hora da inserção. vídeos do YouTube: vou selecionar 6 vídeos curtos (2-4 min) em português, prioritariamente canais brasileiros de educação (Filipe Deschamps, Diolinux, etc) — se nenhum servir, deixo placeholder com instrução clara pro frattz substituir antes de publicar.
 
-- `schemaType === "pilula_editorial"` → `PillEditorial`
-- `schemaType === "pbl_estruturado"` → `PillPBLEstruturado`
-- `schemaType === "checklist_pacto"` → `PillChecklistPacto`
+### mudanças
 
-todos os outros schemas continuam intactos.
+1. **migração**: `UPDATE modules` pra título/summary dos módulos 2 e 3 (que hoje estão como placeholders). publicar (`published = true`). adicionar em `module_releases` com data alinhada à cadência semanal (módulo 2 = 7 dias após módulo 1, módulo 3 = 14 dias).
 
-### 6. tela de celebração de fim de módulo
+2. **insert de dados**: `DELETE FROM module_pills WHERE module_id IN (m2, m3)` + `INSERT` das 10 novas pílulas (5 por módulo), cada uma com `interaction_schema` completo seguindo os 3 shapes já implementados.
 
-ao concluir a última pílula (registro), em vez de só redirecionar, mostrar tela cheia com:
-
-- `<EletivaSymbol pose="celebrating" />` em escala grande
-- display League Gothic: "você fechou o módulo 1"
-- subtítulo Urbanist: "obrigado por entregar com presença. próximo módulo libera em 7 dias."
-- CTA "voltar pro mapa da eletiva" → `/app/eletiva/ia-na-pratica`
-
-implementado em `src/pages/Modulo.tsx` (gate condicional baseado em `is_module_complete`). animação Framer Motion stagger (não usar Lottie por enquanto pra evitar dependência nova — pose celebrating + leve scale-in já dá o efeito).
-
-### 7. seo e copy
-
-- meta title da rota `/app/modulo/1`: dinâmico baseado no título do módulo.
-- alt text nas poses do mascote.
-- todas as copy lowercase, sem em-dash, sem hashtag, sem emoji em UI, "você" não "tu", "estudante" não "aluno". já há um problema no doc original (vários "Você" capitalizados e "Maiúsculos" em títulos) que vou normalizar.
-
-### 8. ajustes pequenos de tradução tom
-
-- "alucinação" mantida (termo técnico real).
-- referência ao "trabalho da escola" mantida (público é ensino médio).
-- frases muito longas do doc original quebradas em 2-3 linhas.
-- emoji em UI: zero. todos os "✓/☐" trocados por ícones lucide ou phosphor já em uso no projeto (lucide-react já é dependência; manter consistência com o resto).
-
-## o que NÃO muda
-
-- identidade visual (paleta Perestroika + azul Sebrae accent, League Gothic + Urbanist, joão-de-barro).
-- rotas (`/app/modulo/:n` continua).
-- schema `modules`/`module_pills`/`module_deliverables` (só dados novos, sem mudança estrutural além do bucket de storage e talvez índice).
-- `module_releases` (módulo 1 já liberado).
-- bloqueio sequencial entre pílulas: NÃO adiciono, conforme alinhamento. progresso visível mas estudante escolhe ritmo.
-- gating de pílulas dentro do módulo (todas visíveis).
+3. **validação**: abrir `/app/eletiva/ia-na-pratica/modulo/2` e `/modulo/3` no preview, confirmar render das 5 pílulas, vídeos embed funcionando, autosave OK, fluxo de celebração disparando.
 
 ## ordem de execução
 
-1. **migração**: bucket storage `pbl-evidencias` + RLS + update do módulo 1 (título/summary).
-2. **insert de dados**: substituir as 5 placeholders por conteúdo real (pílulas A/B/C com schema `pilula_editorial`, exercício com `pbl_estruturado`, registro com `checklist_pacto`).
-3. **componentes**: criar `PillEditorial`, `PillPBLEstruturado`, `PillChecklistPacto`.
-4. **dispatcher**: estender `ModuloPillList`.
-5. **celebração**: tela de fim de módulo em `Modulo.tsx`.
-6. **validação visual**: abrir `/app/modulo/1`, confirmar 5 pílulas renderizando, vídeos embed funcionando, autosave OK, conclusão fluindo.
+1. migração de dados (módulos 2 e 3) — sem schema novo
+2. inserts de conteúdo das 10 pílulas
+3. nova rota `/app/eletiva/:slug/modulo/:number` em `App.tsx` + componente `Modulo.tsx`
+4. redirect na rota antiga
+5. ajustar `moduleNavigation.ts` e CTAs (`EletivaCard`, `ModuloCelebration`, `ModuloPillList`)
+6. ajustar `SeoRouter` e `seoRoutes` pro novo pattern
+7. teste manual: dashboard → módulo 1 → conclui → próximo (módulo 2) → conclui → próximo (módulo 3) → conclui → volta pro mapa
 
-## fora de escopo (próximas leves)
+## fora de escopo
 
-- módulos 2–20 da eletiva (esse plano é só módulo 1).
-- ajustes nas pílulas placeholder dos módulos 2–5.
-- conteúdo da eletiva de Economia Circular.
-- email de notificação "próximo módulo liberado em 7 dias".
-- Lottie animado de check (mascote celebrating já cobre).
-- export do entregável em PDF.
+- módulos 4-20 de IA (próxima leva)
+- qualquer módulo de Economia Circular
+- visual identity diferenciada por eletiva (heroes, cover illustrations, pose-âncora do mascote) — fica pra ciclo de polimento
+- email de notificação "próximo módulo liberado em 7 dias"
+- bucket dedicado `pbl-evidencias` (continua reaproveitando `radar-evidences`)
+- publicar módulos vazios 4-20 como "in progress" — mantemos `published=false` por enquanto
 
-## resumo técnico (pra implementação)
+## detalhes técnicos
 
-- 1 migration: bucket storage + update módulo 1 + (opcional) índice em `module_deliverables(user_id, module_id)`.
-- 1 insert grande de dados: 5 linhas em `module_pills` (DELETE das 5 placeholders + INSERT das 5 novas, mesmas posições).
-- 3 componentes React novos (~150-250 linhas cada).
-- 1 extensão no dispatcher (`ModuloPillList`).
-- 1 ajuste em `Modulo.tsx` pra celebração.
-- 0 mudanças em rotas, auth, schema base, identidade visual.
+- nenhuma mudança de schema (tabelas, RLS, triggers continuam intactas)
+- 1 migration só de `UPDATE`/`INSERT`/`module_releases`
+- ~5 arquivos editados pra rota: `App.tsx`, `Modulo.tsx`, `moduleNavigation.ts`, `EletivaCard.tsx`, `SeoRouter.tsx` + grep de usos residuais de `/app/modulo/`
+- 0 componentes React novos
+- compat: rota antiga continua resolvendo via redirect, então links em emails antigos, bookmarks e histórico do navegador seguem funcionando

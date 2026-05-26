@@ -9,6 +9,7 @@ interface TrilhaColumnProps {
   unlockedModuleIds: Set<string>;
   fallbackColor: string;
   columnIndex: number;
+  courseSlug?: string | null;
 }
 
 const isAvailable = (m: { published: boolean; available_from: string | null }) => {
@@ -49,6 +50,7 @@ export const TrilhaColumn = ({
   unlockedModuleIds,
   fallbackColor,
   columnIndex,
+  courseSlug,
 }: TrilhaColumnProps) => {
   const trailColor = trail.color ?? fallbackColor;
   const completed = modules.filter((m) => progressByModuleId[m.id]?.completed_at).length;
@@ -112,6 +114,7 @@ export const TrilhaColumn = ({
                 module.available_from ? formatDate(module.available_from) : null
               }
               index={columnIndex * 5 + idx}
+              courseSlug={courseSlug}
             />
           ))}
         </ul>

@@ -227,6 +227,16 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              {/* rota canônica: escopada por slug da eletiva */}
+              <Route
+                path="/app/eletiva/:slug/modulo/:number"
+                element={
+                  <ProtectedRoute>
+                    <Modulo />
+                  </ProtectedRoute>
+                }
+              />
+              {/* rota legada sem slug: continua funcional, resolve via useActiveEletiva */}
               <Route
                 path="/app/modulo/:number"
                 element={

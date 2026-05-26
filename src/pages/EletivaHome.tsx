@@ -296,7 +296,7 @@ const EletivaHome = () => {
             )}
             <button
               type="button"
-              onClick={() => navigate(`/app/modulo/${current.number}`)}
+              onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
               className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
             >
               continuar de onde parou <ArrowRight className="h-4 w-4" />
@@ -312,7 +312,7 @@ const EletivaHome = () => {
         {/* mapa de módulos com estado */}
         {snapshot && (
           <div className="mb-6">
-            <ModulesByTrail snapshot={snapshot} onPick={(n) => navigate(`/app/modulo/${n}`)} />
+            <ModulesByTrail snapshot={snapshot} onPick={(n) => navigate(`/app/eletiva/${slug}/modulo/${n}`)} />
           </div>
         )}
 
