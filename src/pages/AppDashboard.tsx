@@ -49,19 +49,9 @@ const AppDashboard = () => {
   const nickname = dashboard?.nicknameDisplay ?? "";
   const hasPassword = dashboard?.profile?.has_password ?? true;
 
-  // estado de carregamento inicial
+  // estado de carregamento inicial: skeleton que espelha o layout real
   if (!user || dashboardLoading) {
-    return (
-      <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="motion-safe:animate-pulse">
-            <EletivaSymbol size={72} pose="building" />
-          </div>
-          <p className="font-body text-xs text-perestroika-preto/55">construindo seu ninho...</p>
-          <span className="sr-only">carregando dashboard</span>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   // calcula dias desde a última atividade (start_at ou completed_at mais recente)
