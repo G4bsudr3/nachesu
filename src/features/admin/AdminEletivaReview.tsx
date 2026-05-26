@@ -126,16 +126,12 @@ function CourseReview({ course }: { course: Course }) {
       const trailIds = (trails ?? []).map((t) => t.id);
       if (trailIds.length === 0) return [] as ModuleRow[];
 
-      const [{ data: mods, error: mErr }, { data: releases, error: rErr }] = await Promise.all([
-        supabase
-          .from("modules")
-          .select("id, number, title, published, trail_id")
-          .in("trail_id", trailIds)
-          .order("number"),
-        supabase.from("module_releases").select("module_id"),
-      ]);
+      const { data: mods, error: mErr } = await supabase
+        .from("modules")
+        .select("id, number, title, published, trail_id")
+        .in("trail_id", trailIds)
+        .order("number");
       if (mErr) throw mErr;
-      if (rErr) throw rErr;
 
       const moduleIds = (mods ?? []).map((m) => m.id);
       const { data: pills, error: pErr } = await supabase
@@ -145,7 +141,6 @@ function CourseReview({ course }: { course: Course }) {
         .order("order_index");
       if (pErr) throw pErr;
 
-      const releasedSet = new Set((releases ?? []).map((r) => r.module_id));
       const pillsByModule = new Map<string, ModulePill[]>();
       for (const p of pills ?? []) {
         const arr = pillsByModule.get(p.module_id) ?? [];
@@ -157,11 +152,12 @@ function CourseReview({ course }: { course: Course }) {
         number: m.number,
         title: m.title,
         published: m.published,
-        released: releasedSet.has(m.id),
+        released: m.published,
         pills: pillsByModule.get(m.id) ?? [],
       })) as ModuleRow[];
     },
   });
+
 
   const scopeQuery = useQuery({
     queryKey: ["admin-review-scope", course.id],
@@ -301,12 +297,7 @@ function CourseReview({ course }: { course: Course }) {
                         >
                           {m.published ? "publicado" : "rascunho"}
                         </Badge>
-                        <Badge
-                          variant={m.released ? "default" : "outline"}
-                          className="text-[10px]"
-                        >
-                          {m.released ? "liberado" : "trancado"}
-                        </Badge>
+
                       </div>
                     </div>
                   </AccordionTrigger>

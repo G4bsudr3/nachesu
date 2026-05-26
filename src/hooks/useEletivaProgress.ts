@@ -75,8 +75,8 @@ export const useEletivaProgress = (courseId?: string | null) => {
         progressRes,
         pillProgressRes,
         sequentialRes,
-        releasesRes,
       ] = await Promise.all([
+
         trailsQuery,
         user
           ? supabase
@@ -95,7 +95,6 @@ export const useEletivaProgress = (courseId?: string | null) => {
           .select("value")
           .eq("key", "eletiva_sequential_unlock")
           .maybeSingle(),
-        supabase.from("module_releases").select("module_id"),
       ]);
 
       const trailIds = (trails ?? []).map((t: any) => t.id);
@@ -108,10 +107,6 @@ export const useEletivaProgress = (courseId?: string | null) => {
         ? await modulesQuery
         : { data: [] as any[] };
 
-      const releasedModuleIds = new Set<string>(
-        ((releasesRes.data ?? []) as { module_id: string }[]).map((r) => r.module_id),
-      );
-
       const progressByModuleId: Record<string, ModuleProgress> = {};
       for (const p of (progressRes.data ?? []) as ModuleProgress[]) {
         progressByModuleId[p.module_id] = p;
@@ -122,14 +117,14 @@ export const useEletivaProgress = (courseId?: string | null) => {
       );
 
       const allModules = (modules ?? []) as (EletivaModule & { id: string })[];
-      // released: liberação manual via admin. módulo só conta como disponível
-      // se publicado + dentro da janela + admin liberou.
+      // módulo disponível pro aluno = published + dentro da janela (RLS já filtra o resto)
       const isReleased = (m: { id: string; published: boolean; available_from: string | null }) =>
-        isAvailable(m) && releasedModuleIds.has(m.id);
+        isAvailable(m);
       const publishedModules = allModules.filter(isReleased);
       const totalCompleted = publishedModules.filter(
         (m) => progressByModuleId[m.id]?.completed_at,
       ).length;
+
 
       // sequencial: default true. setting "false" → modo livre.
       const sequentialUnlock =
