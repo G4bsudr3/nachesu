@@ -75,8 +75,8 @@ export const useEletivaProgress = (courseId?: string | null) => {
         progressRes,
         pillProgressRes,
         sequentialRes,
-        releasesRes,
       ] = await Promise.all([
+
         trailsQuery,
         user
           ? supabase
