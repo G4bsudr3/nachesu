@@ -575,7 +575,7 @@ const AdminFbi = () => {
               <DetailRow label="quais cursos" value={selected.quais_cursos_perestroika} multiline />
               <DetailRow label="restrição alimentar" value={selected.restricao_alimentar} multiline />
               <DetailRow label="locomoção" value={selected.locomocao} multiline />
-              <DetailRow label="expectativa do chŏra" value={selected.expectativa_chora} multiline />
+              <DetailRow label="expectativa da eletiva" value={selected.expectativa_chora} multiline />
               <DetailRow label="maior desafio" value={selected.maior_desafio} multiline />
               <DetailRow
                 label="experiência lovable"

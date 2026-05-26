@@ -127,3 +127,17 @@ Confirma que faz sentido começar pela **Onda 1**? Se sim, executo direto sem no
 ✅ Item 3: resolvido como efeito colateral do item 1 (snapshot escopado → `moduleRow.find` retorna módulo da eletiva certa).
 ⏭️ Item 5: `EVENT_INFO.nome = "Chŏra Lovable"` é só usado em `CertificateEditorial` legado (`/legacy`), mantido propositalmente — é o nome real do evento abril/2026.
 ⏭️ Item 13: `lookup_user_by_email` só é chamado pela edge function `validate-public-email` via service_role. Revoke de `anon`/`authenticated` está correto. Sem ação.
+
+---
+
+## Execução Onda 2 — 2026-05-26
+
+✅ Item 4 (parcial): label admin "expectativa do chŏra" → "expectativa da eletiva" em `AdminFbi.tsx`. Coluna `expectativa_chora` no DB mantida (rename custaria migration + types + 3 edge functions + tutorial.tsx legado, sem ganho pro fluxo ativo já que FBI inteiro está atrás de `eletiva_extras_enabled`).
+✅ Item 9: criado `src/lib/nsKey.ts` com helpers `nsKey`/`nsGet`/`nsSet`/`nsRemove`. Lê fallback transparente em `chora.*` e migra pra `nachesu.*` na primeira leitura. Próximos call-sites novos devem usar o helper; migração das 6 ocorrências `chora.*` existentes fica como follow-up sem urgência (dados sobrevivem via fallback).
+✅ Item 10: removidos emojis 🤙 dos toasts/labels de `VoteButton.tsx` e `GlobalVotingBanner.tsx` (os dois call-sites citados no plan).
+⏭️ Item 6: `CartaPublica` e `CertificateEditorial` ficam atrás de `/legacy/*` + `ExtrasGate`. Não vazam pro fluxo NachesU. `ChoraLogo` ali é correto (é o certificado real do evento Chŏra Lovable).
+⏭️ Item 7: aliases `EletivaLogo as ChoraLogo` em 10+ arquivos. Substituição mecânica de baixo valor (componente subjacente já é `NachesULogo`). Adiar pra refactor dedicado quando tocar PageHeader/Auth/Onboarding.
+⏭️ Item 8: `TrailBreadcrumb` é usado por Tutorial/Prework/Missions (todos legados via extras flag). Mover de pasta força updates de import sem ganho. Deixar onde está + nota.
+⏭️ Item 11: em-dash em admin é placeholder de null (`r.cidade ?? "—"`). Convenção de UI tabular padrão, não copy. Mantido.
+⏭️ Item 12: `pb-[env(safe-area-inset-bottom)]` em `Marco.tsx` está correto (página celebração não tem MobileNav). `--mobile-nav-h` se aplica só onde a nav existe.
+
