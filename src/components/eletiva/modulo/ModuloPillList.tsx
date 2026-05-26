@@ -131,10 +131,13 @@ export const ModuloPillList = ({
   const content = (deliverable?.content ?? {}) as Record<string, unknown>;
   const reflections = (content.reflections ?? {}) as Record<string, string>;
   const pblResponses = (content.pbl_responses ?? {}) as Record<string, string>;
+  const pblEstruturado = (content.pbl_estruturado ?? {}) as Record<string, Record<string, unknown>>;
+  const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
   const quizAnswers = (content.quiz_answers ?? {}) as Record<string, string | string[]>;
   const bonusValue = (content.bonus ?? {}) as Record<string, string>;
+
 
   const safeSave = save ?? (async () => undefined);
 
