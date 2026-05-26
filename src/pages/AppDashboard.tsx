@@ -118,6 +118,7 @@ const AppDashboard = () => {
             totalCompleted={eletiva?.totalCompleted ?? 0}
             totalPublished={eletiva?.totalPublished ?? 0}
             daysSinceLastActivity={daysSinceLastActivity}
+            loading={!!activeCourseId && eletivaLoading && !eletiva}
           />
 
           {/* 1.5 cadência da semana: tempo restante + próximo release */}
