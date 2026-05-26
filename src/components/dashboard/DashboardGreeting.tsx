@@ -42,6 +42,7 @@ export const DashboardGreeting = ({
   totalCompleted,
   totalPublished,
   daysSinceLastActivity,
+  loading = false,
 }: Props) => {
   const contextLine = buildContextLine(
     totalCompleted,
@@ -54,9 +55,16 @@ export const DashboardGreeting = ({
       <h1 className="font-display uppercase text-3xl sm:text-4xl leading-none text-perestroika-preto">
         oi, {nickname || "builder"}.
       </h1>
-      <p className="font-body text-sm sm:text-base text-perestroika-preto/70 max-w-prose">
-        {contextLine}
-      </p>
+      {loading ? (
+        <div
+          aria-hidden="true"
+          className="h-4 sm:h-5 w-64 max-w-full rounded bg-perestroika-preto/10 motion-safe:animate-pulse"
+        />
+      ) : (
+        <p className="font-body text-sm sm:text-base text-perestroika-preto/70 max-w-prose">
+          {contextLine}
+        </p>
+      )}
     </section>
   );
 };
