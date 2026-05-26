@@ -8,10 +8,14 @@ import {
   PillRadar,
   PillQuiz,
   PillBonus,
+  PillEditorial,
+  PillPBLEstruturado,
+  PillChecklistPacto,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
 } from "@/components/eletiva/pills";
+
 
 export type ModuloPill = {
   id: string;
