@@ -43,16 +43,17 @@ export function useNotifications() {
 
   // realtime
   useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel(`notifications-${user.id}`)
+    const userId = user?.id;
+    if (!userId) return;
+    const channel = supabase.channel(`notifications-${userId}-${Math.random().toString(36).slice(2, 8)}`);
+    channel
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
           table: "notifications",
-          filter: `user_id=eq.${user.id}`,
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
           setItems((prev) => [payload.new as AppNotification, ...prev].slice(0, PAGE_SIZE));
@@ -64,7 +65,7 @@ export function useNotifications() {
           event: "UPDATE",
           schema: "public",
           table: "notifications",
-          filter: `user_id=eq.${user.id}`,
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
           const updated = payload.new as AppNotification;
@@ -75,7 +76,7 @@ export function useNotifications() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user?.id]);
 
   const unreadCount = items.filter((n) => !n.read_at).length;
 
