@@ -14,6 +14,9 @@ interface Props {
   prevModule: NavModule | null;
   nextModule: NavModule | null;
   courseSlug: string | null;
+  canComplete: boolean;
+  pillsRemaining: number;
+  isAdmin?: boolean;
 }
 
 export const ModuloFooter = ({
@@ -23,30 +26,64 @@ export const ModuloFooter = ({
   prevModule,
   nextModule,
   courseSlug,
-}: Props) => (
+  canComplete,
+  pillsRemaining,
+  isAdmin = false,
+}: Props) => {
+  const blocked = !isCompleted && !canComplete && !isAdmin;
+  const adminBypass = !isCompleted && !canComplete && isAdmin;
+
+  let headline: string;
+  let helper: string;
+  if (isCompleted) {
+    headline = "esse módulo já é seu";
+    helper = "se quiser revisar, fica à vontade. seguimos pro próximo quando der.";
+  } else if (blocked) {
+    headline = "ainda falta uma pílula";
+    helper =
+      pillsRemaining === 1
+        ? "falta 1 pílula obrigatória. cada pílula tem o próprio botão de concluir."
+        : `falta ${pillsRemaining} pílulas obrigatórias. cada pílula tem o próprio botão de concluir.`;
+  } else {
+    headline = "fechou o módulo?";
+    helper = "marca como concluído quando rodar todas as pílulas. sem pressa, sem cobrança.";
+  }
+
+  const buttonLabel = completePending
+    ? "salvando..."
+    : blocked
+      ? "termine as pílulas obrigatórias"
+      : adminBypass
+        ? "concluir como admin"
+        : "marcar como concluído";
+
+  return (
   <>
     <section
       aria-label="finalizar módulo"
       className="rounded-3xl border-2 border-perestroika-preto bg-perestroika-preto text-perestroika-bege p-6 sm:p-8 mb-8"
     >
       <h2 className="font-display uppercase text-2xl sm:text-3xl mb-2 leading-tight">
-        {isCompleted ? "esse módulo já é seu" : "fechou o módulo?"}
+        {headline}
       </h2>
       <p className="font-body text-sm text-perestroika-bege/75 mb-5 max-w-lg">
-        {isCompleted
-          ? "se quiser revisar, fica à vontade. seguimos pro próximo quando der."
-          : "marca como concluído quando rodar todas as pílulas. sem pressa, sem cobrança."}
+        {helper}
       </p>
+      {adminBypass && (
+        <p className="font-body text-[11px] uppercase tracking-[0.18em] text-perestroika-bege/55 mb-4">
+          bypass de admin · estudante não vê esse botão liberado
+        </p>
+      )}
       <div className="flex flex-wrap gap-3">
         {!isCompleted && (
           <button
             type="button"
             onClick={onComplete}
-            disabled={completePending}
-            className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 disabled:opacity-50 transition-transform"
+            disabled={completePending || blocked}
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 transition-transform"
           >
             <CheckCircle2 className="h-4 w-4" />
-            {completePending ? "salvando..." : "marcar como concluído"}
+            {buttonLabel}
           </button>
         )}
         {nextModule && (
@@ -89,4 +126,5 @@ export const ModuloFooter = ({
       )}
     </nav>
   </>
-);
+  );
+};
