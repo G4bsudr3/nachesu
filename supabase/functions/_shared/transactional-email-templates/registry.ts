@@ -11,8 +11,10 @@ export interface TemplateEntry {
 
 import { template as futureLetterDelivery } from './future-letter-delivery.tsx'
 import { template as evasionNudge } from './evasion-nudge.tsx'
+import { template as adminDirectMessage } from './admin-direct-message.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'future-letter-delivery': futureLetterDelivery,
   'evasion-nudge': evasionNudge,
+  'admin-direct-message': adminDirectMessage,
 }
