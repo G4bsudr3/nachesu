@@ -45,7 +45,7 @@ const FeedbackFinal = lazy(() => import("./pages/legacy/FeedbackFinal.tsx"));
 const Certificado = lazy(() => import("./pages/legacy/Certificado.tsx"));
 const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandbox.tsx"));
 const FutureLetter = lazy(() => import("./pages/legacy/FutureLetter.tsx"));
-const ChoraBot = lazy(() => import("./pages/ChoraBot.tsx"));
+const TutorPage = lazy(() => import("./pages/TutorPage.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
 const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
