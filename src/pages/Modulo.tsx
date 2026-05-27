@@ -174,10 +174,37 @@ const Modulo = () => {
 
   const completedPillIds = snapshot?.completedPillIds ?? new Set<string>();
 
+  // liberação progressiva: a pílula N só abre quando todas as anteriores obrigatórias
+  // (`required=true`, ordenadas por `order_index`) estiverem concluídas. opcionais
+  // não bloqueiam. admin ignora a trava pra conseguir testar fora de ordem.
+  const sortedPills = useMemo(
+    () => (pills ? [...pills].sort((a, b) => a.order_index - b.order_index) : []),
+    [pills],
+  );
+  const unlockedPillIds = useMemo(() => {
+    const set = new Set<string>();
+    if (isAdmin) {
+      sortedPills.forEach((p) => set.add(p.id));
+      return set;
+    }
+    let blocked = false;
+    for (const p of sortedPills) {
+      if (!blocked) {
+        set.add(p.id);
+        if (p.required && !completedPillIds.has(p.id)) blocked = true;
+      }
+    }
+    return set;
+  }, [sortedPills, completedPillIds, isAdmin]);
+
   const togglePillMutation = useMutation({
     mutationFn: async (pill: ModuloPill) => {
       if (!user) throw new Error("sem contexto");
+      if (!unlockedPillIds.has(pill.id)) {
+        throw new Error("termine a pílula anterior pra abrir essa");
+      }
       const isDone = completedPillIds.has(pill.id);
+
       if (isDone) {
         const { error } = await supabase
           .from("student_pill_progress")
