@@ -247,10 +247,11 @@ async function handleWebhook(req: Request): Promise<Response> {
   const messageId = crypto.randomUUID()
   const recipientEmail = payload.data.email
 
-  // Trabalho assíncrono: log pending + enqueue. Roda em background via waitUntil
+  // Trabalho assíncrono: renderiza JSX → log pending + enqueue. Roda em background via waitUntil
   // pra responder 200 imediato pro Supabase Auth (5s timeout).
   const backgroundWork = (async () => {
     try {
+      const html = await renderEmailHtml(emailType, templateProps)
       await Promise.all([
         supabase.from('email_send_log').insert({
           message_id: messageId,
@@ -267,9 +268,7 @@ async function handleWebhook(req: Request): Promise<Response> {
             from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
             sender_domain: SENDER_DOMAIN,
             subject: EMAIL_SUBJECTS[emailType] || 'Notification',
-            // novo formato: dados brutos pro dispatcher renderizar.
-            email_type: emailType,
-            template_props: templateProps,
+            html,
             purpose: 'transactional',
             label: emailType,
             queued_at: new Date().toISOString(),
@@ -285,7 +284,7 @@ async function handleWebhook(req: Request): Promise<Response> {
           template_name: emailType,
           recipient_email: recipientEmail,
           status: 'failed',
-          error_message: 'Failed to enqueue email',
+          error_message: err instanceof Error ? err.message : 'Failed to enqueue email',
         })
       } catch {}
     }
