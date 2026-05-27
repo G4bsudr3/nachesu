@@ -1,51 +1,39 @@
-## o que vai mudar
+## objetivo
 
-o módulo 1 da eletiva economia circular ("missão 1: abrir o olho") já existe publicado, com 5 pílulas placeholder. vou substituir o conteúdo dessas 5 pílulas pelo briefing do dudu, usando exatamente os schemas de pílula que a plataforma já renderiza, sem inventar componente novo nem mexer em admin/UI. tudo via migration de UPDATE no banco; o admin já consegue editar/visualizar tudo pelo `/admin/aula` porque os schemas são os mesmos usados nos outros módulos editoriais.
+deixar só o módulo 1 disponível em cada eletiva e fazer as pílulas dentro do módulo abrirem em sequência, pra ter controle claro de onde cada estudante parou.
 
-guardrails que vou respeitar:
-- tom NachesU (lowercase, "você", sem em-dash/emoji em UI, sem corporatês). adapto a copy do dudu ("galerinha", "beleza" etc.) pro tom da plataforma, mantendo a substância
-- paleta Perestroika + accent azul Sebrae. a paleta "duduo" (#F25E3D etc.) do briefing NÃO entra: viola o sistema de design. cor do módulo continua vindo da trilha "Enxergar"
-- nenhum schema novo, nenhuma tabela nova
-- vídeo de abertura: faço upload do `.MOV` pro bucket `pill-attachments` e linko em `video_url` da pílula 1
+## estado atual
 
-## mapeamento briefing → schemas existentes
+- **economia-circular**: só módulo 1 publicado. ok.
+- **ia-na-pratica**: módulos 1, 2 e 3 publicados. precisa despublicar 2 e 3.
+- **pílulas**: hoje o estudante pode marcar qualquer pílula em qualquer ordem (toggle livre em `Modulo.tsx` + `ModuloPillList`). sem trava sequencial.
 
-| # | pílula atual | kind | schema usado | vira |
-|---|---|---|---|---|
-| 1 | abertura | `pilula_a` | `video_with_transcript` (PillAbertura) | vídeo intro do dudu (.MOV no storage) + transcrição em accordion + headline "missão 1: abrir o olho" |
-| 2 | conteúdo curado | `pilula_b` | `curated_content_with_questions` (PillConteudoCurado) | 2 cards (vídeo Ellen MacArthur + reportagem Portal Impactto) + 3 perguntas-guia (2 abertas + 1 múltipla escolha) |
-| 3 | PBL radar | `exercicio_pbl` | `radar_form` (PillRadar) | briefing "caça ao vazamento" + tabela de mínimo 5 itens, 4 campos (o que vi / onde / fluxo dropdown / evidência), regra anti-óbvio (≥2 fluxos diferentes). PillRadar já valida isso |
-| 4 | checagem | `pilula_c` | `quiz` (PillQuiz) | 3 perguntas: P1 múltipla escolha (1 correta), P2 multi-select (3 corretas), P3 texto longo sem feedback (matéria-prima do encontro 5) |
-| 5 | bônus | `registro` → muda pra `pilula_c` opcional | `bonus_text` (PillBonus) | card único Kurzgesagt + campo "o dado que mais me chocou foi ___ porque ___", `required=false` |
+## o que muda
 
-a pílula 5 atual está como `registro` mas o briefing pede um bônus opcional, não um registro de síntese. troco o `kind` pra `pilula_c` e marco `required=false`. os 3 registros pedagógicos (radar, quiz, bônus) já capturam evidência suficiente — não duplico com um registro extra.
+### 1. travar publicação só no módulo 1
+um UPDATE em `modules`: `published=false` pros módulos com `number > 1` da eletiva `ia-na-pratica`. economia-circular já está certo. os módulos 2-20 continuam visíveis no admin (pra preparar conteúdo), mas o estudante só vê o 1.
 
-## copy (amostra do tom adaptado)
+### 2. liberação progressiva de pílulas
+regra: a pílula N só fica "ativa" depois que todas as pílulas obrigatórias anteriores (`required=true`, na ordem `order_index`) estiverem concluídas.
 
-abertura:
-- headline: "missão 1: abrir o olho"
-- subheadline: "3 minutos. uma pergunta que vai te perseguir por 20 semanas."
+mudanças:
 
-PBL (briefing curto, formatado em markdown):
-> sai do computador. pega o celular, dá uma volta de 15 a 20 minutos pela escola, casa ou 2 quarteirões.
-> sua missão: caçar **vazamentos de valor** — coisa desperdiçada, subutilizada, descartada rápido demais.
-> regra anti-óbvio: pelo menos 2 fluxos diferentes. se sua lista inteira for cantina e reciclagem, faltou olhar.
+- **`src/pages/Modulo.tsx`**: calcular `unlockedPillIds` a partir de `pills` ordenadas + `completedPillIds`. percorre em ordem: libera a próxima só se a anterior obrigatória estiver feita. pílulas opcionais não bloqueiam o avanço. passa o set pra `ModuloPillList`.
+- **`src/components/eletiva/modulo/ModuloPillList.tsx`**: receber `unlockedPillIds`. pílula bloqueada renderiza estado "trancada" (ícone cadeado, opacidade reduzida, hint "termine a pílula anterior"), sem permitir toggle nem abrir conteúdo. mantém visual da lista igual, só adiciona o estado.
+- **proteção no toggle**: `togglePillMutation` checa se a pílula está desbloqueada antes de chamar o supabase. se não, toast curto "termine a anterior primeiro".
+- admin (`is_admin=true`) ignora a trava — pode marcar/desmarcar qualquer pílula pra testar.
 
-quiz P1 feedback se acertar: "boa. (c) é comportamento social, não tem recurso saindo do sistema. as outras três têm."
+### 3. copy
+microcopy no estado trancado: "termine **{título da anterior}** pra abrir essa". sem emoji, lowercase, tom NachesU.
 
-## passos de implementação
+## fora do escopo
 
-1. upload do vídeo `.MOV` pro bucket `pill-attachments` (público) → guardo URL pública
-2. migration única que faz `UPDATE module_pills` nas 5 pílulas do módulo (filtro por `module_id` do módulo 1 de economia-circular + `order_index`), setando: `title`, `body_md`, `video_url`, `interaction_schema` (jsonb com o `type` e payload esperado por cada componente), `duration_min_low/high`, `required`, e no caso da pílula 5 também `kind`
-3. ajusto `modules.objective` e `modules.total_minutes=50` se estiver vazio/divergente
-4. verifico no preview `/app/eletiva/economia-circular/modulo/1` que cada pílula renderiza com o schema certo, e no `/admin/aula` que dá pra editar
+- não mexer no desbloqueio entre módulos (já sequencial via `useEletivaProgress`).
+- não mexer em schema (sem migration). só UPDATE de dados + ajuste de UI/hook.
+- não mexer no fluxo de admin nem em conteúdo de pílulas.
 
-## o que NÃO faço nesse passo
+## arquivos tocados
 
-- não importo a paleta/tipografia "duduo" do briefing (mantém Perestroika)
-- não crio dashboard novo de professor (o admin atual já mostra progresso por aluno/módulo)
-- não configuro as notificações 24h/48h de evasão (já existe `check-student-evasion`; ligar essa cadência específica é outro pedido)
-- não toco nas pílulas dos módulos 2-20 (continuam unpublished)
-- não publico os módulos 2-20
-
-confirma e eu implemento.
+- `src/pages/Modulo.tsx` — calcular `unlockedPillIds`, guardar toggle
+- `src/components/eletiva/modulo/ModuloPillList.tsx` — render do estado trancado
+- update em `modules` (via insert tool) — despublicar mods 2-3 de ia-na-pratica
