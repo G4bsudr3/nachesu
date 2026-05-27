@@ -1,89 +1,87 @@
-# Fase 1 · fechar o loop de feedback
+## fase 2 · perfil 360° do estudante
 
-Cinco entregas que transformam o feedback de "one-shot" em conversa real, com estados claros, garantia de notificação, markdown, recibo de leitura e thread de resposta.
+cria uma página `/admin/aluno/:userId` que junta, num só lugar, tudo que o educador precisa saber pra acompanhar uma pessoa — sem precisar pular entre inbox, turma, tutor e e-mails.
 
-## 1.1 · estado `ajuste_solicitado` + fluxo de re-envio
+### entregas
 
-**hoje:** educador clica "pedir ajuste" e o deliverable vira `status='revisado'` igual ao aprovado — aluno vê o badge mas não tem caminho para corrigir e re-enviar.
+**2.1 · rota e shell da página**
+- nova rota `/admin/aluno/:userId` (protegida por `AdminRoute`)
+- link a partir de:
+  - `AdminUsers` (botão "ver perfil" em cada linha)
+  - `AdminTurma` (clicar no card do estudante)
+  - `AdminFeedbackInbox` (clicar no nome em cima do deliverable)
+  - `FeedbackReviewDrawer` (link "ver perfil completo" no header)
+- header com foto/iniciais, nome, nickname, e-mail, status (`profiles.status`), papéis, data de entrada, matrículas ativas (`enrollments` + `courses.title`) e botão "resetar senha" reaproveitando `admin-reset-password`
 
-**proposta:**
-- adicionar `ajuste` ao enum `deliverable_status` (rascunho / enviado / **ajuste** / revisado)
-- `FeedbackReviewDrawer`: quando verdict = "pedir ajuste" → grava `status='ajuste'`, mantém `reviewed_at`, `feedback`, `content.review_verdict`
-- guardar histórico em `content.history[]` (array com `{submitted_at, reviewed_at, feedback, verdict, tags}`) a cada nova rodada
-- `ModuloFeedbackCard` + `DeliverableStatusPill`: novo CTA "revisar e re-enviar" → reabre o deliverable (volta `status='rascunho'`, mantém respostas), aluno edita e re-submete (novo `submitted_at`)
-- inbox do educador (`usePendingDeliverables` / `AdminFeedbackInbox`): filtro "ajuste pendente" e contador no badge
+**2.2 · painel de progresso por curso**
+- pra cada `enrollments` ativa, mostrar:
+  - % de módulos liberados que foram concluídos (`module_progress` × `module_releases`)
+  - última atividade (max `module_progress.updated_at` ou `module_deliverables.updated_at`)
+  - sinal de risco: sem atividade há ≥ N dias (reusa lógica de `check-student-evasion`, sem disparar nudge)
+  - link "ver módulo atual"
 
-## 1.2 · garantir notificação `deliverable_reviewed`
+**2.3 · histórico de entregas e feedback**
+- timeline reversa de `module_deliverables` do estudante: módulo, status (pill já existente), `submitted_at`, `reviewed_at`, verdict
+- cada item expande inline a thread (`deliverable_messages`) reaproveitando `useDeliverableThread` em modo read-only + ação "abrir drawer de revisão" (`FeedbackReviewDrawer`)
+- indicador "feedback lido há X" (`content.feedback_read_at`)
 
-**hoje:** o toast diz "aluno notificado", mas a notificação depende de trigger DB; se falhar, ninguém percebe.
+**2.4 · transcrições do tutor IA**
+- lista de `tutor_conversations` do estudante (já tem RLS admin SELECT), agrupadas por trilha
+- expandir → renderiza `messages` jsonb em bolhas (markdown leve), sem permitir edição
+- contador de mensagens, última interação, primeira pergunta da sessão
+- escopo desta fase: somente `tutor_trail-chat` (TutorChat). `chora_bot_messages` fica fora porque é fluxo legado atrás da flag `eletiva_extras_enabled`
 
-**proposta:**
-- criar trigger `AFTER UPDATE ON module_deliverables` que insere em `notifications` quando `reviewed_at` muda de null → not null OU quando `status` muda para `ajuste` (kinds: `deliverable_reviewed`, `deliverable_changes_requested`)
-- fallback no `FeedbackReviewDrawer`: se após o save a notificação correspondente não existir em ~2s, fazer insert direto via cliente (idempotente por `target_id + kind`)
-- log em `email_send_log` quando notificação dispara email (reusa infra existente)
+**2.5 · histórico de comunicação**
+- últimos itens de `evasion_nudges` (data, nível, dias inativos)
+- últimos `notifications` enviadas pra esse user (`target_id` quando aplicável)
+- últimos `email_send_log` com `metadata->>'user_id' = :userId` ou `recipient_email = profile.email`
 
-## 1.3 · markdown leve no feedback
+**2.6 · notas internas do educador (opcional, leve)**
+- nova tabela `admin_student_notes` (id, user_id, author_id, body_md, created_at, updated_at) — só admin lê/escreve
+- input curto com markdown, lista cronológica no fim da página
+- notificação interna não dispara nada pro estudante (zero risco de vazamento)
 
-**hoje:** `ModuloFeedbackCard` renderiza com `whitespace-pre-wrap` — markdown do educador vira caractere literal.
+### detalhes técnicos
 
-**proposta:**
-- adicionar `react-markdown` + `remark-gfm` (já comum no projeto)
-- whitelist: parágrafo, ênfase, lista, link (target=_blank, rel=noopener), code inline, citação
-- preview ao vivo no `FeedbackReviewDrawer` (split textarea / preview)
-- mesma renderização no inbox para o educador conferir
+**migrations**
+- `CREATE TABLE public.admin_student_notes (...)` + GRANTs (`authenticated`, `service_role`) + RLS com `has_role(auth.uid(), 'admin')` em todas as policies
+- nenhum schema novo além disso. `tutor_conversations`, `module_deliverables`, `notifications`, `email_send_log`, `evasion_nudges` já têm SELECT pra admin
 
-## 1.4 · recibo de leitura
+**hooks novos (em `src/features/admin/`)**
+- `useStudentProfile(userId)` — junta `profiles`, `user_roles`, `enrollments`, `courses`
+- `useStudentProgress(userId)` — `module_progress` + `module_releases` por curso
+- `useStudentDeliverables(userId)` — lista + status, reaproveita tipos de `usePendingDeliverables`
+- `useStudentTutorConversations(userId)` — `tutor_conversations` agrupadas por trilha
+- `useStudentCommunication(userId)` — `evasion_nudges` + `notifications` + `email_send_log`
+- `useAdminStudentNotes(userId)` — CRUD da tabela nova
 
-**proposta:**
-- `module_deliverables.content.feedback_read_at` (timestamptz) — marcado quando aluno abre o módulo e o `ModuloFeedbackCard` entra no viewport (IntersectionObserver)
-- no inbox e no perfil 360°: indicador "lido há 2h" / "não lido"
-- realtime: educador vê o "lido" sem refresh
+**componentes novos (em `src/features/admin/studentProfile/`)**
+- `StudentProfileHeader.tsx`
+- `StudentProgressPanel.tsx`
+- `StudentDeliverableTimeline.tsx` (reusa `DeliverableStatusPill`, `FeedbackMarkdown`, `FeedbackReviewDrawer`)
+- `StudentTutorTranscripts.tsx`
+- `StudentCommunicationLog.tsx`
+- `StudentInternalNotes.tsx`
+- `AdminStudentProfile.tsx` (page, monta tudo)
 
-## 1.5 · thread de resposta ao feedback
+**arquivos tocados**
+- `src/App.tsx` (rota nova)
+- `src/pages/AdminUsers.tsx` (link "ver perfil")
+- `src/features/admin/AdminFeedbackInbox.tsx` (nome do estudante vira link)
+- `src/features/admin/FeedbackReviewDrawer.tsx` (link "ver perfil completo")
+- `src/pages/AdminTurma.tsx` (card do estudante vira link)
 
-**proposta (mínima, sem virar chat completo):**
-- nova tabela `deliverable_messages` (id, deliverable_id, author_id, body_md, created_at, read_at)
-- RLS: aluno dono do deliverable + admins podem ler/escrever; INSERT só do próprio author_id
-- `ModuloFeedbackCard`: botão "responder ao educador" → textarea curta com markdown, envia mensagem (não muda status)
-- `FeedbackReviewDrawer`: thread no rodapé, educador responde inline; notificação `deliverable_message` para a outra parte
-- limite leve: 4000 chars/mensagem, sem anexos nesta fase
+### fora desta fase
+- mensagens manuais do admin pro estudante e templates editáveis de nudge → fase 3 (custom communication)
+- rubrica configurável e AI-draft de feedback → fase 4
+- unificação tutor / chora-bot → fase 5
 
----
-
-## detalhes técnicos
-
-**migration (uma só):**
-- `ALTER TYPE deliverable_status ADD VALUE 'ajuste';`
-- `ALTER TYPE notification_kind ADD VALUE 'deliverable_changes_requested';`
-- `ALTER TYPE notification_kind ADD VALUE 'deliverable_message';`
-- `CREATE TABLE public.deliverable_messages (...)` + GRANTs + RLS + policies
-- trigger `notify_on_deliverable_review()` em `module_deliverables`
-- trigger `notify_on_deliverable_message()` em `deliverable_messages`
-- ambos inserem em `notifications` com link para `/app/eletiva/:slug/modulo/:n#feedback-do-educador`
-
-**frontend tocados:**
-- `src/features/admin/FeedbackReviewDrawer.tsx` (verdict ajuste, markdown preview, thread)
-- `src/features/admin/AdminFeedbackInbox.tsx` (filtro `ajuste`, badge `não lido`)
-- `src/features/admin/usePendingDeliverables.ts` (incluir `status='ajuste'`)
-- `src/components/eletiva/modulo/ModuloFeedbackCard.tsx` (markdown, CTA re-enviar, botão responder, thread)
-- `src/components/eletiva/modulo/DeliverableStatusPill.tsx` (novo estado `ajuste`)
-- `src/features/hub/useStudentFeedback.ts` (refletir novo enum)
-- `src/pages/Modulo.tsx` (reabrir deliverable quando status = `ajuste` e aluno clica "re-enviar")
-- novo hook `useDeliverableThread(deliverableId)` para a conversa
-
-**realtime já existe** em `module_deliverables` (useStudentFeedback) — só adicionar canal para `deliverable_messages`.
-
-**fora de escopo desta fase:** áudio do educador (4.4), AI-draft (4.3), rubrica configurável (4.1) — entram na fase 4.
-
----
-
-## ordem de implementação
-
-1. migration (enum + tabela + triggers) → aguardar aprovação
-2. atualizar `usePendingDeliverables` + drawer (ajuste + markdown preview)
-3. atualizar `ModuloFeedbackCard` + status pill (re-enviar + markdown render)
-4. recibo de leitura (IntersectionObserver + update)
-5. thread (`deliverable_messages` + hook + UI nos dois lados)
-6. teste end-to-end: aluno envia → educador pede ajuste → aluno vê CTA → re-envia → educador aprova → aluno lê → responde "obrigado"
+### ordem de implementação
+1. migration `admin_student_notes` (uma só) → aguardar aprovação
+2. hooks (`useStudentProfile`, `useStudentProgress`, `useStudentDeliverables`, `useStudentTutorConversations`, `useStudentCommunication`, `useAdminStudentNotes`)
+3. componentes da página + rota nova
+4. links de entrada (`AdminUsers`, `AdminTurma`, `AdminFeedbackInbox`, `FeedbackReviewDrawer`)
+5. notas internas (`StudentInternalNotes`)
+6. teste end-to-end: abrir um estudante real, abrir um deliverable a partir da timeline, abrir thread, conferir transcrição do tutor, adicionar nota interna
 
 posso seguir?
