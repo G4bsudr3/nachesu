@@ -397,6 +397,8 @@ const Modulo = () => {
           pills={pills}
           loading={pillsLoading}
           completedPillIds={completedPillIds}
+          unlockedPillIds={unlockedPillIds}
+
           trailColor={trailColor}
           hasTrail={!!trail}
           moduleId={moduleRow.id}
