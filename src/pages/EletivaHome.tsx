@@ -7,6 +7,7 @@ import { useEletivaProgress, type EletivaSnapshot } from "@/hooks/useEletivaProg
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { EletivaOnboardingOverlay } from "@/components/eletiva/EletivaOnboardingOverlay";
 import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
@@ -218,7 +219,7 @@ const EletivaHome = () => {
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
       <PageHeader showLogo logoLink="/app" />
 
-      <main className="container max-w-3xl pt-6 pb-16 sm:pt-10">
+      <main className="container max-w-3xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16">
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -363,6 +364,7 @@ const EletivaHome = () => {
       />
 
       <EletivaFooter />
+      <MobileNav />
     </div>
   );
 };

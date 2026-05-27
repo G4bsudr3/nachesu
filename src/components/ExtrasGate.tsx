@@ -1,5 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import { toast } from "sonner";
 import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useUserRole } from "@/hooks/useUserRole";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
@@ -8,6 +9,16 @@ interface ExtrasGateProps {
   children: ReactNode;
 }
 
+const RedirectWithToast = () => {
+  useEffect(() => {
+    toast.info("essa área não está liberada na sua eletiva.", {
+      description: "te trouxe de volta pro início.",
+      duration: 4000,
+    });
+  }, []);
+  return <Navigate to="/app" replace />;
+};
+
 /**
  * gate pra rotas de features sociais legadas (mural, álbum, builder ia,
  * carta pro futuro, tutorial, onboarding, feedback final, certificado).
@@ -15,11 +26,7 @@ interface ExtrasGateProps {
  * regra:
  * - admin: passa direto (precisa ver pra decidir reativar)
  * - aluno + flag on: passa
- * - aluno + flag off OU sem matrícula: redireciona pra /app (equivalente a 403)
- *
- * a flag é resolvida via useActiveEletivaExtras(): per-course se a eletiva
- * ativa tem override, senão cai no global (default false). aluno sem
- * enrollment cai no global também (false) → bloqueado.
+ * - aluno + flag off OU sem matrícula: redireciona pra /app com toast
  */
 export const ExtrasGate = ({ children }: ExtrasGateProps) => {
   const { enabled, isLoading } = useActiveEletivaExtras();
@@ -36,6 +43,6 @@ export const ExtrasGate = ({ children }: ExtrasGateProps) => {
     );
   }
   if (isAdmin) return <>{children}</>;
-  if (!enabled) return <Navigate to="/app" replace />;
+  if (!enabled) return <RedirectWithToast />;
   return <>{children}</>;
 };
