@@ -45,7 +45,7 @@ const FeedbackFinal = lazy(() => import("./pages/legacy/FeedbackFinal.tsx"));
 const Certificado = lazy(() => import("./pages/legacy/Certificado.tsx"));
 const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandbox.tsx"));
 const FutureLetter = lazy(() => import("./pages/legacy/FutureLetter.tsx"));
-const ChoraBot = lazy(() => import("./pages/ChoraBot.tsx"));
+const TutorPage = lazy(() => import("./pages/TutorPage.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
 const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
@@ -312,7 +312,7 @@ const App = () => (
                 <Route path="/app/hub/builder/:slug" element={<ExtrasGate><HubBuilder /></ExtrasGate>} />
                 {/* tutor ia: rota canônica é /app/tutor. /app/chora-bot é alias legado
                     que redireciona pra não quebrar bookmarks antigos. */}
-                <Route path="/app/tutor" element={<ChoraBot />} />
+                <Route path="/app/tutor" element={<TutorPage />} />
                 <Route path="/app/chora-bot" element={<Navigate to="/app/tutor" replace />} />
               </Route>
               <Route

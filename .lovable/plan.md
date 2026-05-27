@@ -55,5 +55,30 @@ editor passou de chips hardcoded pra rubricas editáveis, com rascunho de feedba
 - `FeedbackReviewDrawer.tsx` (chips dinâmicos + handler IA)
 - `AdminFbi.tsx` (tab nudges/rubricas)
 
-### próximas fases pendentes
-- fase 5: unificação tutor / chora-bot
+## fase 5 · unificação do tutor IA (implementada)
+
+`/app/tutor` agora roda no mesmo backend do TutorChat (edge function `tutor-trail-chat` + tabela `tutor_conversations`). histórico único por trilha, sem dois cérebros separados.
+
+### entregas
+- nova página `src/pages/TutorPage.tsx` substitui o antigo `ChoraBot.tsx` na rota `/app/tutor` (legacy file mantido pra referência mas fora de rota)
+- trilha ativa resolvida via `useActiveEletiva` + `useMyEnrollments`; popover de troca de trilha quando o aluno tem 2+ trilhas matriculadas
+- carrega/persiste em `tutor_conversations` (uma conversa por aluno+trilha) — mesmo store usado pelo `TutorChat` dentro do módulo
+- streaming SSE + markdown via `BotMessage`, ação "zerar conversa" com confirm
+- pré-prompt `?prompt=...` preservado
+- empty state quando aluno ainda não tem matrícula
+
+### arquivos novos
+- `src/pages/TutorPage.tsx`
+
+### arquivos tocados
+- `src/App.tsx` (rota `/app/tutor` aponta pra `TutorPage`)
+- `.lovable/plan.md`
+
+### itens da fase 5 do roadmap ainda pendentes (subfases)
+- 5.2 onboarding parametrizado por curso
+- 5.3 back nav contextual no módulo
+- 5.4 MobileNav em `EletivaHome`
+- 5.5 sininho de notificações no `MobileNav`
+- 5.6 toast informativo no `ExtrasGate`
+- 5.7 feedback visual no auto-complete das pílulas
+
