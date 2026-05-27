@@ -110,28 +110,34 @@ async function handlePreview(req: Request): Promise<Response> {
     })
   }
 
-  // dynamic import só no preview pra não pesar o cold start do webhook.
-  const fileMap: Record<string, string> = {
-    signup: 'signup',
-    invite: 'invite',
-    magiclink: 'magic-link',
-    recovery: 'recovery',
-    email_change: 'email-change',
-    reauthentication: 'reauthentication',
-  }
-  const [{ default: React }, { renderAsync }, templateModule] = await Promise.all([
-    import('npm:react@18.3.1'),
-    import('npm:@react-email/components@0.0.22'),
-    import(`../_shared/email-templates/${fileMap[type]}.tsx`),
-  ])
-  const EmailTemplate = templateModule[Object.keys(templateModule).find((k) => k.endsWith('Email'))!]
-  const sampleData = SAMPLE_DATA[type] || {}
-  const html = await renderAsync(React.createElement(EmailTemplate, sampleData))
+// dynamic import só no preview pra não pesar o cold start do webhook.
+  const html = await renderEmailHtml(type, SAMPLE_DATA[type] || {})
 
   return new Response(html, {
     status: 200,
     headers: { ...previewCorsHeaders, 'Content-Type': 'text/html; charset=utf-8' },
   })
+}
+
+const FILE_MAP: Record<string, string> = {
+  signup: 'signup',
+  invite: 'invite',
+  magiclink: 'magic-link',
+  recovery: 'recovery',
+  email_change: 'email-change',
+  reauthentication: 'reauthentication',
+}
+
+async function renderEmailHtml(type: string, props: Record<string, unknown>): Promise<string> {
+  const [{ default: React }, { renderAsync }, templateModule] = await Promise.all([
+    import('npm:react@18.3.1'),
+    import('npm:@react-email/components@0.0.22'),
+    import(`../_shared/email-templates/${FILE_MAP[type]}.tsx`),
+  ])
+  const exportName = Object.keys(templateModule).find((k) => k.endsWith('Email'))
+  if (!exportName) throw new Error(`No *Email export found for type ${type}`)
+  const EmailTemplate = templateModule[exportName]
+  return await renderAsync(React.createElement(EmailTemplate, props))
 }
 
 // Webhook handler - verifies signature and sends email
