@@ -1,58 +1,89 @@
-## diagnóstico
+# Fase 1 · fechar o loop de feedback
 
-estado atual:
-- domínio ativo na Cloud: `notify.aiu.guru` (verificado). o hook do código aponta pra `notify.frattz.com`, mas a Cloud nunca foi configurada com esse domínio, então auth emails caem no template default do supabase (foi isso que apareceu no print: "Reset your password" em inglês com botão preto, mesmo o remetente dizendo "NachesU")
-- 6 templates existem mas estão todos com identidade chŏra (logo chŏra preta, copy "chŏra lovable 2026 · porto alegre", lágrima perestroika, assinatura "vai lá e cria · chŏra")
-- assets de imagem usados pelos templates vivem num bucket de outro projeto (`tfztafpdhlcaamumcdrn.supabase.co`), o que vai quebrar quando a gente trocar pra logo nachesu
-- `SITE_NAME = "chorahub"` no hook
-- subjects ainda em inglês: "Confirm your email", "Reset your password" etc
+Cinco entregas que transformam o feedback de "one-shot" em conversa real, com estados claros, garantia de notificação, markdown, recibo de leitura e thread de resposta.
 
-## o que vai ser feito
+## 1.1 · estado `ajuste_solicitado` + fluxo de re-envio
 
-### 1. provisionar domínio frattz.com
-abrir o diálogo de setup de email pra você cadastrar `frattz.com` (vai gerar `notify.frattz.com` delegado pros nameservers da lovable). você adiciona 2 NS records no seu provedor (`ns3.lovable.cloud`, `ns4.lovable.cloud`) e o resto (SPF, DKIM, MX) é gerenciado automaticamente. DNS não precisa estar verificado pra deploy seguir; emails passam a sair pelo novo domínio assim que propagar.
+**hoje:** educador clica "pedir ajuste" e o deliverable vira `status='revisado'` igual ao aprovado — aluno vê o badge mas não tem caminho para corrigir e re-enviar.
 
-### 2. atualizar o `auth-email-hook`
-- `SITE_NAME` → `"NachesU"`
-- subjects pt-BR, lowercase, tom Naches:
-  - signup → "confirme seu email pra entrar na nachesu"
-  - magiclink → "seu link de acesso nachesu"
-  - recovery → "nova senha nachesu"
-  - invite → "você foi convidado pra nachesu"
-  - email_change → "confirme seu novo email"
-  - reauthentication → "código de verificação nachesu"
-- `SAMPLE_PROJECT_URL` → `https://nachesu.lovable.app`
+**proposta:**
+- adicionar `ajuste` ao enum `deliverable_status` (rascunho / enviado / **ajuste** / revisado)
+- `FeedbackReviewDrawer`: quando verdict = "pedir ajuste" → grava `status='ajuste'`, mantém `reviewed_at`, `feedback`, `content.review_verdict`
+- guardar histórico em `content.history[]` (array com `{submitted_at, reviewed_at, feedback, verdict, tags}`) a cada nova rodada
+- `ModuloFeedbackCard` + `DeliverableStatusPill`: novo CTA "revisar e re-enviar" → reabre o deliverable (volta `status='rascunho'`, mantém respostas), aluno edita e re-submete (novo `submitted_at`)
+- inbox do educador (`usePendingDeliverables` / `AdminFeedbackInbox`): filtro "ajuste pendente" e contador no badge
 
-### 3. assets visuais hospedados no próprio projeto
-upload pro bucket `email-assets` (criar se faltar) com SELECT público:
-- `nachesu-logo.png` (preto sobre bege, ~140px)
-- accent visual (estrela perestroika ou faixa de gradiente perestroika como decorativo, no lugar da lágrima chŏra)
+## 1.2 · garantir notificação `deliverable_reviewed`
 
-trocar `LOGO_URL` e remover `LAGRIMA_URL` do `_chora-styles.ts` (renomeado pra `_nachesu-styles.ts`). manter paleta perestroika (bege fundo, gradiente laranja→rosa→azul no botão, preto no texto, League Gothic+Urbanist).
+**hoje:** o toast diz "aluno notificado", mas a notificação depende de trigger DB; se falhar, ninguém percebe.
 
-### 4. reescrever os 6 templates com propósito específico
+**proposta:**
+- criar trigger `AFTER UPDATE ON module_deliverables` que insere em `notifications` quando `reviewed_at` muda de null → not null OU quando `status` muda para `ajuste` (kinds: `deliverable_reviewed`, `deliverable_changes_requested`)
+- fallback no `FeedbackReviewDrawer`: se após o save a notificação correspondente não existir em ~2s, fazer insert direto via cliente (idempotente por `target_id + kind`)
+- log em `email_send_log` quando notificação dispara email (reusa infra existente)
 
-cada template ganha headline própria, copy curta, microcopy que reforça o contexto. todos em lowercase, "você" (não "tu"), zero em-dash, zero emoji, zero hashtag, footer "nachesu · uma plataforma naches · em parceria com escola sebrae".
+## 1.3 · markdown leve no feedback
 
-| template | headline display | corpo |
-|---|---|---|
-| **signup** | "bem-vinda à nachesu" | confirma o email pra começar suas eletivas. botão "confirmar email". rodapé: se não foi você, ignora |
-| **magic-link** | "entra direto" | link válido por 1h, sem senha. botão "entrar na nachesu" |
-| **recovery** | "nova senha" | redefine a senha em 1 clique. botão "redefinir senha". rodapé: se não foi você, sua senha continua a mesma |
-| **invite** | "você foi convidado" | educador/admin te convidou. botão "aceitar convite". reforça: válido só pro seu email institucional |
-| **email-change** | "confirma o novo email" | mostra email antigo → novo. botão "confirmar troca". rodapé: se não foi você, fala com a gente |
-| **reauthentication** | "seu código" | OTP grande em League Gothic (já existe `codeStyle`). 6 dígitos, válido por 10 min, não compartilhe |
+**hoje:** `ModuloFeedbackCard` renderiza com `whitespace-pre-wrap` — markdown do educador vira caractere literal.
 
-### 5. deploy e validação
-- deploy do `auth-email-hook` e `process-email-queue` (os templates são renderizados no queue, então tem que redeployar os dois)
-- abrir Cloud → Emails pra você acompanhar verificação DNS e disparar preview dos 6 templates direto da interface
+**proposta:**
+- adicionar `react-markdown` + `remark-gfm` (já comum no projeto)
+- whitelist: parágrafo, ênfase, lista, link (target=_blank, rel=noopener), code inline, citação
+- preview ao vivo no `FeedbackReviewDrawer` (split textarea / preview)
+- mesma renderização no inbox para o educador conferir
 
-## fora de escopo
-- templates transacionais (contact form, notificações de progresso etc) — você pediu só os "emails do sistema", que são os auth emails. se quiser app emails depois (ex: notificação quando módulo libera), faço numa próxima rodada
-- mudar nome do remetente além de "NachesU" — fica como está
-- traduzir mensagens internas do supabase auth (rate limit, etc) — essas vêm da api, não dá pra customizar
+## 1.4 · recibo de leitura
 
-## tecnicalidades
-- arquivos editados: `supabase/functions/auth-email-hook/index.ts`, `supabase/functions/_shared/email-templates/{signup,magic-link,recovery,invite,email-change,reauthentication}.tsx`, `_chora-styles.ts` (renomear pra `_nachesu-styles.ts` e ajustar imports)
-- upload de 1-2 assets via `storage_upload` no bucket `email-assets`
-- nenhuma mudança de schema, RLS ou cliente
+**proposta:**
+- `module_deliverables.content.feedback_read_at` (timestamptz) — marcado quando aluno abre o módulo e o `ModuloFeedbackCard` entra no viewport (IntersectionObserver)
+- no inbox e no perfil 360°: indicador "lido há 2h" / "não lido"
+- realtime: educador vê o "lido" sem refresh
+
+## 1.5 · thread de resposta ao feedback
+
+**proposta (mínima, sem virar chat completo):**
+- nova tabela `deliverable_messages` (id, deliverable_id, author_id, body_md, created_at, read_at)
+- RLS: aluno dono do deliverable + admins podem ler/escrever; INSERT só do próprio author_id
+- `ModuloFeedbackCard`: botão "responder ao educador" → textarea curta com markdown, envia mensagem (não muda status)
+- `FeedbackReviewDrawer`: thread no rodapé, educador responde inline; notificação `deliverable_message` para a outra parte
+- limite leve: 4000 chars/mensagem, sem anexos nesta fase
+
+---
+
+## detalhes técnicos
+
+**migration (uma só):**
+- `ALTER TYPE deliverable_status ADD VALUE 'ajuste';`
+- `ALTER TYPE notification_kind ADD VALUE 'deliverable_changes_requested';`
+- `ALTER TYPE notification_kind ADD VALUE 'deliverable_message';`
+- `CREATE TABLE public.deliverable_messages (...)` + GRANTs + RLS + policies
+- trigger `notify_on_deliverable_review()` em `module_deliverables`
+- trigger `notify_on_deliverable_message()` em `deliverable_messages`
+- ambos inserem em `notifications` com link para `/app/eletiva/:slug/modulo/:n#feedback-do-educador`
+
+**frontend tocados:**
+- `src/features/admin/FeedbackReviewDrawer.tsx` (verdict ajuste, markdown preview, thread)
+- `src/features/admin/AdminFeedbackInbox.tsx` (filtro `ajuste`, badge `não lido`)
+- `src/features/admin/usePendingDeliverables.ts` (incluir `status='ajuste'`)
+- `src/components/eletiva/modulo/ModuloFeedbackCard.tsx` (markdown, CTA re-enviar, botão responder, thread)
+- `src/components/eletiva/modulo/DeliverableStatusPill.tsx` (novo estado `ajuste`)
+- `src/features/hub/useStudentFeedback.ts` (refletir novo enum)
+- `src/pages/Modulo.tsx` (reabrir deliverable quando status = `ajuste` e aluno clica "re-enviar")
+- novo hook `useDeliverableThread(deliverableId)` para a conversa
+
+**realtime já existe** em `module_deliverables` (useStudentFeedback) — só adicionar canal para `deliverable_messages`.
+
+**fora de escopo desta fase:** áudio do educador (4.4), AI-draft (4.3), rubrica configurável (4.1) — entram na fase 4.
+
+---
+
+## ordem de implementação
+
+1. migration (enum + tabela + triggers) → aguardar aprovação
+2. atualizar `usePendingDeliverables` + drawer (ajuste + markdown preview)
+3. atualizar `ModuloFeedbackCard` + status pill (re-enviar + markdown render)
+4. recibo de leitura (IntersectionObserver + update)
+5. thread (`deliverable_messages` + hook + UI nos dois lados)
+6. teste end-to-end: aluno envia → educador pede ajuste → aluno vê CTA → re-envia → educador aprova → aluno lê → responde "obrigado"
+
+posso seguir?

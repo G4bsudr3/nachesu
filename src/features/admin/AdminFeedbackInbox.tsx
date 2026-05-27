@@ -74,14 +74,14 @@ export const AdminFeedbackInbox = () => {
     },
   });
 
-  const { data, all, pendingCount, isLoading, refetch } = usePendingDeliverables({
+  const { data, all, pendingCount, ajusteCount, isLoading, refetch } = usePendingDeliverables({
     courseId,
     moduleId,
     status: statusFilter,
   });
 
   const revisadosCount = useMemo(
-    () => all.filter((d) => d.reviewed_at !== null).length,
+    () => all.filter((d) => d.reviewed_at !== null && d.status !== "ajuste").length,
     [all],
   );
 
@@ -92,11 +92,11 @@ export const AdminFeedbackInbox = () => {
           <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none">
             feedback · inbox
           </h1>
-          <p className="mt-3 text-perestroika-preto/70 inline-flex items-center gap-3">
+          <p className="mt-3 text-perestroika-preto/70 inline-flex items-center gap-3 flex-wrap">
             <Inbox className="w-4 h-4" />
             {isLoading
               ? "carregando…"
-              : `${pendingCount} pendentes · ${revisadosCount} revisados`}
+              : `${pendingCount} pendentes · ${ajusteCount} em ajuste · ${revisadosCount} revisados`}
           </p>
         </div>
         <button
@@ -151,6 +151,7 @@ export const AdminFeedbackInbox = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="pendentes">pendentes</SelectItem>
+            <SelectItem value="ajuste">em ajuste</SelectItem>
             <SelectItem value="revisados">revisados</SelectItem>
             <SelectItem value="todos">todos</SelectItem>
           </SelectContent>
@@ -203,7 +204,11 @@ export const AdminFeedbackInbox = () => {
                       há {timeAgo(d.submitted_at)}
                     </TableCell>
                     <TableCell>
-                      {d.reviewed_at ? (
+                      {d.status === "ajuste" ? (
+                        <Badge className="bg-[#fd4644] text-white uppercase text-[10px]">
+                          ajuste
+                        </Badge>
+                      ) : d.reviewed_at ? (
                         <Badge variant="outline" className="uppercase text-[10px]">
                           revisado
                         </Badge>

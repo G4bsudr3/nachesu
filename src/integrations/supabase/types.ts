@@ -443,6 +443,44 @@ export type Database = {
         }
         Relationships: []
       }
+      deliverable_messages: {
+        Row: {
+          author_id: string
+          author_role: string
+          body_md: string
+          created_at: string
+          deliverable_id: string
+          id: string
+          read_at: string | null
+        }
+        Insert: {
+          author_id: string
+          author_role?: string
+          body_md: string
+          created_at?: string
+          deliverable_id: string
+          id?: string
+          read_at?: string | null
+        }
+        Update: {
+          author_id?: string
+          author_role?: string
+          body_md?: string
+          created_at?: string
+          deliverable_id?: string
+          id?: string
+          read_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliverable_messages_deliverable_id_fkey"
+            columns: ["deliverable_id"]
+            isOneToOne: false
+            referencedRelation: "module_deliverables"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -2396,7 +2434,7 @@ export type Database = {
         | "narrador"
       builder_card_status: "gerando" | "pronta" | "erro"
       deliverable_kind: "link" | "text" | "checklist" | "mixed"
-      deliverable_status: "rascunho" | "enviado" | "revisado"
+      deliverable_status: "rascunho" | "enviado" | "revisado" | "ajuste"
       future_letter_session_status: "draft" | "open" | "closed" | "sent"
       mission_status: "pendente" | "aprovada" | "ajustar"
       notification_kind:
@@ -2404,6 +2442,8 @@ export type Database = {
         | "module_released"
         | "evasion_nudge"
         | "system"
+        | "deliverable_changes_requested"
+        | "deliverable_message"
       pill_kind:
         | "pilula_a"
         | "pilula_b"
@@ -2549,7 +2589,7 @@ export const Constants = {
       ],
       builder_card_status: ["gerando", "pronta", "erro"],
       deliverable_kind: ["link", "text", "checklist", "mixed"],
-      deliverable_status: ["rascunho", "enviado", "revisado"],
+      deliverable_status: ["rascunho", "enviado", "revisado", "ajuste"],
       future_letter_session_status: ["draft", "open", "closed", "sent"],
       mission_status: ["pendente", "aprovada", "ajustar"],
       notification_kind: [
@@ -2557,6 +2597,8 @@ export const Constants = {
         "module_released",
         "evasion_nudge",
         "system",
+        "deliverable_changes_requested",
+        "deliverable_message",
       ],
       pill_kind: [
         "pilula_a",
