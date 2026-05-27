@@ -54,6 +54,11 @@ const AdminStudentProfile = () => {
             </section>
 
             <section>
+              <SectionHeader title="mensagem direta" sub="manda um recado in-app (opcionalmente por e-mail também)" />
+              <StudentMessageComposer userId={userId} />
+            </section>
+
+            <section>
               <SectionHeader title="notas internas" sub="anotações privadas, só admins veem" />
               <StudentInternalNotes userId={userId} />
             </section>
