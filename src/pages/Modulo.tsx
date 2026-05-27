@@ -219,11 +219,7 @@ const Modulo = () => {
         const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
         const nextWasLocked =
           next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
-        toast.success(
-          nextWasLocked
-            ? `rodou todas as pílulas. módulo ${String(next!.number).padStart(2, "0")} desbloqueado.`
-            : "rodou todas as pílulas. módulo concluído.",
-        );
+        setBurst({ open: true, nextUnlocked: !!nextWasLocked });
         queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
         setTimeout(() => { goToMarcoIfTrailFinished(); }, 250);
       }
