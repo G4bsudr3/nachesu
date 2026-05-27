@@ -53,6 +53,10 @@ const Modulo = () => {
     pillTitle: string;
     pillPrompt: string;
   } | null>(null);
+  const [burst, setBurst] = useState<{ open: boolean; nextUnlocked: boolean }>({
+    open: false,
+    nextUnlocked: false,
+  });
 
   const moduleRow = useMemo(
     () => snapshot?.modules.find((m) => m.number === moduleNumber) ?? null,
