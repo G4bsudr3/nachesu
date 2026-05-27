@@ -1,6 +1,26 @@
 import { useState } from "react";
 import { useStudentDeliverables } from "./useStudentDeliverables";
-import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
+import { Badge } from "@/components/ui/badge";
+
+const StatusBadge = ({ status, reviewed }: { status: string; reviewed: boolean }) => {
+  if (status === "ajuste")
+    return <Badge className="bg-[#fd4644] text-white uppercase text-[10px]">ajuste</Badge>;
+  if (reviewed)
+    return (
+      <Badge variant="outline" className="uppercase text-[10px]">
+        revisado
+      </Badge>
+    );
+  if (status === "enviado")
+    return (
+      <Badge className="bg-perestroika-laranja text-white uppercase text-[10px]">pendente</Badge>
+    );
+  return (
+    <Badge variant="outline" className="uppercase text-[10px]">
+      rascunho
+    </Badge>
+  );
+};
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
 import { FeedbackReviewDrawer } from "@/features/admin/FeedbackReviewDrawer";
 import { useDeliverableThread } from "@/features/hub/useDeliverableThread";
@@ -96,7 +116,7 @@ export const StudentDeliverableTimeline = ({ userId }: Props) => {
                     )}
                   </p>
                 </div>
-                <DeliverableStatusPill status={d.status} />
+                <StatusBadge status={d.status} reviewed={!!d.reviewed_at} />
                 {d.reviewed_at && (
                   <span
                     className="inline-flex items-center text-[10px] text-perestroika-preto/55"
