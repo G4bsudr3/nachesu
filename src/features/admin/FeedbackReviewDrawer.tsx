@@ -10,6 +10,7 @@ import {
   EyeOff,
   MessageSquareReply,
   Send,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,14 +22,15 @@ import type { DeliverableInbox } from "./usePendingDeliverables";
 import { DeliverableAnswersList } from "./deliverableRendering/DeliverableAnswersList";
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
 import { useDeliverableThread } from "@/features/hub/useDeliverableThread";
+import { useRubricForModule } from "./useRubrics";
 
-const RUBRIC_CHIPS = [
-  "clareza",
-  "evidência forte",
-  "aprofundar",
-  "criatividade",
-  "consistência",
-] as const;
+const FALLBACK_CHIPS = [
+  { label: "clareza" },
+  { label: "evidência forte" },
+  { label: "aprofundar" },
+  { label: "criatividade" },
+  { label: "consistência" },
+];
 
 type Verdict = "aprovado" | "ajustar";
 
