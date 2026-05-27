@@ -1,4 +1,5 @@
 export { PillAbertura } from "./PillAbertura";
+export { PillVideoEmbed } from "./PillVideoEmbed";
 export { PillConteudoCurado } from "./PillConteudoCurado";
 export { PillRadar } from "./PillRadar";
 export { PillQuiz } from "./PillQuiz";

@@ -4,6 +4,7 @@ import { PillReflection } from "./PillReflection";
 import { PillPBL } from "./PillPBL";
 import {
   PillAbertura,
+  PillVideoEmbed,
   PillConteudoCurado,
   PillRadar,
   PillQuiz,
@@ -81,8 +82,9 @@ const PillCardShell = ({
   >
     <div className="flex items-center justify-between gap-3 mb-3">
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-        {String(index + 1).padStart(2, "0")} · {pillKindLabel[pill.kind]}
-        {!pill.required && " · opcional"}
+        {pill.order_index === 0 && !pill.required
+          ? "00 · bônus · opcional"
+          : `${String(index + 1).padStart(2, "0")} · ${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
       </p>
       {(pill.duration_min_low || pill.duration_min_high) && (
         <span className="inline-flex items-center gap-1 font-body text-xs text-perestroika-preto/55">
