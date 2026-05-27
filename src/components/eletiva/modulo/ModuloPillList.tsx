@@ -1,4 +1,5 @@
-import { CheckCircle2, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { CheckCircle2, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, Sparkles } from "lucide-react";
 import { PillVideoPlayer } from "./PillVideoPlayer";
 import { PillReflection } from "./PillReflection";
 import { PillPBL } from "./PillPBL";
