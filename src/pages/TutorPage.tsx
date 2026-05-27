@@ -9,14 +9,8 @@ import { useMyEnrollments } from "@/hooks/useCourses";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
 import {
   AlertDialog,
   AlertDialogAction,
