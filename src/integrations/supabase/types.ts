@@ -1890,6 +1890,8 @@ export type Database = {
           instagram: string | null
           linkedin: string | null
           nickname: string | null
+          quiet_hours_end: number | null
+          quiet_hours_start: number | null
           slug: string | null
           status: string
           updated_at: string
@@ -1908,6 +1910,8 @@ export type Database = {
           instagram?: string | null
           linkedin?: string | null
           nickname?: string | null
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
           slug?: string | null
           status?: string
           updated_at?: string
@@ -1926,6 +1930,8 @@ export type Database = {
           instagram?: string | null
           linkedin?: string | null
           nickname?: string | null
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
           slug?: string | null
           status?: string
           updated_at?: string

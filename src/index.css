@@ -221,6 +221,18 @@
   }
 }
 
+/* leitura acessível: ativa via toggle em /app/conta. amplia entre-letras,
+   espaçamento entre palavras e altura da linha pra texto de body. preserva
+   o ritmo da display (League Gothic) que depende da condensação. */
+html.reading-easy body {
+  letter-spacing: 0.04em;
+  word-spacing: 0.08em;
+  line-height: 1.65;
+}
+html.reading-easy .font-display {
+  letter-spacing: 0.01em;
+}
+
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }

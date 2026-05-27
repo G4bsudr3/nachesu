@@ -199,6 +199,15 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
   const player = resolvePlayer(url, kind);
   const isExternalOnly = player.mode === "none";
 
+  // a11y: fecha com ESC
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <AnimatePresence>
       <motion.div
