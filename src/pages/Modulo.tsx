@@ -16,6 +16,7 @@ import { TutorChat } from "@/components/eletiva/TutorChat";
 import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
 import { ModuloCelebration } from "@/components/eletiva/modulo/ModuloCelebration";
+import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
 import { ModuloProgressBar } from "@/components/eletiva/modulo/ModuloProgressBar";
@@ -52,6 +53,10 @@ const Modulo = () => {
     pillTitle: string;
     pillPrompt: string;
   } | null>(null);
+  const [burst, setBurst] = useState<{ open: boolean; nextUnlocked: boolean }>({
+    open: false,
+    nextUnlocked: false,
+  });
 
   const moduleRow = useMemo(
     () => snapshot?.modules.find((m) => m.number === moduleNumber) ?? null,
@@ -214,11 +219,7 @@ const Modulo = () => {
         const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
         const nextWasLocked =
           next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
-        toast.success(
-          nextWasLocked
-            ? `rodou todas as pílulas. módulo ${String(next!.number).padStart(2, "0")} desbloqueado.`
-            : "rodou todas as pílulas. módulo concluído.",
-        );
+        setBurst({ open: true, nextUnlocked: !!nextWasLocked });
         queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
         setTimeout(() => { goToMarcoIfTrailFinished(); }, 250);
       }
@@ -413,6 +414,12 @@ const Modulo = () => {
       )}
 
       <EletivaFooter />
+
+      <ModuloAutoCompleteBurst
+        open={burst.open}
+        nextUnlocked={burst.nextUnlocked}
+        onDone={() => setBurst({ open: false, nextUnlocked: false })}
+      />
     </div>
   );
 };
