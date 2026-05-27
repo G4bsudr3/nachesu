@@ -204,6 +204,8 @@ const Modulo = () => {
     return set;
   }, [sortedPills, completedPillIds, isAdmin]);
 
+  const progressQueryKey = ["eletiva-progress", user?.id ?? "anon", activeCourse?.id ?? "all"];
+
   const togglePillMutation = useMutation({
     mutationFn: async (pill: ModuloPill) => {
       if (!user) throw new Error("sem contexto");
@@ -227,6 +229,26 @@ const Modulo = () => {
       );
       if (error) throw error;
       return { wasDone: false };
+    },
+    // atualização otimista: a próxima pílula desbloqueia no mesmo frame do clique,
+    // sem esperar o refetch. se a chamada falhar, reverte. invalidate confirma depois.
+    onMutate: async (pill: ModuloPill) => {
+      await queryClient.cancelQueries({ queryKey: progressQueryKey });
+      const previous = queryClient.getQueryData(progressQueryKey);
+      queryClient.setQueryData(progressQueryKey, (old: typeof snapshot | undefined) => {
+        if (!old) return old;
+        const nextSet = new Set(old.completedPillIds);
+        if (nextSet.has(pill.id)) nextSet.delete(pill.id);
+        else nextSet.add(pill.id);
+        return { ...old, completedPillIds: nextSet };
+      });
+      return { previous };
+    },
+    onError: (e: Error, _pill, ctx) => {
+      if (ctx?.previous !== undefined) {
+        queryClient.setQueryData(progressQueryKey, ctx.previous);
+      }
+      toast.error(e.message ?? "deu ruim ao salvar");
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
@@ -258,7 +280,6 @@ const Modulo = () => {
         setTimeout(() => { goToMarcoIfTrailFinished(); }, 250);
       }
     },
-    onError: (e: Error) => toast.error(e.message ?? "deu ruim ao salvar"),
   });
 
   if (!number || Number.isNaN(moduleNumber) || moduleNumber < 1) {
