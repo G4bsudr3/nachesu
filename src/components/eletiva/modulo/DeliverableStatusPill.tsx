@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDown, CheckCircle2, FileEdit, MessageSquareReply, Send } from "lucide-react";
+import { AlertCircle, ArrowDown, CheckCircle2, FileEdit, MessageSquareReply, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-type Status = "vazio" | "rascunho" | "enviado" | "revisado";
+type Status = "vazio" | "rascunho" | "enviado" | "ajuste" | "revisado";
 
 interface Props {
   moduleId: string;
@@ -38,7 +38,7 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
         .eq("module_id", moduleId)
         .eq("user_id", user!.id)
         .maybeSingle();
-      return data;
+      return data as { status: string; submitted_at: string | null; reviewed_at: string | null; feedback: string | null } | null;
     },
   });
 
@@ -70,11 +70,13 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
 
   const status: Status = !data
     ? "vazio"
-    : data.reviewed_at || (data.feedback && data.feedback.trim().length > 0)
-      ? "revisado"
-      : data.submitted_at
-        ? "enviado"
-        : "rascunho";
+    : data.status === "ajuste"
+      ? "ajuste"
+      : data.reviewed_at || (data.feedback && data.feedback.trim().length > 0)
+        ? "revisado"
+        : data.submitted_at
+          ? "enviado"
+          : "rascunho";
 
   if (status === "vazio") return null;
 
@@ -90,6 +92,12 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
       helper: "seu educador vai responder por aqui em alguns dias. você recebe aviso no app assim que sair.",
       Icon: Send,
       tone: "bg-[#6f77fc]/10 border-[#6f77fc]/40 text-perestroika-preto",
+    },
+    ajuste: {
+      label: "ajuste solicitado · reabra e reenvie",
+      helper: "leia o retorno do educador no card laranja e clique em \"revisar e reenviar\".",
+      Icon: AlertCircle,
+      tone: "bg-[#fd4644]/10 border-[#fd4644]/40 text-perestroika-preto",
     },
     revisado: {
       label: "retorno do educador chegou",
@@ -111,7 +119,7 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
     }, 1800);
   };
 
-  const isRevisado = status === "revisado";
+  const isRevisado = status === "revisado" || status === "ajuste";
 
   const inner = (
     <>

@@ -15,7 +15,7 @@ export type DeliverableInbox = DeliverableRow & {
   profile: ProfileLite | null;
 };
 
-export type InboxFilter = "pendentes" | "revisados" | "todos";
+export type InboxFilter = "pendentes" | "ajuste" | "revisados" | "todos";
 
 /**
  * fila de entregas pra revisão do professor.
@@ -80,8 +80,9 @@ export function usePendingDeliverables(opts: {
   const filtered = useMemo(() => {
     if (!data) return [];
     return data.filter((d) => {
-      if (status === "pendentes" && d.reviewed_at !== null) return false;
-      if (status === "revisados" && d.reviewed_at === null) return false;
+      if (status === "pendentes" && (d.reviewed_at !== null || d.status === "ajuste")) return false;
+      if (status === "revisados" && (d.reviewed_at === null || d.status === "ajuste")) return false;
+      if (status === "ajuste" && d.status !== "ajuste") return false;
       if (courseId && d.course_id !== courseId) return false;
       if (moduleId && d.module_id !== moduleId) return false;
       return true;
@@ -93,5 +94,10 @@ export function usePendingDeliverables(opts: {
     [data],
   );
 
-  return { data: filtered, all: data ?? [], pendingCount, isLoading, refetch };
+  const ajusteCount = useMemo(
+    () => (data ?? []).filter((d) => d.status === "ajuste").length,
+    [data],
+  );
+
+  return { data: filtered, all: data ?? [], pendingCount, ajusteCount, isLoading, refetch };
 }
