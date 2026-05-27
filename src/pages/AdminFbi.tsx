@@ -51,6 +51,7 @@ import { AdminTrilha } from "@/features/admin/AdminTrilha";
 import { AdminTutor } from "@/features/admin/AdminTutor";
 import { AdminFeedbackInbox } from "@/features/admin/AdminFeedbackInbox";
 import { AdminNudgeTemplates } from "@/features/admin/AdminNudgeTemplates";
+import { AdminRubrics } from "@/features/admin/AdminRubrics";
 import AdminUsers from "./AdminUsers";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Database } from "@/integrations/supabase/types";
