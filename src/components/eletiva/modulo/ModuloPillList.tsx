@@ -50,6 +50,7 @@ interface Props {
   pills: ModuloPill[] | undefined;
   loading: boolean;
   completedPillIds: Set<string>;
+  unlockedPillIds: Set<string>;
   trailColor: string;
   hasTrail: boolean;
   moduleId: string | null;
@@ -57,6 +58,7 @@ interface Props {
   togglePending: boolean;
   onOpenTutor: (pill?: ModuloPill) => void;
 }
+
 
 const PillCardShell = ({
   pill,
