@@ -166,6 +166,7 @@ export function PillChecklistPacto({
           type="button"
           onClick={onComplete}
           disabled={!ready || isCompleted || isCompleting}
+          aria-busy={isCompleting}
           className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ backgroundColor: accent }}
         >

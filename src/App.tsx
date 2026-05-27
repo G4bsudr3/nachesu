@@ -13,12 +13,15 @@ import { ExtrasGate } from "@/components/ExtrasGate";
 import { SeoRouter } from "@/components/SeoRouter";
 import { useDashboardDraftPersistence } from "@/hooks/useDashboardDraftPersistence";
 
-// rotas críticas: ficam eager (carregam no bundle inicial)
+// rotas eager: só a landing e o 404 (rota mais provável de primeiro paint)
 import Index from "./pages/Index.tsx";
-import Auth from "./pages/Auth.tsx";
-import AppDashboard from "./pages/AppDashboard.tsx";
-import Pending from "./pages/Pending.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { RootErrorBoundary } from "@/components/system/RootErrorBoundary";
+
+// rotas-aluno tb lazy: cada uma vira chunk separado, reduz bundle inicial
+const Auth = lazy(() => import("./pages/Auth.tsx"));
+const AppDashboard = lazy(() => import("./pages/AppDashboard.tsx"));
+const Pending = lazy(() => import("./pages/Pending.tsx"));
 
 // rotas secundárias: lazy (cada página vira chunk separado)
 const AccountSettings = lazy(() => import("./pages/AccountSettings.tsx"));
@@ -120,7 +123,9 @@ const App = () => (
                 path="/app"
                 element={
                   <ProtectedRoute>
-                    <AppDashboard />
+                    <RootErrorBoundary scope="dashboard">
+                      <AppDashboard />
+                    </RootErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -183,7 +188,9 @@ const App = () => (
                 path="/app/eletiva/:slug"
                 element={
                   <ProtectedRoute>
-                    <EletivaHome />
+                    <RootErrorBoundary scope="eletiva-home">
+                      <EletivaHome />
+                    </RootErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -241,7 +248,9 @@ const App = () => (
                 path="/app/eletiva/:slug/modulo/:number"
                 element={
                   <ProtectedRoute>
-                    <Modulo />
+                    <RootErrorBoundary scope="modulo">
+                      <Modulo />
+                    </RootErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -250,7 +259,9 @@ const App = () => (
                 path="/app/modulo/:number"
                 element={
                   <ProtectedRoute>
-                    <Modulo />
+                    <RootErrorBoundary scope="modulo">
+                      <Modulo />
+                    </RootErrorBoundary>
                   </ProtectedRoute>
                 }
               />

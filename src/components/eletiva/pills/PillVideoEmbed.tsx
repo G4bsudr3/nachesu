@@ -62,6 +62,7 @@ export function PillVideoEmbed({
           type="button"
           onClick={() => !isCompleted && onComplete()}
           disabled={isCompleted || isCompleting}
+          aria-busy={isCompleting}
           className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
           style={{ backgroundColor: accent }}
         >

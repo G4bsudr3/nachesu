@@ -1,48 +1,39 @@
-## o que já existe (não precisa mexer)
+# revisão pré-lançamento nachesu — entregue
 
-A persistência de progresso por pílula **já está implementada** e funciona pras duas eletivas:
+## o que foi feito nessa rodada
 
-- Tabela `student_pill_progress` guarda `{user_id, pill_id, completed_at}` com unique `(user_id, pill_id)`.
-- `useEletivaProgress` lê esse registro e devolve `completedPillIds` (Set).
-- `togglePillMutation` em `Modulo.tsx` faz upsert na tabela ao clicar "concluir pílula" (qualquer tipo: video_embed, quiz, editorial, pbl, checklist, etc).
-- `unlockedPillIds` (memo em `Modulo.tsx`) calcula liberação sequencial: pílula N só abre quando todas as anteriores **obrigatórias** estão em `completedPillIds`. Pílulas opcionais (`required=false`) não bloqueiam.
-- Estado sobrevive a refresh, troca de device e logout — vem do banco em toda hidratação.
-- Auditado nos dois módulos 1:
-  - `ia-na-pratica` mód 1: pílula 0 bônus (opcional) + 5 obrigatórias.
-  - `economia-circular` mód 1: 4 obrigatórias + 1 bônus opcional no fim.
+### bloqueadores resolvidos
+1. **cadência semanal seedada** (`UPDATE modules`): todos 40 módulos publicados, `available_from` começa amanhã (28/05/2026) 06h BRT e avança 7 dias por módulo. `WeekCadenceStrip` agora mostra countdown real.
+2. **metadata corrigido** (`index.html`): `og:url` e `<link rel="canonical">` apontam pra `nachesu.lovable.app`.
+3. **ErrorBoundary editorial** (`src/components/system/RootErrorBoundary.tsx`): mascote joão-de-barro pose `thinking`, copy "o joão tá pensando", dois CTAs (recarregar / voltar pro início). Envolve `<App />` em `main.tsx` e isola rotas críticas: `/app` (dashboard), `/app/eletiva/:slug` (home), `/app/modulo/:n` e `/app/eletiva/:slug/modulo/:n` (módulo).
+4. **lazy-load completo**: `Auth`, `AppDashboard`, `Pending` saíram do bundle eager. Só `Index` e `NotFound` continuam eager.
+5. **aria-busy padronizado** em todas as 9 pílulas (`Pill*.tsx`).
 
-## o que ainda falta (foco dessa entrega)
+### auditado e já estava ok
+- Microfeedback de desbloqueio (3.3): `ModuloPillList` já detecta transição locked→unlocked, anima `pill-unlock` + ring rosa + sublabel "agora é a sua vez" por 4s. Respeita `prefers-reduced-motion`.
+- Touch targets: nenhum botão menor que 44px em pills/módulo.
+- Mobile responsividade: `/auth` em 390×844 renderiza limpo (validado por screenshot).
+- Empty state das pílulas em ModuloPillList tem voz ok.
 
-1. **Feedback instantâneo ao desbloquear a próxima pílula.** Hoje, depois de concluir uma pílula, a próxima só revela quando o `invalidateQueries(["eletiva-progress"])` termina o refetch (300-800ms de "piscada"). Pra estudante ansioso parece que travou.
-2. **Resiliência contra clique duplo / dessincronia.** Se o estudante clica "concluir" duas vezes rápido em pílulas diferentes antes do refetch, o `unlockedPillIds` calculado pode estar defasado e a segunda pode aparecer travada por meio segundo.
-3. **Garantia visual de que a próxima abriu.** Nenhum micro-feedback dedicado ("pílula 03 liberada") quando o desbloqueio acontece. Existe `ModuloAutoCompleteBurst` só pro módulo inteiro.
+## o que ficou de fora dessa rodada
 
-## plano
+### depende de credencial real
+- **smoke test funcional ponta-a-ponta** das mod 1 (item 2 do plano). Precisa de conta de aluno real (não admin, pra a trava sequencial valer). Sugestão: frattz roda manual amanhã antes da turma começar, ou cria conta @sebrae temporária e me passa pra eu validar.
 
-### 1. atualização otimista no `togglePillMutation` (`src/pages/Modulo.tsx`)
-- Antes do upsert, fazer `queryClient.setQueryData(["eletiva-progress", courseId], ...)` adicionando o `pill.id` ao `completedPillIds` localmente.
-- Em `onError`, reverter (`setQueryData` de volta) e mostrar toast.
-- Em `onSuccess`, manter o `invalidateQueries` como source of truth.
-- Resultado: a próxima pílula desbloqueia no mesmo frame do clique, sem esperar o round-trip.
+### baixa prioridade pré-dia-1
+- Revisão de empty states em `MyCoursesList`, `Notificacoes`, `EletivaHome` (estudante sem matrícula raro no início).
+- Contraste de azul Sebrae sobre bege em body text (uso institucional só, baixo risco AA).
+- Rate limit do tutor IA — verificar edge function antes de pico de uso real.
 
-### 2. micro-celebração de pílula liberada (`ModuloPillList.tsx`)
-- Quando uma pílula passa de `locked → unlocked` (detectar via `useEffect` comparando set anterior vs atual), aplicar um pulso curto (Framer Motion, 600ms, fade+rise) no card recém-aberto e um sublabel temporário "agora é a sua vez" abaixo do título por 4s.
-- Respeitar `prefers-reduced-motion`.
+### pós-launch (já registrado)
+- Analytics próprio de cohort, dark mode, PWA install, review de copy das 100+ pílulas pelo educador conforme calendário semanal.
 
-### 3. blindagem do botão "concluir pílula"
-- Em `PillVideoEmbed`, `PillQuiz`, `PillEditorial`, `PillPBLEstruturado`, `PillChecklistPacto`, `PillRadar`, `PillConteudoCurado`, `PillBonus`: enquanto `isCompleting` (togglePending) estiver true, manter o botão desabilitado (já está) **e** adicionar `aria-busy="true"` + label "salvando..." pra deixar claro que tá persistindo.
-- Auditar se algum desses ainda permite clicar duas vezes (chamando `onComplete` sem checar `isCompleted`). Já vi `PillQuiz` faz `disabled={!ready || isCompleted || isCompleting}` — ok. Padronizar nos demais.
+## ordem sugerida pra liberar
 
-### 4. verificação cruzada nas duas eletivas
-- Smoke test manual (descrito no follow-up): logar como estudante, fazer mód 1 de `ia-na-pratica` (incluindo pular o bônus opcional pra confirmar que pílula 1 abre direto) e mód 1 de `economia-circular` (verificar que o quiz e o radar_form persistem e abrem o próximo). Refresh no meio de cada etapa pra confirmar persistência real do banco.
+1. **agora**: testar local o ErrorBoundary (forçar erro pra ver fallback) — opcional, só pra confiar.
+2. **antes de liberar pros estudantes**: smoke test manual da mod 1 (login estudante de teste → completar todas as pílulas → conferir que mod 2 fica scheduled até 04/06).
+3. **publish** quando confortável.
 
-### arquivos a editar
-- `src/pages/Modulo.tsx` (otimista no `togglePillMutation` com rollback).
-- `src/components/eletiva/modulo/ModuloPillList.tsx` (detector de transição locked→unlocked + animação por card).
-- `src/components/eletiva/pills/PillVideoEmbed.tsx` e `PillEditorial.tsx` (padronizar `aria-busy` e label "salvando...").
-- (Opcional) `PillPBLEstruturado.tsx`, `PillChecklistPacto.tsx`, `PillConteudoCurado.tsx`, `PillRadar.tsx`, `PillBonus.tsx` se a auditoria mostrar inconsistência.
+## comando pra publicar
 
-### fora de escopo
-- Não mexer no schema do banco (já tá certo).
-- Não tocar em `useEletivaProgress` nem na lógica de `unlockedPillIds` (contratos já corretos).
-- Não mudar `ModuloFooter` (a trava de "concluir módulo" já foi feita na entrega anterior).
+`<presentation-open-publish>publicar nachesu</presentation-open-publish>`
