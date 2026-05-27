@@ -84,9 +84,25 @@ Deno.serve(async (req) => {
   const userIds = [...new Set(candidates.map((r) => r.user_id))]
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, nickname, full_name')
+    .select('id, nickname, full_name, quiet_hours_start, quiet_hours_end')
     .in('id', userIds)
   const profileById = new Map((profiles ?? []).map((p: any) => [p.id, p]))
+
+  // hora atual em SP pra checar janela silenciosa por estudante
+  const spHour = Number(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Sao_Paulo',
+      hour: 'numeric',
+      hour12: false,
+    }).format(new Date()),
+  )
+  const inQuietWindow = (start: number | null, end: number | null): boolean => {
+    if (start === null || end === null || start === undefined || end === undefined) return false
+    if (start === end) return false
+    if (start < end) return spHour >= start && spHour < end
+    // janela atravessa meia-noite (ex: 22 → 7)
+    return spHour >= start || spHour < end
+  }
 
   // 4. emails via auth admin
   const emailById = new Map<string, string>()
