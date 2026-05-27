@@ -33,6 +33,27 @@ mensagens manuais educador→estudante e templates de nudge editáveis pelo admi
 - `AdminStudentProfile.tsx` (seção mensagem direta)
 - `AdminFbi.tsx` (tab nudges)
 
+## fase 4 · rubrica configurável + AI-draft (implementada)
+
+editor passou de chips hardcoded pra rubricas editáveis, com rascunho de feedback assistido por IA respeitando tom Naches.
+
+### entregas
+- tabela `rubrics` (slug, name, description, is_default, criteria jsonb) + `modules.rubric_id`
+- rubrica padrão "geral" seedada com os 5 chips originais
+- editor `AdminRubrics` em nova tab `rubricas` (CRUD + descrição por critério)
+- `FeedbackReviewDrawer` carrega rubrica do módulo (ou default) e renderiza chips dinâmicos com tooltip
+- edge function `draft-deliverable-feedback` (admin-only): lê entrega + rubrica + módulo, chama Lovable AI (gemini-3-flash-preview, tool calling), devolve `{ draft_md, suggested_tags }`
+- botão "rascunhar com IA" no drawer: preenche feedback (com confirm se já tiver texto), abre preview, mescla tags sugeridas válidas
+
+### arquivos novos
+- `supabase/functions/draft-deliverable-feedback/index.ts`
+- `src/features/admin/useRubrics.ts`
+- `src/features/admin/AdminRubrics.tsx`
+
+### arquivos tocados
+- migration: tabela `rubrics`, coluna `modules.rubric_id`, seed default
+- `FeedbackReviewDrawer.tsx` (chips dinâmicos + handler IA)
+- `AdminFbi.tsx` (tab nudges/rubricas)
+
 ### próximas fases pendentes
-- fase 4: rubrica configurável + AI-draft de feedback
 - fase 5: unificação tutor / chora-bot

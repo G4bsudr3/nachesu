@@ -10,6 +10,7 @@ import {
   EyeOff,
   MessageSquareReply,
   Send,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,14 +22,15 @@ import type { DeliverableInbox } from "./usePendingDeliverables";
 import { DeliverableAnswersList } from "./deliverableRendering/DeliverableAnswersList";
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
 import { useDeliverableThread } from "@/features/hub/useDeliverableThread";
+import { useRubricForModule } from "./useRubrics";
 
-const RUBRIC_CHIPS = [
-  "clareza",
-  "evidência forte",
-  "aprofundar",
-  "criatividade",
-  "consistência",
-] as const;
+const FALLBACK_CHIPS = [
+  { label: "clareza" },
+  { label: "evidência forte" },
+  { label: "aprofundar" },
+  { label: "criatividade" },
+  { label: "consistência" },
+];
 
 type Verdict = "aprovado" | "ajustar";
 
@@ -54,6 +56,11 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
   const [tags, setTags] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
   const [reply, setReply] = useState("");
+  const [drafting, setDrafting] = useState(false);
+
+  const { data: rubric } = useRubricForModule(deliverable?.module?.id ?? null);
+  const chips: Array<{ label: string; description?: string }> =
+    rubric?.criteria?.length ? rubric.criteria : FALLBACK_CHIPS;
 
   const existingVerdict = useMemo(() => {
     const c = (deliverable?.content ?? {}) as Record<string, unknown>;
@@ -174,6 +181,35 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
   };
 
+  const handleDraftWithAI = async () => {
+    if (!deliverable) return;
+    if (feedback.trim().length > 0) {
+      if (!confirm("já existe texto no feedback. substituir pelo rascunho da IA?")) return;
+    }
+    setDrafting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
+        body: { deliverable_id: deliverable.id },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const draft = (data as any)?.draft_md as string | undefined;
+      const suggested = ((data as any)?.suggested_tags as string[] | undefined) ?? [];
+      if (!draft) throw new Error("rascunho vazio");
+      setFeedback(draft);
+      setTags((cur) => {
+        const merged = new Set([...cur, ...suggested]);
+        return Array.from(merged);
+      });
+      setShowPreview(true);
+      toast.success("rascunho gerado, revisa e ajusta antes de enviar");
+    } catch (e: any) {
+      toast.error(e.message ?? "falha ao gerar rascunho");
+    } finally {
+      setDrafting(false);
+    }
+  };
+
   if (!deliverable) return null;
   const studentName =
     deliverable.profile?.display_name ?? deliverable.profile?.nickname ?? "aluno";
@@ -248,17 +284,31 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
         )}
 
         <div className="mt-6">
-          <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
-            rubric chips
-          </p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+              critérios {rubric?.name ? `· ${rubric.name}` : ""}
+            </p>
+            <button
+              type="button"
+              disabled={drafting}
+              onClick={handleDraftWithAI}
+              className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-1 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50"
+              title="rascunhar feedback com IA com base na rubrica"
+            >
+              {drafting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+              rascunhar com IA
+            </button>
+          </div>
           <div className="flex flex-wrap gap-2">
-            {RUBRIC_CHIPS.map((chip) => {
+            {chips.map((c) => {
+              const chip = c.label;
               const active = tags.includes(chip);
               return (
                 <button
                   key={chip}
                   type="button"
                   onClick={() => toggleTag(chip)}
+                  title={c.description}
                   className={`rounded-full px-3 py-1 text-xs uppercase tracking-wide transition-colors min-h-[28px] ${
                     active
                       ? "bg-perestroika-preto text-perestroika-bege"
