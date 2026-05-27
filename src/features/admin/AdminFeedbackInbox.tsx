@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { Inbox, RefreshCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -194,7 +195,15 @@ export const AdminFeedbackInbox = () => {
                     className="cursor-pointer hover:bg-perestroika-preto/5"
                     onClick={() => setSelected(d)}
                   >
-                    <TableCell className="font-medium">{name}</TableCell>
+                    <TableCell className="font-medium">
+                      <Link
+                        to={`/admin/aluno/${d.user_id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="hover:underline"
+                      >
+                        {name}
+                      </Link>
+                    </TableCell>
                     <TableCell className="text-sm">
                       {d.module
                         ? `${String(d.module.number).padStart(2, "0")} · ${d.module.title}`

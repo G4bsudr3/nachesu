@@ -198,15 +198,23 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
             {studentName}
           </SheetTitle>
           <p className="text-sm text-perestroika-preto/70 text-left">{moduleLabel}</p>
-          {deliverable.module && (
+          <div className="flex items-center gap-3 text-xs">
             <Link
-              to={`/app/modulo/${deliverable.module.number}`}
-              target="_blank"
-              className="inline-flex items-center gap-1 text-xs uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto"
+              to={`/admin/aluno/${deliverable.user_id}`}
+              className="inline-flex items-center gap-1 uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto"
             >
-              ver módulo <ExternalLink className="w-3 h-3" />
+              ver perfil 360° <ExternalLink className="w-3 h-3" />
             </Link>
-          )}
+            {deliverable.module && (
+              <Link
+                to={`/app/modulo/${deliverable.module.number}`}
+                target="_blank"
+                className="inline-flex items-center gap-1 uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto"
+              >
+                ver módulo <ExternalLink className="w-3 h-3" />
+              </Link>
+            )}
+          </div>
         </SheetHeader>
 
         <div className="mt-6">

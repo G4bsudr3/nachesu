@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound } from "lucide-react";
+import { Link } from "react-router-dom";
+import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -253,6 +254,12 @@ const AdminUsers = () => {
                 </TableCell>
                 <TableCell className="text-right whitespace-nowrap">
                   <div className="inline-flex items-center gap-2">
+                    <Link
+                      to={`/admin/aluno/${item.user_id}`}
+                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 transition-colors"
+                    >
+                      <ExternalLink className="h-4 w-4" /> perfil
+                    </Link>
                     <button
                       type="button"
                       onClick={() => resetPassword(item)}
