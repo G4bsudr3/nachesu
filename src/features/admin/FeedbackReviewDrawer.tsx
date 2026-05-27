@@ -181,6 +181,35 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
   };
 
+  const handleDraftWithAI = async () => {
+    if (!deliverable) return;
+    if (feedback.trim().length > 0) {
+      if (!confirm("já existe texto no feedback. substituir pelo rascunho da IA?")) return;
+    }
+    setDrafting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
+        body: { deliverable_id: deliverable.id },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const draft = (data as any)?.draft_md as string | undefined;
+      const suggested = ((data as any)?.suggested_tags as string[] | undefined) ?? [];
+      if (!draft) throw new Error("rascunho vazio");
+      setFeedback(draft);
+      setTags((cur) => {
+        const merged = new Set([...cur, ...suggested]);
+        return Array.from(merged);
+      });
+      setShowPreview(true);
+      toast.success("rascunho gerado, revisa e ajusta antes de enviar");
+    } catch (e: any) {
+      toast.error(e.message ?? "falha ao gerar rascunho");
+    } finally {
+      setDrafting(false);
+    }
+  };
+
   if (!deliverable) return null;
   const studentName =
     deliverable.profile?.display_name ?? deliverable.profile?.nickname ?? "aluno";
