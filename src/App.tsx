@@ -123,7 +123,9 @@ const App = () => (
                 path="/app"
                 element={
                   <ProtectedRoute>
-                    <AppDashboard />
+                    <RootErrorBoundary scope="dashboard">
+                      <AppDashboard />
+                    </RootErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -186,7 +188,9 @@ const App = () => (
                 path="/app/eletiva/:slug"
                 element={
                   <ProtectedRoute>
-                    <EletivaHome />
+                    <RootErrorBoundary scope="eletiva-home">
+                      <EletivaHome />
+                    </RootErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -244,7 +248,9 @@ const App = () => (
                 path="/app/eletiva/:slug/modulo/:number"
                 element={
                   <ProtectedRoute>
-                    <Modulo />
+                    <RootErrorBoundary scope="modulo">
+                      <Modulo />
+                    </RootErrorBoundary>
                   </ProtectedRoute>
                 }
               />
@@ -253,7 +259,9 @@ const App = () => (
                 path="/app/modulo/:number"
                 element={
                   <ProtectedRoute>
-                    <Modulo />
+                    <RootErrorBoundary scope="modulo">
+                      <Modulo />
+                    </RootErrorBoundary>
                   </ProtectedRoute>
                 }
               />
