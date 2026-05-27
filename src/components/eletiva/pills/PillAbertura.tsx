@@ -10,6 +10,8 @@ import {
 type Schema = {
   type?: "video_with_transcript";
   video_placeholder?: boolean;
+  video_url?: string;
+  video_poster?: string;
   transcript?: string;
   transcript_collapsible?: boolean;
   completion?: { type?: string; label?: string };
