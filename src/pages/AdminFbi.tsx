@@ -538,6 +538,10 @@ const AdminFbi = () => {
               <AdminEletivaSettings />
             </TabsContent>
 
+            <TabsContent value="nudges">
+              <AdminNudgeTemplates />
+            </TabsContent>
+
             <TabsContent value="trilha">
               <AdminTrilha />
             </TabsContent>
