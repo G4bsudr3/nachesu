@@ -312,7 +312,7 @@ const App = () => (
                 <Route path="/app/hub/builder/:slug" element={<ExtrasGate><HubBuilder /></ExtrasGate>} />
                 {/* tutor ia: rota canônica é /app/tutor. /app/chora-bot é alias legado
                     que redireciona pra não quebrar bookmarks antigos. */}
-                <Route path="/app/tutor" element={<ChoraBot />} />
+                <Route path="/app/tutor" element={<TutorPage />} />
                 <Route path="/app/chora-bot" element={<Navigate to="/app/tutor" replace />} />
               </Route>
               <Route
