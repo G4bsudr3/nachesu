@@ -66,11 +66,13 @@ const PillCardShell = ({
   pill,
   index,
   done,
+  justUnlocked,
   children,
 }: {
   pill: ModuloPill;
   index: number;
   done: boolean;
+  justUnlocked?: boolean;
   children: React.ReactNode;
 }) => (
   <article
@@ -79,7 +81,8 @@ const PillCardShell = ({
       done
         ? "border-perestroika-preto/40 bg-perestroika-preto/[0.04]"
         : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
-    }`}
+    } ${justUnlocked ? "motion-safe:animate-[pill-unlock_600ms_cubic-bezier(0.16,1,0.3,1)] ring-2 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
+    style={justUnlocked ? { boxShadow: "0 0 0 2px rgba(247, 86, 166, 0.35)" } : undefined}
   >
     <div className="flex items-center justify-between gap-3 mb-3">
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
@@ -96,6 +99,11 @@ const PillCardShell = ({
         </span>
       )}
     </div>
+    {justUnlocked && (
+      <p className="flex items-center gap-1.5 mb-3 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-rosa font-semibold motion-safe:animate-fade-in">
+        <Sparkles className="h-3 w-3" aria-hidden /> agora é a sua vez
+      </p>
+    )}
     {children}
   </article>
 );
