@@ -256,6 +256,23 @@ export const ModuloPillList = ({
         }
 
 
+        // ---- vídeo embedado simples (loom/youtube, sem entrega) ----
+        if (schemaType === "video_embed") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done}>
+              <PillVideoEmbed
+                title={pill.title}
+                bodyMd={pill.body_md}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
         // ---- 1. schemas ricos (quando o conteúdo é autorado) ----
         if (schemaType === "video_with_transcript") {
           return (
