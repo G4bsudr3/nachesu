@@ -159,6 +159,13 @@ Deno.serve(async (req) => {
     const recipientName = profile?.nickname || profile?.full_name || ''
     const level = r.risk_level as 'medium' | 'high' | 'lost'
 
+    // respeita janela silenciosa do estudante: nudge fica pra próxima rodada
+    if (inQuietWindow(profile?.quiet_hours_start ?? null, profile?.quiet_hours_end ?? null)) {
+      skipped++
+      results.push({ user_id: r.user_id, course_id: r.course_id, level, deferred: 'quiet_hours' })
+      continue
+    }
+
     if (dryRun) {
       results.push({ user_id: r.user_id, course_id: r.course_id, level, email })
       continue
