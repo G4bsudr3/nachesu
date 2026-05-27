@@ -143,6 +143,15 @@ export default {
           "0%": { transform: "scale(0.85)", opacity: "0.9" },
           "100%": { transform: "scale(1.8)", opacity: "0" },
         },
+        "pill-unlock": {
+          "0%": { transform: "translateY(6px) scale(0.99)", opacity: "0.6" },
+          "60%": { transform: "translateY(0) scale(1.01)", opacity: "1" },
+          "100%": { transform: "translateY(0) scale(1)", opacity: "1" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -153,6 +162,8 @@ export default {
         "pulse-soft": "pulse-soft 3s ease-in-out infinite",
         "spin-slow": "spin-slow 40s linear infinite",
         "fab-ripple": "fab-ripple 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "pill-unlock": "pill-unlock 600ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "fade-in": "fade-in 300ms ease-out both",
       },
     },
   },
