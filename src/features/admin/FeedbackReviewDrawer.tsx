@@ -1,7 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { CheckCircle2, ExternalLink, RotateCcw, Loader2 } from "lucide-react";
+import {
+  CheckCircle2,
+  ExternalLink,
+  RotateCcw,
+  Loader2,
+  Eye,
+  EyeOff,
+  MessageSquareReply,
+  Send,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,6 +19,8 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import type { DeliverableInbox } from "./usePendingDeliverables";
 import { DeliverableAnswersList } from "./deliverableRendering/DeliverableAnswersList";
+import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
+import { useDeliverableThread } from "@/features/hub/useDeliverableThread";
 
 const RUBRIC_CHIPS = [
   "clareza",
@@ -27,49 +38,103 @@ interface Props {
   deliverable: DeliverableInbox | null;
 }
 
-// renderer detalhado vive em ./deliverableRendering/DeliverableAnswersList
+interface ReviewHistoryEntry {
+  submitted_at: string | null;
+  reviewed_at: string;
+  feedback: string | null;
+  verdict: Verdict | null;
+  tags: string[];
+  reviewer_id: string | null;
+}
 
 export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props) => {
   const { user } = useAuth();
   const qc = useQueryClient();
   const [feedback, setFeedback] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
+  const [reply, setReply] = useState("");
+
   const existingVerdict = useMemo(() => {
     const c = (deliverable?.content ?? {}) as Record<string, unknown>;
     return (c.review_verdict as Verdict | undefined) ?? null;
   }, [deliverable]);
+
+  const feedbackReadAt = useMemo(() => {
+    const c = (deliverable?.content ?? {}) as Record<string, unknown>;
+    return (c.feedback_read_at as string | null) ?? null;
+  }, [deliverable]);
+
+  const history = useMemo(() => {
+    const c = (deliverable?.content ?? {}) as Record<string, unknown>;
+    return ((c.history as ReviewHistoryEntry[] | undefined) ?? []).slice().reverse();
+  }, [deliverable]);
+
+  const { messages, send, sending, markRead } = useDeliverableThread(deliverable?.id);
 
   useEffect(() => {
     if (!deliverable) return;
     setFeedback(deliverable.feedback ?? "");
     const c = (deliverable.content ?? {}) as Record<string, unknown>;
     setTags((c.review_tags as string[]) ?? []);
+    setShowPreview(false);
+    setReply("");
   }, [deliverable]);
 
+  useEffect(() => {
+    if (open && deliverable) markRead();
+  }, [open, deliverable, markRead, messages.length]);
+
+  const persistReview = async (verdict: Verdict) => {
+    if (!deliverable || !user) throw new Error("sem contexto");
+    const trimmed = feedback.trim();
+    if (trimmed.length < 5) throw new Error("escreve um feedback (mínimo 5 caracteres)");
+
+    const currentContent = (deliverable.content ?? {}) as Record<string, unknown>;
+    const prevHistory = (currentContent.history as ReviewHistoryEntry[] | undefined) ?? [];
+
+    const newHistoryEntry: ReviewHistoryEntry | null = deliverable.reviewed_at
+      ? {
+          submitted_at: deliverable.submitted_at,
+          reviewed_at: deliverable.reviewed_at,
+          feedback: deliverable.feedback ?? null,
+          verdict: (currentContent.review_verdict as Verdict | undefined) ?? null,
+          tags: (currentContent.review_tags as string[] | undefined) ?? [],
+          reviewer_id: deliverable.reviewer_id ?? null,
+        }
+      : null;
+
+    const nextContent = {
+      ...currentContent,
+      review_verdict: verdict,
+      review_tags: tags,
+      feedback_read_at: null,
+      history: newHistoryEntry ? [...prevHistory, newHistoryEntry] : prevHistory,
+    };
+
+    const nextStatus = verdict === "ajustar" ? "ajuste" : "revisado";
+
+    const { error } = await supabase
+      .from("module_deliverables")
+      .update({
+        feedback: trimmed,
+        reviewer_id: user.id,
+        reviewed_at: new Date().toISOString(),
+        status: nextStatus,
+        content: nextContent as never,
+      })
+      .eq("id", deliverable.id);
+    if (error) throw error;
+  };
+
   const reviewMutation = useMutation({
-    mutationFn: async (verdict: Verdict) => {
-      if (!deliverable || !user) throw new Error("sem contexto");
-      const trimmed = feedback.trim();
-      if (trimmed.length < 5) throw new Error("escreve um feedback (mínimo 5 caracteres)");
-      const nextContent = {
-        ...((deliverable.content ?? {}) as Record<string, unknown>),
-        review_verdict: verdict,
-        review_tags: tags,
-      };
-      const { error } = await supabase
-        .from("module_deliverables")
-        .update({
-          feedback: trimmed,
-          reviewer_id: user.id,
-          reviewed_at: new Date().toISOString(),
-          status: "revisado",
-          content: nextContent as never,
-        })
-        .eq("id", deliverable.id);
-      if (error) throw error;
-    },
+    mutationFn: persistReview,
     onSuccess: (_, verdict) => {
-      toast.success(verdict === "aprovado" ? "feedback enviado, aluno notificado" : "ajuste solicitado");
+      toast.success(
+        verdict === "aprovado"
+          ? "feedback enviado, aluno notificado"
+          : "ajuste solicitado, aluno pode reabrir e re-enviar",
+      );
       qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
       onOpenChange(false);
     },
@@ -92,11 +157,21 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const replyMutation = useMutation({
+    mutationFn: async () => {
+      const text = reply.trim();
+      if (text.length < 1) throw new Error("escreve uma resposta");
+      await send(text);
+    },
+    onSuccess: () => {
+      setReply("");
+      toast.success("mensagem enviada");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const toggleTag = (tag: string) => {
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
-    if (!feedback.includes(`#${tag}`)) {
-      setFeedback((cur) => (cur ? `${cur}\n` : "") + `#${tag} `);
-    }
   };
 
   if (!deliverable) return null;
@@ -106,6 +181,14 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     ? `módulo ${String(deliverable.module.number).padStart(2, "0")} · ${deliverable.module.title}`
     : "módulo";
   const alreadyReviewed = !!deliverable.reviewed_at;
+  const statusLabel =
+    deliverable.status === "ajuste"
+      ? "ajuste solicitado"
+      : deliverable.status === "revisado"
+        ? existingVerdict === "ajustar"
+          ? "ajuste"
+          : "aprovado"
+        : "pendente";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -133,6 +216,29 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           <DeliverableAnswersList deliverable={deliverable} />
         </div>
 
+        {history.length > 0 && (
+          <details className="mt-5 rounded-xl border border-perestroika-preto/15 bg-white/40 p-3">
+            <summary className="cursor-pointer text-[11px] uppercase tracking-wide text-perestroika-preto/60">
+              histórico de rodadas ({history.length})
+            </summary>
+            <ul className="mt-3 space-y-3">
+              {history.map((h, i) => (
+                <li key={i} className="text-xs text-perestroika-preto/75">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge variant="outline" className="uppercase text-[10px]">
+                      {h.verdict === "ajustar" ? "ajuste" : h.verdict ?? "revisado"}
+                    </Badge>
+                    <span className="text-perestroika-preto/50">
+                      {new Date(h.reviewed_at).toLocaleDateString("pt-BR")}
+                    </span>
+                  </div>
+                  {h.feedback && <FeedbackMarkdown>{h.feedback}</FeedbackMarkdown>}
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
+
         <div className="mt-6">
           <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
             rubric chips
@@ -145,7 +251,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
                   key={chip}
                   type="button"
                   onClick={() => toggleTag(chip)}
-                  className={`rounded-full px-3 py-1 text-xs uppercase tracking-wide transition-colors ${
+                  className={`rounded-full px-3 py-1 text-xs uppercase tracking-wide transition-colors min-h-[28px] ${
                     active
                       ? "bg-perestroika-preto text-perestroika-bege"
                       : "border border-perestroika-preto/30 hover:bg-perestroika-preto/10"
@@ -159,27 +265,60 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
         </div>
 
         <div className="mt-5">
-          <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2 block">
-            feedback (markdown leve)
-          </label>
-          <Textarea
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value.slice(0, 2000))}
-            placeholder="o que ficou forte, o que pode ajustar, o próximo passo..."
-            rows={8}
-            className="bg-white/60 border-perestroika-preto/20 font-body text-sm"
-          />
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+              feedback (markdown leve)
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowPreview((p) => !p)}
+              className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
+            >
+              {showPreview ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+              {showPreview ? "editar" : "preview"}
+            </button>
+          </div>
+          {showPreview ? (
+            <div className="min-h-[12rem] rounded-md border border-perestroika-preto/20 bg-white/60 p-3">
+              {feedback.trim() ? (
+                <FeedbackMarkdown>{feedback}</FeedbackMarkdown>
+              ) : (
+                <p className="text-xs italic text-perestroika-preto/40">nada escrito ainda</p>
+              )}
+            </div>
+          ) : (
+            <Textarea
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value.slice(0, 2000))}
+              placeholder="o que ficou forte, o que pode ajustar, o próximo passo... aceita **negrito**, *itálico*, listas, [link](url)"
+              rows={8}
+              className="bg-white/60 border-perestroika-preto/20 font-body text-sm"
+            />
+          )}
           <p className="mt-1 text-[10px] text-perestroika-preto/40 text-right">
             {feedback.length}/2000
           </p>
         </div>
 
         {alreadyReviewed && (
-          <div className="mt-4 flex items-center gap-2 text-xs text-perestroika-preto/60">
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-perestroika-preto/60">
             <Badge variant="outline" className="uppercase">
-              {existingVerdict ?? "revisado"}
+              {statusLabel}
             </Badge>
-            revisado em {new Date(deliverable.reviewed_at!).toLocaleDateString("pt-BR")}
+            <span>revisado em {new Date(deliverable.reviewed_at!).toLocaleDateString("pt-BR")}</span>
+            <span className="inline-flex items-center gap-1">
+              {feedbackReadAt ? (
+                <>
+                  <Eye className="w-3 h-3 text-perestroika-preto/70" />
+                  lido em {new Date(feedbackReadAt).toLocaleDateString("pt-BR")}
+                </>
+              ) : (
+                <>
+                  <EyeOff className="w-3 h-3 text-perestroika-preto/40" />
+                  ainda não lido
+                </>
+              )}
+            </span>
           </div>
         )}
 
@@ -188,7 +327,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
             type="button"
             disabled={reviewMutation.isPending}
             onClick={() => reviewMutation.mutate("aprovado")}
-            className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 min-h-[40px]"
           >
             {reviewMutation.isPending ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -201,7 +340,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
             type="button"
             disabled={reviewMutation.isPending}
             onClick={() => reviewMutation.mutate("ajustar")}
-            className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-5 py-2.5 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-5 py-2.5 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50 min-h-[40px]"
           >
             pedir ajuste
           </button>
@@ -215,6 +354,68 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
               <RotateCcw className="w-3 h-3" /> reabrir revisão
             </button>
           )}
+        </div>
+
+        <div className="mt-8 border-t border-perestroika-preto/15 pt-5">
+          <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3 inline-flex items-center gap-2">
+            <MessageSquareReply className="w-3 h-3" /> conversa ({messages.length})
+          </p>
+          {messages.length === 0 ? (
+            <p className="text-xs italic text-perestroika-preto/40 mb-3">
+              nenhuma mensagem ainda. responda ao aluno se precisar.
+            </p>
+          ) : (
+            <ul className="space-y-3 mb-4">
+              {messages.map((m) => (
+                <li
+                  key={m.id}
+                  className={`rounded-xl p-3 ${
+                    m.author_role === "student"
+                      ? "bg-white/70 border border-perestroika-preto/10"
+                      : "bg-perestroika-preto/5 border border-perestroika-preto/20"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] uppercase tracking-wide text-perestroika-preto/55">
+                      {m.author_role === "student" ? (m.author_name ?? "aluno") : (m.author_name ?? "educador")}
+                    </span>
+                    <span className="text-[10px] text-perestroika-preto/40">
+                      {new Date(m.created_at).toLocaleString("pt-BR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                  <FeedbackMarkdown>{m.body_md}</FeedbackMarkdown>
+                </li>
+              ))}
+            </ul>
+          )}
+          <Textarea
+            value={reply}
+            onChange={(e) => setReply(e.target.value.slice(0, 4000))}
+            placeholder="responder ao aluno..."
+            rows={3}
+            className="bg-white/60 border-perestroika-preto/20 font-body text-sm"
+          />
+          <div className="mt-2 flex items-center justify-between">
+            <span className="text-[10px] text-perestroika-preto/40">{reply.length}/4000</span>
+            <button
+              type="button"
+              disabled={sending || replyMutation.isPending || reply.trim().length < 1}
+              onClick={() => replyMutation.mutate()}
+              className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-preto text-perestroika-bege px-4 py-2 text-[11px] uppercase tracking-wide disabled:opacity-50 min-h-[36px]"
+            >
+              {sending || replyMutation.isPending ? (
+                <Loader2 className="w-3 h-3 animate-spin" />
+              ) : (
+                <Send className="w-3 h-3" />
+              )}
+              enviar
+            </button>
+          </div>
         </div>
       </SheetContent>
     </Sheet>
