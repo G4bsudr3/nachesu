@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound } from "lucide-react";
+import { Link } from "react-router-dom";
+import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
