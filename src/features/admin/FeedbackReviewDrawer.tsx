@@ -59,7 +59,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
   const [drafting, setDrafting] = useState(false);
 
   const { data: rubric } = useRubricForModule(deliverable?.module?.id ?? null);
-  const chips = rubric?.criteria?.length ? rubric.criteria : FALLBACK_CHIPS;
+  const chips: Array<{ label: string; description?: string }> =
+    rubric?.criteria?.length ? rubric.criteria : FALLBACK_CHIPS;
 
   const existingVerdict = useMemo(() => {
     const c = (deliverable?.content ?? {}) as Record<string, unknown>;
