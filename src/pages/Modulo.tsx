@@ -435,6 +435,9 @@ const Modulo = () => {
           prevModule={prevModule}
           nextModule={nextModule}
           courseSlug={courseSlug}
+          canComplete={canCompleteModule}
+          pillsRemaining={pillsRemaining}
+          isAdmin={isAdmin}
         />
       </main>
 
