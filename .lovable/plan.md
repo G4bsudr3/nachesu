@@ -85,11 +85,10 @@ editor passou de chips hardcoded pra rubricas editáveis, com rascunho de feedba
 
 ## fase 5 · refinamentos (implementados)
 
+- 5.2 onboarding parametrizado por curso: `EletivaOnboardingOverlay` já recebe `slug`, `courseTitle` e `professorName` e persiste o "já viu" por eletiva (`eletiva:onboarded:<slug>`). dialog antigo `OnboardingDialog` segue fora de rota
 - 5.3 back nav contextual no `Modulo`: quando há `courseSlug`, link e botão do header voltam pra `/app/eletiva/:slug` em vez de `/app` (label "voltar pra eletiva")
 - 5.4 `MobileNav` agora aparece em `/app/eletiva/:slug` (EletivaHome) e padding inferior do `<main>` reserva o espaço da nav fixa
 - 5.5 `MobileNav` ganhou item "avisos" com sino e badge de contagem de não-lidas (usa `useNotifications`); só renderiza pra usuário autenticado
 - 5.6 `ExtrasGate` agora dispara toast informativo "essa área não está liberada na sua eletiva" antes do redirect
+- 5.7 `ModuloAutoCompleteBurst`: signature moment de ~2.2s quando o módulo fecha sozinho ao concluir a última pílula obrigatória. joão-de-barro em pose `celebrating` + display gigante + confetes em arco (paleta Perestroika). respeita `prefers-reduced-motion` (sem confete, duração 1.2s). substitui o toast antigo. `nextUnlocked` mostra hint extra quando o próximo módulo destrava na mesma ação
 
-### itens fase 5 ainda pendentes
-- 5.2 onboarding parametrizado por curso (overlay já é, dialog antigo está fora de rota)
-- 5.7 feedback visual no auto-complete das pílulas (hoje só toast)
