@@ -82,3 +82,14 @@ editor passou de chips hardcoded pra rubricas editáveis, com rascunho de feedba
 - 5.6 toast informativo no `ExtrasGate`
 - 5.7 feedback visual no auto-complete das pílulas
 
+
+## fase 5 · refinamentos (implementados)
+
+- 5.3 back nav contextual no `Modulo`: quando há `courseSlug`, link e botão do header voltam pra `/app/eletiva/:slug` em vez de `/app` (label "voltar pra eletiva")
+- 5.4 `MobileNav` agora aparece em `/app/eletiva/:slug` (EletivaHome) e padding inferior do `<main>` reserva o espaço da nav fixa
+- 5.5 `MobileNav` ganhou item "avisos" com sino e badge de contagem de não-lidas (usa `useNotifications`); só renderiza pra usuário autenticado
+- 5.6 `ExtrasGate` agora dispara toast informativo "essa área não está liberada na sua eletiva" antes do redirect
+
+### itens fase 5 ainda pendentes
+- 5.2 onboarding parametrizado por curso (overlay já é, dialog antigo está fora de rota)
+- 5.7 feedback visual no auto-complete das pílulas (hoje só toast)
