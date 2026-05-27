@@ -297,10 +297,10 @@ const Modulo = () => {
         actions={
           <button
             type="button"
-            onClick={() => navigate("/app")}
+            onClick={() => navigate(courseSlug ? `/app/eletiva/${courseSlug}` : "/app")}
             className="icon-btn"
-            aria-label="voltar pro início"
-            title="voltar pro início"
+            aria-label={courseSlug ? "voltar pra eletiva" : "voltar pro início"}
+            title={courseSlug ? "voltar pra eletiva" : "voltar pro início"}
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
@@ -309,10 +309,10 @@ const Modulo = () => {
 
       <main id="conteudo" className="relative z-10 container max-w-3xl pt-6 pb-16 sm:pt-10">
         <Link
-          to="/app"
+          to={courseSlug ? `/app/eletiva/${courseSlug}` : "/app"}
           className="inline-flex items-center gap-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto mb-6"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> meu início
+          <ArrowLeft className="h-3.5 w-3.5" /> {courseSlug ? "voltar pra eletiva" : "meu início"}
         </Link>
 
         {/* marco de transição: aparece nos primeiros módulos das trilhas 2/3/4
