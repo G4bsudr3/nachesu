@@ -1,4 +1,4 @@
-import { CheckCircle2, Circle, Clock, ExternalLink, FileText, MessageCircle } from "lucide-react";
+import { CheckCircle2, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle } from "lucide-react";
 import { PillVideoPlayer } from "./PillVideoPlayer";
 import { PillReflection } from "./PillReflection";
 import { PillPBL } from "./PillPBL";
@@ -50,6 +50,7 @@ interface Props {
   pills: ModuloPill[] | undefined;
   loading: boolean;
   completedPillIds: Set<string>;
+  unlockedPillIds: Set<string>;
   trailColor: string;
   hasTrail: boolean;
   moduleId: string | null;
@@ -57,6 +58,7 @@ interface Props {
   togglePending: boolean;
   onOpenTutor: (pill?: ModuloPill) => void;
 }
+
 
 const PillCardShell = ({
   pill,
@@ -110,6 +112,7 @@ export const ModuloPillList = ({
   pills,
   loading,
   completedPillIds,
+  unlockedPillIds,
   trailColor,
   hasTrail,
   moduleId,
@@ -117,6 +120,7 @@ export const ModuloPillList = ({
   togglePending,
   onOpenTutor,
 }: Props) => {
+
   // só carrega deliverable se existe pelo menos uma pílula que precisa
   const needsDeliverable = !!pills?.some(
     (p) =>
@@ -166,7 +170,32 @@ export const ModuloPillList = ({
 
       {pills?.map((pill, idx) => {
         const done = completedPillIds.has(pill.id);
+        const unlocked = unlockedPillIds.has(pill.id);
         const schemaType = pill.interaction_schema?.type as string | undefined;
+
+        // ---- pílula trancada (liberação sequencial) ----
+        if (!unlocked) {
+          const prev = pills[idx - 1];
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={false}>
+              <div className="flex items-start gap-3 opacity-70">
+                <Lock className="h-5 w-5 mt-1 text-perestroika-preto/50 shrink-0" aria-hidden />
+                <div>
+                  <h3 className="font-display uppercase text-xl sm:text-2xl mb-1 leading-tight text-perestroika-preto/60">
+                    {pill.title}
+                  </h3>
+                  <p className="font-body text-sm text-perestroika-preto/55">
+                    {prev
+                      ? <>termine <span className="font-semibold text-perestroika-preto/75">{prev.title}</span> pra abrir essa.</>
+                      : "essa pílula abre quando a anterior estiver concluída."}
+                  </p>
+                </div>
+              </div>
+            </PillCardShell>
+          );
+        }
+
+
 
         // ---- novos schemas editoriais (módulo 1 da eletiva ia na prática) ----
         if (schemaType === "pilula_editorial") {
