@@ -294,13 +294,21 @@ const Auth = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40" />
+                  <label htmlFor="auth-email" className="sr-only">
+                    email
+                  </label>
+                  <Mail
+                    className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40"
+                    aria-hidden="true"
+                  />
                   <input
+                    id="auth-email"
                     type="email"
                     required
                     autoFocus
                     autoComplete="email"
                     placeholder="seu@email.com"
+                    aria-label="email"
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
@@ -332,11 +340,19 @@ const Auth = () => {
                 )}
 
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40" />
+                  <label htmlFor="auth-password" className="sr-only">
+                    senha (opcional)
+                  </label>
+                  <Lock
+                    className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40"
+                    aria-hidden="true"
+                  />
                   <input
+                    id="auth-password"
                     type="password"
                     autoComplete="current-password"
                     placeholder="senha (opcional)"
+                    aria-label="senha opcional"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={submitting}

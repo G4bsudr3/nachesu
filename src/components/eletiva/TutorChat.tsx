@@ -474,7 +474,8 @@ export const TutorChat = ({
             e.preventDefault();
             void send();
           }}
-          className="p-4 border-t border-perestroika-preto/15 bg-perestroika-bege"
+          className="px-4 pt-4 border-t border-perestroika-preto/15 bg-perestroika-bege"
+          style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}
         >
           {!streaming && (messages.length === 0 || !!pillContext) && (
             <div
