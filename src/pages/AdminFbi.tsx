@@ -50,6 +50,7 @@ import { AdminEletivaReview } from "@/features/admin/AdminEletivaReview";
 import { AdminTrilha } from "@/features/admin/AdminTrilha";
 import { AdminTutor } from "@/features/admin/AdminTutor";
 import { AdminFeedbackInbox } from "@/features/admin/AdminFeedbackInbox";
+import { AdminNudgeTemplates } from "@/features/admin/AdminNudgeTemplates";
 import AdminUsers from "./AdminUsers";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Database } from "@/integrations/supabase/types";
@@ -319,6 +320,7 @@ const AdminFbi = () => {
               <TabsTrigger value="materiais" className="uppercase tracking-wide text-xs">materiais</TabsTrigger>
               <TabsTrigger value="pending" className="uppercase tracking-wide text-xs">pendentes</TabsTrigger>
               <TabsTrigger value="usuarios" className="uppercase tracking-wide text-xs">usuários</TabsTrigger>
+              <TabsTrigger value="nudges" className="uppercase tracking-wide text-xs">nudges</TabsTrigger>
               <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">settings</TabsTrigger>
             </TabsList>
 
@@ -534,6 +536,10 @@ const AdminFbi = () => {
 
             <TabsContent value="eletiva">
               <AdminEletivaSettings />
+            </TabsContent>
+
+            <TabsContent value="nudges">
+              <AdminNudgeTemplates />
             </TabsContent>
 
             <TabsContent value="trilha">
