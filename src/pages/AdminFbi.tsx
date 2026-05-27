@@ -544,6 +544,10 @@ const AdminFbi = () => {
               <AdminNudgeTemplates />
             </TabsContent>
 
+            <TabsContent value="rubricas">
+              <AdminRubrics />
+            </TabsContent>
+
             <TabsContent value="trilha">
               <AdminTrilha />
             </TabsContent>
