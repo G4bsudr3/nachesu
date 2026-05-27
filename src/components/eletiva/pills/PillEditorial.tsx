@@ -88,6 +88,8 @@ export function PillEditorial({
       };
 
   const ctaLabel = schema.completion?.label ?? "concluir pílula e seguir";
+  const requiresReflection = !!schema.reflexao?.prompt;
+  const ready = !requiresReflection || reflection.trim().length >= 2;
 
   return (
     <div className="space-y-10 sm:space-y-12">
@@ -215,12 +217,17 @@ export function PillEditorial({
         </motion.section>
       )}
 
-      <div className="flex justify-end pt-2">
+      <div className="flex items-center justify-end gap-3 pt-2">
+        {!ready && !isCompleted && (
+          <p className="font-body text-xs text-perestroika-preto/55">
+            escreve uma frase na pausa reflexiva pra liberar.
+          </p>
+        )}
         <button
           type="button"
           onClick={onComplete}
-          disabled={isCompleted || isCompleting}
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+          disabled={!ready || isCompleted || isCompleting}
+          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ backgroundColor: accent }}
         >
           {isCompleted ? (

@@ -61,6 +61,10 @@ export function PillChecklistPacto({
   const commitments = schema.commitments ?? [];
   const checked = new Set(value.checked ?? []);
   const ctaLabel = schema.completion?.label ?? "concluir";
+  const requiresReflection = !!schema.reflexao?.label;
+  const ready =
+    (commitments.length === 0 || checked.size >= 1) &&
+    (!requiresReflection || (value.reflexao ?? "").trim().length >= 2);
 
   const toggle = (i: number) => {
     const next = new Set(checked);
@@ -161,8 +165,8 @@ export function PillChecklistPacto({
         <button
           type="button"
           onClick={onComplete}
-          disabled={isCompleted || isCompleting}
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+          disabled={!ready || isCompleted || isCompleting}
+          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ backgroundColor: accent }}
         >
           {isCompleted ? (

@@ -1,70 +1,72 @@
-# pílula 0 — "quem tá por trás dessa eletiva"
+# travar conclusão do módulo até todas as obrigatórias estarem feitas
 
-## ideia
+## o problema
 
-uma pílula opcional, antes da pílula 1, só pra quem está curioso pra saber quem é o frattz. um único vídeo Loom embedado, sem tarefa, sem entrega. marcar como visto encerra.
+no economia-circular dá pra clicar "marcar como concluído" no rodapé do módulo sem ter feito nenhuma pílula. dois fatores:
 
-ela aparece como um card mais discreto que as demais (não quero competir com a pílula 1, que é o começo "oficial"), com microcopy convidativo. como `required=false`, ela **não bloqueia** o avanço sequencial — quem ignorar segue direto pra pílula 1.
+1. o botão `<ModuloFooter onComplete>` está sempre habilitado. `completeMutation` em `Modulo.tsx` faz upsert direto sem checar progresso das pílulas obrigatórias.
+2. quem testou (frattz) é admin, e o `unlockedPillIds` já libera tudo pra admin por design (pra testar fora de ordem). pro **estudante** a trava sequencial já funciona — só o botão "concluir módulo" que escapa.
 
-## o que vai aparecer
+cada pílula rica (radar, quiz, conteúdo curado, editorial, pbl estruturado, checklist) já bloqueia o próprio botão "concluir pílula" enquanto os campos obrigatórios não estão preenchidos. então o conserto é fechar a única fresta: o botão de fechar o módulo.
 
-card no topo da lista de pílulas, com:
+## o que muda
 
-- selo lateral "00 · bônus · opcional"
-- título: "quem tá por trás disso"
-- subtítulo curto: "2 min com o frattz, se você quiser saber de onde isso vem. pode pular tranquilo."
-- iframe do Loom em aspect 16/9, com bordas no padrão dos outros cards
-- botão "vi, bora pra missão" (marca como concluída e some o destaque)
+### 1. `Modulo.tsx` — calcular `canCompleteModule`
 
-visual: borda mais leve, fundo bege puro (sem destaque colorido), pra deixar claro que é acessório. quando marcada, colapsa pro estilo "concluído" igual às outras.
+```
+canCompleteModule = pills.filter(required).every(p => completedPillIds.has(p.id))
+```
 
-## o que muda no código
+passa pro `ModuloFooter`. usado pra:
+- habilitar/desabilitar o botão "marcar como concluído"
+- mostrar hint do quanto falta ("falta 2 de 4 pílulas obrigatórias")
 
-### 1. dado (via insert)
+admin (`isAdmin`) recebe `canCompleteModule = true` sempre, mas o botão troca o label pra "concluir como admin" (deixar claro que está bypassando).
 
-inserir 1 linha em `module_pills` no módulo 1 de `ia-na-pratica` (`module_id = c0c8b85e-...` — buscar via select antes):
+### 2. `Modulo.tsx` — guardar `completeMutation`
 
-- `order_index = 0`
-- `kind = 'pilula_a'` (reusando o enum existente, não vale migration pra um caso)
-- `required = false`
-- `title = 'quem tá por trás disso'`
-- `body_md = '2 min com o frattz, se você quiser saber de onde isso vem. pode pular tranquilo.'`
-- `duration_min_low = 2, duration_min_high = 2`
-- `published = true`
-- `interaction_schema = { type: 'video_embed', provider: 'loom', embed_url: 'https://www.loom.com/embed/c01ffb9665ce41c1864760aa373d977d' }`
+no `mutationFn`, antes do upsert:
+- se `!isAdmin && !canCompleteModule`, lançar erro "termine as pílulas obrigatórias primeiro" (toast já existe via `onError`)
 
-as pílulas 1-5 atuais ficam como estão (`order_index` 1-5). nenhum reordering.
+defesa em profundidade caso alguém burle o botão.
 
-### 2. renderer novo — `PillVideoEmbed.tsx`
+### 3. `ModuloFooter.tsx` — novo prop `canComplete` e copy do estado bloqueado
 
-componente pequeno em `src/components/eletiva/pills/PillVideoEmbed.tsx`:
+- prop nova: `canComplete: boolean`, `pillsRemaining: number`, `isAdmin?: boolean`
+- quando `!canComplete && !isAdmin`:
+  - botão `disabled`, label "termine as pílulas obrigatórias"
+  - copy do bloco muda: "ainda falta {n} pílula{s} obrigatória{s}. cada pílula tem o próprio botão de concluir."
+- quando admin e ainda faltam pílulas: label "concluir como admin" + nota "bypass de admin: estudante não vê esse botão liberado"
+- mantém botão "próximo módulo" como hoje (só aparece quando o próximo já foi liberado, ortogonal)
 
-- recebe `title`, `bodyMd`, `schema.embed_url`, `accent`, `onComplete`, `isCompleted`
-- monta `<iframe src={embed_url} allow="fullscreen" allowFullScreen>` em wrapper `aspect-video rounded-2xl`
-- botão "vi, bora pra missão" (ou "ok, já vi" se opcional) que chama `onComplete`
-- sem entrega, sem tutor, sem accordion
+### 4. auditoria das pílulas (não muda código, só confirma)
 
-exportar em `src/components/eletiva/pills/index.ts`.
+revisar rapidamente que toda pílula rica usa `disabled={!ready ...}` no botão de concluir:
 
-### 3. dispatcher — `ModuloPillList.tsx`
+- `PillConteudoCurado` ✓ (já tem `!ready`)
+- `PillQuiz` ✓
+- `PillRadar` ✓ (`!validation.ok`)
+- `PillEditorial`, `PillPBLEstruturado`, `PillChecklistPacto` — abrir e confirmar igual padrão. se algum estiver sem trava, aplicar a mesma regra `!ready`.
+- `PillBonus` é opcional, não bloqueia
+- pílula sem schema (texto simples + vídeo) hoje renderiza um botão "marcar como concluída" livre — pra esse caso manter livre (é leitura/vídeo, validação é "vi"). não é o que está furado.
 
-- adicionar branch no roteador por `schema.type === 'video_embed'` → renderiza `PillVideoEmbed`
-- ajustar `pillKindLabel` ou usar um override local: quando `order_index === 0` **e** `!required`, mostrar `"bônus"` em vez de "abertura" no selo do card
+### 5. teste manual mínimo
 
-### 4. liberação sequencial
+depois do build, verificar:
 
-já tratado pelo `unlockedPillIds` em `Modulo.tsx`: pílula opcional não bloqueia. confirmar visualmente que a pílula 1 segue desbloqueada mesmo sem marcar a 0.
+- como estudante (conta não-admin) em `/app/eletiva/economia-circular/modulo/1`: botão "marcar como concluído" sai cinza com "falta 4 obrigatórias". preenche cada pílula → habilita.
+- como admin: o botão aparece habilitado com label "concluir como admin".
+- auto-conclusão (que já existe em `togglePillMutation.onSuccess`) continua funcionando — quando todas as obrigatórias batem, fecha sozinho e dispara o burst.
 
 ## fora do escopo
 
-- não criar valor novo no enum `pill_kind` (sem migration)
-- não mexer em outras eletivas nem em outros módulos
-- não tocar em `PillVideoPlayer` existente (loom merece um componente próprio, mais limpo)
-- sem transcrição, sem tutor, sem PBL — é só o vídeo
+- não tirar bypass de admin (ele é útil pra testar e revisar conteúdo)
+- não mexer na trava sequencial entre pílulas — ela já funciona pro estudante
+- não mexer em pílulas sem schema (texto/vídeo simples) — botão "marcar como vista" segue solto, é leitura
+- sem migration de dados ou schema
 
 ## arquivos tocados
 
-- `src/components/eletiva/pills/PillVideoEmbed.tsx` (novo)
-- `src/components/eletiva/pills/index.ts`
-- `src/components/eletiva/modulo/ModuloPillList.tsx`
-- `INSERT` em `module_pills` (via insert tool)
+- `src/pages/Modulo.tsx` — `canCompleteModule`, guard no `completeMutation`, props extras pro footer
+- `src/components/eletiva/modulo/ModuloFooter.tsx` — props `canComplete`, `pillsRemaining`, `isAdmin`; estado bloqueado
+- (talvez) ajuste em uma das 3 pílulas editoriais se faltar a trava `!ready` — confirmar antes de tocar

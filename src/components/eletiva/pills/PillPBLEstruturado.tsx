@@ -81,6 +81,21 @@ export function PillPBLEstruturado({
 
   const update = (patch: Partial<PblValue>) => setValue((prev) => ({ ...prev, ...patch }));
 
+  // pra entregar: todo campo definido no schema precisa estar preenchido.
+  // texto: ≥2 caracteres. evidência: kind != "none".
+  const minText = (s?: string) => (s ?? "").trim().length >= 2;
+  const hasEvidence = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
+  const checks: boolean[] = [];
+  if (c.pedido_a) checks.push(minText(value.pedido_a));
+  if (c.print_a) checks.push(hasEvidence(value.print_a));
+  if (c.pedido_b) checks.push(minText(value.pedido_b));
+  if (c.print_b) checks.push(hasEvidence(value.print_b));
+  if (c.melhor) checks.push(!!value.melhor);
+  if (c.por_que) checks.push(minText(value.por_que));
+  if (c.aprendi) checks.push(minText(value.aprendi));
+  const ready = checks.length === 0 || checks.every(Boolean);
+  const missing = checks.filter((ok) => !ok).length;
+
   return (
     <div className="space-y-8">
       <header className="flex items-start justify-between gap-3">
@@ -248,12 +263,17 @@ export function PillPBLEstruturado({
         </div>
       )}
 
-      <div className="flex justify-end pt-2">
+      <div className="flex items-center justify-end gap-3 pt-2">
+        {!ready && !isCompleted && (
+          <p className="font-body text-xs text-perestroika-preto/55">
+            falta {missing === 1 ? "1 campo" : `${missing} campos`} pra entregar.
+          </p>
+        )}
         <button
           type="button"
           onClick={onComplete}
-          disabled={isCompleted || isCompleting}
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+          disabled={!ready || isCompleted || isCompleting}
+          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ backgroundColor: accent }}
         >
           {isCompleted ? (
