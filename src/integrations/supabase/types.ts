@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_messages: {
+        Row: {
+          author_id: string
+          body_md: string
+          created_at: string
+          email_sent: boolean
+          id: string
+          link: string | null
+          notification_id: string | null
+          read_at: string | null
+          recipient_id: string
+          subject: string
+        }
+        Insert: {
+          author_id: string
+          body_md: string
+          created_at?: string
+          email_sent?: boolean
+          id?: string
+          link?: string | null
+          notification_id?: string | null
+          read_at?: string | null
+          recipient_id: string
+          subject: string
+        }
+        Update: {
+          author_id?: string
+          body_md?: string
+          created_at?: string
+          email_sent?: boolean
+          id?: string
+          link?: string | null
+          notification_id?: string | null
+          read_at?: string | null
+          recipient_id?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       admin_student_notes: {
         Row: {
           author_id: string
@@ -1729,6 +1768,36 @@ export type Database = {
         }
         Relationships: []
       }
+      nudge_templates: {
+        Row: {
+          email_body_md: string
+          email_subject: string
+          level: string
+          notification_body: string
+          notification_title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          email_body_md: string
+          email_subject: string
+          level: string
+          notification_body: string
+          notification_title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          email_body_md?: string
+          email_subject?: string
+          level?: string
+          notification_body?: string
+          notification_title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       prework_items: {
         Row: {
           created_at: string
@@ -2471,6 +2540,7 @@ export type Database = {
         | "system"
         | "deliverable_changes_requested"
         | "deliverable_message"
+        | "admin_direct_message"
       pill_kind:
         | "pilula_a"
         | "pilula_b"
@@ -2626,6 +2696,7 @@ export const Constants = {
         "system",
         "deliverable_changes_requested",
         "deliverable_message",
+        "admin_direct_message",
       ],
       pill_kind: [
         "pilula_a",
