@@ -10,6 +10,8 @@ import {
 type Schema = {
   type?: "video_with_transcript";
   video_placeholder?: boolean;
+  video_url?: string;
+  video_poster?: string;
   transcript?: string;
   transcript_collapsible?: boolean;
   completion?: { type?: string; label?: string };
@@ -56,37 +58,52 @@ export function PillAbertura({
         )}
       </header>
 
-      {/* placeholder do vídeo */}
-      <div
-        className="relative aspect-video w-full overflow-hidden rounded-2xl bg-perestroika-preto/95"
-        role="img"
-        aria-label="vídeo de abertura — em breve"
-      >
-        <button
-          type="button"
-          onClick={() => setTried(true)}
-          className="absolute inset-0 flex items-center justify-center group"
-          aria-label="reproduzir vídeo (em breve)"
+      {/* vídeo: player real se houver url, senão placeholder */}
+      {schema.video_url ? (
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-perestroika-preto/95">
+          <video
+            controls
+            playsInline
+            preload="metadata"
+            poster={schema.video_poster}
+            className="absolute inset-0 h-full w-full"
+            src={schema.video_url}
+          >
+            seu navegador não suporta vídeo embedado.
+          </video>
+        </div>
+      ) : (
+        <div
+          className="relative aspect-video w-full overflow-hidden rounded-2xl bg-perestroika-preto/95"
+          role="img"
+          aria-label="vídeo de abertura — em breve"
         >
-          <span
-            className="flex h-20 w-20 items-center justify-center rounded-full transition-transform group-hover:scale-110 active:scale-95"
-            style={{ backgroundColor: accent }}
+          <button
+            type="button"
+            onClick={() => setTried(true)}
+            className="absolute inset-0 flex items-center justify-center group"
+            aria-label="reproduzir vídeo (em breve)"
           >
-            <Play className="h-8 w-8 text-perestroika-bege fill-perestroika-bege" aria-hidden="true" />
-          </span>
-        </button>
-        <p className="absolute bottom-3 right-4 font-body text-[11px] uppercase tracking-wider text-perestroika-bege/70">
-          vídeo em breve
-        </p>
-        {tried && (
-          <p
-            className="absolute bottom-3 left-4 font-body text-[11px] uppercase tracking-wider text-perestroika-bege/85"
-            role="status"
-          >
-            ainda não rolou. abre a transcrição embaixo.
+            <span
+              className="flex h-20 w-20 items-center justify-center rounded-full transition-transform group-hover:scale-110 active:scale-95"
+              style={{ backgroundColor: accent }}
+            >
+              <Play className="h-8 w-8 text-perestroika-bege fill-perestroika-bege" aria-hidden="true" />
+            </span>
+          </button>
+          <p className="absolute bottom-3 right-4 font-body text-[11px] uppercase tracking-wider text-perestroika-bege/70">
+            vídeo em breve
           </p>
-        )}
-      </div>
+          {tried && (
+            <p
+              className="absolute bottom-3 left-4 font-body text-[11px] uppercase tracking-wider text-perestroika-bege/85"
+              role="status"
+            >
+              ainda não rolou. abre a transcrição embaixo.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* transcrição em accordion fechado por padrão */}
       {transcript && (
