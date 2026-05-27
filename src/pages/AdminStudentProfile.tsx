@@ -8,6 +8,7 @@ import { StudentDeliverableTimeline } from "@/features/admin/studentProfile/Stud
 import { StudentTutorTranscripts } from "@/features/admin/studentProfile/StudentTutorTranscripts";
 import { StudentCommunicationLog } from "@/features/admin/studentProfile/StudentCommunicationLog";
 import { StudentInternalNotes } from "@/features/admin/studentProfile/StudentInternalNotes";
+import { StudentMessageComposer } from "@/features/admin/studentProfile/StudentMessageComposer";
 
 const SectionHeader = ({ title, sub }: { title: string; sub?: string }) => (
   <div className="mb-3">
