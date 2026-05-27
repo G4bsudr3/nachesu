@@ -133,7 +133,7 @@ export const StudentMessageComposer = ({ userId }: Props) => {
                     {formatDateTime(m.created_at)}
                   </span>
                 </div>
-                <FeedbackMarkdown content={m.body_md} />
+                <FeedbackMarkdown>{m.body_md}</FeedbackMarkdown>
                 <div className="mt-2 flex items-center gap-3 text-[10px] uppercase tracking-wider text-perestroika-preto/45">
                   <span>{m.email_sent ? "in-app + e-mail" : "in-app"}</span>
                   {m.read_at && <span>lido {formatDateTime(m.read_at)}</span>}
