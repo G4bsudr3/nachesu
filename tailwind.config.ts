@@ -162,6 +162,8 @@ export default {
         "pulse-soft": "pulse-soft 3s ease-in-out infinite",
         "spin-slow": "spin-slow 40s linear infinite",
         "fab-ripple": "fab-ripple 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "pill-unlock": "pill-unlock 600ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "fade-in": "fade-in 300ms ease-out both",
       },
     },
   },
