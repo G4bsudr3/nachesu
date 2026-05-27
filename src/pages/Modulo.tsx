@@ -143,6 +143,13 @@ const Modulo = () => {
   const completeMutation = useMutation({
     mutationFn: async () => {
       if (!user || !moduleRow) throw new Error("sem contexto");
+      // defesa em profundidade: estudante só fecha o módulo se as obrigatórias estão concluídas.
+      // admin ignora (precisa pra revisar conteúdo sem ter feito tudo).
+      const required = (pills ?? []).filter((p) => p.required);
+      const doneRequired = required.filter((p) => completedPillIds.has(p.id));
+      if (!isAdmin && required.length > 0 && doneRequired.length < required.length) {
+        throw new Error("termine as pílulas obrigatórias primeiro");
+      }
       const now = new Date().toISOString();
       const { error } = await supabase.from("student_module_progress").upsert(
         {
