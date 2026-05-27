@@ -1,39 +1,70 @@
-## objetivo
+# pílula 0 — "quem tá por trás dessa eletiva"
 
-deixar só o módulo 1 disponível em cada eletiva e fazer as pílulas dentro do módulo abrirem em sequência, pra ter controle claro de onde cada estudante parou.
+## ideia
 
-## estado atual
+uma pílula opcional, antes da pílula 1, só pra quem está curioso pra saber quem é o frattz. um único vídeo Loom embedado, sem tarefa, sem entrega. marcar como visto encerra.
 
-- **economia-circular**: só módulo 1 publicado. ok.
-- **ia-na-pratica**: módulos 1, 2 e 3 publicados. precisa despublicar 2 e 3.
-- **pílulas**: hoje o estudante pode marcar qualquer pílula em qualquer ordem (toggle livre em `Modulo.tsx` + `ModuloPillList`). sem trava sequencial.
+ela aparece como um card mais discreto que as demais (não quero competir com a pílula 1, que é o começo "oficial"), com microcopy convidativo. como `required=false`, ela **não bloqueia** o avanço sequencial — quem ignorar segue direto pra pílula 1.
 
-## o que muda
+## o que vai aparecer
 
-### 1. travar publicação só no módulo 1
-um UPDATE em `modules`: `published=false` pros módulos com `number > 1` da eletiva `ia-na-pratica`. economia-circular já está certo. os módulos 2-20 continuam visíveis no admin (pra preparar conteúdo), mas o estudante só vê o 1.
+card no topo da lista de pílulas, com:
 
-### 2. liberação progressiva de pílulas
-regra: a pílula N só fica "ativa" depois que todas as pílulas obrigatórias anteriores (`required=true`, na ordem `order_index`) estiverem concluídas.
+- selo lateral "00 · bônus · opcional"
+- título: "quem tá por trás disso"
+- subtítulo curto: "2 min com o frattz, se você quiser saber de onde isso vem. pode pular tranquilo."
+- iframe do Loom em aspect 16/9, com bordas no padrão dos outros cards
+- botão "vi, bora pra missão" (marca como concluída e some o destaque)
 
-mudanças:
+visual: borda mais leve, fundo bege puro (sem destaque colorido), pra deixar claro que é acessório. quando marcada, colapsa pro estilo "concluído" igual às outras.
 
-- **`src/pages/Modulo.tsx`**: calcular `unlockedPillIds` a partir de `pills` ordenadas + `completedPillIds`. percorre em ordem: libera a próxima só se a anterior obrigatória estiver feita. pílulas opcionais não bloqueiam o avanço. passa o set pra `ModuloPillList`.
-- **`src/components/eletiva/modulo/ModuloPillList.tsx`**: receber `unlockedPillIds`. pílula bloqueada renderiza estado "trancada" (ícone cadeado, opacidade reduzida, hint "termine a pílula anterior"), sem permitir toggle nem abrir conteúdo. mantém visual da lista igual, só adiciona o estado.
-- **proteção no toggle**: `togglePillMutation` checa se a pílula está desbloqueada antes de chamar o supabase. se não, toast curto "termine a anterior primeiro".
-- admin (`is_admin=true`) ignora a trava — pode marcar/desmarcar qualquer pílula pra testar.
+## o que muda no código
 
-### 3. copy
-microcopy no estado trancado: "termine **{título da anterior}** pra abrir essa". sem emoji, lowercase, tom NachesU.
+### 1. dado (via insert)
+
+inserir 1 linha em `module_pills` no módulo 1 de `ia-na-pratica` (`module_id = c0c8b85e-...` — buscar via select antes):
+
+- `order_index = 0`
+- `kind = 'pilula_a'` (reusando o enum existente, não vale migration pra um caso)
+- `required = false`
+- `title = 'quem tá por trás disso'`
+- `body_md = '2 min com o frattz, se você quiser saber de onde isso vem. pode pular tranquilo.'`
+- `duration_min_low = 2, duration_min_high = 2`
+- `published = true`
+- `interaction_schema = { type: 'video_embed', provider: 'loom', embed_url: 'https://www.loom.com/embed/c01ffb9665ce41c1864760aa373d977d' }`
+
+as pílulas 1-5 atuais ficam como estão (`order_index` 1-5). nenhum reordering.
+
+### 2. renderer novo — `PillVideoEmbed.tsx`
+
+componente pequeno em `src/components/eletiva/pills/PillVideoEmbed.tsx`:
+
+- recebe `title`, `bodyMd`, `schema.embed_url`, `accent`, `onComplete`, `isCompleted`
+- monta `<iframe src={embed_url} allow="fullscreen" allowFullScreen>` em wrapper `aspect-video rounded-2xl`
+- botão "vi, bora pra missão" (ou "ok, já vi" se opcional) que chama `onComplete`
+- sem entrega, sem tutor, sem accordion
+
+exportar em `src/components/eletiva/pills/index.ts`.
+
+### 3. dispatcher — `ModuloPillList.tsx`
+
+- adicionar branch no roteador por `schema.type === 'video_embed'` → renderiza `PillVideoEmbed`
+- ajustar `pillKindLabel` ou usar um override local: quando `order_index === 0` **e** `!required`, mostrar `"bônus"` em vez de "abertura" no selo do card
+
+### 4. liberação sequencial
+
+já tratado pelo `unlockedPillIds` em `Modulo.tsx`: pílula opcional não bloqueia. confirmar visualmente que a pílula 1 segue desbloqueada mesmo sem marcar a 0.
 
 ## fora do escopo
 
-- não mexer no desbloqueio entre módulos (já sequencial via `useEletivaProgress`).
-- não mexer em schema (sem migration). só UPDATE de dados + ajuste de UI/hook.
-- não mexer no fluxo de admin nem em conteúdo de pílulas.
+- não criar valor novo no enum `pill_kind` (sem migration)
+- não mexer em outras eletivas nem em outros módulos
+- não tocar em `PillVideoPlayer` existente (loom merece um componente próprio, mais limpo)
+- sem transcrição, sem tutor, sem PBL — é só o vídeo
 
 ## arquivos tocados
 
-- `src/pages/Modulo.tsx` — calcular `unlockedPillIds`, guardar toggle
-- `src/components/eletiva/modulo/ModuloPillList.tsx` — render do estado trancado
-- update em `modules` (via insert tool) — despublicar mods 2-3 de ia-na-pratica
+- `src/components/eletiva/pills/PillVideoEmbed.tsx` (novo)
+- `src/components/eletiva/pills/index.ts`
+- `src/components/eletiva/modulo/ModuloPillList.tsx`
+- `INSERT` em `module_pills` (via insert tool)
