@@ -1,30 +1,51 @@
-## Diagnóstico
+## o que vai mudar
 
-Os templates em português e o `auth-email-hook` já existem no projeto (`supabase/functions/_shared/email-templates/*.tsx` e `supabase/functions/auth-email-hook/index.ts`), todos com copy NachesU, lowercase, "você", assunto "seu link de acesso nachesu" etc.
+o módulo 1 da eletiva economia circular ("missão 1: abrir o olho") já existe publicado, com 5 pílulas placeholder. vou substituir o conteúdo dessas 5 pílulas pelo briefing do dudu, usando exatamente os schemas de pílula que a plataforma já renderiza, sem inventar componente novo nem mexer em admin/UI. tudo via migration de UPDATE no banco; o admin já consegue editar/visualizar tudo pelo `/admin/aula` porque os schemas são os mesmos usados nos outros módulos editoriais.
 
-O e-mail que você recebeu ("Sign in to your account / One-time login link / Log In") é o **template default do Supabase Auth em inglês**. Ele só é enviado quando o hook customizado não está ativo. Como o remetente "NachesU" apareceu corretamente, o domínio `frattz.com` está verificado e funcionando — o que falhou foi a entrega do conteúdo customizado pelo hook.
+guardrails que vou respeitar:
+- tom NachesU (lowercase, "você", sem em-dash/emoji em UI, sem corporatês). adapto a copy do dudu ("galerinha", "beleza" etc.) pro tom da plataforma, mantendo a substância
+- paleta Perestroika + accent azul Sebrae. a paleta "duduo" (#F25E3D etc.) do briefing NÃO entra: viola o sistema de design. cor do módulo continua vindo da trilha "Enxergar"
+- nenhum schema novo, nenhuma tabela nova
+- vídeo de abertura: faço upload do `.MOV` pro bucket `pill-attachments` e linko em `video_url` da pílula 1
 
-Causas mais prováveis:
-- O `auth-email-hook` não está deployado na versão atual (ou foi desativado).
-- Lovable Emails do projeto pode ter sido desligado em algum momento.
+## mapeamento briefing → schemas existentes
 
-## O que vou fazer
+| # | pílula atual | kind | schema usado | vira |
+|---|---|---|---|---|
+| 1 | abertura | `pilula_a` | `video_with_transcript` (PillAbertura) | vídeo intro do dudu (.MOV no storage) + transcrição em accordion + headline "missão 1: abrir o olho" |
+| 2 | conteúdo curado | `pilula_b` | `curated_content_with_questions` (PillConteudoCurado) | 2 cards (vídeo Ellen MacArthur + reportagem Portal Impactto) + 3 perguntas-guia (2 abertas + 1 múltipla escolha) |
+| 3 | PBL radar | `exercicio_pbl` | `radar_form` (PillRadar) | briefing "caça ao vazamento" + tabela de mínimo 5 itens, 4 campos (o que vi / onde / fluxo dropdown / evidência), regra anti-óbvio (≥2 fluxos diferentes). PillRadar já valida isso |
+| 4 | checagem | `pilula_c` | `quiz` (PillQuiz) | 3 perguntas: P1 múltipla escolha (1 correta), P2 multi-select (3 corretas), P3 texto longo sem feedback (matéria-prima do encontro 5) |
+| 5 | bônus | `registro` → muda pra `pilula_c` opcional | `bonus_text` (PillBonus) | card único Kurzgesagt + campo "o dado que mais me chocou foi ___ porque ___", `required=false` |
 
-1. Garantir que Lovable Emails está habilitado no projeto.
-2. Redeployar o `auth-email-hook` pra que o Supabase Auth volte a chamá-lo em vez de cair no template default.
-3. Conferir o status final em Cloud → Emails.
+a pílula 5 atual está como `registro` mas o briefing pede um bônus opcional, não um registro de síntese. troco o `kind` pra `pilula_c` e marco `required=false`. os 3 registros pedagógicos (radar, quiz, bônus) já capturam evidência suficiente — não duplico com um registro extra.
 
-Nenhum template precisa ser reescrito — eles já estão prontos e em PT-BR.
+## copy (amostra do tom adaptado)
 
-## Como verificar depois
+abertura:
+- headline: "missão 1: abrir o olho"
+- subheadline: "3 minutos. uma pergunta que vai te perseguir por 20 semanas."
 
-- Pedir um novo magic link em `/auth` com um email Sebrae autorizado.
-- O e-mail deve chegar com assunto **"seu link de acesso nachesu"**, título **"entra direto"** e botão **"entrar na nachesu"**.
-- Se ainda vier em inglês, abro os logs do `auth-email-hook` pra ver se o Supabase está chamando o webhook.
+PBL (briefing curto, formatado em markdown):
+> sai do computador. pega o celular, dá uma volta de 15 a 20 minutos pela escola, casa ou 2 quarteirões.
+> sua missão: caçar **vazamentos de valor** — coisa desperdiçada, subutilizada, descartada rápido demais.
+> regra anti-óbvio: pelo menos 2 fluxos diferentes. se sua lista inteira for cantina e reciclagem, faltou olhar.
 
-## Detalhes técnicos
+quiz P1 feedback se acertar: "boa. (c) é comportamento social, não tem recurso saindo do sistema. as outras três têm."
 
-- `EMAIL_SUBJECTS` no hook já cobre os 6 tipos (signup, invite, magiclink, recovery, email_change, reauthentication).
-- O hook enfileira em `auth_emails` via `enqueue_email`; o `process-email-queue` renderiza o JSX e envia.
-- `SENDER_DOMAIN = notify.frattz.com`, `FROM_DOMAIN = notify.frattz.com`, `SITE_NAME = NachesU`.
-- Só vou tocar em `supabase/functions/auth-email-hook/` se o redeploy puro não resolver — primeira tentativa é só reativar + redeploy.
+## passos de implementação
+
+1. upload do vídeo `.MOV` pro bucket `pill-attachments` (público) → guardo URL pública
+2. migration única que faz `UPDATE module_pills` nas 5 pílulas do módulo (filtro por `module_id` do módulo 1 de economia-circular + `order_index`), setando: `title`, `body_md`, `video_url`, `interaction_schema` (jsonb com o `type` e payload esperado por cada componente), `duration_min_low/high`, `required`, e no caso da pílula 5 também `kind`
+3. ajusto `modules.objective` e `modules.total_minutes=50` se estiver vazio/divergente
+4. verifico no preview `/app/eletiva/economia-circular/modulo/1` que cada pílula renderiza com o schema certo, e no `/admin/aula` que dá pra editar
+
+## o que NÃO faço nesse passo
+
+- não importo a paleta/tipografia "duduo" do briefing (mantém Perestroika)
+- não crio dashboard novo de professor (o admin atual já mostra progresso por aluno/módulo)
+- não configuro as notificações 24h/48h de evasão (já existe `check-student-evasion`; ligar essa cadência específica é outro pedido)
+- não toco nas pílulas dos módulos 2-20 (continuam unpublished)
+- não publico os módulos 2-20
+
+confirma e eu implemento.
