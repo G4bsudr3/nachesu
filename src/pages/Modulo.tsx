@@ -414,6 +414,12 @@ const Modulo = () => {
       )}
 
       <EletivaFooter />
+
+      <ModuloAutoCompleteBurst
+        open={burst.open}
+        nextUnlocked={burst.nextUnlocked}
+        onDone={() => setBurst({ open: false, nextUnlocked: false })}
+      />
     </div>
   );
 };
