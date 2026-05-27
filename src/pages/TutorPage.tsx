@@ -340,8 +340,8 @@ const TutorPage = () => {
       {/* trail switcher */}
       {activeTrail && trails && trails.length > 1 && (
         <div className="px-4 py-2 border-b border-perestroika-preto/5 bg-perestroika-bege flex justify-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <Popover>
+            <PopoverTrigger asChild>
               <button
                 type="button"
                 className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-white/60 px-3 py-1.5 font-body text-xs text-perestroika-preto/80 hover:border-perestroika-preto/40 transition-colors"
@@ -350,29 +350,30 @@ const TutorPage = () => {
                 <span className="font-semibold lowercase">{activeTrail.title}</span>
                 <ChevronDown className="w-3.5 h-3.5 opacity-60" />
               </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="bg-perestroika-bege border-perestroika-preto/20">
+            </PopoverTrigger>
+            <PopoverContent align="center" className="bg-perestroika-bege border-perestroika-preto/20 p-2 w-64">
               {trailsByCourse.map((group, gi) => (
-                <div key={gi}>
-                  {gi > 0 && <DropdownMenuSeparator />}
-                  <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
+                <div key={gi} className={gi > 0 ? "mt-2 pt-2 border-t border-perestroika-preto/10" : ""}>
+                  <p className="px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
                     {group.title.toLowerCase()}
-                  </DropdownMenuLabel>
+                  </p>
                   {group.trails.map((t) => (
-                    <DropdownMenuItem
+                    <button
                       key={t.id}
+                      type="button"
                       onClick={() => setTrailId(t.id)}
-                      className={`font-body text-sm lowercase ${
+                      className={`w-full text-left rounded-md px-2 py-1.5 font-body text-sm lowercase hover:bg-perestroika-preto/5 transition-colors ${
                         t.id === trailId ? "bg-perestroika-preto/5 font-semibold" : ""
                       }`}
                     >
                       {t.title}
-                    </DropdownMenuItem>
+                    </button>
                   ))}
                 </div>
               ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </PopoverContent>
+          </Popover>
+
         </div>
       )}
 
