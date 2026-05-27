@@ -316,6 +316,10 @@ const Modulo = () => {
 
   const totalPills = pills?.length ?? 0;
   const donePills = pills?.filter((p) => completedPillIds.has(p.id)).length ?? 0;
+  const requiredPills = pills?.filter((p) => p.required) ?? [];
+  const doneRequired = requiredPills.filter((p) => completedPillIds.has(p.id)).length;
+  const pillsRemaining = Math.max(0, requiredPills.length - doneRequired);
+  const canCompleteModule = requiredPills.length > 0 && pillsRemaining === 0;
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
