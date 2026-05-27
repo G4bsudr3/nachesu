@@ -1,5 +1,6 @@
 import { useState, FormEvent, useEffect } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Mail, ArrowRight, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -266,12 +267,13 @@ const Auth = () => {
 
       <main className="flex-1 container flex items-center justify-center py-16">
         <div className="w-full max-w-md relative">
-          <EletivaSymbol
-            size={72}
-            className="absolute -top-24 right-0 animate-pulse-soft"
-            rotate={-15}
-            pose="peeking"
-          />
+          <motion.div
+            className="absolute -top-24 right-0"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <EletivaSymbol size={72} rotate={-15} pose="peeking" />
+          </motion.div>
 
           {!sent ? (
             <>
@@ -289,7 +291,7 @@ const Auth = () => {
               <p className="font-body text-base text-perestroika-preto/70 mb-10">
                 {fromCarta
                   ? "use o email do convite da escola sebrae. mandamos um link mágico em segundos."
-                  : "tem senha? coloca os dois campos. se não, deixa só o email que a gente manda um link mágico."}
+                  : "tem senha? preenche os dois. se não, só o email basta, a gente manda o link."}
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -405,7 +407,7 @@ const Auth = () => {
                 mandamos um link mágico para <span className="font-semibold text-perestroika-preto">{email}</span>.
               </p>
               <p className="font-body text-sm text-perestroika-preto/60">
-                clica no link e você cai direto na sua eletiva. (talvez precise olhar a caixa de spam.)
+                abre o link e cai direto na eletiva. olha o spam se demorar.
               </p>
               <button
                 type="button"

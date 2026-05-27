@@ -161,9 +161,9 @@ const Modulo = () => {
       const nextWasLocked =
         next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
       if (nextWasLocked) {
-        toast.success(`módulo ${String(next!.number).padStart(2, "0")} desbloqueado.`);
+        toast.success(`módulo ${String(next!.number).padStart(2, "0")} liberado. quando quiser`);
       } else {
-        toast.success("módulo concluído. bom demais.");
+        toast.success("fechou esse. próximo te espera");
       }
       queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
       // signature moment: se acabou a última da trilha, abre a tela de marco
@@ -242,7 +242,7 @@ const Modulo = () => {
         <main className="container max-w-2xl pt-10 pb-20 text-center">
           <h1 className="font-display uppercase text-4xl mb-3">módulo não encontrado</h1>
           <p className="font-body text-perestroika-preto/70 mb-6">
-            esse módulo ainda não foi liberado pela escola sebrae ou o número está errado.
+            esse módulo ainda não rolou ou o número não bate.
           </p>
           <Link
             to="/app"
@@ -311,9 +311,9 @@ const Modulo = () => {
       <main id="conteudo" className="relative z-10 container max-w-3xl pt-6 pb-16 sm:pt-10">
         <Link
           to={courseSlug ? `/app/eletiva/${courseSlug}` : "/app"}
-          className="inline-flex items-center gap-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto mb-6"
+          className="group inline-flex items-center gap-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto mb-6 transition-colors"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> {courseSlug ? "voltar pra eletiva" : "meu início"}
+          <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" /> {courseSlug ? "voltar pra eletiva" : "meu início"}
         </Link>
 
         {/* marco de transição: aparece nos primeiros módulos das trilhas 2/3/4

@@ -11,6 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { NextActionHero } from "@/components/dashboard/NextActionHero";
 import { JourneyChips } from "@/components/dashboard/JourneyChips";
 import { ArchiveSection } from "@/components/dashboard/ArchiveSection";
@@ -76,8 +77,8 @@ const AppDashboard = () => {
         logoLink="/"
         actions={
           <>
-            <div className="hidden sm:block font-body text-sm sm:text-base mr-1">
-              oi, <span className="font-semibold">{nickname || "..."}</span>
+            <div className="hidden sm:block font-body text-sm mr-1 text-perestroika-preto/65 truncate max-w-[160px]">
+              oi, <span className="font-semibold text-perestroika-preto">{nickname || "..."}</span>
             </div>
             {isAdmin && (
               <Link to="/admin" aria-label="painel admin" title="painel admin" className="icon-btn">
@@ -172,9 +173,7 @@ const AppDashboard = () => {
         className="relative z-10 container max-w-5xl pb-10"
         style={{ marginBottom: "var(--mobile-nav-h, 0px)" }}
       >
-        <p className="text-center font-body text-xs text-perestroika-preto/55">
-          eletiva sebrae · escola sebrae · 1º ano EM
-        </p>
+        <EletivaFooter tone="dark" />
       </footer>
     </div>
   );
