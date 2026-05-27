@@ -1687,6 +1687,7 @@ export type Database = {
           objective: string | null
           order_index: number
           published: boolean
+          rubric_id: string | null
           title: string
           total_minutes: number
           trail_id: string
@@ -1702,6 +1703,7 @@ export type Database = {
           objective?: string | null
           order_index?: number
           published?: boolean
+          rubric_id?: string | null
           title: string
           total_minutes?: number
           trail_id: string
@@ -1717,12 +1719,20 @@ export type Database = {
           objective?: string | null
           order_index?: number
           published?: boolean
+          rubric_id?: string | null
           title?: string
           total_minutes?: number
           trail_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "modules_rubric_id_fkey"
+            columns: ["rubric_id"]
+            isOneToOne: false
+            referencedRelation: "rubrics"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "modules_trail_id_fkey"
             columns: ["trail_id"]
@@ -1997,6 +2007,42 @@ export type Database = {
           opens_at?: string | null
           status?: Database["public"]["Enums"]["project_voting_session_status"]
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      rubrics: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          criteria: Json
+          description: string | null
+          id: string
+          is_default: boolean
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          name?: string
+          slug?: string
           updated_at?: string
         }
         Relationships: []
