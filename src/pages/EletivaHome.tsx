@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress, type EletivaSnapshot } from "@/hooks/useEletivaProgress";
@@ -196,7 +196,7 @@ const EletivaHome = () => {
           <EletivaSymbol size={80} pose="resting" />
           <h1 className="font-display uppercase text-3xl">acesso restrito</h1>
           <p className="font-body text-sm text-perestroika-preto/75">
-            você não está matriculado em <strong>{course.title.toLowerCase()}</strong>.
+            <strong>{course.title.toLowerCase()}</strong> não tá na sua lista. fala com o educador se isso parece errado.
           </p>
           <Link
             to="/app"
@@ -284,8 +284,8 @@ const EletivaHome = () => {
             transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-3xl border-2 border-perestroika-preto bg-perestroika-preto text-perestroika-bege p-6 sm:p-8 mb-6"
           >
-            <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-bege/60 mb-2 inline-flex items-center gap-1">
-              <Sparkles className="h-3 w-3" /> próximo passo
+            <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-bege/60 mb-2 inline-flex items-center gap-2">
+              <EletivaSymbol size={22} pose="building" /> próximo passo
             </p>
             <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95] mb-3">
               módulo {String(current.number).padStart(2, "0")} · {current.title.toLowerCase()}
@@ -349,7 +349,7 @@ const EletivaHome = () => {
             <div className="flex-1">
               <p className="font-display uppercase text-2xl leading-tight">materiais</p>
               <p className="font-body text-sm text-perestroika-preto/70 mt-1">
-                leituras, slides, referências dessa eletiva.
+                tudo que rola na eletiva: leitura, slide, link.
               </p>
             </div>
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />

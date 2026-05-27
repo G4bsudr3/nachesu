@@ -1,122 +1,43 @@
-## fase 3 · comunicação personalizada (implementada)
+## polish geral — 1 sweep cirúrgico
 
-mensagens manuais educador→estudante e templates de nudge editáveis pelo admin.
+foco: visual + motion + copy. sem refactor, sem mexer em business logic. tudo dentro dos tokens existentes (perestroika rosa + accent sebrae azul, league gothic + urbanist, lowercase pt-br).
 
-### entregas
+### 1. dashboard (`AppDashboard.tsx`)
+- header: trocar `oi, {nick}` cru por chip mais discreto (`text-perestroika-preto/65 font-body text-sm` + ponto separador), respeitar `display: none` em mobile como já tá mas dar `truncate max-w-[140px]`.
+- footer: copy atual "eletiva sebrae · escola sebrae · 1º ano EM" → trocar pra "nachesu · uma plataforma naches · em parceria com escola sebrae" (alinhar com EletivaFooter já existente; importar e usar `<EletivaFooter />` em vez de footer custom).
+- fade-up escalonado: envolver as seções principais (greeting, week cadence, eletiva card, switcher) em `motion.div` com `staggerChildren` leve (delay 0/80/160/240ms, ease `[0.22,1,0.36,1]`, 350ms). respeita `prefers-reduced-motion` via tailwind `motion-safe`.
 
-**3.1 · mensagens diretas**
-- tabela `admin_messages` (subject, body_md, link, email_sent, read_at, notification_id)
-- edge function `send-admin-message` (admin-only, valida role; cria notification + opcional e-mail)
-- novo enum de notification `admin_direct_message`
-- template transacional `admin-direct-message` (markdown leve: bold, itálico, link)
-- composer dentro do `/admin/aluno/:userId` com histórico das últimas 30 mensagens
+### 2. eletiva home (`EletivaHome.tsx`)
+- hero: barra de progresso já tem motion. adicionar shimmer sutil de 1s no fim da animação (overlay gradient `from-transparent via-white/20 to-transparent` correndo 1x).
+- "próximo passo" card: ícone `Sparkles` atual fica meio decorativo. trocar por `EletivaSymbol pose="building" size={28}` inline antes do label "próximo passo" (signature moment — mascote aparece já no CTA principal). cor mascote intacta (paleta perestroika).
+- atalhos (tutor IA / materiais): copy do tutor está ok; o de materiais "leituras, slides, referências dessa eletiva." → "tudo que rola na eletiva: leitura, slide, link." (mais frattz, menos enciclopédia).
+- estado "acesso restrito": pose atual `resting` ok. copy → "essa eletiva não tá na sua lista. fala com o educador se isso parece errado." (mais humano que "você não está matriculado").
 
-**3.2 · nudge templates editáveis**
-- tabela `nudge_templates` com 3 níveis seedados (medium/high/lost)
-- interpolação `{nome}`, `{curso}`, `{professor}`, `{dias}` em runtime
-- `check-student-evasion` agora lê templates do banco (fallback pra copy hardcoded se vazio)
-- e-mail dos nudges roteado pro template `admin-direct-message` quando há template no banco
-- editor `AdminNudgeTemplates` em nova tab `nudges` no admin
+### 3. módulo (`Modulo.tsx`)
+- toast de conclusão: "módulo concluído. bom demais." → "fechou esse. próximo te espera." (mantém energia, evita "bom demais" repetitivo).
+- toast desbloqueio: padronizar pra "módulo NN liberado. quando quiser." (some o ponto final isolado).
+- link "voltar pra eletiva" no topo: hoje é texto chip pequeno. adicionar `hover:-translate-x-0.5 transition-transform` na seta (micro-feedback consistente com cards).
+- "módulo não encontrado": copy → "esse módulo ainda não rolou ou o número não bate." (corta jargão "liberado pela escola sebrae", já é óbvio pelo contexto).
 
-### arquivos novos
-- `supabase/functions/send-admin-message/index.ts`
-- `supabase/functions/_shared/transactional-email-templates/admin-direct-message.tsx`
-- `src/features/admin/useNudgeTemplates.ts`
-- `src/features/admin/AdminNudgeTemplates.tsx`
-- `src/features/admin/studentProfile/useAdminMessages.ts`
-- `src/features/admin/studentProfile/StudentMessageComposer.tsx`
+### 4. auth (`Auth.tsx`)
+- subtítulo atual: "tem senha? coloca os dois campos. se não, deixa só o email que a gente manda um link mágico." → quebra em 2 linhas mais curtas: "tem senha? preenche os dois. se não, só o email basta — a gente manda o link." (mais ritmo, frase curta).
+- placeholder do password "senha (opcional)" duplicado com aria-label. limpar pra placeholder vazio quando email tem foco; manter aria-label.
+- estado sent: copy "clica no link e você cai direto na sua eletiva. (talvez precise olhar a caixa de spam.)" → "abre o link e cai direto na eletiva. olha o spam se demorar." (corta parêntese, fica mais direto).
+- mascote `peeking` no canto já é signature. adicionar respiração leve via `motion.div` com `animate={{ y: [0, -4, 0] }}` infinito 3s (override do `animate-pulse-soft` que é genérico).
 
-### arquivos tocados
-- migration: tabelas + enum value + seeds
-- `registry.ts` (template novo)
-- `check-student-evasion/index.ts` (lê templates + interpola)
-- `AdminStudentProfile.tsx` (seção mensagem direta)
-- `AdminFbi.tsx` (tab nudges)
+### 5. admin (`AdminFbi.tsx`)
+- header: já tem `NachesULogo` + badge admin. copy "hub" no link de volta → "início" (mais claro, "hub" é vocabulário Chŏra legado).
+- breadcrumb: ok. botão "copiar link da aba" muito visível pra ação rara — reduzir pra `text-perestroika-preto/50 hover:text-perestroika-preto` e remover background, deixar puro texto + ícone (densidade admin).
+- TabsList principal: hoje todos os triggers têm o mesmo peso visual. dar tratamento ativo mais forte via shadcn data-state (border-bottom 2px perestroika-rosa quando ativo — checa se shadcn já entrega, senão wrapper css curto em `index.css`).
+- legacy collapse: "ferramentas Chŏra (legado)" → manter, mas adicionar `text-perestroika-preto/40` por padrão e separador `border-t border-dashed` acima pra criar respiração entre op atual e legado.
 
-## fase 4 · rubrica configurável + AI-draft (implementada)
+### 6. micro-consistência global
+- todos os botões pretos pill com `hover:scale-105 active:scale-95` checados — já consistente.
+- garantir `focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2` em todos os botões custom desses 5 arquivos (alguns têm, outros não — auditoria visual).
 
-editor passou de chips hardcoded pra rubricas editáveis, com rascunho de feedback assistido por IA respeitando tom Naches.
+### fora de escopo (não entra nesse sweep)
+- a11y profunda, performance, novos componentes, tabelas/RLS, edge functions, novas rotas, redesign de seção inteira.
+- páginas não listadas (admin turma, risco, tutor page, hub materiais) — se quiser, abrimos sweep dedicado depois.
 
-### entregas
-- tabela `rubrics` (slug, name, description, is_default, criteria jsonb) + `modules.rubric_id`
-- rubrica padrão "geral" seedada com os 5 chips originais
-- editor `AdminRubrics` em nova tab `rubricas` (CRUD + descrição por critério)
-- `FeedbackReviewDrawer` carrega rubrica do módulo (ou default) e renderiza chips dinâmicos com tooltip
-- edge function `draft-deliverable-feedback` (admin-only): lê entrega + rubrica + módulo, chama Lovable AI (gemini-3-flash-preview, tool calling), devolve `{ draft_md, suggested_tags }`
-- botão "rascunhar com IA" no drawer: preenche feedback (com confirm se já tiver texto), abre preview, mescla tags sugeridas válidas
-
-### arquivos novos
-- `supabase/functions/draft-deliverable-feedback/index.ts`
-- `src/features/admin/useRubrics.ts`
-- `src/features/admin/AdminRubrics.tsx`
-
-### arquivos tocados
-- migration: tabela `rubrics`, coluna `modules.rubric_id`, seed default
-- `FeedbackReviewDrawer.tsx` (chips dinâmicos + handler IA)
-- `AdminFbi.tsx` (tab nudges/rubricas)
-
-## fase 5 · unificação do tutor IA (implementada)
-
-`/app/tutor` agora roda no mesmo backend do TutorChat (edge function `tutor-trail-chat` + tabela `tutor_conversations`). histórico único por trilha, sem dois cérebros separados.
-
-### entregas
-- nova página `src/pages/TutorPage.tsx` substitui o antigo `ChoraBot.tsx` na rota `/app/tutor` (legacy file mantido pra referência mas fora de rota)
-- trilha ativa resolvida via `useActiveEletiva` + `useMyEnrollments`; popover de troca de trilha quando o aluno tem 2+ trilhas matriculadas
-- carrega/persiste em `tutor_conversations` (uma conversa por aluno+trilha) — mesmo store usado pelo `TutorChat` dentro do módulo
-- streaming SSE + markdown via `BotMessage`, ação "zerar conversa" com confirm
-- pré-prompt `?prompt=...` preservado
-- empty state quando aluno ainda não tem matrícula
-
-### arquivos novos
-- `src/pages/TutorPage.tsx`
-
-### arquivos tocados
-- `src/App.tsx` (rota `/app/tutor` aponta pra `TutorPage`)
-- `.lovable/plan.md`
-
-### itens da fase 5 do roadmap ainda pendentes (subfases)
-- 5.2 onboarding parametrizado por curso
-- 5.3 back nav contextual no módulo
-- 5.4 MobileNav em `EletivaHome`
-- 5.5 sininho de notificações no `MobileNav`
-- 5.6 toast informativo no `ExtrasGate`
-- 5.7 feedback visual no auto-complete das pílulas
-
-
-## fase 5 · refinamentos (implementados)
-
-- 5.2 onboarding parametrizado por curso: `EletivaOnboardingOverlay` já recebe `slug`, `courseTitle` e `professorName` e persiste o "já viu" por eletiva (`eletiva:onboarded:<slug>`). dialog antigo `OnboardingDialog` segue fora de rota
-- 5.3 back nav contextual no `Modulo`: quando há `courseSlug`, link e botão do header voltam pra `/app/eletiva/:slug` em vez de `/app` (label "voltar pra eletiva")
-- 5.4 `MobileNav` agora aparece em `/app/eletiva/:slug` (EletivaHome) e padding inferior do `<main>` reserva o espaço da nav fixa
-- 5.5 `MobileNav` ganhou item "avisos" com sino e badge de contagem de não-lidas (usa `useNotifications`); só renderiza pra usuário autenticado
-- 5.6 `ExtrasGate` agora dispara toast informativo "essa área não está liberada na sua eletiva" antes do redirect
-- 5.7 `ModuloAutoCompleteBurst`: signature moment de ~2.2s quando o módulo fecha sozinho ao concluir a última pílula obrigatória. joão-de-barro em pose `celebrating` + display gigante + confetes em arco (paleta Perestroika). respeita `prefers-reduced-motion` (sem confete, duração 1.2s). substitui o toast antigo. `nextUnlocked` mostra hint extra quando o próximo módulo destrava na mesma ação
-
-
-
-## fase 6 · acessibilidade, compliance e polish (parcial · implementada)
-
-primeira leva da fase 6 entregue. itens de compliance ECA Digital (6.3) e captura multimodal/PWA offline (6.5) ficam pra próxima rodada porque dependem de decisão legal e infra mais pesada.
-
-### entregas
-
-**6.1 a11y polish**
-- `Auth.tsx`: `<label sr-only>` + `aria-label` nos inputs de email/senha; ícones `aria-hidden`
-- `AccountSettings.tsx`: labels visíveis ou `sr-only` em todos os inputs (instagram, linkedin, senha, confirmação, quiet hours)
-- `HubMateriais.tsx` (`MaterialDrawer`): tecla `Esc` fecha o drawer
-- `TutorChat.tsx`: input respeita `env(safe-area-inset-bottom)` (iPhone notch / barra do android)
-
-**6.2 leitura acessível**
-- novo `useReadingPreferences` (`src/hooks/useReadingPreferences.ts`) — persiste em `localStorage`, aplica classe `reading-easy` em `<html>`
-- `bootReadingPreferences()` aplica antes do React montar (`main.tsx`)
-- CSS em `index.css`: `html.reading-easy body` aumenta `letter-spacing`, `word-spacing` e `line-height` no body; display preservada
-- toggle "texto com respiração" em `/app/conta`
-
-**6.4 janela silenciosa**
-- migration: colunas `quiet_hours_start` e `quiet_hours_end` em `profiles` (smallint 0-23, opcional, com CHECK)
-- UI em `/app/conta`: dois selects (começa às / acaba às) com salvamento on-change, suporta janela que atravessa meia-noite
-- `check-student-evasion/index.ts`: lê `quiet_hours_*`, calcula hora atual em `America/Sao_Paulo` e adia nudge quando estudante está dentro da janela (vai pra próxima rodada do cron)
-
-### pendente da fase 6
-- 6.3 revisão ECA Digital (consentimento parental, ad-tech, DPO) — precisa decisão legal/produto antes de implementar
-- 6.5 captura multimodal (foto anotada + fila offline PWA) — esforço grande, vale priorizar como fase separada
+### entregável
+edits em 5 arquivos: `AppDashboard.tsx`, `EletivaHome.tsx`, `Modulo.tsx`, `Auth.tsx`, `AdminFbi.tsx`. zero migração, zero dep nova. ~30 min.

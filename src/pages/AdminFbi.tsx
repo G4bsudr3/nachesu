@@ -262,7 +262,7 @@ const AdminFbi = () => {
         <div className="flex items-center gap-6 text-sm uppercase tracking-wide">
           <Link to="/app" className="hover:opacity-60 transition-opacity flex items-center gap-1">
             <ArrowLeft className="w-4 h-4" />
-            hub
+            início
           </Link>
           <button onClick={signOut} className="hover:opacity-60 transition-opacity">
             sair
@@ -299,10 +299,10 @@ const AdminFbi = () => {
                   () => toast.error("não consegui copiar"),
                 );
               }}
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-wide px-3 py-1.5 rounded-md bg-perestroika-preto/5 hover:bg-perestroika-preto/10 transition-colors"
+              className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-perestroika-preto/50 hover:text-perestroika-preto transition-colors"
             >
-              <Copy className="w-3.5 h-3.5" />
-              copiar link da aba
+              <Copy className="w-3 h-3" />
+              copiar link
             </button>
           </div>
 
@@ -326,16 +326,18 @@ const AdminFbi = () => {
               <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">settings</TabsTrigger>
             </TabsList>
 
-            <button
-              type="button"
-              onClick={() => setShowLegacy((v) => !v)}
-              className="mb-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto transition-colors"
-            >
-              <ChevronDown
-                className={`w-3 h-3 transition-transform ${showLegacy ? "" : "-rotate-90"}`}
-              />
-              ferramentas Chŏra (legado)
-            </button>
+            <div className="mt-2 border-t border-dashed border-perestroika-preto/15 pt-3">
+              <button
+                type="button"
+                onClick={() => setShowLegacy((v) => !v)}
+                className="mb-3 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-perestroika-preto/40 hover:text-perestroika-preto transition-colors"
+              >
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform ${showLegacy ? "" : "-rotate-90"}`}
+                />
+                ferramentas Chŏra (legado)
+              </button>
+            </div>
 
             {showLegacy && (
               <TabsList className="bg-perestroika-preto/[0.03] border border-dashed border-perestroika-preto/15 mb-6 inline-flex flex-wrap h-auto">
