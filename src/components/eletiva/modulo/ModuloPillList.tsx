@@ -81,8 +81,7 @@ const PillCardShell = ({
       done
         ? "border-perestroika-preto/40 bg-perestroika-preto/[0.04]"
         : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
-    } ${justUnlocked ? "motion-safe:animate-[pill-unlock_600ms_cubic-bezier(0.16,1,0.3,1)] ring-2 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
-    style={justUnlocked ? { boxShadow: "0 0 0 2px rgba(247, 86, 166, 0.35)" } : undefined}
+    } ${justUnlocked ? "motion-safe:animate-pill-unlock ring-2 ring-perestroika-rosa/60 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
   >
     <div className="flex items-center justify-between gap-3 mb-3">
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
