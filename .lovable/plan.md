@@ -92,3 +92,31 @@ editor passou de chips hardcoded pra rubricas editáveis, com rascunho de feedba
 - 5.6 `ExtrasGate` agora dispara toast informativo "essa área não está liberada na sua eletiva" antes do redirect
 - 5.7 `ModuloAutoCompleteBurst`: signature moment de ~2.2s quando o módulo fecha sozinho ao concluir a última pílula obrigatória. joão-de-barro em pose `celebrating` + display gigante + confetes em arco (paleta Perestroika). respeita `prefers-reduced-motion` (sem confete, duração 1.2s). substitui o toast antigo. `nextUnlocked` mostra hint extra quando o próximo módulo destrava na mesma ação
 
+
+
+## fase 6 · acessibilidade, compliance e polish (parcial · implementada)
+
+primeira leva da fase 6 entregue. itens de compliance ECA Digital (6.3) e captura multimodal/PWA offline (6.5) ficam pra próxima rodada porque dependem de decisão legal e infra mais pesada.
+
+### entregas
+
+**6.1 a11y polish**
+- `Auth.tsx`: `<label sr-only>` + `aria-label` nos inputs de email/senha; ícones `aria-hidden`
+- `AccountSettings.tsx`: labels visíveis ou `sr-only` em todos os inputs (instagram, linkedin, senha, confirmação, quiet hours)
+- `HubMateriais.tsx` (`MaterialDrawer`): tecla `Esc` fecha o drawer
+- `TutorChat.tsx`: input respeita `env(safe-area-inset-bottom)` (iPhone notch / barra do android)
+
+**6.2 leitura acessível**
+- novo `useReadingPreferences` (`src/hooks/useReadingPreferences.ts`) — persiste em `localStorage`, aplica classe `reading-easy` em `<html>`
+- `bootReadingPreferences()` aplica antes do React montar (`main.tsx`)
+- CSS em `index.css`: `html.reading-easy body` aumenta `letter-spacing`, `word-spacing` e `line-height` no body; display preservada
+- toggle "texto com respiração" em `/app/conta`
+
+**6.4 janela silenciosa**
+- migration: colunas `quiet_hours_start` e `quiet_hours_end` em `profiles` (smallint 0-23, opcional, com CHECK)
+- UI em `/app/conta`: dois selects (começa às / acaba às) com salvamento on-change, suporta janela que atravessa meia-noite
+- `check-student-evasion/index.ts`: lê `quiet_hours_*`, calcula hora atual em `America/Sao_Paulo` e adia nudge quando estudante está dentro da janela (vai pra próxima rodada do cron)
+
+### pendente da fase 6
+- 6.3 revisão ECA Digital (consentimento parental, ad-tech, DPO) — precisa decisão legal/produto antes de implementar
+- 6.5 captura multimodal (foto anotada + fila offline PWA) — esforço grande, vale priorizar como fase separada
