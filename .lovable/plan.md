@@ -1,72 +1,48 @@
-# travar conclusão do módulo até todas as obrigatórias estarem feitas
+## o que já existe (não precisa mexer)
 
-## o problema
+A persistência de progresso por pílula **já está implementada** e funciona pras duas eletivas:
 
-no economia-circular dá pra clicar "marcar como concluído" no rodapé do módulo sem ter feito nenhuma pílula. dois fatores:
+- Tabela `student_pill_progress` guarda `{user_id, pill_id, completed_at}` com unique `(user_id, pill_id)`.
+- `useEletivaProgress` lê esse registro e devolve `completedPillIds` (Set).
+- `togglePillMutation` em `Modulo.tsx` faz upsert na tabela ao clicar "concluir pílula" (qualquer tipo: video_embed, quiz, editorial, pbl, checklist, etc).
+- `unlockedPillIds` (memo em `Modulo.tsx`) calcula liberação sequencial: pílula N só abre quando todas as anteriores **obrigatórias** estão em `completedPillIds`. Pílulas opcionais (`required=false`) não bloqueiam.
+- Estado sobrevive a refresh, troca de device e logout — vem do banco em toda hidratação.
+- Auditado nos dois módulos 1:
+  - `ia-na-pratica` mód 1: pílula 0 bônus (opcional) + 5 obrigatórias.
+  - `economia-circular` mód 1: 4 obrigatórias + 1 bônus opcional no fim.
 
-1. o botão `<ModuloFooter onComplete>` está sempre habilitado. `completeMutation` em `Modulo.tsx` faz upsert direto sem checar progresso das pílulas obrigatórias.
-2. quem testou (frattz) é admin, e o `unlockedPillIds` já libera tudo pra admin por design (pra testar fora de ordem). pro **estudante** a trava sequencial já funciona — só o botão "concluir módulo" que escapa.
+## o que ainda falta (foco dessa entrega)
 
-cada pílula rica (radar, quiz, conteúdo curado, editorial, pbl estruturado, checklist) já bloqueia o próprio botão "concluir pílula" enquanto os campos obrigatórios não estão preenchidos. então o conserto é fechar a única fresta: o botão de fechar o módulo.
+1. **Feedback instantâneo ao desbloquear a próxima pílula.** Hoje, depois de concluir uma pílula, a próxima só revela quando o `invalidateQueries(["eletiva-progress"])` termina o refetch (300-800ms de "piscada"). Pra estudante ansioso parece que travou.
+2. **Resiliência contra clique duplo / dessincronia.** Se o estudante clica "concluir" duas vezes rápido em pílulas diferentes antes do refetch, o `unlockedPillIds` calculado pode estar defasado e a segunda pode aparecer travada por meio segundo.
+3. **Garantia visual de que a próxima abriu.** Nenhum micro-feedback dedicado ("pílula 03 liberada") quando o desbloqueio acontece. Existe `ModuloAutoCompleteBurst` só pro módulo inteiro.
 
-## o que muda
+## plano
 
-### 1. `Modulo.tsx` — calcular `canCompleteModule`
+### 1. atualização otimista no `togglePillMutation` (`src/pages/Modulo.tsx`)
+- Antes do upsert, fazer `queryClient.setQueryData(["eletiva-progress", courseId], ...)` adicionando o `pill.id` ao `completedPillIds` localmente.
+- Em `onError`, reverter (`setQueryData` de volta) e mostrar toast.
+- Em `onSuccess`, manter o `invalidateQueries` como source of truth.
+- Resultado: a próxima pílula desbloqueia no mesmo frame do clique, sem esperar o round-trip.
 
-```
-canCompleteModule = pills.filter(required).every(p => completedPillIds.has(p.id))
-```
+### 2. micro-celebração de pílula liberada (`ModuloPillList.tsx`)
+- Quando uma pílula passa de `locked → unlocked` (detectar via `useEffect` comparando set anterior vs atual), aplicar um pulso curto (Framer Motion, 600ms, fade+rise) no card recém-aberto e um sublabel temporário "agora é a sua vez" abaixo do título por 4s.
+- Respeitar `prefers-reduced-motion`.
 
-passa pro `ModuloFooter`. usado pra:
-- habilitar/desabilitar o botão "marcar como concluído"
-- mostrar hint do quanto falta ("falta 2 de 4 pílulas obrigatórias")
+### 3. blindagem do botão "concluir pílula"
+- Em `PillVideoEmbed`, `PillQuiz`, `PillEditorial`, `PillPBLEstruturado`, `PillChecklistPacto`, `PillRadar`, `PillConteudoCurado`, `PillBonus`: enquanto `isCompleting` (togglePending) estiver true, manter o botão desabilitado (já está) **e** adicionar `aria-busy="true"` + label "salvando..." pra deixar claro que tá persistindo.
+- Auditar se algum desses ainda permite clicar duas vezes (chamando `onComplete` sem checar `isCompleted`). Já vi `PillQuiz` faz `disabled={!ready || isCompleted || isCompleting}` — ok. Padronizar nos demais.
 
-admin (`isAdmin`) recebe `canCompleteModule = true` sempre, mas o botão troca o label pra "concluir como admin" (deixar claro que está bypassando).
+### 4. verificação cruzada nas duas eletivas
+- Smoke test manual (descrito no follow-up): logar como estudante, fazer mód 1 de `ia-na-pratica` (incluindo pular o bônus opcional pra confirmar que pílula 1 abre direto) e mód 1 de `economia-circular` (verificar que o quiz e o radar_form persistem e abrem o próximo). Refresh no meio de cada etapa pra confirmar persistência real do banco.
 
-### 2. `Modulo.tsx` — guardar `completeMutation`
+### arquivos a editar
+- `src/pages/Modulo.tsx` (otimista no `togglePillMutation` com rollback).
+- `src/components/eletiva/modulo/ModuloPillList.tsx` (detector de transição locked→unlocked + animação por card).
+- `src/components/eletiva/pills/PillVideoEmbed.tsx` e `PillEditorial.tsx` (padronizar `aria-busy` e label "salvando...").
+- (Opcional) `PillPBLEstruturado.tsx`, `PillChecklistPacto.tsx`, `PillConteudoCurado.tsx`, `PillRadar.tsx`, `PillBonus.tsx` se a auditoria mostrar inconsistência.
 
-no `mutationFn`, antes do upsert:
-- se `!isAdmin && !canCompleteModule`, lançar erro "termine as pílulas obrigatórias primeiro" (toast já existe via `onError`)
-
-defesa em profundidade caso alguém burle o botão.
-
-### 3. `ModuloFooter.tsx` — novo prop `canComplete` e copy do estado bloqueado
-
-- prop nova: `canComplete: boolean`, `pillsRemaining: number`, `isAdmin?: boolean`
-- quando `!canComplete && !isAdmin`:
-  - botão `disabled`, label "termine as pílulas obrigatórias"
-  - copy do bloco muda: "ainda falta {n} pílula{s} obrigatória{s}. cada pílula tem o próprio botão de concluir."
-- quando admin e ainda faltam pílulas: label "concluir como admin" + nota "bypass de admin: estudante não vê esse botão liberado"
-- mantém botão "próximo módulo" como hoje (só aparece quando o próximo já foi liberado, ortogonal)
-
-### 4. auditoria das pílulas (não muda código, só confirma)
-
-revisar rapidamente que toda pílula rica usa `disabled={!ready ...}` no botão de concluir:
-
-- `PillConteudoCurado` ✓ (já tem `!ready`)
-- `PillQuiz` ✓
-- `PillRadar` ✓ (`!validation.ok`)
-- `PillEditorial`, `PillPBLEstruturado`, `PillChecklistPacto` — abrir e confirmar igual padrão. se algum estiver sem trava, aplicar a mesma regra `!ready`.
-- `PillBonus` é opcional, não bloqueia
-- pílula sem schema (texto simples + vídeo) hoje renderiza um botão "marcar como concluída" livre — pra esse caso manter livre (é leitura/vídeo, validação é "vi"). não é o que está furado.
-
-### 5. teste manual mínimo
-
-depois do build, verificar:
-
-- como estudante (conta não-admin) em `/app/eletiva/economia-circular/modulo/1`: botão "marcar como concluído" sai cinza com "falta 4 obrigatórias". preenche cada pílula → habilita.
-- como admin: o botão aparece habilitado com label "concluir como admin".
-- auto-conclusão (que já existe em `togglePillMutation.onSuccess`) continua funcionando — quando todas as obrigatórias batem, fecha sozinho e dispara o burst.
-
-## fora do escopo
-
-- não tirar bypass de admin (ele é útil pra testar e revisar conteúdo)
-- não mexer na trava sequencial entre pílulas — ela já funciona pro estudante
-- não mexer em pílulas sem schema (texto/vídeo simples) — botão "marcar como vista" segue solto, é leitura
-- sem migration de dados ou schema
-
-## arquivos tocados
-
-- `src/pages/Modulo.tsx` — `canCompleteModule`, guard no `completeMutation`, props extras pro footer
-- `src/components/eletiva/modulo/ModuloFooter.tsx` — props `canComplete`, `pillsRemaining`, `isAdmin`; estado bloqueado
-- (talvez) ajuste em uma das 3 pílulas editoriais se faltar a trava `!ready` — confirmar antes de tocar
+### fora de escopo
+- Não mexer no schema do banco (já tá certo).
+- Não tocar em `useEletivaProgress` nem na lógica de `unlockedPillIds` (contratos já corretos).
+- Não mudar `ModuloFooter` (a trava de "concluir módulo" já foi feita na entrega anterior).
