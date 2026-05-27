@@ -109,6 +109,16 @@ Deno.serve(async (req) => {
     const key = `${n.user_id}|${n.course_id}`
     if (!lastLevelByKey.has(key)) lastLevelByKey.set(key, n.level)
   }
+  // 5b. templates editáveis (opcional; fallback pra copy hardcoded do template)
+  const { data: tmplRows } = await supabase
+    .from('nudge_templates')
+    .select('level, notification_title, notification_body, email_subject, email_body_md')
+  const templateByLevel = new Map<string, any>(
+    (tmplRows ?? []).map((t: any) => [t.level, t]),
+  )
+
+  const interp = (s: string, vars: Record<string, string | number>) =>
+    s.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''))
 
   let processed = 0
   let skipped = 0
@@ -138,46 +148,74 @@ Deno.serve(async (req) => {
       continue
     }
 
-    // notification in-app
-    const notifTitle =
-      level === 'lost' ? `${course.professor_name.toLowerCase()} mandou uma mensagem`
-      : level === 'high' ? `${course.professor_name.toLowerCase()} sentiu sua falta`
-      : `${course.professor_name.toLowerCase()} passou pra ver como você tá`
+    const tmpl = templateByLevel.get(level)
+    const vars = {
+      nome: recipientName,
+      curso: course.title,
+      professor: course.professor_name,
+      dias: r.days_inactive,
+    }
+
+    // notification in-app (usa template se houver, senão fallback)
+    const notifTitle = tmpl
+      ? interp(tmpl.notification_title, vars)
+      : (level === 'lost' ? `${course.professor_name.toLowerCase()} mandou uma mensagem`
+        : level === 'high' ? `${course.professor_name.toLowerCase()} sentiu sua falta`
+        : `${course.professor_name.toLowerCase()} passou pra ver como você tá`)
+    const notifBody = tmpl
+      ? interp(tmpl.notification_body, vars)
+      : `faz ${r.days_inactive} dias que você não aparece em ${course.title}`
+
     const { data: notif } = await supabase
       .from('notifications')
       .insert({
         user_id: r.user_id,
         kind: 'evasion_nudge',
         title: notifTitle,
-        body: `faz ${r.days_inactive} dias que você não aparece em ${course.title}`,
+        body: notifBody,
         link: `/app/eletiva/${course.slug}`,
         metadata: { course_id: r.course_id, level, days_inactive: r.days_inactive },
       })
       .select('id')
       .single()
 
-    // email
+    // email: usa template do banco via admin-direct-message; senão fallback evasion-nudge
     let emailSent = false
     try {
+      const payload = tmpl
+        ? {
+            templateName: 'admin-direct-message',
+            recipientEmail: email,
+            idempotencyKey: `evasion-${r.user_id}-${r.course_id}-${level}`,
+            templateData: {
+              recipientName,
+              authorName: course.professor_name,
+              subject: interp(tmpl.email_subject, vars),
+              bodyMd: interp(tmpl.email_body_md, vars),
+              link: `https://nachesu.lovable.app/app/eletiva/${course.slug}`,
+            },
+          }
+        : {
+            templateName: 'evasion-nudge',
+            recipientEmail: email,
+            idempotencyKey: `evasion-${r.user_id}-${r.course_id}-${level}`,
+            templateData: {
+              recipientName,
+              courseTitle: course.title,
+              educatorName: course.professor_name,
+              level,
+              daysInactive: r.days_inactive,
+              resumeUrl: `https://nachesu.lovable.app/app/eletiva/${course.slug}`,
+            },
+          }
+
       const resp = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${serviceKey}`,
         },
-        body: JSON.stringify({
-          templateName: 'evasion-nudge',
-          recipientEmail: email,
-          idempotencyKey: `evasion-${r.user_id}-${r.course_id}-${level}`,
-          templateData: {
-            recipientName,
-            courseTitle: course.title,
-            educatorName: course.professor_name,
-            level,
-            daysInactive: r.days_inactive,
-            resumeUrl: `https://nachesu.lovable.app/app/eletiva/${course.slug}`,
-          },
-        }),
+        body: JSON.stringify(payload),
       })
       emailSent = resp.ok
       if (!resp.ok) console.warn('email failed', await resp.text())
