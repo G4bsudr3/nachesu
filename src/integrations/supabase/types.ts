@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_student_notes: {
+        Row: {
+          author_id: string
+          body_md: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          author_id: string
+          body_md: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          author_id?: string
+          body_md?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       archetype_artwork_versions: {
         Row: {
           archetype: Database["public"]["Enums"]["builder_archetype"]
