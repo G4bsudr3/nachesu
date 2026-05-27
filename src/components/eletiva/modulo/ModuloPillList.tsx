@@ -112,6 +112,7 @@ export const ModuloPillList = ({
   pills,
   loading,
   completedPillIds,
+  unlockedPillIds,
   trailColor,
   hasTrail,
   moduleId,
@@ -119,6 +120,7 @@ export const ModuloPillList = ({
   togglePending,
   onOpenTutor,
 }: Props) => {
+
   // só carrega deliverable se existe pelo menos uma pílula que precisa
   const needsDeliverable = !!pills?.some(
     (p) =>
