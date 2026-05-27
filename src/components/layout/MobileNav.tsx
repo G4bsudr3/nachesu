@@ -1,29 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Map, MessageCircleHeart, Sparkles } from "lucide-react";
+import { Bell, Home, Map, MessageCircleHeart, Sparkles } from "lucide-react";
 import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { FeedbackBadge } from "@/components/dashboard/FeedbackBadge";
+import { useNotifications } from "@/features/notifications/useNotifications";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NavItem {
   to: string;
   label: string;
   icon: React.ReactNode;
-  /** rota é considerada ativa quando começa com esse prefixo */
   matchPrefix?: string;
-  /** mostra bolinha de feedback novo sobre o ícone */
   showFeedbackBadge?: boolean;
+  unreadCount?: number;
 }
-
-const baseItems: NavItem[] = [
-  { to: "/app", label: "início", icon: <Home className="h-5 w-5" />, showFeedbackBadge: true },
-  { to: "/app/trilhas", label: "trilhas", icon: <Map className="h-5 w-5" />, matchPrefix: "/app/trilhas" },
-  { to: "/app/tutor", label: "tutor", icon: <Sparkles className="h-5 w-5" />, matchPrefix: "/app/tutor" },
-];
-
-const extrasItem: NavItem = {
-  to: "/app/feedback-final",
-  label: "pesquisa",
-  icon: <MessageCircleHeart className="h-5 w-5" />,
-};
 
 const isActive = (pathname: string, item: NavItem) => {
   if (item.matchPrefix) return pathname.startsWith(item.matchPrefix);
@@ -31,16 +20,39 @@ const isActive = (pathname: string, item: NavItem) => {
 };
 
 /**
- * barra fixa inferior, só mobile (sm-).
- * desktop continua usando o PageHeader.
- *
- * altura dela é exposta em --mobile-nav-h (inclui safe-area inset)
- * pra que páginas + FAB consigam reservar espaço sem chutar pixel.
+ * barra fixa inferior, só mobile (sm-). desktop usa o PageHeader.
+ * altura exposta em --mobile-nav-h (inclui safe-area inset).
  */
 export const MobileNav = () => {
   const { pathname } = useLocation();
   const { enabled: extrasEnabled } = useActiveEletivaExtras();
-  const items = extrasEnabled ? [...baseItems, extrasItem] : baseItems;
+  const { user } = useAuth();
+  const { unreadCount } = useNotifications();
+
+  const items: NavItem[] = [
+    { to: "/app", label: "início", icon: <Home className="h-5 w-5" />, showFeedbackBadge: true },
+    { to: "/app/trilhas", label: "trilhas", icon: <Map className="h-5 w-5" />, matchPrefix: "/app/trilhas" },
+    { to: "/app/tutor", label: "tutor", icon: <Sparkles className="h-5 w-5" />, matchPrefix: "/app/tutor" },
+  ];
+
+  if (user) {
+    items.push({
+      to: "/app/notificacoes",
+      label: "avisos",
+      icon: <Bell className="h-5 w-5" />,
+      matchPrefix: "/app/notificacoes",
+      unreadCount,
+    });
+  }
+
+  if (extrasEnabled) {
+    items.push({
+      to: "/app/feedback-final",
+      label: "pesquisa",
+      icon: <MessageCircleHeart className="h-5 w-5" />,
+    });
+  }
+
   const cols =
     items.length === 5 ? "grid-cols-5" : items.length === 4 ? "grid-cols-4" : "grid-cols-3";
 
@@ -53,6 +65,7 @@ export const MobileNav = () => {
       <ul className={`grid ${cols}`}>
         {items.map((item) => {
           const active = isActive(pathname, item);
+          const showCount = (item.unreadCount ?? 0) > 0;
           return (
             <li key={item.to}>
               <Link
@@ -63,10 +76,21 @@ export const MobileNav = () => {
                     : "text-perestroika-preto/55 hover:text-perestroika-preto"
                 }`}
                 aria-current={active ? "page" : undefined}
+                aria-label={
+                  showCount ? `${item.label} (${item.unreadCount} não lidas)` : undefined
+                }
               >
                 <span className={`relative ${active ? "text-perestroika-laranja" : ""}`}>
                   {item.icon}
                   {item.showFeedbackBadge && <FeedbackBadge />}
+                  {showCount && (
+                    <span
+                      aria-hidden
+                      className="absolute -top-1 -right-1.5 min-w-[16px] h-[16px] px-1 rounded-full bg-perestroika-vermelho text-white font-body font-bold text-[9px] leading-[16px] text-center"
+                    >
+                      {item.unreadCount! > 9 ? "9+" : item.unreadCount}
+                    </span>
+                  )}
                 </span>
                 {item.label}
               </Link>
