@@ -143,6 +143,27 @@ export const ModuloPillList = ({
     needsDeliverable && moduleId ? moduleId : undefined,
   );
 
+  // detecta pílulas que acabaram de passar de locked → unlocked nesse render.
+  // serve pra pulsar o card recém-aberto e mostrar "agora é a sua vez" por alguns segundos.
+  const prevUnlockedRef = useRef<Set<string>>(new Set());
+  const [justUnlockedIds, setJustUnlockedIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    const prev = prevUnlockedRef.current;
+    const fresh = new Set<string>();
+    unlockedPillIds.forEach((id) => {
+      // ignora o primeiro mount (quando prev tá vazio): não queremos celebrar
+      // pílulas já disponíveis quando o aluno só abriu a página.
+      if (prev.size > 0 && !prev.has(id) && !completedPillIds.has(id)) {
+        fresh.add(id);
+      }
+    });
+    prevUnlockedRef.current = new Set(unlockedPillIds);
+    if (fresh.size === 0) return;
+    setJustUnlockedIds(fresh);
+    const t = window.setTimeout(() => setJustUnlockedIds(new Set()), 4000);
+    return () => window.clearTimeout(t);
+  }, [unlockedPillIds, completedPillIds]);
+
   const content = (deliverable?.content ?? {}) as Record<string, unknown>;
   const reflections = (content.reflections ?? {}) as Record<string, string>;
   const pblResponses = (content.pbl_responses ?? {}) as Record<string, string>;
