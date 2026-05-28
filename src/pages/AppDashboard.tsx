@@ -22,7 +22,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
 import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
-import { WeekCadenceStrip } from "@/components/dashboard/WeekCadenceStrip";
+import { DashboardCommandPanel } from "@/components/dashboard/DashboardCommandPanel";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
@@ -122,9 +122,6 @@ const AppDashboard = () => {
             loading={!!activeCourseId && eletivaLoading && !eletiva}
           />
 
-          {/* 1.5 cadência da semana: tempo restante + próximo release */}
-          {activeCourseId && <WeekCadenceStrip snapshot={eletiva ?? null} />}
-
           {/* 2+ matrículas → switcher mobile-first + hero da eletiva ATIVA */}
           {hasMultiple && (
             <>
@@ -149,6 +146,14 @@ const AppDashboard = () => {
           {/* 1 matrícula → hero direto (CTA leva pro módulo atual) */}
           {!hasMultiple && activeCourseId && (
             <EletivaCard snapshot={eletiva ?? undefined} />
+          )}
+
+          {/* painel de comando: complementa o hero sem repetir o CTA */}
+          {activeCourseId && (
+            <DashboardCommandPanel
+              snapshot={eletiva ?? null}
+              courseTitle={activeEnrollment?.course?.title}
+            />
           )}
 
           {/* 0 matrículas → estado vazio */}
