@@ -216,8 +216,12 @@ export function PillConteudoCurado({
           onClick={onComplete}
           disabled={!ready || isCompleted || isCompleting}
           aria-busy={isCompleting}
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ backgroundColor: accent }}
+          className={`inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide transition-transform ${
+            !ready || isCompleted || isCompleting
+              ? "bg-perestroika-preto/15 text-perestroika-preto/45 cursor-not-allowed"
+              : "text-perestroika-bege hover:scale-105 active:scale-95"
+          }`}
+          style={!ready || isCompleted || isCompleting ? undefined : { backgroundColor: accent }}
         >
           {isCompleted ? "passo concluído" : "seguir pro radar"}
           {!isCompleted && <ArrowRight className="h-4 w-4" aria-hidden="true" />}

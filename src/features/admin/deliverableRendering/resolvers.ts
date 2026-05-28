@@ -52,9 +52,13 @@ function resolveEditorial(pill: PillForResolve, content: DeliverableContent): An
   };
   const reflections = (content.reflections ?? {}) as Record<string, string>;
   const answer = reflections[pill.id] ?? "";
-  const question = schema.reflexao?.prompt ?? "reflexão livre";
-  if (!isFilled(answer)) return [{ kind: "empty", question }];
-  return [{ kind: "text", question, answer }];
+  const prompt = schema.reflexao?.prompt;
+  // pílula editorial sem prompt de reflexão é puramente passiva
+  if (!prompt) return [];
+  // reflexão é opcional: se o estudante concluiu sem escrever, mostra como passiva
+  // ao invés de "não respondida" (que dava cara de abandono pro educador)
+  if (!isFilled(answer)) return [];
+  return [{ kind: "text", question: prompt, answer }];
 }
 
 function resolveLegacyReflexao(
