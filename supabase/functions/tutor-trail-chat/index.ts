@@ -182,6 +182,52 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
+    // gating: settings (kill switch + limite diário + modelo + addon)
+    let settings = {
+      enabled: true,
+      per_user_daily_limit: 0,
+      model: "google/gemini-2.5-flash",
+      system_prompt_addon: null as string | null,
+    };
+    try {
+      const { data: s } = await admin
+        .from("tutor_settings")
+        .select("enabled, per_user_daily_limit, model, system_prompt_addon")
+        .eq("id", 1)
+        .maybeSingle();
+      if (s) settings = { ...settings, ...s };
+    } catch (e) {
+      console.warn("tutor_settings load fail, usando defaults:", e);
+    }
+
+    if (!settings.enabled) {
+      return new Response(
+        JSON.stringify({ error: "o tutor tá pausado pela equipe. tenta de novo mais tarde." }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (settings.per_user_daily_limit > 0) {
+      // BRT (-3h) — calcula início do dia local
+      const nowMs = Date.now();
+      const brtNow = new Date(nowMs - 3 * 60 * 60 * 1000);
+      brtNow.setUTCHours(0, 0, 0, 0);
+      const startOfDayUtc = new Date(brtNow.getTime() + 3 * 60 * 60 * 1000).toISOString();
+      const { count } = await admin
+        .from("tutor_message_events")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .gte("created_at", startOfDayUtc);
+      if ((count ?? 0) >= settings.per_user_daily_limit) {
+        return new Response(
+          JSON.stringify({
+            error: `você bateu o limite de ${settings.per_user_daily_limit} perguntas por dia. volta amanhã.`,
+          }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+    }
+
     // contexto: trilha + módulos da trilha + progresso do aluno
     const [trailRes, modulesRes, progressRes, convRes] = await Promise.all([
       admin
@@ -304,12 +350,18 @@ Deno.serve(async (req) => {
       ? existingTitle
       : buildTitle(message);
 
+    const finalSystemPrompt = settings.system_prompt_addon && settings.system_prompt_addon.trim().length > 0
+      ? `${systemPrompt}\n\n## instruções adicionais da equipe (prioridade)\n\n${settings.system_prompt_addon.trim()}`
+      : systemPrompt;
+
     const messagesForAI = [
-      { role: "system", content: systemPrompt },
+      { role: "system", content: finalSystemPrompt },
       ...trimmedHistory,
       { role: "user", content: message },
     ];
 
+    const modelToUse = settings.model || "google/gemini-2.5-flash";
+    const t0 = Date.now();
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -317,7 +369,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: modelToUse,
         messages: messagesForAI,
         stream: true,
       }),
@@ -376,6 +428,7 @@ Deno.serve(async (req) => {
             }
           }
         } finally {
+          const latencyMs = Date.now() - t0;
           if (assistantText.trim()) {
             const newMessages: ChatMessage[] = [
               ...history,
@@ -395,6 +448,26 @@ Deno.serve(async (req) => {
               },
               { onConflict: "user_id,trail_id" },
             );
+
+            // instrumentação: 1 linha por troca
+            try {
+              const offScopeRe = /foge\s+um\s+pouco\s+daqui|isso\s+aí\s+o\s+\S+\s+resolve\s+melhor|fala\s+com\s+ele\s+no\s+encontro/i;
+              await admin.from("tutor_message_events").insert({
+                user_id: userId,
+                course_id: trail.course_id ?? null,
+                trail_id: trailId,
+                module_id: activeModuleId,
+                pill_title: pillTitle,
+                user_chars: message.length,
+                assistant_chars: assistantText.length,
+                tokens_estimate: Math.ceil((message.length + assistantText.length) / 4),
+                latency_ms: latencyMs,
+                off_scope: offScopeRe.test(assistantText),
+                model: modelToUse,
+              });
+            } catch (logErr) {
+              console.error("tutor event log fail:", logErr);
+            }
           }
           controller.close();
         }
