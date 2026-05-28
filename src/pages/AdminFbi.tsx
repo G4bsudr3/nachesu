@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams, useMatch } from "react-router-dom";
 import { useUrlState } from "@/hooks/useUrlState";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronDown, ChevronRight, Copy, Download, Search } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Download, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { NachesULogo } from "@/components/brand/NachesULogo";
