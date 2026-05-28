@@ -517,7 +517,7 @@ export const TutorChat = ({
                         {m.content ? (
                           m.role === "assistant" ? (
                             <div className="prose prose-sm max-w-none font-body text-perestroika-preto prose-p:my-1.5 prose-headings:font-display prose-headings:uppercase prose-headings:tracking-wide prose-strong:text-perestroika-preto prose-a:text-primary prose-a:underline-offset-2">
-                              <TutorMarkdown content={m.content} />
+                              <ReactMarkdown>{m.content}</ReactMarkdown>
                             </div>
                           ) : (
                             m.content
