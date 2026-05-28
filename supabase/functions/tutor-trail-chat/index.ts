@@ -226,6 +226,18 @@ Deno.serve(async (req) => {
       );
     }
 
+    // helper de redação (também usado nos inserts de safety_events)
+    const redactPii = (text: string): string =>
+      text
+        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[email]")
+        .replace(/(?:\+?55\s*)?\(?\d{2}\)?\s*9?\d{4}[-\s]?\d{4}/g, "[telefone]")
+        .replace(/@[a-zA-Z0-9_.]{3,}/g, "[handle]")
+        .replace(/\b(?:sou|me\s+chamo|sou\s+o|sou\s+a)\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+)/gi, "$0[nome]")
+        .replace(/\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, "[cpf]")
+        .slice(0, 500);
+    const redactedEarly = redactPii(message);
+
+
     // helper BRT
     const brtDate = () => {
       const nowMs = Date.now();
