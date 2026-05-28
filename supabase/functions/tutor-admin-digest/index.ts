@@ -154,7 +154,7 @@ tom: direto, sem corporativês, sem encher linguiça. máximo 6 linhas por seç�
     };
 
     await admin.from("admin_insights").insert({
-      scope: "tutor:7d",
+      scope: scopeKey,
       summary_md: summaryMd,
       raw_metrics: raw,
       period_start: periodStart.toISOString(),
