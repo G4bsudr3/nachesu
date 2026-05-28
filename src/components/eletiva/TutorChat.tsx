@@ -28,11 +28,15 @@ import { useTutorSettings } from "@/hooks/useTutorSettings";
 import { TutorUsageChip } from "@/components/chora-bot/TutorUsageChip";
 import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice";
 import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
+import { TutorSafetyNotice } from "@/components/chora-bot/TutorSafetyNotice";
+import { TutorConsentModal } from "@/components/chora-bot/TutorConsentModal";
+import { useTutorConsent } from "@/hooks/useTutorConsent";
 
 type Msg = {
   role: "user" | "assistant";
   content: string;
   context?: { done: string[]; current: string | null } | null;
+  safety?: boolean;
 };
 
 interface TutorChatProps {
@@ -73,6 +77,8 @@ export const TutorChat = ({
   const { data: snapshot } = useEletivaProgress();
   const { data: tutorSettings } = useTutorSettings();
   const tutorEnabled = tutorSettings?.enabled !== false;
+  const { data: consent, refetch: refetchConsent } = useTutorConsent();
+  const [showConsent, setShowConsent] = useState(false);
 
   // resumo da trilha atual: módulos concluídos + módulo em andamento
   const buildTrailContext = (): { done: string[]; current: string | null } => {
@@ -182,20 +188,32 @@ export const TutorChat = ({
 
       if (!resp.ok || !resp.body) {
         const errText = await resp.text().catch(() => "");
-        let parsed: { error?: string } = {};
+        let parsed: { error?: string; code?: string } = {};
         try {
           parsed = JSON.parse(errText);
         } catch {
           // não json
         }
+        if (resp.status === 412 || parsed.code === "consent_required") {
+          setShowConsent(true);
+          failWith("você precisa aceitar o termo antes de usar o tutor.");
+          return;
+        }
         let msg = parsed.error ?? "deu ruim ao falar com o tutor.";
-        if (resp.status === 429) msg = "muitas perguntas em sequência. respira uns segundos e tenta de novo.";
+        if (resp.status === 429) {
+          if (parsed.code === "burst_limit") msg = "calma, você mandou muitas perguntas seguidas. respira e tenta de novo em alguns segundos.";
+          else if (parsed.code === "global_daily_cap") msg = "tutor pausado por hoje. volta amanhã.";
+          else if (parsed.code === "user_daily_limit") msg = parsed.error ?? msg;
+          else msg = "muitas perguntas em sequência. respira uns segundos e tenta de novo.";
+        }
         else if (resp.status === 402) msg = "créditos da ia esgotaram. avisa a equipe da escola.";
         else if (resp.status === 401) msg = "sua sessão caiu. faz login de novo.";
         toast.error(msg);
         failWith(msg);
         return;
       }
+
+      const safetyLevel = resp.headers.get("x-tutor-safety");
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
@@ -241,6 +259,14 @@ export const TutorChat = ({
         toast.error(msg);
         failWith(msg);
         return;
+      }
+
+      if (safetyLevel) {
+        setMessages((prev) =>
+          prev.map((m, i) =>
+            i === prev.length - 1 && m.role === "assistant" ? { ...m, safety: true } : m,
+          ),
+        );
       }
 
       // invalida cache pra próxima abertura puxar do banco
@@ -295,6 +321,14 @@ export const TutorChat = ({
   };
 
   return (
+    <>
+    <TutorConsentModal
+      open={(open && consent?.accepted === false) || showConsent}
+      onAccepted={() => {
+        setShowConsent(false);
+        refetchConsent();
+      }}
+    />
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
@@ -429,39 +463,45 @@ export const TutorChat = ({
                     </div>
                   </motion.div>
                 )}
-                <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm whitespace-pre-wrap ${
-                      m.role === "user"
-                        ? "bg-perestroika-preto text-perestroika-bege"
-                        : "bg-white/70 border border-perestroika-preto/15"
-                    }`}
-                  >
-                    {m.content || (
-                      <span className="inline-flex items-center gap-2 text-perestroika-preto/50">
-                        <motion.span
-                          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                          transition={{ repeat: Infinity, duration: 1.2 }}
-                        >
-                          <EletivaSymbol size={16} pose="thinking" />
-                        </motion.span>
-                        amassando o barro da resposta...
-                      </span>
+                {m.role === "assistant" && m.safety ? (
+                  <TutorSafetyNotice content={m.content} />
+                ) : (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm whitespace-pre-wrap ${
+                          m.role === "user"
+                            ? "bg-perestroika-preto text-perestroika-bege"
+                            : "bg-white/70 border border-perestroika-preto/15"
+                        }`}
+                      >
+                        {m.content || (
+                          <span className="inline-flex items-center gap-2 text-perestroika-preto/50">
+                            <motion.span
+                              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                              transition={{ repeat: Infinity, duration: 1.2 }}
+                            >
+                              <EletivaSymbol size={16} pose="thinking" />
+                            </motion.span>
+                            amassando o barro da resposta...
+                          </span>
+                        )}
+                      </div>
+                    </motion.div>
+                    {m.role === "assistant" && m.content && !streaming && (
+                      <div className="flex justify-start">
+                        <TutorMessageActions
+                          content={m.content}
+                          trailId={trailId}
+                          isLatest={i === messages.length - 1}
+                        />
+                      </div>
                     )}
-                  </div>
-                </motion.div>
-                {m.role === "assistant" && m.content && !streaming && (
-                  <div className="flex justify-start">
-                    <TutorMessageActions
-                      content={m.content}
-                      trailId={trailId}
-                      isLatest={i === messages.length - 1}
-                    />
-                  </div>
+                  </>
                 )}
               </div>
             ))}
@@ -554,5 +594,6 @@ export const TutorChat = ({
         </form>
       </SheetContent>
     </Sheet>
+    </>
   );
 };

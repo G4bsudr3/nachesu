@@ -1,158 +1,115 @@
-## escopo
+# Fase A — Tutor IA pronto pra menor de idade
 
-instrumentar o tutor IA pra ter dados, dar controle pro admin e refinar a experiência do estudante. nada de RAG, nada de mexer em `tutor_conversations` (segue sendo a fonte de histórico).
+Foco único: travar os 4 riscos que impedem a turma real (14-15 anos) de entrar em contato com o tutor. Nada de UX nova, nada de dashboard novo. Só os guardrails.
 
-## diagnóstico do código atual
+**Importante:** depois que a Fase A estiver finalizada com excelência (testada com casos reais de risco, custo simulado, burst simulado, LGPD revisada), seguimos direto pra **Fase B** (drill-down de mensagens, off-scope real, comparação temporal, alinhamento de janela do digest) e depois **Fase C** (polimento: contexto de pílula, latência TTFB, retenção de insights, feedback estruturado, alinhamento policy/função, render do TutorContextChip, a11y, fallback de modelo). Os 3 planos já estão mapeados nos 16 gaps; A é só o que não pode esperar.
 
-- **edge function `tutor-trail-chat`** já recebe `trail_id`, `module_id`, `pill_prompt`, `pill_title`, stream-proxy do Gemini Flash, persiste em `tutor_conversations` (linhas 388-397). bom ponto pra adicionar logging + gating.
-- **duas superfícies** consomem essa função:
-  1. `src/pages/TutorPage.tsx` (full-page, trilha switcher, sem contexto de pílula).
-  2. `src/components/eletiva/TutorChat.tsx` (Sheet dentro do módulo, com `pillContext` + `moduleId`).
-- **`tutor_conversations`** é jsonb único por (user_id, trail_id). zero granularidade por troca.
-- **`AdminTutor.tsx`** (223 linhas) lê tudo de `tutor_conversations`, agrega no client. nenhuma métrica de latência, modelo, off-scope ou rating.
-- **zero controles operacionais**: sem kill switch, sem limite por aluno, sem addon de system prompt, sem troca de modelo.
+---
 
-## backend (1 migração + 2 funções novas + 1 edit)
+## 1. Camada de segurança emocional (gap 1)
 
-### nova tabela `tutor_message_events`
+Adicionar **classificador de risco** rodando antes da resposta do tutor.
 
-1 linha por troca user→tutor. campos: `id uuid pk`, `user_id uuid`, `course_id uuid null`, `trail_id uuid`, `module_id uuid null`, `pill_title text null`, `user_chars int`, `assistant_chars int`, `tokens_estimate int` (chars/4), `latency_ms int`, `off_scope bool` (heurística por regex), `helpful smallint null` (1=👍 / -1=👎), `created_at timestamptz default now()`. índices: `(created_at desc)`, `(trail_id, created_at desc)`, `(user_id, created_at desc)`.
+**Backend (`tutor-trail-chat`):**
+- Antes de chamar o modelo principal, classificar a mensagem do estudante em 5 níveis: `safe`, `emotional_distress`, `bullying`, `self_harm`, `abuse`. Classificação via Gemini Flash Lite com prompt curto e estruturado (output JSON), barata e rápida.
+- Se nível `safe`: fluxo normal.
+- Se qualquer outro nível: **não chamar o tutor**. Devolver resposta empática pré-aprovada por nível, sem improvisar, com encaminhamento (CVV 188, Disque 100, orientador escolar) e abrir registro em `tutor_safety_events`.
+- Logar nível detectado, score, prompt e resposta entregue.
 
-RLS: SELECT só admin. INSERT/UPDATE só service_role (escrito pela edge function). GRANT a `authenticated` (SELECT) + `service_role` (ALL).
+**Banco (`tutor_safety_events`):**
+- Campos: `id`, `user_id`, `trail_id`, `module_id`, `message_excerpt` (primeiros 240 chars), `risk_level`, `risk_score`, `model_used`, `intervention_shown`, `acknowledged_at`, `reviewed_by_admin_id`, `admin_notes`, `created_at`.
+- RLS: só admin lê/atualiza; estudante nunca lê.
+- GRANT padrão pra `authenticated` + `service_role`.
 
-### nova tabela `tutor_settings` (singleton id=1)
+**Frontend (`TutorChat`):**
+- Quando backend devolver intervenção de risco, renderizar bolha especial (variante `SafetyNotice`) com tom acolhedor, contatos de apoio e botão "estou bem, voltar". Sem mascote celebrando, sem starter prompts.
+- Componente novo `TutorSafetyNotice.tsx`.
 
-`id int pk default 1 check (id=1)`, `enabled bool default true`, `per_user_daily_limit int default 50` (0 = sem limite), `model text default 'google/gemini-2.5-flash'`, `system_prompt_addon text null`, `updated_by uuid null`, `updated_at timestamptz default now()`. RLS: SELECT a `authenticated` (o cliente precisa ler `enabled` pra renderizar avisos), UPDATE só admin via `has_role`. seed inicial via INSERT na migration.
+**Admin:**
+- Mini-seção no `AdminTutorCommand` listando últimos 20 eventos de segurança, com filtro por nível, ação "marcar como revisado" e campo de nota. Não é dashboard completo (isso é Fase B), só um painel de alerta.
 
-### edição `supabase/functions/tutor-trail-chat/index.ts`
+---
 
-- no início: carrega `tutor_settings`. se `enabled=false` → 503 `{ error: "tutor pausado pela equipe" }`.
-- se `per_user_daily_limit > 0`: conta `tutor_message_events` do `user_id` desde 00:00 (timezone BRT). se ≥ limite → 429 com `retry_after = amanhã`.
-- usa `tutor_settings.model` (fallback pro hardcoded atual).
-- se `tutor_settings.system_prompt_addon` não null, concatena no final do system prompt.
-- mede `t0 = Date.now()` antes do fetch, `latency_ms = Date.now() - t0` no `finally`.
-- detecta off-scope com regex simples na resposta: `/foge\s+um\s+pouco\s+daqui|isso aí o .+ resolve melhor/i` (frases canônicas do prompt).
-- no `finally` (depois do upsert em `tutor_conversations`), faz `admin.from('tutor_message_events').insert({...})` com tudo.
+## 2. LGPD e retenção (gap 2)
 
-### nova edge function `tutor-rate-message`
+**Banco:**
+- Adicionar coluna `retention_until` em `tutor_message_events` (default `now() + interval '90 days'`).
+- Criar função `cleanup_tutor_events()` que apaga eventos com `retention_until < now()`.
+- Agendar via `pg_cron` diariamente às 03h BRT (usar `supabase--insert`, não migração, conforme regra de cron).
+- Mesma lógica pra `tutor_safety_events` mas com retenção 365 dias (eventos sensíveis precisam mais tempo de auditoria).
 
-POST `{ trail_id, helpful: 1 | -1 | null }`. valida JWT, busca o evento mais recente do user nessa trilha (últimos 10 min), `update helpful = ?`. retorna `{ ok: true }`. `verify_jwt = false` (validação manual no código).
+**Edge function `tutor-admin-digest`:**
+- Antes de mandar amostra pro modelo, passar por função `anonymizeMessage(text)`: remover nomes próprios (heurística simples: tokens capitalizados após "eu sou/me chamo/sou o/sou a"), emails, telefones, @handles, links. Substituir por `[nome]`, `[email]` etc.
+- Adicionar campo `anonymized: true` no insert em `admin_insights`.
 
-### nova edge function `tutor-admin-digest`
+**Onboarding / consentimento:**
+- Adicionar microcopy no primeiro acesso ao tutor (modal único, 1 vez por estudante, persistido em `profiles.tutor_consent_at`): "suas perguntas ficam guardadas por até 90 dias pra melhorar o tutor. educadores podem ver agregados anônimos. mensagens em situação de risco ficam por 365 dias pra acompanhamento."
+- Botão "entendi" obrigatório pra usar o tutor.
+- Coluna nova em `profiles`: `tutor_consent_at timestamptz`.
 
-POST `{}` (só admin). lê últimos 7d de `tutor_message_events` + agrega top trilhas + top alunos + amostra de 200 últimas mensagens de usuário (via `tutor_conversations.messages` filtrado por `updated_at`). chama `google/gemini-2.5-flash` via Lovable AI Gateway com prompt: "extrai 5 dores recorrentes, 3 sinais de frustração, 2 oportunidades pedagógicas". cacheia em `admin_insights` com `scope='tutor:7d'`. usa a tabela `admin_insights` existente (não cria nova).
+---
 
-## frontend estudante
+## 3. Cap de custo global (gap 3)
 
-### `src/components/chora-bot/TutorStarterPrompts.tsx`
+**Banco (`tutor_settings`):**
+- Adicionar colunas: `daily_total_cap int default 2000` (perguntas/dia total), `daily_total_alert_threshold numeric default 0.8`.
+- Adicionar tabela `tutor_daily_counters` (`date date primary key, total_count int default 0, last_alert_sent_at timestamptz`) — contador rápido sem precisar agregar `tutor_message_events` toda chamada.
 
-chips contextuais baseados em `pillTitle` / módulo atual. exemplos:
-- "me explica de outro jeito a pílula b"
-- "me dá 1 exemplo curto"
-- "tô travado, e agora?"
-- "valida meu raciocínio: ..."
+**Edge function `tutor-trail-chat`:**
+- Antes do fetch ao modelo, ler/incrementar contador do dia (BRT) com `UPDATE ... RETURNING` atômico.
+- Se total ≥ `daily_total_cap`: devolver erro 429 com mensagem "tutor pausado por hoje, volta amanhã" e logar evento.
+- Se passou do threshold (80% por padrão) e `last_alert_sent_at` é null ou de outro dia: gravar `admin_insights` com `scope='cost_alert'` e marcar `last_alert_sent_at`.
 
-3-4 chips, click prefilla o input.
+**Admin (`AdminTutorCommand`):**
+- Card extra "uso do dia": X de Y perguntas, barra de progresso, cor de alerta acima de 80%.
 
-### `src/components/chora-bot/TutorMessageActions.tsx`
+---
 
-inline em cada resposta do tutor: copiar (`Copy` lucide), 👍, 👎 (envia POST pra `tutor-rate-message`, mostra estado selecionado, idempotente). usa toast discreto.
+## 4. Burst rate-limit (gap 16)
 
-### `src/components/chora-bot/TutorContextChip.tsx`
+**Edge function `tutor-trail-chat`:**
+- Adicionar verificação de janela curta: contar mensagens do `user_id` nos últimos 60 segundos via `tutor_message_events`.
+- Se ≥ 10 em 60s: devolver 429 com mensagem "calma, você mandou muitas perguntas seguidas. respira e tenta de novo em alguns segundos".
+- Limite configurável em `tutor_settings.burst_limit_per_minute int default 10`.
 
-barrinha entre header e mensagens: "o tutor sabe que você tá em **módulo 03 · pílula b**". some quando não tem contexto.
+**Frontend (`TutorChat`):**
+- Tratar 429 sem quebrar o chat: bolha de aviso curta, input liberado depois de 30s com countdown.
 
-### `src/components/chora-bot/TutorUsageChip.tsx`
+---
 
-no header da Sheet/página: "12/50 hoje" vindo de hook `useTutorUsage()` (query simples em `tutor_message_events` filtrada por user + hoje). some quando `per_user_daily_limit = 0`. fica vermelho quando >80%.
+## Resumo técnico de arquivos
 
-### `src/components/chora-bot/TutorDisabledNotice.tsx`
+**Migração:**
+- `tutor_safety_events` (tabela + RLS + GRANTs)
+- `profiles.tutor_consent_at` (coluna)
+- `tutor_settings`: `daily_total_cap`, `daily_total_alert_threshold`, `burst_limit_per_minute`
+- `tutor_message_events.retention_until` + `tutor_safety_events.retention_until`
+- `tutor_daily_counters` (tabela + RLS service-role only)
+- função `cleanup_tutor_events()`
 
-quando `tutor_settings.enabled = false`, substitui o input por um aviso editorial: "o tutor tá pausado agora. avisa o educador se precisar".
+**Insert tool (não migração, contém URL+anon key):**
+- `pg_cron` agendando `cleanup_tutor_events()` diário 03h BRT
 
-### edits em `TutorPage.tsx` e `TutorChat.tsx`
+**Edge functions:**
+- `tutor-trail-chat`: classificador de risco + cap global + burst + consentimento check
+- `tutor-admin-digest`: anonimização antes do prompt
 
-ambos consomem os componentes acima. hook compartilhado novo:
-- `src/hooks/useTutorSettings.ts` (query simples a `tutor_settings`, cache 5min).
-- `src/hooks/useTutorUsage.ts` (count em `tutor_message_events` do user no dia).
+**Frontend:**
+- `TutorSafetyNotice.tsx` (novo)
+- `TutorConsentModal.tsx` (novo, 1x por estudante)
+- `TutorChat.tsx`: integrar safety notice + tratamento 429
+- `TutorPage.tsx`: gate de consentimento
+- `AdminTutorCommand.tsx`: card de custo do dia + lista de eventos de segurança
 
-## frontend admin
+---
 
-### `src/pages/AdminTutor.tsx` (página dedicada, substitui `AdminTutor.tsx` legado)
+## Critério de "excelência" pra liberar Fase B
 
-acessível via `/admin/tutor` (já existe no sidebar). 4 seções:
+1. Teste manual com 5 mensagens de risco simuladas (cada nível): tutor não responde, intervenção aparece, evento registrado.
+2. Teste de burst: 12 mensagens em 30s do mesmo usuário → bloqueio na 11ª.
+3. Teste de cap global: setar `daily_total_cap=3` temporariamente e validar 429 + alerta em `admin_insights`.
+4. Digest rodado em ambiente com dados reais: confirmar visualmente que nomes/emails foram mascarados.
+5. Cron `cleanup_tutor_events` rodado manualmente sem erro.
+6. Modal de consentimento aparece 1x e persiste decisão.
 
-1. **KPI bar** (4 cards): perguntas 7d, alunos únicos 7d, % com 👍, latência mediana.
-2. **AI digest** (lê `admin_insights` scope='tutor:7d', botão "regenerar" → chama `tutor-admin-digest`). mesmo padrão visual do `AdminHome`.
-3. **gráficos lado a lado**:
-   - sparkline 30d (perguntas/dia) via SVG puro.
-   - barras por trilha (perguntas + alunos únicos).
-4. **controles operacionais** (`tutor_settings`): kill switch (Switch shadcn), slider de limite diário (0-200), input de modelo (Select com presets), textarea de addon do system prompt (com aviso "isso vai ANTES da pergunta do estudante, todas as respostas"). botão salvar.
-
-componentes auxiliares em `src/features/admin/tutor/`:
-- `TutorKpiBar.tsx`
-- `TutorTimelineSparkline.tsx`
-- `TutorTrailBars.tsx`
-- `TutorControls.tsx`
-- `TutorDigestCard.tsx`
-- `TutorRecentMessages.tsx` (drawer com últimas 50 perguntas, filtro por trilha)
-
-### refator `AdminFbi` aba "tutor"
-
-a aba `tutor` em `AdminFbi.tsx` passa a renderizar `<AdminTutorCommand />` (novo nome, no `src/features/admin/AdminTutorCommand.tsx`). o componente antigo (`AdminTutor.tsx`) fica como `<AdminTutorLegacy />` se o switch "ver visão legada" estiver ligado (dropdown discreto), mas o default é o novo. — alternativa mais limpa: **substituo direto**, sem legado, já que o novo é superset.
-
-## fora de escopo
-
-- RAG / embeddings.
-- mudar schema de `tutor_conversations`.
-- cost tracking em USD (usamos só tokens_estimate).
-- legado Chŏra bot (que já tá atrás de flag).
-
-## arquivos
-
-**criados**
-- `supabase/migrations/<ts>_tutor_instrumentation.sql`
-- `supabase/functions/tutor-rate-message/index.ts`
-- `supabase/functions/tutor-admin-digest/index.ts`
-- `src/components/chora-bot/TutorStarterPrompts.tsx`
-- `src/components/chora-bot/TutorMessageActions.tsx`
-- `src/components/chora-bot/TutorContextChip.tsx`
-- `src/components/chora-bot/TutorUsageChip.tsx`
-- `src/components/chora-bot/TutorDisabledNotice.tsx`
-- `src/hooks/useTutorSettings.ts`
-- `src/hooks/useTutorUsage.ts`
-- `src/features/admin/AdminTutorCommand.tsx`
-- `src/features/admin/tutor/TutorKpiBar.tsx`
-- `src/features/admin/tutor/TutorTimelineSparkline.tsx`
-- `src/features/admin/tutor/TutorTrailBars.tsx`
-- `src/features/admin/tutor/TutorControls.tsx`
-- `src/features/admin/tutor/TutorDigestCard.tsx`
-- `src/features/admin/tutor/TutorRecentMessages.tsx`
-
-**editados**
-- `supabase/functions/tutor-trail-chat/index.ts` (settings gating + logging + addon + modelo dinâmico)
-- `src/pages/TutorPage.tsx` (starters + actions + context chip + usage chip + disabled notice)
-- `src/components/eletiva/TutorChat.tsx` (mesmos componentes integrados)
-- `src/pages/AdminFbi.tsx` (aba tutor passa a renderizar `AdminTutorCommand`)
-- `.lovable/plan.md`
-
-## risco e mitigação
-
-- **edição na edge function** pode quebrar o tutor em produção. mitigação: settings carregadas em `try/catch` com fallback pro hardcoded; tudo opcional, default permissivo.
-- **`tokens_estimate` por chars/4** é grosseiro mas suficiente pra ranking relativo; quando admin precisar de fatura, troca por contagem real.
-- **off_scope por regex** é heurística frágil. é só uma sinalização, não decisão. admin vê o ranking, não bloqueia ninguém.
-- **digest pode estourar token**: limito amostra a 200 últimas mensagens × 240 chars ≈ 48k chars (~12k tokens, dentro do flash).
-- **limite diário default 50** é generoso pra estudante curioso, restritivo o suficiente pra evitar abuso. fácil de ajustar via UI.
-
-## ordem de execução
-
-1. migração `tutor_instrumentation` (cria 2 tabelas, RLS, GRANTs, seed do settings).
-2. edge function `tutor-trail-chat` (gating + logging).
-3. edge functions `tutor-rate-message` + `tutor-admin-digest`.
-4. hooks `useTutorSettings` + `useTutorUsage`.
-5. componentes estudante (chips, actions, notice).
-6. integração em `TutorPage` + `TutorChat`.
-7. componentes admin (`tutor/*`).
-8. `AdminTutorCommand` integrado em `AdminFbi`.
-9. plan.md.
-10. validar: console logs limpos, abrir tutor, mandar 1 pergunta, conferir linha em `tutor_message_events`, abrir `/admin/tutor`, conferir KPIs, mudar kill switch, ver bloqueio.
+Depois disso, abrir o plano da **Fase B** (drill-down, off-scope baseado em `scope_forbidden_terms`, comparação temporal, alinhar janela do digest).

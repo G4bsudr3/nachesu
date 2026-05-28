@@ -60,15 +60,26 @@ Deno.serve(async (req) => {
       (trailRes.data ?? []).map((t: { id: string; title: string }) => [t.id, t.title]),
     );
 
-    // amostra de perguntas dos estudantes (até 200, truncadas em 240 chars)
+    // anonimização LGPD: remove nome próprio, email, telefone, @handle, link
+    const anonymize = (raw: string): string => {
+      let t = raw;
+      t = t.replace(/\b[\w.+-]+@[\w-]+\.[\w.-]+\b/g, "[email]");
+      t = t.replace(/https?:\/\/\S+/g, "[link]");
+      t = t.replace(/@[A-Za-z0-9_.]{2,}/g, "[handle]");
+      t = t.replace(/\b(?:\+?55\s?)?(?:\(?\d{2}\)?\s?)?9?\d{4}[-\s]?\d{4}\b/g, "[telefone]");
+      t = t.replace(/\b(?:eu\s+sou|me\s+chamo|sou\s+o|sou\s+a|meu\s+nome\s+é)\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][\wÀ-ÿ]+(?:\s+[A-ZÁÉÍÓÚÂÊÔÃÕÇ][\wÀ-ÿ]+){0,2})/gi, (_m, _g) => "[nome]");
+      return t;
+    };
+
+    // amostra de perguntas (até 200, truncadas em 240 chars, anonimizadas)
     const userQuestions: string[] = [];
     for (const conv of conversations) {
       const msgs = Array.isArray(conv.messages) ? (conv.messages as Array<{ role?: string; content?: string }>) : [];
       const recentUserMsgs = msgs.filter((m) => m?.role === "user" && typeof m?.content === "string").slice(-3);
       const trailName = trailMap.get(conv.trail_id) ?? "trilha";
       for (const m of recentUserMsgs) {
-        const txt = (m.content as string).replace(/\s+/g, " ").trim().slice(0, 240);
-        if (txt.length > 4) userQuestions.push(`[${trailName.toLowerCase()}] ${txt}`);
+        const cleaned = anonymize((m.content as string).replace(/\s+/g, " ").trim()).slice(0, 240);
+        if (cleaned.length > 4) userQuestions.push(`[${trailName.toLowerCase()}] ${cleaned}`);
         if (userQuestions.length >= 200) break;
       }
       if (userQuestions.length >= 200) break;
@@ -129,6 +140,7 @@ tom: direto, sem corporativês, sem encher linguiça. máximo 6 linhas por seç�
     const raw = {
       totalQuestions, uniqueStudents, offScopePct, helpfulPct,
       helpfulCount, unhelpfulCount, sampleSize: userQuestions.length,
+      anonymized: true,
     };
 
     await admin.from("admin_insights").insert({

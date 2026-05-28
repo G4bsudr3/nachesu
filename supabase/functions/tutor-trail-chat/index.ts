@@ -182,17 +182,36 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
-    // gating: settings (kill switch + limite diário + modelo + addon)
+    // consentimento obrigatório (fase A · LGPD)
+    const { data: profileRow } = await admin
+      .from("profiles")
+      .select("tutor_consent_at")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (!profileRow?.tutor_consent_at) {
+      return new Response(
+        JSON.stringify({
+          error: "consentimento pendente",
+          code: "consent_required",
+        }),
+        { status: 412, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // gating: settings (kill switch + limites + modelo + addon + caps)
     let settings = {
       enabled: true,
       per_user_daily_limit: 0,
+      daily_total_cap: 2000,
+      daily_total_alert_threshold: 0.8,
+      burst_limit_per_minute: 10,
       model: "google/gemini-2.5-flash",
       system_prompt_addon: null as string | null,
     };
     try {
       const { data: s } = await admin
         .from("tutor_settings")
-        .select("enabled, per_user_daily_limit, model, system_prompt_addon")
+        .select("enabled, per_user_daily_limit, daily_total_cap, daily_total_alert_threshold, burst_limit_per_minute, model, system_prompt_addon")
         .eq("id", 1)
         .maybeSingle();
       if (s) settings = { ...settings, ...s };
@@ -207,12 +226,48 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (settings.per_user_daily_limit > 0) {
-      // BRT (-3h) — calcula início do dia local
+    // helper BRT
+    const brtDate = () => {
+      const nowMs = Date.now();
+      const brtNow = new Date(nowMs - 3 * 60 * 60 * 1000);
+      const y = brtNow.getUTCFullYear();
+      const m = String(brtNow.getUTCMonth() + 1).padStart(2, "0");
+      const d = String(brtNow.getUTCDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    };
+    const startOfBrtDayUtc = () => {
       const nowMs = Date.now();
       const brtNow = new Date(nowMs - 3 * 60 * 60 * 1000);
       brtNow.setUTCHours(0, 0, 0, 0);
-      const startOfDayUtc = new Date(brtNow.getTime() + 3 * 60 * 60 * 1000).toISOString();
+      return new Date(brtNow.getTime() + 3 * 60 * 60 * 1000).toISOString();
+    };
+
+    // burst rate-limit: max N por 60s
+    if (settings.burst_limit_per_minute > 0) {
+      const since = new Date(Date.now() - 60 * 1000).toISOString();
+      const { count: burstCount } = await admin
+        .from("tutor_message_events")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .gte("created_at", since);
+      if ((burstCount ?? 0) >= settings.burst_limit_per_minute) {
+        return new Response(
+          JSON.stringify({
+            error: "calma, você mandou muitas perguntas seguidas. respira e tenta de novo em alguns segundos.",
+            code: "burst_limit",
+            retry_after_s: 30,
+          }),
+          {
+            status: 429,
+            headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "30" },
+          },
+        );
+      }
+    }
+
+    // limite diário por estudante
+    if (settings.per_user_daily_limit > 0) {
+      const startOfDayUtc = startOfBrtDayUtc();
       const { count } = await admin
         .from("tutor_message_events")
         .select("id", { count: "exact", head: true })
@@ -222,10 +277,170 @@ Deno.serve(async (req) => {
         return new Response(
           JSON.stringify({
             error: `você bateu o limite de ${settings.per_user_daily_limit} perguntas por dia. volta amanhã.`,
+            code: "user_daily_limit",
           }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
+    }
+
+    // cap global de custo (toda a turma)
+    const today = brtDate();
+    if (settings.daily_total_cap > 0) {
+      const { data: counterRow } = await admin
+        .from("tutor_daily_counters")
+        .select("total_count, last_alert_sent_at")
+        .eq("date", today)
+        .maybeSingle();
+      const totalToday = counterRow?.total_count ?? 0;
+      if (totalToday >= settings.daily_total_cap) {
+        return new Response(
+          JSON.stringify({
+            error: "tutor pausado por hoje (limite global atingido). volta amanhã.",
+            code: "global_daily_cap",
+          }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      // alerta 80%
+      const threshold = Math.floor(settings.daily_total_cap * settings.daily_total_alert_threshold);
+      const alertJaHoje =
+        counterRow?.last_alert_sent_at &&
+        counterRow.last_alert_sent_at >= startOfBrtDayUtc();
+      if (totalToday >= threshold && !alertJaHoje) {
+        try {
+          await admin.from("admin_insights").insert({
+            scope: "cost_alert",
+            summary_md: `tutor passou de ${Math.round(settings.daily_total_alert_threshold * 100)}% do cap diário (${totalToday}/${settings.daily_total_cap} perguntas).`,
+            raw_metrics: { total_today: totalToday, cap: settings.daily_total_cap, threshold },
+            period_start: startOfBrtDayUtc(),
+            period_end: new Date().toISOString(),
+            model: settings.model,
+          });
+          await admin
+            .from("tutor_daily_counters")
+            .update({ last_alert_sent_at: new Date().toISOString() })
+            .eq("date", today);
+        } catch (alertErr) {
+          console.error("cost alert fail:", alertErr);
+        }
+      }
+    }
+
+    // classificador de risco (fase A · segurança emocional)
+    type RiskLevel = "safe" | "emotional_distress" | "bullying" | "self_harm" | "abuse";
+    const riskInterventions: Record<Exclude<RiskLevel, "safe">, string> = {
+      self_harm: `tô lendo o que você escreveu com atenção. se você tá pensando em se machucar ou em não estar mais aqui, isso importa demais e tem gente preparada pra te escutar agora.
+
+você pode ligar pro **cvv 188** (24h, gratuito, sigiloso) ou conversar pelo chat em **cvv.org.br**.
+
+se rolar uma emergência, **samu 192**.
+
+e se quiser, fala com alguém que você confia na escola sebrae, um orientador ou um educador. não precisa segurar isso sozinho.`,
+      abuse: `o que você escreveu é sério e merece ser ouvido por alguém preparado.
+
+você pode ligar pro **disque 100** (24h, gratuito, sigiloso, pra denúncias de violação de direitos de crianças e adolescentes).
+
+procura também um adulto que você confia: orientador na escola sebrae, alguém da família, conselho tutelar. você não tá sozinho nisso.`,
+      bullying: `lamento que você tá passando por isso. bullying não é sua culpa e não precisa ser segredo.
+
+fala com um orientador ou educador da escola sebrae, eles têm protocolo pra te apoiar. se preferir contato externo, **disque 100** atende casos de violência contra adolescente, 24h.
+
+quer conversar comigo sobre como abrir esse assunto com alguém? me conta.`,
+      emotional_distress: `parece que você tá num momento pesado. faz sentido pausar a eletiva por agora e olhar pra isso primeiro.
+
+se quiser conversar com alguém treinado, **cvv 188** atende 24h por telefone e em **cvv.org.br** por chat. é gratuito e sigiloso.
+
+também vale procurar um adulto de confiança na escola sebrae ou em casa. quando você se sentir bem, a gente volta pro módulo, sem pressa.`,
+    };
+
+    const riskPrompt = `você é um classificador de risco para mensagens de estudantes de 14-15 anos. classifique a mensagem abaixo em UM nível e responda APENAS com JSON válido no formato {"level":"<nivel>","score":<0_a_1>}.
+
+níveis possíveis:
+- "safe": dúvida normal sobre escola, ia, negócios, dia a dia.
+- "emotional_distress": tristeza profunda, ansiedade aguda, desesperança, exaustão.
+- "bullying": sofrendo bullying, humilhação, exclusão por parte de colegas.
+- "self_harm": qualquer menção a se machucar, suicídio, "não querer mais estar aqui", "sumir".
+- "abuse": violência física, sexual, psicológica em casa ou por adulto.
+
+regra dura: se houver QUALQUER dúvida entre "safe" e algo sério, escolha o sério. melhor falso positivo do que falso negativo.
+
+mensagem do estudante:
+"""${message.slice(0, 1000)}"""`;
+
+    let riskLevel: RiskLevel = "safe";
+    let riskScore = 0;
+    try {
+      const riskRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash-lite",
+          messages: [{ role: "user", content: riskPrompt }],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (riskRes.ok) {
+        const riskJson = await riskRes.json();
+        const raw = riskJson.choices?.[0]?.message?.content ?? "{}";
+        const parsed = JSON.parse(raw);
+        if (
+          parsed?.level &&
+          ["safe", "emotional_distress", "bullying", "self_harm", "abuse"].includes(parsed.level)
+        ) {
+          riskLevel = parsed.level;
+          riskScore = typeof parsed.score === "number" ? parsed.score : 0;
+        }
+      } else {
+        console.warn("risk classifier nao-ok:", riskRes.status);
+      }
+    } catch (e) {
+      console.error("risk classifier erro:", e);
+      // fail-safe: continua como safe (não bloqueia uso normal)
+    }
+
+    if (riskLevel !== "safe") {
+      const intervention = riskInterventions[riskLevel];
+      // registra evento sensível
+      try {
+        await admin.from("tutor_safety_events").insert({
+          user_id: userId,
+          trail_id: trailId,
+          module_id: moduleId,
+          message_excerpt: message.slice(0, 240),
+          risk_level: riskLevel,
+          risk_score: riskScore,
+          model_used: "google/gemini-2.5-flash-lite",
+          intervention_shown: intervention,
+        });
+      } catch (logErr) {
+        console.error("safety event log fail:", logErr);
+      }
+      // devolve intervenção como stream SSE (compatível com o cliente)
+      const enc = new TextEncoder();
+      const sseChunks = [
+        `data: ${JSON.stringify({ choices: [{ delta: { content: intervention } }] })}\n\n`,
+        `data: ${JSON.stringify({ choices: [{ delta: {}, finish_reason: "safety" }] })}\n\n`,
+        `data: [DONE]\n\n`,
+      ];
+      return new Response(
+        new ReadableStream({
+          start(controller) {
+            for (const c of sseChunks) controller.enqueue(enc.encode(c));
+            controller.close();
+          },
+        }),
+        {
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "text/event-stream",
+            "x-tutor-safety": riskLevel,
+          },
+        },
+      );
     }
 
     // contexto: trilha + módulos da trilha + progresso do aluno
@@ -467,6 +682,28 @@ Deno.serve(async (req) => {
               });
             } catch (logErr) {
               console.error("tutor event log fail:", logErr);
+            }
+
+            // incrementa contador global do dia (cap de custo)
+            try {
+              const todayStr = brtDate();
+              const { data: cur } = await admin
+                .from("tutor_daily_counters")
+                .select("total_count")
+                .eq("date", todayStr)
+                .maybeSingle();
+              await admin
+                .from("tutor_daily_counters")
+                .upsert(
+                  {
+                    date: todayStr,
+                    total_count: (cur?.total_count ?? 0) + 1,
+                    updated_at: new Date().toISOString(),
+                  },
+                  { onConflict: "date" },
+                );
+            } catch (cErr) {
+              console.error("daily counter fail:", cErr);
             }
           }
           controller.close();
