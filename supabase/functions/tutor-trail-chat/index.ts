@@ -575,20 +575,42 @@ mensagem do estudante:
       { role: "user", content: message },
     ];
 
-    const modelToUse = settings.model || "google/gemini-2.5-flash";
+    const primaryModel = settings.model || "google/gemini-2.5-flash";
+    const fallbackModel =
+      (settings as { fallback_model?: string | null }).fallback_model ||
+      "google/gemini-2.5-flash-lite";
+
+    const callAi = (model: string) =>
+      fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ model, messages: messagesForAI, stream: true }),
+      });
+
     const t0 = Date.now();
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: modelToUse,
-        messages: messagesForAI,
-        stream: true,
-      }),
-    });
+    let modelToUse = primaryModel;
+    let usedFallback = false;
+    let aiRes = await callAi(primaryModel);
+
+    // fallback automático em 5xx, 429 ou 408. 402 (sem crédito) e 401 não tentam.
+    if (
+      !aiRes.ok &&
+      primaryModel !== fallbackModel &&
+      [408, 429, 500, 502, 503, 504].includes(aiRes.status)
+    ) {
+      console.warn(
+        `primary model ${primaryModel} falhou (${aiRes.status}), tentando fallback ${fallbackModel}`,
+      );
+      try { await aiRes.body?.cancel(); } catch { /* noop */ }
+      aiRes = await callAi(fallbackModel);
+      if (aiRes.ok) {
+        modelToUse = fallbackModel;
+        usedFallback = true;
+      }
+    }
 
     if (!aiRes.ok) {
       if (aiRes.status === 429) {
