@@ -39,7 +39,7 @@ export const TutorConsentModal = ({ open, onAccepted }: Props) => {
 
   return (
     <Dialog open={open}>
-      <DialogContent className="max-w-md" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-md [&>button]:hidden" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-2xl">antes de começar, um aviso rápido</DialogTitle>
           <DialogDescription className="pt-2 text-foreground/80 leading-relaxed space-y-3">
