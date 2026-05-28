@@ -261,6 +261,14 @@ export const TutorChat = ({
         return;
       }
 
+      if (safetyLevel) {
+        setMessages((prev) =>
+          prev.map((m, i) =>
+            i === prev.length - 1 && m.role === "assistant" ? { ...m, safety: true } : m,
+          ),
+        );
+      }
+
       // invalida cache pra próxima abertura puxar do banco
       queryClient.invalidateQueries({ queryKey: ["tutor-conv", user?.id, trailId] });
     } catch (e) {
