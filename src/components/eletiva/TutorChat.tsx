@@ -454,6 +454,15 @@ export const TutorChat = ({
                     )}
                   </div>
                 </motion.div>
+                {m.role === "assistant" && m.content && !streaming && (
+                  <div className="flex justify-start">
+                    <TutorMessageActions
+                      content={m.content}
+                      trailId={trailId}
+                      isLatest={i === messages.length - 1}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </AnimatePresence>
