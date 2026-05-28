@@ -102,3 +102,15 @@ novo arquivo `src/components/admin/layout/AdminLayout.tsx`:
 - command palette + sidebar em paralelo: foco do trigger e do shortcut precisam não competir; testo `cmd+k` com sidebar aberta e colapsada.
 
 quando aprovar, sigo nessa ordem: 1) AdminLayout + AdminSidebar, 2) App.tsx (rotas + redirects), 3) AdminFbi (modo embutido), 4) AdminHome (limpar header duplicado), 5) CommandPalette, 6) plan.md, 7) validar build/preview.
+
+---
+
+## ✅ Status (28/05/2026) — shell admin entregue
+
+- `AdminLayout` + `AdminSidebar` no ar: aside fixo desktop, sheet mobile, header com breadcrumb + atalho `⌘K` + voltar pro app.
+- `/admin` agora renderiza o **Command Center** (`AdminHome`); todas as rotas admin envolvidas em `<AdminLayout>` via Outlet.
+- `AdminFbi` movido pra `/admin/legado/:tab`, sem header próprio. Slugs antigos (`/admin/fbi`, `/admin/prework`, etc.) redirecionam com `Navigate replace` pro novo prefixo.
+- `CommandPalette` (`cmdk`) global: grupos "ir para" (operação + legado) e "ações" (regenerar resumo IA, copiar link, sair). Hotkey `⌘K`/`Ctrl+K`.
+- Compat: `/admin/:tab` antigo continua respondendo (sem prefixo legado), pra não quebrar bookmarks de abas "operação" que ainda vivem no `AdminFbi`.
+
+Próximo: aplicar plano do tutor IA (instrumentação `tutor_message_events`, `tutor_settings`, painel `/admin/tutor` reformulado, controles do estudante).
