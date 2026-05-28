@@ -346,9 +346,9 @@ Deno.serve(async (req) => {
       }
     }
 
-    // classificador de risco (fase A · segurança emocional)
+    // classificador de risco (fase A · segurança emocional + plano D · fail-closed)
     type RiskLevel = "safe" | "emotional_distress" | "bullying" | "self_harm" | "abuse";
-    const riskInterventions: Record<Exclude<RiskLevel, "safe">, string> = {
+    const riskInterventions: Record<"emotional_distress" | "bullying" | "self_harm" | "abuse", string> = {
       self_harm: `tô lendo o que você escreveu com atenção. se você tá pensando em se machucar ou em não estar mais aqui, isso importa demais e tem gente preparada pra te escutar agora.
 
 você pode ligar pro **cvv 188** (24h, gratuito, sigiloso) ou conversar pelo chat em **cvv.org.br**.
