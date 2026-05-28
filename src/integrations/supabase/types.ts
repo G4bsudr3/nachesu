@@ -2339,13 +2339,18 @@ export type Database = {
           helpful: number | null
           helpful_reason: string | null
           id: string
+          language: string | null
           latency_ms: number
+          message_hash: string | null
+          message_length: number | null
+          message_redacted: string | null
           model: string | null
           module_id: string | null
           off_scope: boolean
           pill_title: string | null
           retention_until: string
           tokens_estimate: number
+          topic_tag: string | null
           trail_id: string
           ttfb_ms: number | null
           user_chars: number
@@ -2358,13 +2363,18 @@ export type Database = {
           helpful?: number | null
           helpful_reason?: string | null
           id?: string
+          language?: string | null
           latency_ms?: number
+          message_hash?: string | null
+          message_length?: number | null
+          message_redacted?: string | null
           model?: string | null
           module_id?: string | null
           off_scope?: boolean
           pill_title?: string | null
           retention_until?: string
           tokens_estimate?: number
+          topic_tag?: string | null
           trail_id: string
           ttfb_ms?: number | null
           user_chars?: number
@@ -2377,19 +2387,77 @@ export type Database = {
           helpful?: number | null
           helpful_reason?: string | null
           id?: string
+          language?: string | null
           latency_ms?: number
+          message_hash?: string | null
+          message_length?: number | null
+          message_redacted?: string | null
           model?: string | null
           module_id?: string | null
           off_scope?: boolean
           pill_title?: string | null
           retention_until?: string
           tokens_estimate?: number
+          topic_tag?: string | null
           trail_id?: string
           ttfb_ms?: number | null
           user_chars?: number
           user_id?: string
         }
         Relationships: []
+      }
+      tutor_safety_escalations: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          closed_at: string | null
+          closed_by: string | null
+          created_at: string
+          followup_notes: string | null
+          id: string
+          notified_at: string
+          notified_emails: string[]
+          offline_followup_at: string | null
+          safety_event_id: string
+          updated_at: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          followup_notes?: string | null
+          id?: string
+          notified_at?: string
+          notified_emails?: string[]
+          offline_followup_at?: string | null
+          safety_event_id: string
+          updated_at?: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          followup_notes?: string | null
+          id?: string
+          notified_at?: string
+          notified_emails?: string[]
+          offline_followup_at?: string | null
+          safety_event_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tutor_safety_escalations_safety_event_id_fkey"
+            columns: ["safety_event_id"]
+            isOneToOne: false
+            referencedRelation: "tutor_safety_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tutor_safety_events: {
         Row: {
@@ -2445,6 +2513,8 @@ export type Database = {
       tutor_settings: {
         Row: {
           burst_limit_per_minute: number
+          burst_pause_threshold: number
+          burst_soft_threshold: number
           daily_total_alert_threshold: number
           daily_total_cap: number
           enabled: boolean
@@ -2452,12 +2522,15 @@ export type Database = {
           id: number
           model: string
           per_user_daily_limit: number
+          safety_notify_emails: string[]
           system_prompt_addon: string | null
           updated_at: string
           updated_by: string | null
         }
         Insert: {
           burst_limit_per_minute?: number
+          burst_pause_threshold?: number
+          burst_soft_threshold?: number
           daily_total_alert_threshold?: number
           daily_total_cap?: number
           enabled?: boolean
@@ -2465,12 +2538,15 @@ export type Database = {
           id?: number
           model?: string
           per_user_daily_limit?: number
+          safety_notify_emails?: string[]
           system_prompt_addon?: string | null
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
           burst_limit_per_minute?: number
+          burst_pause_threshold?: number
+          burst_soft_threshold?: number
           daily_total_alert_threshold?: number
           daily_total_cap?: number
           enabled?: boolean
@@ -2478,6 +2554,7 @@ export type Database = {
           id?: number
           model?: string
           per_user_daily_limit?: number
+          safety_notify_emails?: string[]
           system_prompt_addon?: string | null
           updated_at?: string
           updated_by?: string | null
