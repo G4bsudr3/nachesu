@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.cleanup_admin_insights() FROM anon, authenticated, public;

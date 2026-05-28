@@ -113,3 +113,27 @@ Adicionar **classificador de risco** rodando antes da resposta do tutor.
 6. Modal de consentimento aparece 1x e persiste decisão.
 
 Depois disso, abrir o plano da **Fase B** (drill-down, off-scope baseado em `scope_forbidden_terms`, comparação temporal, alinhar janela do digest).
+
+---
+
+# Fase C — Polimento técnico (concluída)
+
+Foco: refinar instrumentação, robustez e UX miúda do tutor agora que segurança (A) e análise admin (B) estão de pé.
+
+## Mudanças
+
+1. **TTFB (time-to-first-byte)** — capturado no proxy do stream e gravado em `tutor_message_events.ttfb_ms`. KPI novo "ttfb mediano" no painel admin, separado da latência total.
+2. **Fallback de modelo** — `tutor_settings.fallback_model` (default `gemini-2.5-flash-lite`). Se o principal responder 5xx/429/408, tutor tenta o fallback automaticamente e envia headers `x-tutor-model` + `x-tutor-fallback` na resposta.
+3. **Feedback estruturado** — `tutor_message_events.helpful_reason` aceita 5 motivos pré-definidos (`confuso`, `fora_do_tema`, `longo_demais`, `errado`, `nao_ajudou`). `TutorMessageActions` mostra chips após o polegar pra baixo. Painel admin agrega top motivos.
+4. **Retenção de insights** — `admin_insights.retention_until` (default 180d) + função `cleanup_admin_insights()` agendada via `pg_cron` 03h05 BRT.
+5. **TutorContextChip renderizado** — agora aparece no header do chat quando há pílula/módulo ativo, confirmando ao estudante o que o tutor está considerando.
+6. **Alinhamento policy/função** — janela do `tutor-rate-message` ampliada pra 60min, batendo com a policy de update do banco.
+7. **A11y** — `role="log"` + `aria-live="polite"` na lista de mensagens, `aria-busy` durante streaming, `aria-label` no textarea, `aria-pressed` nos botões de rating, `focus-visible:ring` nos controles do TutorMessageActions.
+
+## Arquivos
+- `supabase/functions/tutor-trail-chat/index.ts` (TTFB, fallback de modelo, headers de observabilidade)
+- `supabase/functions/tutor-rate-message/index.ts` (reason + janela 60min)
+- `src/components/chora-bot/TutorMessageActions.tsx` (chips de motivo + a11y)
+- `src/components/eletiva/TutorChat.tsx` (TutorContextChip + a11y do log)
+- `src/features/admin/AdminTutorCommand.tsx` (KPI ttfb mediano, top motivos, select de fallback model)
+- migrações: colunas novas em `tutor_message_events`, `tutor_settings` e `admin_insights`; função `cleanup_admin_insights()` + cron diário.

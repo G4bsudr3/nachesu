@@ -31,19 +31,29 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const trailId = typeof body?.trail_id === "string" ? body.trail_id : "";
     const helpful = body?.helpful;
+    const rawReason = typeof body?.reason === "string" ? body.reason.trim().slice(0, 80) : null;
+    // só aceita motivos do conjunto pré-definido + free-text curto
+    const allowedReasons = new Set([
+      "confuso",
+      "fora_do_tema",
+      "longo_demais",
+      "errado",
+      "nao_ajudou",
+    ]);
+    const reason = rawReason && (allowedReasons.has(rawReason) || rawReason.length <= 80) ? rawReason : null;
     if (!trailId || (helpful !== 1 && helpful !== -1 && helpful !== null)) {
       return new Response(JSON.stringify({ error: "trail_id e helpful (1, -1 ou null) obrigatórios" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
-    // evento mais recente do user nessa trilha nos últimos 30 min
+    // evento mais recente do user nessa trilha nos últimos 60 min (alinhado com a policy)
     const { data: latest } = await admin
       .from("tutor_message_events")
       .select("id")
       .eq("user_id", u.user.id)
       .eq("trail_id", trailId)
-      .gte("created_at", new Date(Date.now() - 30 * 60 * 1000).toISOString())
+      .gte("created_at", new Date(Date.now() - 60 * 60 * 1000).toISOString())
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -52,7 +62,10 @@ Deno.serve(async (req) => {
         status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    await admin.from("tutor_message_events").update({ helpful }).eq("id", latest.id);
+    await admin
+      .from("tutor_message_events")
+      .update({ helpful, helpful_reason: helpful === -1 ? reason : null })
+      .eq("id", latest.id);
     return new Response(JSON.stringify({ ok: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

@@ -30,6 +30,7 @@ import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice"
 import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
 import { TutorSafetyNotice } from "@/components/chora-bot/TutorSafetyNotice";
 import { TutorConsentModal } from "@/components/chora-bot/TutorConsentModal";
+import { TutorContextChip } from "@/components/chora-bot/TutorContextChip";
 import { useTutorConsent } from "@/hooks/useTutorConsent";
 
 type Msg = {
@@ -405,20 +406,41 @@ export const TutorChat = ({
           <p className="font-body text-xs text-perestroika-preto/65 mt-2">
             conversando sobre <strong>{trailTitle.toLowerCase()}</strong>. seu histórico fica salvo.
           </p>
-          {pillContext && (
-            <div
-              className="mt-3 rounded-xl border-2 px-3 py-2 font-body text-[11px] text-perestroika-preto/85 leading-relaxed"
-              style={{ borderColor: trailColor, backgroundColor: `${trailColor}15` }}
-            >
-              <p className="uppercase tracking-[0.18em] text-[9px] text-perestroika-preto/55 mb-0.5">
-                exercício em andamento
-              </p>
-              <p className="font-semibold">{pillContext.pillTitle.toLowerCase()}</p>
+          {(pillContext || moduleId) && (
+            <div className="mt-3 space-y-2">
+              {pillContext && (
+                <div
+                  className="rounded-xl border-2 px-3 py-2 font-body text-[11px] text-perestroika-preto/85 leading-relaxed"
+                  style={{ borderColor: trailColor, backgroundColor: `${trailColor}15` }}
+                >
+                  <p className="uppercase tracking-[0.18em] text-[9px] text-perestroika-preto/55 mb-0.5">
+                    exercício em andamento
+                  </p>
+                  <p className="font-semibold">{pillContext.pillTitle.toLowerCase()}</p>
+                </div>
+              )}
+              <TutorContextChip
+                moduleLabel={(() => {
+                  if (!snapshot || !moduleId) return null;
+                  const m = snapshot.modules.find((x) => x.id === moduleId);
+                  return m ? `m${String(m.number).padStart(2, "0")} · ${m.title.toLowerCase()}` : null;
+                })()}
+                pillTitle={pillContext?.pillTitle ?? null}
+              />
             </div>
           )}
         </SheetHeader>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4">
+
+
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto p-5 space-y-4"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions text"
+          aria-busy={streaming}
+        >
           {!tutorEnabled && <TutorDisabledNotice />}
           {tutorEnabled && messages.length === 0 && !streaming && (
             <motion.div
@@ -569,6 +591,7 @@ export const TutorChat = ({
                 }
               }}
               placeholder={streaming ? "joão-de-barro está pensando..." : "pergunte o que travou..."}
+              aria-label="mensagem pro tutor joão-de-barro"
               rows={1}
               maxLength={2000}
               disabled={streaming}

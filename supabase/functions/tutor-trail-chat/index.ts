@@ -575,20 +575,42 @@ mensagem do estudante:
       { role: "user", content: message },
     ];
 
-    const modelToUse = settings.model || "google/gemini-2.5-flash";
+    const primaryModel = settings.model || "google/gemini-2.5-flash";
+    const fallbackModel =
+      (settings as { fallback_model?: string | null }).fallback_model ||
+      "google/gemini-2.5-flash-lite";
+
+    const callAi = (model: string) =>
+      fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ model, messages: messagesForAI, stream: true }),
+      });
+
     const t0 = Date.now();
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: modelToUse,
-        messages: messagesForAI,
-        stream: true,
-      }),
-    });
+    let modelToUse = primaryModel;
+    let usedFallback = false;
+    let aiRes = await callAi(primaryModel);
+
+    // fallback automático em 5xx, 429 ou 408. 402 (sem crédito) e 401 não tentam.
+    if (
+      !aiRes.ok &&
+      primaryModel !== fallbackModel &&
+      [408, 429, 500, 502, 503, 504].includes(aiRes.status)
+    ) {
+      console.warn(
+        `primary model ${primaryModel} falhou (${aiRes.status}), tentando fallback ${fallbackModel}`,
+      );
+      try { await aiRes.body?.cancel(); } catch { /* noop */ }
+      aiRes = await callAi(fallbackModel);
+      if (aiRes.ok) {
+        modelToUse = fallbackModel;
+        usedFallback = true;
+      }
+    }
 
     if (!aiRes.ok) {
       if (aiRes.status === 429) {
@@ -615,6 +637,7 @@ mensagem do estudante:
     const reader = aiRes.body!.getReader();
     const decoder = new TextDecoder();
     let assistantText = "";
+    let ttfbMs: number | null = null;
 
     const stream = new ReadableStream({
       async start(controller) {
@@ -623,6 +646,9 @@ mensagem do estudante:
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
+            if (ttfbMs === null && value && value.byteLength > 0) {
+              ttfbMs = Date.now() - t0;
+            }
             buffer += decoder.decode(value, { stream: true });
             controller.enqueue(value);
 
@@ -694,6 +720,7 @@ mensagem do estudante:
                 assistant_chars: assistantText.length,
                 tokens_estimate: Math.ceil((message.length + assistantText.length) / 4),
                 latency_ms: latencyMs,
+                ttfb_ms: ttfbMs,
                 off_scope: offScope,
                 model: modelToUse,
               });
@@ -729,7 +756,12 @@ mensagem do estudante:
     });
 
     return new Response(stream, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "text/event-stream",
+        "x-tutor-model": modelToUse,
+        ...(usedFallback ? { "x-tutor-fallback": "1" } : {}),
+      },
     });
   } catch (e) {
     console.error("tutor-trail-chat:", e);

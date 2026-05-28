@@ -20,8 +20,10 @@ type EventRow = {
   assistant_chars: number;
   tokens_estimate: number;
   latency_ms: number | null;
+  ttfb_ms: number | null;
   off_scope: boolean;
   helpful: number | null;
+  helpful_reason: string | null;
   created_at: string;
 };
 
@@ -50,7 +52,7 @@ export const AdminTutorCommand = () => {
     queryFn: async (): Promise<EventRow[]> => {
       const { data, error } = await supabase
         .from("tutor_message_events")
-        .select("id, user_id, trail_id, pill_title, user_chars, assistant_chars, tokens_estimate, latency_ms, off_scope, helpful, created_at")
+        .select("id, user_id, trail_id, pill_title, user_chars, assistant_chars, tokens_estimate, latency_ms, ttfb_ms, off_scope, helpful, helpful_reason, created_at")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
         .limit(5000);
@@ -87,7 +89,7 @@ export const AdminTutorCommand = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tutor_settings")
-        .select("id, enabled, per_user_daily_limit, model, system_prompt_addon, daily_total_cap, burst_limit_per_minute, daily_total_alert_threshold, updated_at")
+        .select("id, enabled, per_user_daily_limit, model, fallback_model, system_prompt_addon, daily_total_cap, burst_limit_per_minute, daily_total_alert_threshold, updated_at")
         .eq("id", 1)
         .maybeSingle();
       if (error) throw error;
@@ -165,7 +167,7 @@ export const AdminTutorCommand = () => {
   });
 
   const saveSettings = useMutation({
-    mutationFn: async (patch: Partial<{ enabled: boolean; per_user_daily_limit: number; model: string; system_prompt_addon: string; daily_total_cap: number; burst_limit_per_minute: number; daily_total_alert_threshold: number }>) => {
+    mutationFn: async (patch: Partial<{ enabled: boolean; per_user_daily_limit: number; model: string; fallback_model: string; system_prompt_addon: string; daily_total_cap: number; burst_limit_per_minute: number; daily_total_alert_threshold: number }>) => {
       const { error } = await supabase.from("tutor_settings").update(patch).eq("id", 1);
       if (error) throw error;
     },
@@ -178,6 +180,12 @@ export const AdminTutorCommand = () => {
   });
 
   const kpis = useMemo(() => {
+    const median = (arr: number[]) => {
+      if (!arr.length) return null;
+      const s = [...arr].sort((a, b) => a - b);
+      const mid = Math.floor(s.length / 2);
+      return s.length % 2 ? s[mid] : Math.round((s[mid - 1] + s[mid]) / 2);
+    };
     const calc = (list: EventRow[]) => {
       const uniqStudents = new Set(list.map((e) => e.user_id)).size;
       const totalMsgs = list.length;
@@ -186,8 +194,10 @@ export const AdminTutorCommand = () => {
       const helpfulRate = rated.length > 0 ? Math.round((helpful / rated.length) * 100) : null;
       const latencies = list.map((e) => e.latency_ms).filter((v): v is number => typeof v === "number");
       const avgLatency = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : null;
+      const ttfbs = list.map((e) => e.ttfb_ms).filter((v): v is number => typeof v === "number" && v > 0);
+      const medianTtfb = median(ttfbs);
       const offScope = list.filter((e) => e.off_scope).length;
-      return { uniqStudents, totalMsgs, helpfulRate, avgLatency, offScope };
+      return { uniqStudents, totalMsgs, helpfulRate, avgLatency, medianTtfb, offScope };
     };
     const cur = calc(events ?? []);
     const prev = calc((prevEvents ?? []) as EventRow[]);
@@ -202,10 +212,23 @@ export const AdminTutorCommand = () => {
             : null,
         avgLatency:
           cur.avgLatency !== null && prev.avgLatency !== null ? pct(cur.avgLatency, prev.avgLatency) : null,
+        medianTtfb:
+          cur.medianTtfb !== null && prev.medianTtfb !== null ? pct(cur.medianTtfb, prev.medianTtfb) : null,
         offScope: pct(cur.offScope, prev.offScope),
       },
     };
   }, [events, prevEvents]);
+
+  const negReasons = useMemo(() => {
+    const map = new Map<string, number>();
+    (events ?? []).forEach((e) => {
+      if (e.helpful === -1 && e.helpful_reason) {
+        const k = e.helpful_reason.replace(/_/g, " ");
+        map.set(k, (map.get(k) ?? 0) + 1);
+      }
+    });
+    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
+  }, [events]);
 
   const sparkline = useMemo(() => {
     const list = events ?? [];
@@ -254,7 +277,7 @@ export const AdminTutorCommand = () => {
     );
   }
 
-  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", system_prompt_addon: "", daily_total_cap: 2000, burst_limit_per_minute: 10, daily_total_alert_threshold: 0.8 };
+  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", fallback_model: "google/gemini-2.5-flash-lite", system_prompt_addon: "", daily_total_cap: 2000, burst_limit_per_minute: 10, daily_total_alert_threshold: 0.8 };
 
   const cap = s.daily_total_cap ?? 2000;
   const used = todayCounter?.total_count ?? 0;
@@ -298,7 +321,7 @@ export const AdminTutorCommand = () => {
         </div>
       </header>
 
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Kpi
           icon={<MessageCircle className="h-4 w-4" />}
           label="perguntas"
@@ -314,6 +337,15 @@ export const AdminTutorCommand = () => {
           hint="sobre avaliadas"
           delta={kpis.delta.helpfulRate}
           deltaUnit="pp"
+        />
+        <Kpi
+          icon={<Timer className="h-4 w-4" />}
+          label="ttfb mediano"
+          value={kpis.medianTtfb === null ? "—" : `${(kpis.medianTtfb / 1000).toFixed(2)}s`}
+          hint="1º byte do tutor"
+          delta={kpis.delta.medianTtfb}
+          deltaUnit="%"
+          invert
         />
         <Kpi
           icon={<Timer className="h-4 w-4" />}
@@ -334,6 +366,23 @@ export const AdminTutorCommand = () => {
           invert
         />
       </section>
+
+      {negReasons.length > 0 && (
+        <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+          <h2 className="font-display uppercase text-xl mb-3">por que avaliaram como ruim</h2>
+          <div className="flex flex-wrap gap-2">
+            {negReasons.map(([reason, count]) => (
+              <span
+                key={reason}
+                className="font-body text-[11px] rounded-full px-3 py-1.5 bg-perestroika-vermelho/10 border border-perestroika-vermelho/30 text-perestroika-preto/85"
+              >
+                {reason} · <span className="tabular-nums font-semibold">{count}</span>
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
 
       <section className="grid gap-3 md:grid-cols-2">
         <div
@@ -559,6 +608,27 @@ export const AdminTutorCommand = () => {
               </SelectContent>
             </Select>
           </div>
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+            <Label className="font-display uppercase text-xs tracking-wide">modelo de fallback</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
+              usado automaticamente quando o principal falha (5xx, 429, timeout).
+            </p>
+            <Select
+              defaultValue={s.fallback_model ?? "google/gemini-2.5-flash-lite"}
+              onValueChange={(v) => saveSettings.mutate({ fallback_model: v })}
+            >
+              <SelectTrigger className="bg-white/60">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="google/gemini-2.5-flash-lite">gemini 2.5 flash lite</SelectItem>
+                <SelectItem value="google/gemini-2.5-flash">gemini 2.5 flash</SelectItem>
+                <SelectItem value="google/gemini-2.5-pro">gemini 2.5 pro</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
 
           <div className="rounded-xl border border-perestroika-preto/10 p-4">
             <Label className="font-display uppercase text-xs tracking-wide">cap total diário</Label>
