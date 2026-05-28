@@ -4,6 +4,7 @@ import { ptBR } from "date-fns/locale";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageShell } from "@/components/layout/PageShell";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
@@ -31,7 +32,10 @@ const Notificacoes = () => {
     <PageShell>
       <PageHeader back={{ to: "/app", label: "início" }} />
 
-      <main className="container max-w-3xl pb-20 pt-4">
+      <main
+        className="container max-w-3xl pt-4"
+        style={{ paddingBottom: "calc(var(--mobile-nav-h, 0px) + 5rem)" }}
+      >
         <header className="mb-6 flex items-end justify-between gap-3 flex-wrap">
           <div>
             <h1 className="font-display text-4xl sm:text-5xl uppercase tracking-tight text-perestroika-preto">
@@ -142,6 +146,7 @@ const Notificacoes = () => {
       </main>
 
       <EletivaFooter />
+      <MobileNav />
     </PageShell>
   );
 };
