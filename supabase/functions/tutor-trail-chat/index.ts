@@ -666,7 +666,24 @@ mensagem do estudante:
 
             // instrumentação: 1 linha por troca
             try {
-              const offScopeRe = /foge\s+um\s+pouco\s+daqui|isso\s+aí\s+o\s+\S+\s+resolve\s+melhor|fala\s+com\s+ele\s+no\s+encontro/i;
+              // off-scope agora classifica a PERGUNTA do aluno contra os termos
+              // proibidos da eletiva (vindos do banco). fallback: regex na resposta.
+              let offScope = false;
+              if (courseSlug) {
+                try {
+                  const { data: terms } = await admin.rpc("scope_forbidden_terms", { _slug: courseSlug });
+                  const lowered = message.toLowerCase();
+                  if (Array.isArray(terms)) {
+                    offScope = terms.some((t: string) => t && lowered.includes(t.toLowerCase()));
+                  }
+                } catch {
+                  // ignora
+                }
+              }
+              if (!offScope) {
+                const offScopeRe = /foge\s+um\s+pouco\s+daqui|isso\s+aí\s+o\s+\S+\s+resolve\s+melhor|fala\s+com\s+ele\s+no\s+encontro/i;
+                offScope = offScopeRe.test(assistantText);
+              }
               await admin.from("tutor_message_events").insert({
                 user_id: userId,
                 course_id: trail.course_id ?? null,
@@ -677,7 +694,7 @@ mensagem do estudante:
                 assistant_chars: assistantText.length,
                 tokens_estimate: Math.ceil((message.length + assistantText.length) / 4),
                 latency_ms: latencyMs,
-                off_scope: offScopeRe.test(assistantText),
+                off_scope: offScope,
                 model: modelToUse,
               });
             } catch (logErr) {
