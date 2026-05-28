@@ -321,7 +321,7 @@ export const AdminTutorCommand = () => {
         </div>
       </header>
 
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Kpi
           icon={<MessageCircle className="h-4 w-4" />}
           label="perguntas"
@@ -337,6 +337,15 @@ export const AdminTutorCommand = () => {
           hint="sobre avaliadas"
           delta={kpis.delta.helpfulRate}
           deltaUnit="pp"
+        />
+        <Kpi
+          icon={<Timer className="h-4 w-4" />}
+          label="ttfb mediano"
+          value={kpis.medianTtfb === null ? "—" : `${(kpis.medianTtfb / 1000).toFixed(2)}s`}
+          hint="1º byte do tutor"
+          delta={kpis.delta.medianTtfb}
+          deltaUnit="%"
+          invert
         />
         <Kpi
           icon={<Timer className="h-4 w-4" />}
@@ -357,6 +366,23 @@ export const AdminTutorCommand = () => {
           invert
         />
       </section>
+
+      {negReasons.length > 0 && (
+        <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+          <h2 className="font-display uppercase text-xl mb-3">por que avaliaram como ruim</h2>
+          <div className="flex flex-wrap gap-2">
+            {negReasons.map(([reason, count]) => (
+              <span
+                key={reason}
+                className="font-body text-[11px] rounded-full px-3 py-1.5 bg-perestroika-vermelho/10 border border-perestroika-vermelho/30 text-perestroika-preto/85"
+              >
+                {reason} · <span className="tabular-nums font-semibold">{count}</span>
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
 
       <section className="grid gap-3 md:grid-cols-2">
         <div
