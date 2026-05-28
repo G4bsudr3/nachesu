@@ -431,6 +431,18 @@ export const TutorChat = ({
           )}
         </SheetHeader>
 
+        {/* banner permanente de transparência */}
+        <div
+          className="px-5 py-2 text-[11px] leading-tight text-perestroika-preto/65 border-b border-perestroika-preto/10 bg-perestroika-bege/40 flex items-center gap-2"
+          role="note"
+          aria-label="aviso de privacidade do tutor"
+        >
+          <span aria-hidden className="size-1.5 rounded-full bg-perestroika-vermelho/70 shrink-0" />
+          <span>mensagens anonimizadas · guardadas 30 dias · alertas de risco vão pro educador</span>
+        </div>
+
+
+
 
 
         <div
