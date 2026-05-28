@@ -254,26 +254,9 @@ const AdminFbi = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
-      <header className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between pt-8 pb-4">
-        <div className="flex items-center gap-6">
-          <NachesULogo variant="dark" />
-          <Badge className="bg-perestroika-preto text-perestroika-bege uppercase tracking-wide">
-            admin
-          </Badge>
-        </div>
-        <div className="flex items-center gap-6 text-sm uppercase tracking-wide">
-          <Link to="/app" className="hover:opacity-60 transition-opacity flex items-center gap-1">
-            <ArrowLeft className="w-4 h-4" />
-            início
-          </Link>
-          <button onClick={signOut} className="hover:opacity-60 transition-opacity">
-            sair
-          </button>
-        </div>
-      </header>
+    <div className="text-perestroika-preto font-body">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
