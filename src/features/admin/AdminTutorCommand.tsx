@@ -284,6 +284,104 @@ export const AdminTutorCommand = () => {
         />
       </section>
 
+      <section className="grid gap-3 md:grid-cols-2">
+        <div
+          className={`rounded-2xl border p-5 ${
+            capState === "blocked"
+              ? "border-perestroika-vermelho/40 bg-perestroika-vermelho/10"
+              : capState === "alert"
+                ? "border-perestroika-laranja/40 bg-perestroika-laranja/10"
+                : "border-perestroika-preto/15 bg-perestroika-bege/40"
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-perestroika-preto/70">
+              <Gauge className="h-4 w-4" />
+              <span className="font-body text-[10px] uppercase tracking-[0.2em]">uso hoje</span>
+            </div>
+            <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+              cap {cap} · alerta {alertPct}%
+            </span>
+          </div>
+          <p className="font-display text-4xl leading-none tabular-nums">
+            {used}<span className="text-xl text-perestroika-preto/40"> / {cap}</span>
+          </p>
+          <div className="h-2 mt-3 rounded-full bg-perestroika-preto/5 overflow-hidden">
+            <div
+              className={`h-full transition-all ${
+                capState === "blocked" ? "bg-perestroika-vermelho" : capState === "alert" ? "bg-perestroika-laranja" : "bg-primary/70"
+              }`}
+              style={{ width: `${usagePct}%` }}
+            />
+          </div>
+          <p className="font-body text-xs text-perestroika-preto/55 mt-2">
+            {capState === "blocked"
+              ? "cap atingido. novas mensagens recebem 429."
+              : capState === "alert"
+                ? "perto do cap. monitora."
+                : "uso saudável."}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-perestroika-preto/70">
+              <ShieldAlert className="h-4 w-4" />
+              <span className="font-body text-[10px] uppercase tracking-[0.2em]">eventos de risco</span>
+            </div>
+            <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+              últimos {windowDays}d
+            </span>
+          </div>
+          <p className="font-display text-4xl leading-none tabular-nums">{safetyTotal}</p>
+          <div className="flex flex-wrap gap-2 mt-3">
+            {["self_harm", "abuse", "bullying", "emotional_distress"].map((lvl) => {
+              const n = safetyByLevel[lvl] ?? 0;
+              if (n === 0) return null;
+              return (
+                <span
+                  key={lvl}
+                  className="font-body text-[10px] uppercase tracking-[0.18em] rounded-full px-2 py-1 bg-perestroika-preto/5 text-perestroika-preto/75"
+                >
+                  {lvl.replace("_", " ")} · {n}
+                </span>
+              );
+            })}
+            {safetyTotal === 0 && (
+              <span className="font-body text-xs text-perestroika-preto/55">nenhum sinal de risco no período.</span>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {(safety?.length ?? 0) > 0 && (
+        <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+          <h2 className="font-display uppercase text-xl mb-4">últimos eventos de segurança</h2>
+          <div className="space-y-2 max-h-80 overflow-auto">
+            {(safety ?? []).slice(0, 20).map((ev) => (
+              <div key={ev.id} className="rounded-xl border border-perestroika-preto/10 bg-white/40 p-3">
+                <div className="flex items-center justify-between gap-3 mb-1">
+                  <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-vermelho">
+                    {ev.risk_level.replace("_", " ")}
+                  </span>
+                  <span className="font-body text-[10px] text-perestroika-preto/55 tabular-nums">
+                    {fmtDate(ev.created_at)}
+                  </span>
+                </div>
+                <p className="font-body text-sm text-perestroika-preto/85 leading-snug">
+                  {ev.message_excerpt}
+                </p>
+                {ev.intervention_shown && (
+                  <p className="font-body text-xs text-perestroika-preto/55 mt-2">
+                    intervenção: {ev.intervention_shown}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display uppercase text-xl">volume diário</h2>
