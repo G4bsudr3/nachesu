@@ -214,30 +214,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/admin/risco"
-                element={
-                  <AdminRoute>
-                    <AdminRisco />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/turma/:courseId"
-                element={
-                  <AdminRoute>
-                    <AdminTurma />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/aluno/:userId"
-                element={
-                  <AdminRoute>
-                    <AdminStudentProfile />
-                  </AdminRoute>
-                }
-              />
+              {/* nada aqui — rotas admin foram movidas pra baixo, dentro do AdminLayout */}
 
               <Route
                 path="/app/eletiva/:slug/marco/:trail"
