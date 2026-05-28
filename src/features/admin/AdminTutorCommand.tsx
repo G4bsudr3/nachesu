@@ -655,6 +655,29 @@ export const AdminTutorCommand = () => {
           </div>
 
           <div className="rounded-xl border border-perestroika-preto/10 p-4 md:col-span-2">
+            <Label className="font-display uppercase text-xs tracking-wide">emails de alerta de segurança</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
+              educadores que recebem email imediato quando o tutor detecta evento severo (autolesão, abuso, etc). um por linha.
+            </p>
+            <Textarea
+              defaultValue={(s.safety_notify_emails ?? []).join("\n")}
+              rows={3}
+              onBlur={(e) => {
+                const list = e.target.value
+                  .split(/[\n,]/)
+                  .map((x) => x.trim().toLowerCase())
+                  .filter((x) => x.includes("@"));
+                const current = (s.safety_notify_emails ?? []).join("|");
+                if (list.join("|") !== current) {
+                  saveSettings.mutate({ safety_notify_emails: list });
+                }
+              }}
+              className="bg-white/60 font-body text-sm"
+              placeholder="dudu@escola.sebraebh.com.br&#10;frattz@naches.com.br"
+            />
+          </div>
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4 md:col-span-2">
             <Label className="font-display uppercase text-xs tracking-wide">addon de instrução</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
               concatenado ao system prompt. use pra ajustes pontuais (ex: "evite jargão técnico").
