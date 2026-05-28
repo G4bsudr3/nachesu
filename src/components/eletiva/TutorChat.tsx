@@ -455,39 +455,45 @@ export const TutorChat = ({
                     </div>
                   </motion.div>
                 )}
-                <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm whitespace-pre-wrap ${
-                      m.role === "user"
-                        ? "bg-perestroika-preto text-perestroika-bege"
-                        : "bg-white/70 border border-perestroika-preto/15"
-                    }`}
-                  >
-                    {m.content || (
-                      <span className="inline-flex items-center gap-2 text-perestroika-preto/50">
-                        <motion.span
-                          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                          transition={{ repeat: Infinity, duration: 1.2 }}
-                        >
-                          <EletivaSymbol size={16} pose="thinking" />
-                        </motion.span>
-                        amassando o barro da resposta...
-                      </span>
+                {m.role === "assistant" && m.safety ? (
+                  <TutorSafetyNotice content={m.content} />
+                ) : (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm whitespace-pre-wrap ${
+                          m.role === "user"
+                            ? "bg-perestroika-preto text-perestroika-bege"
+                            : "bg-white/70 border border-perestroika-preto/15"
+                        }`}
+                      >
+                        {m.content || (
+                          <span className="inline-flex items-center gap-2 text-perestroika-preto/50">
+                            <motion.span
+                              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                              transition={{ repeat: Infinity, duration: 1.2 }}
+                            >
+                              <EletivaSymbol size={16} pose="thinking" />
+                            </motion.span>
+                            amassando o barro da resposta...
+                          </span>
+                        )}
+                      </div>
+                    </motion.div>
+                    {m.role === "assistant" && m.content && !streaming && (
+                      <div className="flex justify-start">
+                        <TutorMessageActions
+                          content={m.content}
+                          trailId={trailId}
+                          isLatest={i === messages.length - 1}
+                        />
+                      </div>
                     )}
-                  </div>
-                </motion.div>
-                {m.role === "assistant" && m.content && !streaming && (
-                  <div className="flex justify-start">
-                    <TutorMessageActions
-                      content={m.content}
-                      trailId={trailId}
-                      isLatest={i === messages.length - 1}
-                    />
-                  </div>
+                  </>
                 )}
               </div>
             ))}
