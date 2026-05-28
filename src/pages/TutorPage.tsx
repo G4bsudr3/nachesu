@@ -307,7 +307,8 @@ const TutorPage = () => {
         <span className="font-display uppercase tracking-[0.15em] text-base sm:text-lg text-perestroika-preto">
           tutor ia
         </span>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
+          <TutorUsageChip />
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button
