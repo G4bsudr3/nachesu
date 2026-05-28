@@ -637,6 +637,7 @@ mensagem do estudante:
     const reader = aiRes.body!.getReader();
     const decoder = new TextDecoder();
     let assistantText = "";
+    let ttfbMs: number | null = null;
 
     const stream = new ReadableStream({
       async start(controller) {
@@ -645,6 +646,9 @@ mensagem do estudante:
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
+            if (ttfbMs === null && value && value.byteLength > 0) {
+              ttfbMs = Date.now() - t0;
+            }
             buffer += decoder.decode(value, { stream: true });
             controller.enqueue(value);
 
@@ -716,6 +720,7 @@ mensagem do estudante:
                 assistant_chars: assistantText.length,
                 tokens_estimate: Math.ceil((message.length + assistantText.length) / 4),
                 latency_ms: latencyMs,
+                ttfb_ms: ttfbMs,
                 off_scope: offScope,
                 model: modelToUse,
               });
