@@ -321,7 +321,16 @@ const TutorPage = () => {
   }, [trails]);
 
   return (
+    <>
+    <TutorConsentModal
+      open={showConsent || consent?.accepted === false}
+      onAccepted={() => {
+        setShowConsent(false);
+        refetchConsent();
+      }}
+    />
     <div className="h-[calc(100dvh-var(--mobile-nav-h,0px))] bg-perestroika-bege flex flex-col overflow-hidden">
+
       <header className="border-b border-perestroika-preto/10 px-4 py-3 flex items-center justify-between bg-perestroika-bege sticky top-0 z-10">
         <Link
           to="/app"
