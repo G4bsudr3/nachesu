@@ -69,12 +69,41 @@ export const AdminTutorCommand = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tutor_settings")
-        .select("id, enabled, per_user_daily_limit, model, system_prompt_addon, updated_at")
+        .select("id, enabled, per_user_daily_limit, model, system_prompt_addon, daily_total_cap, burst_limit_per_minute, daily_total_alert_threshold, updated_at")
         .eq("id", 1)
         .maybeSingle();
       if (error) throw error;
       return data;
     },
+  });
+
+  const { data: safety, isLoading: loadingSafety } = useQuery({
+    queryKey: ["admin-tutor-safety", windowDays],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tutor_safety_events")
+        .select("id, user_id, trail_id, risk_level, risk_score, message_excerpt, intervention_shown, acknowledged_at, created_at")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: todayCounter } = useQuery({
+    queryKey: ["admin-tutor-today-counter"],
+    queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data, error } = await supabase
+        .from("tutor_daily_counters")
+        .select("date, total_count, last_alert_sent_at")
+        .eq("date", today)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    refetchInterval: 60_000,
   });
 
   const { data: digest } = useQuery({
