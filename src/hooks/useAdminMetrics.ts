@@ -52,25 +52,21 @@ const isoDaysAgo = (d: number) => new Date(Date.now() - d * DAY).toISOString();
 async function fetchMetrics(): Promise<AdminMetrics> {
   const start14d = isoDaysAgo(14);
 
-  const [coursesRes, pendRes, trailsRes, modulesRes, releasesRes] = await Promise.all([
+  const [coursesRes, pendRes, trailsRes, modulesRes] = await Promise.all([
     supabase.from("courses").select("id, title, slug").order("order_index"),
     supabase.from("profiles").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("trails").select("id, course_id, order_index"),
     supabase
       .from("modules")
-      .select("id, number, title, trail_id, order_index, published")
+      .select("id, number, title, trail_id, order_index, published, available_from")
       .eq("published", true),
-    supabase
-      .from("module_releases")
-      .select("module_id, available_from")
-      .gte("available_from", new Date().toISOString())
-      .order("available_from", { ascending: true }),
   ]);
 
   const courses = coursesRes.data ?? [];
   const trails = trailsRes.data ?? [];
   const modules = modulesRes.data ?? [];
-  const releases = releasesRes.data ?? [];
+  const nowIso = new Date().toISOString();
+
 
   const trailById = new Map(trails.map((t: any) => [t.id, t]));
   const modulesByCourse = new Map<string, any[]>();
