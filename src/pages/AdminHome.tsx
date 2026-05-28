@@ -1,9 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Sparkles, BarChart3, Flame, TrendingUp, AlertTriangle } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { NachesULogo } from "@/components/brand/NachesULogo";
-import { Badge } from "@/components/ui/badge";
+import { RefreshCw, Sparkles, BarChart3, Flame, TrendingUp, AlertTriangle } from "lucide-react";
 import { useAdminMetrics, type CourseMetrics, type ScopeId } from "@/hooks/useAdminMetrics";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
 import { ActionQueue } from "@/components/admin/home/ActionQueue";
@@ -11,6 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+
 
 const sumCourses = (cs: CourseMetrics[]) => ({
   matriculados: cs.reduce((a, c) => a + c.matriculados_ativos, 0),
@@ -24,7 +22,7 @@ const sumCourses = (cs: CourseMetrics[]) => ({
 });
 
 const AdminHome = () => {
-  const { signOut } = useAuth();
+  
   const { data, isLoading } = useAdminMetrics();
   const { insight, regenerate, regenerating } = useAdminInsight();
   const [scope, setScope] = useState<ScopeId>("all");
@@ -81,24 +79,9 @@ const AdminHome = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
-      <header className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between pt-8 pb-4">
-        <div className="flex items-center gap-3 sm:gap-6">
-          <NachesULogo variant="dark" />
-          <Badge className="bg-perestroika-preto text-perestroika-bege uppercase tracking-wide">
-            admin
-          </Badge>
-        </div>
-        <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm uppercase tracking-wide">
-          <Link to="/app" className="hover:opacity-60 flex items-center gap-1">
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">início</span>
-          </Link>
-          <button onClick={signOut} className="hover:opacity-60">sair</button>
-        </div>
-      </header>
-
+    <div className="text-perestroika-preto font-body">
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
         {/* scope chips */}
         <div className="flex flex-wrap items-center gap-2">
           <button

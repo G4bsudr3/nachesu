@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams, useMatch } from "react-router-dom";
 import { useUrlState } from "@/hooks/useUrlState";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronDown, ChevronRight, Copy, Download, Search } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Download, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { NachesULogo } from "@/components/brand/NachesULogo";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -112,10 +112,12 @@ const TAB_LABELS: Record<AdminTab, string> = {
 };
 
 const AdminFbi = () => {
-  const { signOut } = useAuth();
+  useAuth(); // mantém contexto montado
   const navigate = useNavigate();
   const { tab: tabFromPath } = useParams<{ tab?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const inLegado = !!useMatch("/admin/legado/*");
+  const routePrefix = inLegado ? "/admin/legado" : "/admin";
   const tabRaw = tabFromPath ?? searchParams.get("tab") ?? "";
   const currentTab: AdminTab = (VALID_TABS as readonly string[]).includes(tabRaw)
     ? (tabRaw as AdminTab)
@@ -127,16 +129,17 @@ const AdminFbi = () => {
       const params = new URLSearchParams(searchParams);
       params.delete("tab");
       const qs = params.toString();
-      navigate(`/admin/${currentTab}${qs ? `?${qs}` : ""}`, { replace: true });
+      navigate(`${routePrefix}/${currentTab}${qs ? `?${qs}` : ""}`, { replace: true });
     }
-  }, [tabFromPath, searchParams, currentTab, navigate]);
+  }, [tabFromPath, searchParams, currentTab, navigate, routePrefix]);
 
   const handleTabChange = (v: string) => {
     const params = new URLSearchParams(searchParams);
     params.delete("tab");
     const qs = params.toString();
-    navigate(`/admin/${v}${qs ? `?${qs}` : ""}`, { replace: true });
+    navigate(`${routePrefix}/${v}${qs ? `?${qs}` : ""}`, { replace: true });
   };
+
 
   const [rows, setRows] = useState<FbiRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -251,26 +254,9 @@ const AdminFbi = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
-      <header className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between pt-8 pb-4">
-        <div className="flex items-center gap-6">
-          <NachesULogo variant="dark" />
-          <Badge className="bg-perestroika-preto text-perestroika-bege uppercase tracking-wide">
-            admin
-          </Badge>
-        </div>
-        <div className="flex items-center gap-6 text-sm uppercase tracking-wide">
-          <Link to="/app" className="hover:opacity-60 transition-opacity flex items-center gap-1">
-            <ArrowLeft className="w-4 h-4" />
-            início
-          </Link>
-          <button onClick={signOut} className="hover:opacity-60 transition-opacity">
-            sair
-          </button>
-        </div>
-      </header>
+    <div className="text-perestroika-preto font-body">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -293,7 +279,7 @@ const AdminFbi = () => {
               type="button"
               onClick={() => {
                 const qs = searchParams.toString();
-                const url = `${window.location.origin}/admin/${currentTab}${qs ? `?${qs}` : ""}`;
+                const url = `${window.location.origin}${routePrefix}/${currentTab}${qs ? `?${qs}` : ""}`;
                 navigator.clipboard.writeText(url).then(
                   () => toast.success("link da aba copiado"),
                   () => toast.error("não consegui copiar"),
