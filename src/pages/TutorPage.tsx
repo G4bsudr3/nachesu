@@ -60,6 +60,8 @@ const TutorPage = () => {
   const { data: enrollments } = useMyEnrollments();
   const { slug: activeSlug } = useActiveEletiva();
   const { data: tutorSettings } = useTutorSettings();
+  const { data: consent, refetch: refetchConsent } = useTutorConsent();
+  const [showConsent, setShowConsent] = useState(false);
 
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
