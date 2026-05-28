@@ -321,6 +321,14 @@ export const TutorChat = ({
   };
 
   return (
+    <>
+    <TutorConsentModal
+      open={(open && consent?.accepted === false) || showConsent}
+      onAccepted={() => {
+        setShowConsent(false);
+        refetchConsent();
+      }}
+    />
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
