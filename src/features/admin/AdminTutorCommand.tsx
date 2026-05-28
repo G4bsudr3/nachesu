@@ -90,7 +90,7 @@ export const AdminTutorCommand = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tutor_settings")
-        .select("id, enabled, per_user_daily_limit, model, fallback_model, system_prompt_addon, daily_total_cap, burst_limit_per_minute, daily_total_alert_threshold, updated_at")
+        .select("id, enabled, per_user_daily_limit, model, fallback_model, system_prompt_addon, daily_total_cap, burst_limit_per_minute, daily_total_alert_threshold, safety_notify_emails, updated_at")
         .eq("id", 1)
         .maybeSingle();
       if (error) throw error;
