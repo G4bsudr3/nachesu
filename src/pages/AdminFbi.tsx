@@ -116,6 +116,8 @@ const AdminFbi = () => {
   const navigate = useNavigate();
   const { tab: tabFromPath } = useParams<{ tab?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const inLegado = !!useMatch("/admin/legado/*");
+  const routePrefix = inLegado ? "/admin/legado" : "/admin";
   const tabRaw = tabFromPath ?? searchParams.get("tab") ?? "";
   const currentTab: AdminTab = (VALID_TABS as readonly string[]).includes(tabRaw)
     ? (tabRaw as AdminTab)
@@ -127,16 +129,17 @@ const AdminFbi = () => {
       const params = new URLSearchParams(searchParams);
       params.delete("tab");
       const qs = params.toString();
-      navigate(`/admin/${currentTab}${qs ? `?${qs}` : ""}`, { replace: true });
+      navigate(`${routePrefix}/${currentTab}${qs ? `?${qs}` : ""}`, { replace: true });
     }
-  }, [tabFromPath, searchParams, currentTab, navigate]);
+  }, [tabFromPath, searchParams, currentTab, navigate, routePrefix]);
 
   const handleTabChange = (v: string) => {
     const params = new URLSearchParams(searchParams);
     params.delete("tab");
     const qs = params.toString();
-    navigate(`/admin/${v}${qs ? `?${qs}` : ""}`, { replace: true });
+    navigate(`${routePrefix}/${v}${qs ? `?${qs}` : ""}`, { replace: true });
   };
+
 
   const [rows, setRows] = useState<FbiRow[]>([]);
   const [loading, setLoading] = useState(true);
