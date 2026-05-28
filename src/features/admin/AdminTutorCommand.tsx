@@ -509,6 +509,55 @@ export const AdminTutorCommand = () => {
             </Select>
           </div>
 
+          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+            <Label className="font-display uppercase text-xs tracking-wide">cap total diário</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">teto agregado de mensagens da turma por dia.</p>
+            <Input
+              type="number"
+              min={0}
+              defaultValue={s.daily_total_cap ?? 2000}
+              onBlur={(e) => {
+                const n = parseInt(e.target.value, 10);
+                if (!Number.isNaN(n) && n !== s.daily_total_cap) saveSettings.mutate({ daily_total_cap: n });
+              }}
+              className="bg-white/60"
+            />
+          </div>
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+            <Label className="font-display uppercase text-xs tracking-wide">burst por minuto</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">limite de mensagens por estudante em 60s.</p>
+            <Input
+              type="number"
+              min={1}
+              defaultValue={s.burst_limit_per_minute ?? 10}
+              onBlur={(e) => {
+                const n = parseInt(e.target.value, 10);
+                if (!Number.isNaN(n) && n !== s.burst_limit_per_minute) saveSettings.mutate({ burst_limit_per_minute: n });
+              }}
+              className="bg-white/60"
+            />
+          </div>
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+            <Label className="font-display uppercase text-xs tracking-wide">alerta de cap (%)</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">% do cap pra acionar alerta visual (ex: 80).</p>
+            <Input
+              type="number"
+              min={1}
+              max={100}
+              defaultValue={Math.round((s.daily_total_alert_threshold ?? 0.8) * 100)}
+              onBlur={(e) => {
+                const n = parseInt(e.target.value, 10);
+                if (!Number.isNaN(n) && n >= 1 && n <= 100) {
+                  const v = n / 100;
+                  if (v !== s.daily_total_alert_threshold) saveSettings.mutate({ daily_total_alert_threshold: v });
+                }
+              }}
+              className="bg-white/60"
+            />
+          </div>
+
           <div className="rounded-xl border border-perestroika-preto/10 p-4 md:col-span-2">
             <Label className="font-display uppercase text-xs tracking-wide">addon de instrução</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
