@@ -594,5 +594,6 @@ export const TutorChat = ({
         </form>
       </SheetContent>
     </Sheet>
+    </>
   );
 };
