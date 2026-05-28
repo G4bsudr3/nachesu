@@ -56,6 +56,7 @@ const TutorPage = () => {
   const queryClient = useQueryClient();
   const { data: enrollments } = useMyEnrollments();
   const { slug: activeSlug } = useActiveEletiva();
+  const { data: tutorSettings } = useTutorSettings();
 
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
