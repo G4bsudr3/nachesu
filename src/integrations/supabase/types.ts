@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_insights: {
+        Row: {
+          created_at: string
+          generated_at: string
+          id: string
+          model: string | null
+          period_end: string | null
+          period_start: string | null
+          raw_metrics: Json | null
+          scope: string
+          summary_md: string
+        }
+        Insert: {
+          created_at?: string
+          generated_at?: string
+          id?: string
+          model?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          raw_metrics?: Json | null
+          scope?: string
+          summary_md: string
+        }
+        Update: {
+          created_at?: string
+          generated_at?: string
+          id?: string
+          model?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          raw_metrics?: Json | null
+          scope?: string
+          summary_md?: string
+        }
+        Relationships: []
+      }
       admin_messages: {
         Row: {
           author_id: string
