@@ -31,15 +31,20 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
 
-    // 1. busca evento
+    // 1. busca evento (schema usa risk_level/risk_score/message_excerpt + message_redacted)
     const { data: ev, error: evErr } = await supabase
       .from('tutor_safety_events')
-      .select('id, user_id, category, severity, message_redacted, trail_id, created_at')
+      .select('id, user_id, risk_level, risk_score, message_redacted, message_excerpt, trail_id, created_at')
       .eq('id', body.safety_event_id)
       .single()
     if (evErr || !ev) {
       return json({ error: 'event not found' }, 404)
     }
+    const category = ev.risk_level as string
+    const severity = (ev.risk_score ?? 0) >= 0.8 ? 'high' : (ev.risk_score ?? 0) >= 0.5 ? 'medium' : 'low'
+    const redacted = (ev.message_redacted && ev.message_redacted.trim().length > 0)
+      ? ev.message_redacted
+      : '(trecho anonimizado indisponível — abre o painel pra ver o evento)'
 
     // 2. busca settings (lista de emails de educadores)
     const { data: settings } = await supabase
