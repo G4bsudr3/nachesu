@@ -1,9 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Sparkles, BarChart3, Flame, TrendingUp, AlertTriangle } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { NachesULogo } from "@/components/brand/NachesULogo";
-import { Badge } from "@/components/ui/badge";
+import { RefreshCw, Sparkles, Flame, TrendingUp, AlertTriangle } from "lucide-react";
 import { useAdminMetrics, type CourseMetrics, type ScopeId } from "@/hooks/useAdminMetrics";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
 import { ActionQueue } from "@/components/admin/home/ActionQueue";
@@ -11,6 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+
 
 const sumCourses = (cs: CourseMetrics[]) => ({
   matriculados: cs.reduce((a, c) => a + c.matriculados_ativos, 0),
