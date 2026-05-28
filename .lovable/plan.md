@@ -1,139 +1,175 @@
-# Fase A — Tutor IA pronto pra menor de idade
+## Plano D — Proteção máxima de dados e safety do Tutor IA
 
-Foco único: travar os 4 riscos que impedem a turma real (14-15 anos) de entrar em contato com o tutor. Nada de UX nova, nada de dashboard novo. Só os guardrails.
+Premissa do usuário: proteger ao máximo dados e conversas, alertar em assuntos perigosos/proibidos, **sem** exigir consentimento de responsável. Se não der pra fazer com segurança, limita ou desliga.
 
-**Importante:** depois que a Fase A estiver finalizada com excelência (testada com casos reais de risco, custo simulado, burst simulado, LGPD revisada), seguimos direto pra **Fase B** (drill-down de mensagens, off-scope real, comparação temporal, alinhamento de janela do digest) e depois **Fase C** (polimento: contexto de pílula, latência TTFB, retenção de insights, feedback estruturado, alinhamento policy/função, render do TutorContextChip, a11y, fallback de modelo). Os 3 planos já estão mapeados nos 16 gaps; A é só o que não pode esperar.
+Resposta direta: dá pra fazer com segurança, **desde que** aceitemos 3 trade-offs duros:
+1. menos retenção de dados (perde análise longitudinal),
+2. menos liberdade de tema (tutor recusa o que não é da eletiva),
+3. escalação humana ativa (educador precisa receber alerta, não só ver painel).
 
----
-
-## 1. Camada de segurança emocional (gap 1)
-
-Adicionar **classificador de risco** rodando antes da resposta do tutor.
-
-**Backend (`tutor-trail-chat`):**
-- Antes de chamar o modelo principal, classificar a mensagem do estudante em 5 níveis: `safe`, `emotional_distress`, `bullying`, `self_harm`, `abuse`. Classificação via Gemini Flash Lite com prompt curto e estruturado (output JSON), barata e rápida.
-- Se nível `safe`: fluxo normal.
-- Se qualquer outro nível: **não chamar o tutor**. Devolver resposta empática pré-aprovada por nível, sem improvisar, com encaminhamento (CVV 188, Disque 100, orientador escolar) e abrir registro em `tutor_safety_events`.
-- Logar nível detectado, score, prompt e resposta entregue.
-
-**Banco (`tutor_safety_events`):**
-- Campos: `id`, `user_id`, `trail_id`, `module_id`, `message_excerpt` (primeiros 240 chars), `risk_level`, `risk_score`, `model_used`, `intervention_shown`, `acknowledged_at`, `reviewed_by_admin_id`, `admin_notes`, `created_at`.
-- RLS: só admin lê/atualiza; estudante nunca lê.
-- GRANT padrão pra `authenticated` + `service_role`.
-
-**Frontend (`TutorChat`):**
-- Quando backend devolver intervenção de risco, renderizar bolha especial (variante `SafetyNotice`) com tom acolhedor, contatos de apoio e botão "estou bem, voltar". Sem mascote celebrando, sem starter prompts.
-- Componente novo `TutorSafetyNotice.tsx`.
-
-**Admin:**
-- Mini-seção no `AdminTutorCommand` listando últimos 20 eventos de segurança, com filtro por nível, ação "marcar como revisado" e campo de nota. Não é dashboard completo (isso é Fase B), só um painel de alerta.
+Se algum desses 3 for inaceitável, a recomendação muda pra **desligar o tutor IA** e oferecer só FAQ + canal direto com educador.
 
 ---
 
-## 2. LGPD e retenção (gap 2)
+### 1. Minimização e retenção agressiva (proteção de dados)
 
 **Banco:**
-- Adicionar coluna `retention_until` em `tutor_message_events` (default `now() + interval '90 days'`).
-- Criar função `cleanup_tutor_events()` que apaga eventos com `retention_until < now()`.
-- Agendar via `pg_cron` diariamente às 03h BRT (usar `supabase--insert`, não migração, conforme regra de cron).
-- Mesma lógica pra `tutor_safety_events` mas com retenção 365 dias (eventos sensíveis precisam mais tempo de auditoria).
-
-**Edge function `tutor-admin-digest`:**
-- Antes de mandar amostra pro modelo, passar por função `anonymizeMessage(text)`: remover nomes próprios (heurística simples: tokens capitalizados após "eu sou/me chamo/sou o/sou a"), emails, telefones, @handles, links. Substituir por `[nome]`, `[email]` etc.
-- Adicionar campo `anonymized: true` no insert em `admin_insights`.
-
-**Onboarding / consentimento:**
-- Adicionar microcopy no primeiro acesso ao tutor (modal único, 1 vez por estudante, persistido em `profiles.tutor_consent_at`): "suas perguntas ficam guardadas por até 90 dias pra melhorar o tutor. educadores podem ver agregados anônimos. mensagens em situação de risco ficam por 365 dias pra acompanhamento."
-- Botão "entendi" obrigatório pra usar o tutor.
-- Coluna nova em `profiles`: `tutor_consent_at timestamptz`.
-
----
-
-## 3. Cap de custo global (gap 3)
-
-**Banco (`tutor_settings`):**
-- Adicionar colunas: `daily_total_cap int default 2000` (perguntas/dia total), `daily_total_alert_threshold numeric default 0.8`.
-- Adicionar tabela `tutor_daily_counters` (`date date primary key, total_count int default 0, last_alert_sent_at timestamptz`) — contador rápido sem precisar agregar `tutor_message_events` toda chamada.
+- `tutor_message_events.retention_until` baixa de 90d → **30d** (suficiente pra revisão pedagógica e ajuste de prompt).
+- `tutor_safety_events.retention_until` mantém 365d (auditoria legal exige).
+- **Não armazenar texto cru** da mensagem em `tutor_message_events`. Substituir `message_excerpt` por:
+  - `message_hash` (sha256 da mensagem original, pra deduplicação),
+  - `message_redacted` (texto já anonimizado via LLM antes do insert),
+  - `message_length`, `language`, `topic_tag` (classificação curta).
+- Texto original só existe **em memória durante a request**, nunca persistido.
+- `tutor_safety_events.message_excerpt` continua salvando texto cru (necessário pra educador entender risco real), mas com acesso restrito (ver item 4).
 
 **Edge function `tutor-trail-chat`:**
-- Antes do fetch ao modelo, ler/incrementar contador do dia (BRT) com `UPDATE ... RETURNING` atômico.
-- Se total ≥ `daily_total_cap`: devolver erro 429 com mensagem "tutor pausado por hoje, volta amanhã" e logar evento.
-- Se passou do threshold (80% por padrão) e `last_alert_sent_at` é null ou de outro dia: gravar `admin_insights` com `scope='cost_alert'` e marcar `last_alert_sent_at`.
+- Pipeline obrigatório antes de qualquer insert: classificar → redact via LLM → hash → grava redacted.
+- Se redact falhar, **não grava nada** (fail-closed) e loga só métricas anônimas (latência, modelo, status).
 
-**Admin (`AdminTutorCommand`):**
-- Card extra "uso do dia": X de Y perguntas, barra de progresso, cor de alerta acima de 80%.
-
----
-
-## 4. Burst rate-limit (gap 16)
-
-**Edge function `tutor-trail-chat`:**
-- Adicionar verificação de janela curta: contar mensagens do `user_id` nos últimos 60 segundos via `tutor_message_events`.
-- Se ≥ 10 em 60s: devolver 429 com mensagem "calma, você mandou muitas perguntas seguidas. respira e tenta de novo em alguns segundos".
-- Limite configurável em `tutor_settings.burst_limit_per_minute int default 10`.
-
-**Frontend (`TutorChat`):**
-- Tratar 429 sem quebrar o chat: bolha de aviso curta, input liberado depois de 30s com countdown.
+**Cron:**
+- `cleanup_tutor_events()` já existe. Adicionar varredura diária extra que apaga qualquer linha com texto cru em `tutor_message_events` se algum bug fizer vazar.
 
 ---
 
-## Resumo técnico de arquivos
+### 2. Classificador de risco com fail-closed (assuntos perigosos)
 
-**Migração:**
-- `tutor_safety_events` (tabela + RLS + GRANTs)
-- `profiles.tutor_consent_at` (coluna)
-- `tutor_settings`: `daily_total_cap`, `daily_total_alert_threshold`, `burst_limit_per_minute`
-- `tutor_message_events.retention_until` + `tutor_safety_events.retention_until`
-- `tutor_daily_counters` (tabela + RLS service-role only)
-- função `cleanup_tutor_events()`
+**5 níveis** já no plano: `safe`, `emotional_distress`, `bullying`, `self_harm`, `abuse`.
 
-**Insert tool (não migração, contém URL+anon key):**
-- `pg_cron` agendando `cleanup_tutor_events()` diário 03h BRT
+**Endurecer:**
+- Classificador roda **antes** de qualquer chamada ao tutor (Gemini Flash Lite, JSON estruturado).
+- Se classificador falhar (timeout, 5xx, JSON inválido): **não chama tutor**. Devolve mensagem neutra "tô com problema técnico agora, tenta de novo em instantes" + grava `tutor_safety_events` com `risk_level='classifier_failure'`.
+- Resposta de risco é **template fixo por nível** (não gerada por IA), com:
+  - validação emocional curta,
+  - CVV 188, Disque 100, orientador escolar Sebrae (telefone real precisa ser confirmado com Sebrao),
+  - botão "voltar" e botão "falar com educador agora" (abre canal interno, não email externo).
+- Teste adversarial obrigatório antes de liberar: **30 mensagens curadas** (gírias 14-15a, abreviações, code-switch, ironia, falsos positivos como "personagem do livro se cortou"). Aceitar só com ≥90% de acerto.
+
+---
+
+### 3. Escopo travado (assuntos proibidos)
+
+Hoje `scope_forbidden_terms` existe mas só bloqueia publicação de pílula. Estender pro tutor:
+- **Pergunta do estudante** passa por checagem de escopo (já parcialmente na Fase B). Se cair fora do escopo da eletiva matriculada: tutor recusa educadamente ("isso é tema da outra eletiva / não é o que a gente estuda aqui, mas posso te ajudar com X").
+- **Categorias sempre proibidas** (independente da eletiva): conteúdo sexual, violência gráfica, drogas, política partidária, religião, dados pessoais de terceiros. Lista hardcoded + revisável pelo admin.
+- Recusa também é template fixo, não improvisada.
+
+---
+
+### 4. Escalação humana ativa (sem responsável, educador é a rede)
+
+Já que não vamos pedir consentimento do responsável, **a escola assume papel de cuidado**. Sem isso, alertar risco é teatro.
+
+**Nova tabela `tutor_safety_escalations`:**
+- `safety_event_id`, `notified_educator_id`, `notified_at`, `acknowledged_at`, `offline_followup_at`, `followup_notes`, `closed_at`.
+
+**Edge function nova `tutor-safety-notify`** (chamada por trigger em `tutor_safety_events`):
+- Para `self_harm` e `abuse`: notificação imediata via **email transacional** (App Emails nativo) pro educador da eletiva + admin (frattz). SLA 2h.
+- Para `bullying` e `emotional_distress`: email agregado a cada 4h.
+- Notificação inclui link pro painel admin, **não inclui texto cru no email** (privacidade); educador precisa logar pra ver.
+
+**Painel admin:**
+- Fila "precisa de atenção" no topo do `AdminTutorCommand`, ordenada por nível + tempo aberto.
+- Cada item exige: marcar como visto → registrar follow-up offline → fechar com nota.
+- Métrica visível: tempo médio até acknowledgement (se passar de SLA, banner vermelho).
+
+**Documento operacional** (não é código, é prerrequisito):
+- Protocolo escrito "o que fazer quando recebo alerta de risco" assinado por Dudu, frattz e contato Sebrao. Sem esse doc, não liga o tutor.
+
+---
+
+### 5. Caps justos por estudante (proteção contra abuso e custo)
+
+- Substituir cap global por **cap por estudante/dia**: 40 perguntas/dia/aluno (configurável em `tutor_settings.per_user_daily_cap`).
+- Cap global vira circuit breaker em valor bem alto (10k), só pra abuso sistêmico.
+- Burst escalonado: 5/min aviso suave, 8/min pausa 30s, 10/min pausa 2min + grava `burst_pattern`.
+- Quando estudante bate cap: mensagem "voltei amanhã" + **textarea local** (localStorage, não persistido no banco) pra ele anotar a dúvida sem perder.
+
+---
+
+### 6. Aviso ao estudante (substitui o consentimento de responsável)
+
+Como não pedimos autorização de responsável, **aumentamos a transparência ativa pro estudante**:
+- Modal único na primeira vez (`profiles.tutor_acknowledgment_at`), linguagem direta 14-15a:
+  > "suas perguntas ficam guardadas anonimizadas por 30 dias pra ajudar a melhorar o tutor.
+  > teu educador pode ver perguntas comuns da turma, sem teu nome.
+  > se você escrever sobre se machucar, sofrer bullying ou estar em perigo, teu educador é avisado na hora. isso existe pra te proteger.
+  > o tutor não é terapeuta nem amigo. pra desabafo de verdade, fala com gente. tô aqui pra te ajudar a aprender."
+- Botão "entendi, bora" + link permanente pra ler de novo no perfil.
+- Banner persistente discreto no header do chat: "anonimizado · 30d · alertas vão pro educador".
+
+---
+
+### 7. Critério "go / no-go" do tutor IA
+
+**Liga o tutor só se TODOS forem verdade:**
+1. Pipeline classificador → redact → insert testado com 30 casos adversariais (≥90% acerto, 0 falso negativo em `self_harm`/`abuse`).
+2. Email de escalação chega em ≤5min nos dois educadores reais (teste E2E).
+3. Protocolo offline assinado por Dudu + frattz + contato Sebrao.
+4. Redação LLM validada em 20 mensagens com PII variada (0 vazamentos).
+5. Cap por estudante e burst escalonado funcionando.
+6. Modal de aviso aprovado por leitura de 3 estudantes-teste (entendimento real, não jurídico).
+
+**Se qualquer um falhar:** desliga `tutor-trail-chat` (feature flag `tutor_enabled=false` em `tutor_settings`), substitui UI do tutor por:
+- FAQ estático curado por Dudu + frattz por eletiva,
+- botão "mandar dúvida pro educador" (abre `module_deliverable_messages` ou cria fluxo equivalente),
+- mascote joão-de-barro em pose `resting` com microcopy "o tutor IA tá em ajuste. enquanto isso, manda direto pro educador, tá rápido também."
+
+---
+
+### Resumo de mudanças vs plano anterior
+
+**Remove:**
+- Consentimento de responsável (Fase A.5 que eu havia sugerido na análise anterior). Substituído por aviso direto ao estudante + escalação ativa.
+- Armazenamento de texto cru em `tutor_message_events`.
+- Cap global como mecanismo primário.
+
+**Adiciona:**
+- Pipeline redact obrigatório antes de qualquer insert.
+- `tutor_safety_escalations` + edge function `tutor-safety-notify` + emails transacionais.
+- Cap por estudante + burst escalonado.
+- Feature flag `tutor_enabled` com fallback UI completo.
+- Critério "go / no-go" com 6 testes objetivos.
+
+**Mantém da Fase A/B/C já feita:**
+- Estrutura de `tutor_safety_events`, `tutor_settings`, classificador, TTFB, fallback de modelo, retenção via cron, anonimização do digest, painel admin (que ganha fila de escalação).
+
+---
+
+### Arquivos afetados
+
+**Migrações:**
+- alterar `tutor_message_events`: remover `message_excerpt`, adicionar `message_hash`, `message_redacted`, `message_length`, `language`, `topic_tag`. Baixar default de `retention_until` pra 30d.
+- nova tabela `tutor_safety_escalations` + RLS + GRANTs.
+- nova coluna `tutor_settings.per_user_daily_cap`, `tutor_settings.tutor_enabled`.
+- nova coluna `profiles.tutor_acknowledgment_at` (renomeia/cria — `tutor_consent_at` existente vira esse).
+- trigger em `tutor_safety_events` chamando `tutor-safety-notify`.
 
 **Edge functions:**
-- `tutor-trail-chat`: classificador de risco + cap global + burst + consentimento check
-- `tutor-admin-digest`: anonimização antes do prompt
+- `tutor-trail-chat`: pipeline classificador → redact LLM → hash → insert; cap por estudante; burst escalonado; fail-closed em todo lugar; respeita `tutor_enabled`.
+- `tutor-safety-notify` (nova): envia email transacional + cria linha em `tutor_safety_escalations`.
+- `tutor-admin-digest`: já anonimiza; passar a usar `message_redacted` direto (sem precisar reanonimizar).
 
 **Frontend:**
-- `TutorSafetyNotice.tsx` (novo)
-- `TutorConsentModal.tsx` (novo, 1x por estudante)
-- `TutorChat.tsx`: integrar safety notice + tratamento 429
-- `TutorPage.tsx`: gate de consentimento
-- `AdminTutorCommand.tsx`: card de custo do dia + lista de eventos de segurança
+- `TutorChat.tsx`: banner de transparência permanente, novo modal de aviso, fallback completo quando `tutor_enabled=false`, textarea local quando bate cap, tratamento de "falar com educador agora" no safety notice.
+- `TutorConsentModal.tsx` → renomeia pra `TutorAcknowledgmentModal.tsx`, copy nova.
+- `TutorSafetyNotice.tsx`: adiciona botão "falar com educador agora".
+- `AdminTutorCommand.tsx`: fila de escalação no topo, SLA visual, fluxo acknowledge → followup → close, toggle `tutor_enabled` global.
+- novo `TutorFallbackPanel.tsx`: FAQ + canal pro educador, usado quando tutor desligado ou em "go/no-go" pendente.
+
+**Documento (não-código, prerrequisito):**
+- protocolo de resposta a risco assinado por Dudu + frattz + Sebrao, versionado em `.lovable/protocolo-tutor-safety.md`.
 
 ---
 
-## Critério de "excelência" pra liberar Fase B
+### Ordem sugerida de execução
 
-1. Teste manual com 5 mensagens de risco simuladas (cada nível): tutor não responde, intervenção aparece, evento registrado.
-2. Teste de burst: 12 mensagens em 30s do mesmo usuário → bloqueio na 11ª.
-3. Teste de cap global: setar `daily_total_cap=3` temporariamente e validar 429 + alerta em `admin_insights`.
-4. Digest rodado em ambiente com dados reais: confirmar visualmente que nomes/emails foram mascarados.
-5. Cron `cleanup_tutor_events` rodado manualmente sem erro.
-6. Modal de consentimento aparece 1x e persiste decisão.
+1. Migração de schema (retenção, redact fields, escalations, flag).
+2. Pipeline redact + classificador fail-closed em `tutor-trail-chat`.
+3. `tutor-safety-notify` + emails + fila no admin.
+4. Cap por estudante + burst escalonado.
+5. Modal de aviso + banner + fallback UI.
+6. Bateria dos 6 testes do "go / no-go".
+7. Só então: ativar `tutor_enabled=true` em produção.
 
-Depois disso, abrir o plano da **Fase B** (drill-down, off-scope baseado em `scope_forbidden_terms`, comparação temporal, alinhar janela do digest).
-
----
-
-# Fase C — Polimento técnico (concluída)
-
-Foco: refinar instrumentação, robustez e UX miúda do tutor agora que segurança (A) e análise admin (B) estão de pé.
-
-## Mudanças
-
-1. **TTFB (time-to-first-byte)** — capturado no proxy do stream e gravado em `tutor_message_events.ttfb_ms`. KPI novo "ttfb mediano" no painel admin, separado da latência total.
-2. **Fallback de modelo** — `tutor_settings.fallback_model` (default `gemini-2.5-flash-lite`). Se o principal responder 5xx/429/408, tutor tenta o fallback automaticamente e envia headers `x-tutor-model` + `x-tutor-fallback` na resposta.
-3. **Feedback estruturado** — `tutor_message_events.helpful_reason` aceita 5 motivos pré-definidos (`confuso`, `fora_do_tema`, `longo_demais`, `errado`, `nao_ajudou`). `TutorMessageActions` mostra chips após o polegar pra baixo. Painel admin agrega top motivos.
-4. **Retenção de insights** — `admin_insights.retention_until` (default 180d) + função `cleanup_admin_insights()` agendada via `pg_cron` 03h05 BRT.
-5. **TutorContextChip renderizado** — agora aparece no header do chat quando há pílula/módulo ativo, confirmando ao estudante o que o tutor está considerando.
-6. **Alinhamento policy/função** — janela do `tutor-rate-message` ampliada pra 60min, batendo com a policy de update do banco.
-7. **A11y** — `role="log"` + `aria-live="polite"` na lista de mensagens, `aria-busy` durante streaming, `aria-label` no textarea, `aria-pressed` nos botões de rating, `focus-visible:ring` nos controles do TutorMessageActions.
-
-## Arquivos
-- `supabase/functions/tutor-trail-chat/index.ts` (TTFB, fallback de modelo, headers de observabilidade)
-- `supabase/functions/tutor-rate-message/index.ts` (reason + janela 60min)
-- `src/components/chora-bot/TutorMessageActions.tsx` (chips de motivo + a11y)
-- `src/components/eletiva/TutorChat.tsx` (TutorContextChip + a11y do log)
-- `src/features/admin/AdminTutorCommand.tsx` (KPI ttfb mediano, top motivos, select de fallback model)
-- migrações: colunas novas em `tutor_message_events`, `tutor_settings` e `admin_insights`; função `cleanup_admin_insights()` + cron diário.
+Pronto pra implementar quando aprovar. Se quiser, posso também já desenhar o template do email de escalação e o esqueleto do protocolo offline pra Dudu/frattz revisarem.
