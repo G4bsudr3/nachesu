@@ -220,10 +220,11 @@ async function fetchMetrics(): Promise<AdminMetrics> {
       else dist.dormente++;
     });
 
-    // próximo módulo
-    const courseModuleIdSet = new Set(courseModuleIds);
-    const nextRelease = releases.find((r: any) => courseModuleIdSet.has(r.module_id));
-    const nextMod = nextRelease ? courseModules.find((m) => m.id === nextRelease.module_id) : null;
+    // próximo módulo: o de menor available_from no futuro
+    const futureMods = courseModules
+      .filter((m) => m.available_from && m.available_from > nowIso)
+      .sort((a, b) => (a.available_from as string).localeCompare(b.available_from as string));
+    const nextMod = futureMods[0] ?? null;
 
     result.push({
       id: c.id,
@@ -234,8 +235,9 @@ async function fetchMetrics(): Promise<AdminMetrics> {
       em_risco: risks.filter((r) => ["medium", "high", "lost"].includes(r.risk_level)).length,
       em_risco_critico: risks.filter((r) => r.risk_level === "lost").length,
       modulo_proximo: nextMod
-        ? { number: nextMod.number, title: nextMod.title, release_at: (nextRelease as any).available_from }
+        ? { number: nextMod.number, title: nextMod.title, release_at: nextMod.available_from as string }
         : null,
+
       funnel: {
         matriculados,
         primeiro_login: usersWithAnyActivity.size,
