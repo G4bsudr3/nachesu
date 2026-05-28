@@ -1,116 +1,158 @@
-
 ## escopo
 
-fechar o que ficou em aberto do plano admin antes de tocar no tutor IA:
+instrumentar o tutor IA pra ter dados, dar controle pro admin e refinar a experiência do estudante. nada de RAG, nada de mexer em `tutor_conversations` (segue sendo a fonte de histórico).
 
-1. plugar a rota `/admin` → `AdminHome` (command center) e mover o `AdminFbi` legado pra `/admin/legado`.
-2. envelopar todas as rotas admin num `AdminLayout` com **shadcn sidebar** (colapsável, com gatilho sempre visível).
-3. adicionar **command palette** global (`cmdk`) com atalho `cmd/ctrl+k` pra pular entre seções.
-4. configurar **redirects** das URLs antigas (`/admin/fbi`, `/admin/prework`, `/admin/chora-bot`, etc.) pra `/admin/legado/:tab` mantendo deep-link.
-5. atualizar `.lovable/plan.md` e validar build.
+## diagnóstico do código atual
 
-## diagnóstico do que falta
+- **edge function `tutor-trail-chat`** já recebe `trail_id`, `module_id`, `pill_prompt`, `pill_title`, stream-proxy do Gemini Flash, persiste em `tutor_conversations` (linhas 388-397). bom ponto pra adicionar logging + gating.
+- **duas superfícies** consomem essa função:
+  1. `src/pages/TutorPage.tsx` (full-page, trilha switcher, sem contexto de pílula).
+  2. `src/components/eletiva/TutorChat.tsx` (Sheet dentro do módulo, com `pillContext` + `moduleId`).
+- **`tutor_conversations`** é jsonb único por (user_id, trail_id). zero granularidade por troca.
+- **`AdminTutor.tsx`** (223 linhas) lê tudo de `tutor_conversations`, agrega no client. nenhuma métrica de latência, modelo, off-scope ou rating.
+- **zero controles operacionais**: sem kill switch, sem limite por aluno, sem addon de system prompt, sem troca de modelo.
 
-- `src/pages/AdminHome.tsx` já existe (command center pronto), mas `App.tsx` linha 381 ainda renderiza `AdminFbi` em `/admin` — o command center não tá no ar.
-- todas as outras rotas admin (`/admin/risco`, `/admin/turma/:courseId`, `/admin/aluno/:userId`, `/admin/certificate-sandbox`, `/admin/aula/:n`) vivem soltas, cada página com header próprio. zero shell comum, zero nav lateral.
-- `AdminFbi.tsx` (645 linhas) é o "menu de 22 abas" com `Tabs` que opera tudo via `/admin/:tab`. já tem split visual entre "operação NachesU" (sempre visível) e "ferramentas Chŏra (legado)" colapsadas, mas tudo no mesmo arquivo. mover pra `/admin/legado` resolve o ruído sem perder funcionalidade.
-- nenhum command palette existe ainda. `cmdk` não está nas deps.
+## backend (1 migração + 2 funções novas + 1 edit)
 
-## o que muda
+### nova tabela `tutor_message_events`
 
-### 1. `AdminLayout.tsx` com sidebar
+1 linha por troca user→tutor. campos: `id uuid pk`, `user_id uuid`, `course_id uuid null`, `trail_id uuid`, `module_id uuid null`, `pill_title text null`, `user_chars int`, `assistant_chars int`, `tokens_estimate int` (chars/4), `latency_ms int`, `off_scope bool` (heurística por regex), `helpful smallint null` (1=👍 / -1=👎), `created_at timestamptz default now()`. índices: `(created_at desc)`, `(trail_id, created_at desc)`, `(user_id, created_at desc)`.
 
-novo arquivo `src/components/admin/layout/AdminLayout.tsx`:
+RLS: SELECT só admin. INSERT/UPDATE só service_role (escrito pela edge function). GRANT a `authenticated` (SELECT) + `service_role` (ALL).
 
-- `<SidebarProvider>` em volta de tudo, `div` raiz `w-full min-h-dvh bg-perestroika-bege`.
-- `<AdminSidebar />` com `collapsible="icon"` (mantém faixa estreita com ícones quando colapsada).
-- header sticky (`h-12`, `border-b border-perestroika-preto/10`) com `<SidebarTrigger />` à esquerda + breadcrumb + atalho `cmd+k` indicado.
-- `<Outlet />` no main.
-- componente compartilha mascote `<EletivaSymbol pose="thinking" />` mini no rodapé da sidebar (signature moment leve).
+### nova tabela `tutor_settings` (singleton id=1)
 
-`src/components/admin/layout/AdminSidebar.tsx`:
+`id int pk default 1 check (id=1)`, `enabled bool default true`, `per_user_daily_limit int default 50` (0 = sem limite), `model text default 'google/gemini-2.5-flash'`, `system_prompt_addon text null`, `updated_by uuid null`, `updated_at timestamptz default now()`. RLS: SELECT a `authenticated` (o cliente precisa ler `enabled` pra renderizar avisos), UPDATE só admin via `has_role`. seed inicial via INSERT na migration.
 
-- 2 grupos de navegação, mapeando rotas que **já existem** (não invento destino novo):
-  - **operação** (sempre aberto): início (`/admin`), eletivas (`/admin/eletivas`), revisão (`/admin/review`), trilha (`/admin/trilha`), tutor IA (`/admin/tutor`), feedback (`/admin/feedback`), pendentes (`/admin/pending`), materiais (`/admin/materiais`), risco (`/admin/risco`), usuários (`/admin/usuarios`), nudges (`/admin/nudges`), rubricas (`/admin/rubricas`), settings (`/admin/eletiva`).
-  - **legado Chŏra** (collapsible, `defaultOpen` se `pathname` começa com `/admin/legado`): fbi, pré-work, missões, cartas, artworks, convidados, emails, feedback dia 1, pesquisa final, carta futuro, votação projetos, chora bot.
-- ícones via `lucide-react` (Home, BookOpen, Compass, Brain, Inbox, Hourglass, Package, AlertTriangle, Users, Bell, ClipboardList, Settings, Archive, etc.).
-- `NavLink` + `isActive`, classes Perestroika (`bg-perestroika-preto/5` ativo, hover suave). botão "sair" no `SidebarFooter`.
+### edição `supabase/functions/tutor-trail-chat/index.ts`
 
-### 2. rotas em `App.tsx`
+- no início: carrega `tutor_settings`. se `enabled=false` → 503 `{ error: "tutor pausado pela equipe" }`.
+- se `per_user_daily_limit > 0`: conta `tutor_message_events` do `user_id` desde 00:00 (timezone BRT). se ≥ limite → 429 com `retry_after = amanhã`.
+- usa `tutor_settings.model` (fallback pro hardcoded atual).
+- se `tutor_settings.system_prompt_addon` não null, concatena no final do system prompt.
+- mede `t0 = Date.now()` antes do fetch, `latency_ms = Date.now() - t0` no `finally`.
+- detecta off-scope com regex simples na resposta: `/foge\s+um\s+pouco\s+daqui|isso aí o .+ resolve melhor/i` (frases canônicas do prompt).
+- no `finally` (depois do upsert em `tutor_conversations`), faz `admin.from('tutor_message_events').insert({...})` com tudo.
 
-- envolver todo o bloco admin num `<Route element={<AdminRoute><AdminLayout/></AdminRoute>}>`.
-- dentro:
-  - `path="/admin"` → `<AdminHome />` (novo command center, já pronto).
-  - `path="/admin/risco"` → `AdminRisco`.
-  - `path="/admin/turma/:courseId"` → `AdminTurma`.
-  - `path="/admin/aluno/:userId"` → `AdminStudentProfile`.
-  - `path="/admin/certificate-sandbox"` → `AdminCertificateSandbox`.
-  - `path="/admin/aula/:n"` → `AdminAula`.
-  - `path="/admin/legado"` e `path="/admin/legado/:tab"` → `<AdminFbi />` (renderiza dentro do layout, sem o header próprio dele — vou condicionar a `inLayout` prop ou remover o header local quando estiver dentro do layout).
-  - `path="/admin/:tab"` → mantém `<AdminFbi />` por enquanto pra não quebrar bookmarks; só que `AdminFbi` agora aceita slugs novos e legados.
+### nova edge function `tutor-rate-message`
 
-**redirects** (`<Route element={<Navigate />}>`):
+POST `{ trail_id, helpful: 1 | -1 | null }`. valida JWT, busca o evento mais recente do user nessa trilha (últimos 10 min), `update helpful = ?`. retorna `{ ok: true }`. `verify_jwt = false` (validação manual no código).
 
-- `/admin/aula/X` mantém intacto (não muda).
-- legado por aba: `/admin/fbi`, `/admin/prework`, `/admin/missoes`, `/admin/cartas`, `/admin/artworks`, `/admin/convidados`, `/admin/emails`, `/admin/feedback-d1`, `/admin/feedback-final`, `/admin/carta-futuro`, `/admin/votacao-projetos`, `/admin/chora-bot` → `<Navigate to="/admin/legado/:tab" replace />` (preserva `tab` no path).
+### nova edge function `tutor-admin-digest`
 
-### 3. `AdminFbi` adaptado
+POST `{}` (só admin). lê últimos 7d de `tutor_message_events` + agrega top trilhas + top alunos + amostra de 200 últimas mensagens de usuário (via `tutor_conversations.messages` filtrado por `updated_at`). chama `google/gemini-2.5-flash` via Lovable AI Gateway com prompt: "extrai 5 dores recorrentes, 3 sinais de frustração, 2 oportunidades pedagógicas". cacheia em `admin_insights` com `scope='tutor:7d'`. usa a tabela `admin_insights` existente (não cria nova).
 
-- aceita renderização "dentro do layout": detecta via `useMatch('/admin/legado/*')` ou prop. quando true, **omite** o header `<NachesULogo />` + breadcrumb local + botões sair (já no layout) e **só renderiza** as abas + conteúdos.
-- ajusta `VALID_TABS` e `handleTabChange` pra navegar pra `/admin/legado/:tab` quando montado nessa rota; pra `/admin/:tab` quando vier do path antigo (compatibilidade).
-- nas abas "operação" (eletivas, review, trilha, tutor, feedback, etc.) o componente continua válido em `/admin/:tab` mas o **destino preferencial** no menu vira a página dedicada quando existir (ex.: `/admin/tutor` continua dentro de `AdminFbi`, sem mexer agora — só vou criar página dedicada quando tocar no tutor IA).
+## frontend estudante
 
-### 4. command palette (`cmdk`)
+### `src/components/chora-bot/TutorStarterPrompts.tsx`
 
-- `bun add cmdk` (já é dependência do shadcn em geral; confirmo presença antes de instalar).
-- `src/components/admin/CommandPalette.tsx`:
-  - escuta `cmd/ctrl+k` global via `useEffect` em `AdminLayout`.
-  - `<CommandDialog>` shadcn com grupos: "ir para" (todos os destinos do sidebar), "ações rápidas" (regenerar insight do digest — chama `useAdminInsight().regenerate`, copiar link da aba atual, sair).
-  - busca fuzzy embutida do `cmdk`.
-  - registra atalho no `<SidebarFooter>`: `⌘K` chip mostrando atalho.
+chips contextuais baseados em `pillTitle` / módulo atual. exemplos:
+- "me explica de outro jeito a pílula b"
+- "me dá 1 exemplo curto"
+- "tô travado, e agora?"
+- "valida meu raciocínio: ..."
 
-### 5. `.lovable/plan.md`
+3-4 chips, click prefilla o input.
 
-- atualizo o bloco "admin · command center" pra refletir: shell `AdminLayout`, sidebar, command palette, `/admin/legado/:tab` ativo, AdminTutor próxima etapa.
+### `src/components/chora-bot/TutorMessageActions.tsx`
 
-### 6. validar build
+inline em cada resposta do tutor: copiar (`Copy` lucide), 👍, 👎 (envia POST pra `tutor-rate-message`, mostra estado selecionado, idempotente). usa toast discreto.
 
-- depois das edições, a harness roda `tsc`/build automático; checo `code--read_console_logs` em busca de erros do dev server e, se preciso, faço uma navegação rápida a `/admin` e `/admin/legado/fbi` pra confirmar render sem regressão.
+### `src/components/chora-bot/TutorContextChip.tsx`
+
+barrinha entre header e mensagens: "o tutor sabe que você tá em **módulo 03 · pílula b**". some quando não tem contexto.
+
+### `src/components/chora-bot/TutorUsageChip.tsx`
+
+no header da Sheet/página: "12/50 hoje" vindo de hook `useTutorUsage()` (query simples em `tutor_message_events` filtrada por user + hoje). some quando `per_user_daily_limit = 0`. fica vermelho quando >80%.
+
+### `src/components/chora-bot/TutorDisabledNotice.tsx`
+
+quando `tutor_settings.enabled = false`, substitui o input por um aviso editorial: "o tutor tá pausado agora. avisa o educador se precisar".
+
+### edits em `TutorPage.tsx` e `TutorChat.tsx`
+
+ambos consomem os componentes acima. hook compartilhado novo:
+- `src/hooks/useTutorSettings.ts` (query simples a `tutor_settings`, cache 5min).
+- `src/hooks/useTutorUsage.ts` (count em `tutor_message_events` do user no dia).
+
+## frontend admin
+
+### `src/pages/AdminTutor.tsx` (página dedicada, substitui `AdminTutor.tsx` legado)
+
+acessível via `/admin/tutor` (já existe no sidebar). 4 seções:
+
+1. **KPI bar** (4 cards): perguntas 7d, alunos únicos 7d, % com 👍, latência mediana.
+2. **AI digest** (lê `admin_insights` scope='tutor:7d', botão "regenerar" → chama `tutor-admin-digest`). mesmo padrão visual do `AdminHome`.
+3. **gráficos lado a lado**:
+   - sparkline 30d (perguntas/dia) via SVG puro.
+   - barras por trilha (perguntas + alunos únicos).
+4. **controles operacionais** (`tutor_settings`): kill switch (Switch shadcn), slider de limite diário (0-200), input de modelo (Select com presets), textarea de addon do system prompt (com aviso "isso vai ANTES da pergunta do estudante, todas as respostas"). botão salvar.
+
+componentes auxiliares em `src/features/admin/tutor/`:
+- `TutorKpiBar.tsx`
+- `TutorTimelineSparkline.tsx`
+- `TutorTrailBars.tsx`
+- `TutorControls.tsx`
+- `TutorDigestCard.tsx`
+- `TutorRecentMessages.tsx` (drawer com últimas 50 perguntas, filtro por trilha)
+
+### refator `AdminFbi` aba "tutor"
+
+a aba `tutor` em `AdminFbi.tsx` passa a renderizar `<AdminTutorCommand />` (novo nome, no `src/features/admin/AdminTutorCommand.tsx`). o componente antigo (`AdminTutor.tsx`) fica como `<AdminTutorLegacy />` se o switch "ver visão legada" estiver ligado (dropdown discreto), mas o default é o novo. — alternativa mais limpa: **substituo direto**, sem legado, já que o novo é superset.
+
+## fora de escopo
+
+- RAG / embeddings.
+- mudar schema de `tutor_conversations`.
+- cost tracking em USD (usamos só tokens_estimate).
+- legado Chŏra bot (que já tá atrás de flag).
 
 ## arquivos
 
 **criados**
-- `src/components/admin/layout/AdminLayout.tsx`
-- `src/components/admin/layout/AdminSidebar.tsx`
-- `src/components/admin/CommandPalette.tsx`
+- `supabase/migrations/<ts>_tutor_instrumentation.sql`
+- `supabase/functions/tutor-rate-message/index.ts`
+- `supabase/functions/tutor-admin-digest/index.ts`
+- `src/components/chora-bot/TutorStarterPrompts.tsx`
+- `src/components/chora-bot/TutorMessageActions.tsx`
+- `src/components/chora-bot/TutorContextChip.tsx`
+- `src/components/chora-bot/TutorUsageChip.tsx`
+- `src/components/chora-bot/TutorDisabledNotice.tsx`
+- `src/hooks/useTutorSettings.ts`
+- `src/hooks/useTutorUsage.ts`
+- `src/features/admin/AdminTutorCommand.tsx`
+- `src/features/admin/tutor/TutorKpiBar.tsx`
+- `src/features/admin/tutor/TutorTimelineSparkline.tsx`
+- `src/features/admin/tutor/TutorTrailBars.tsx`
+- `src/features/admin/tutor/TutorControls.tsx`
+- `src/features/admin/tutor/TutorDigestCard.tsx`
+- `src/features/admin/tutor/TutorRecentMessages.tsx`
 
 **editados**
-- `src/App.tsx` (envelopa rotas admin no layout; adiciona redirects legado; `/admin` → `AdminHome`)
-- `src/pages/AdminFbi.tsx` (modo "dentro do layout" + suporte a `/admin/legado/:tab` no `handleTabChange`)
-- `src/pages/AdminHome.tsx` (remove header próprio do command center, fica só o conteúdo; o shell vem do layout)
+- `supabase/functions/tutor-trail-chat/index.ts` (settings gating + logging + addon + modelo dinâmico)
+- `src/pages/TutorPage.tsx` (starters + actions + context chip + usage chip + disabled notice)
+- `src/components/eletiva/TutorChat.tsx` (mesmos componentes integrados)
+- `src/pages/AdminFbi.tsx` (aba tutor passa a renderizar `AdminTutorCommand`)
 - `.lovable/plan.md`
 
-**não toco agora**
-- `AdminTutor.tsx` (próximo plano, do tutor IA).
-- nenhuma rota fora de `/admin/*`.
-- nenhuma tabela ou edge function.
+## risco e mitigação
 
-## risco
+- **edição na edge function** pode quebrar o tutor em produção. mitigação: settings carregadas em `try/catch` com fallback pro hardcoded; tudo opcional, default permissivo.
+- **`tokens_estimate` por chars/4** é grosseiro mas suficiente pra ranking relativo; quando admin precisar de fatura, troca por contagem real.
+- **off_scope por regex** é heurística frágil. é só uma sinalização, não decisão. admin vê o ranking, não bloqueia ninguém.
+- **digest pode estourar token**: limito amostra a 200 últimas mensagens × 240 chars ≈ 48k chars (~12k tokens, dentro do flash).
+- **limite diário default 50** é generoso pra estudante curioso, restritivo o suficiente pra evitar abuso. fácil de ajustar via UI.
 
-- `AdminFbi` é pesado (645 linhas) e ainda concentra abas "operação"; transformar ele em "dentro do layout sem header próprio" + suporte a `/admin/legado/:tab` exige cuidado pra não quebrar `useUrlState`. mitigação: condicional simples por `useMatch`, tabs continuam navegando dentro do prefixo correto.
-- redirects podem entrar em loop se um path antigo apontar pra si mesmo. mitigação: lista explícita de slugs legado e `Navigate replace`.
-- command palette + sidebar em paralelo: foco do trigger e do shortcut precisam não competir; testo `cmd+k` com sidebar aberta e colapsada.
+## ordem de execução
 
-quando aprovar, sigo nessa ordem: 1) AdminLayout + AdminSidebar, 2) App.tsx (rotas + redirects), 3) AdminFbi (modo embutido), 4) AdminHome (limpar header duplicado), 5) CommandPalette, 6) plan.md, 7) validar build/preview.
-
----
-
-## ✅ Status (28/05/2026) — shell admin entregue
-
-- `AdminLayout` + `AdminSidebar` no ar: aside fixo desktop, sheet mobile, header com breadcrumb + atalho `⌘K` + voltar pro app.
-- `/admin` agora renderiza o **Command Center** (`AdminHome`); todas as rotas admin envolvidas em `<AdminLayout>` via Outlet.
-- `AdminFbi` movido pra `/admin/legado/:tab`, sem header próprio. Slugs antigos (`/admin/fbi`, `/admin/prework`, etc.) redirecionam com `Navigate replace` pro novo prefixo.
-- `CommandPalette` (`cmdk`) global: grupos "ir para" (operação + legado) e "ações" (regenerar resumo IA, copiar link, sair). Hotkey `⌘K`/`Ctrl+K`.
-- Compat: `/admin/:tab` antigo continua respondendo (sem prefixo legado), pra não quebrar bookmarks de abas "operação" que ainda vivem no `AdminFbi`.
-
-Próximo: aplicar plano do tutor IA (instrumentação `tutor_message_events`, `tutor_settings`, painel `/admin/tutor` reformulado, controles do estudante).
+1. migração `tutor_instrumentation` (cria 2 tabelas, RLS, GRANTs, seed do settings).
+2. edge function `tutor-trail-chat` (gating + logging).
+3. edge functions `tutor-rate-message` + `tutor-admin-digest`.
+4. hooks `useTutorSettings` + `useTutorUsage`.
+5. componentes estudante (chips, actions, notice).
+6. integração em `TutorPage` + `TutorChat`.
+7. componentes admin (`tutor/*`).
+8. `AdminTutorCommand` integrado em `AdminFbi`.
+9. plan.md.
+10. validar: console logs limpos, abrir tutor, mandar 1 pergunta, conferir linha em `tutor_message_events`, abrir `/admin/tutor`, conferir KPIs, mudar kill switch, ver bloqueio.

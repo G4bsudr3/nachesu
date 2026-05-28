@@ -2304,6 +2304,87 @@ export type Database = {
           },
         ]
       }
+      tutor_message_events: {
+        Row: {
+          assistant_chars: number
+          course_id: string | null
+          created_at: string
+          helpful: number | null
+          id: string
+          latency_ms: number
+          model: string | null
+          module_id: string | null
+          off_scope: boolean
+          pill_title: string | null
+          tokens_estimate: number
+          trail_id: string
+          user_chars: number
+          user_id: string
+        }
+        Insert: {
+          assistant_chars?: number
+          course_id?: string | null
+          created_at?: string
+          helpful?: number | null
+          id?: string
+          latency_ms?: number
+          model?: string | null
+          module_id?: string | null
+          off_scope?: boolean
+          pill_title?: string | null
+          tokens_estimate?: number
+          trail_id: string
+          user_chars?: number
+          user_id: string
+        }
+        Update: {
+          assistant_chars?: number
+          course_id?: string | null
+          created_at?: string
+          helpful?: number | null
+          id?: string
+          latency_ms?: number
+          model?: string | null
+          module_id?: string | null
+          off_scope?: boolean
+          pill_title?: string | null
+          tokens_estimate?: number
+          trail_id?: string
+          user_chars?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tutor_settings: {
+        Row: {
+          enabled: boolean
+          id: number
+          model: string
+          per_user_daily_limit: number
+          system_prompt_addon: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          id?: number
+          model?: string
+          per_user_daily_limit?: number
+          system_prompt_addon?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          id?: number
+          model?: string
+          per_user_daily_limit?: number
+          system_prompt_addon?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       tutorial_idea: {
         Row: {
           created_at: string
