@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, MessageCircle, ThumbsUp, Timer, Users, Sparkles, RefreshCw } from "lucide-react";
+import { Loader2, MessageCircle, ThumbsUp, Timer, Users, Sparkles, RefreshCw, ShieldAlert, Gauge } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
