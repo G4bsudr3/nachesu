@@ -1930,6 +1930,7 @@ export type Database = {
           quiet_hours_start: number | null
           slug: string | null
           status: string
+          tutor_consent_at: string | null
           updated_at: string
           user_id: string
         }
@@ -1950,6 +1951,7 @@ export type Database = {
           quiet_hours_start?: number | null
           slug?: string | null
           status?: string
+          tutor_consent_at?: string | null
           updated_at?: string
           user_id: string
         }
@@ -1970,6 +1972,7 @@ export type Database = {
           quiet_hours_start?: number | null
           slug?: string | null
           status?: string
+          tutor_consent_at?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -2304,6 +2307,27 @@ export type Database = {
           },
         ]
       }
+      tutor_daily_counters: {
+        Row: {
+          date: string
+          last_alert_sent_at: string | null
+          total_count: number
+          updated_at: string
+        }
+        Insert: {
+          date: string
+          last_alert_sent_at?: string | null
+          total_count?: number
+          updated_at?: string
+        }
+        Update: {
+          date?: string
+          last_alert_sent_at?: string | null
+          total_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tutor_message_events: {
         Row: {
           assistant_chars: number
@@ -2316,6 +2340,7 @@ export type Database = {
           module_id: string | null
           off_scope: boolean
           pill_title: string | null
+          retention_until: string
           tokens_estimate: number
           trail_id: string
           user_chars: number
@@ -2332,6 +2357,7 @@ export type Database = {
           module_id?: string | null
           off_scope?: boolean
           pill_title?: string | null
+          retention_until?: string
           tokens_estimate?: number
           trail_id: string
           user_chars?: number
@@ -2348,6 +2374,7 @@ export type Database = {
           module_id?: string | null
           off_scope?: boolean
           pill_title?: string | null
+          retention_until?: string
           tokens_estimate?: number
           trail_id?: string
           user_chars?: number
@@ -2355,8 +2382,62 @@ export type Database = {
         }
         Relationships: []
       }
+      tutor_safety_events: {
+        Row: {
+          acknowledged_at: string | null
+          admin_notes: string | null
+          created_at: string
+          id: string
+          intervention_shown: string | null
+          message_excerpt: string
+          model_used: string | null
+          module_id: string | null
+          retention_until: string
+          reviewed_by_admin_id: string | null
+          risk_level: string
+          risk_score: number | null
+          trail_id: string | null
+          user_id: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          intervention_shown?: string | null
+          message_excerpt: string
+          model_used?: string | null
+          module_id?: string | null
+          retention_until?: string
+          reviewed_by_admin_id?: string | null
+          risk_level: string
+          risk_score?: number | null
+          trail_id?: string | null
+          user_id: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          intervention_shown?: string | null
+          message_excerpt?: string
+          model_used?: string | null
+          module_id?: string | null
+          retention_until?: string
+          reviewed_by_admin_id?: string | null
+          risk_level?: string
+          risk_score?: number | null
+          trail_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       tutor_settings: {
         Row: {
+          burst_limit_per_minute: number
+          daily_total_alert_threshold: number
+          daily_total_cap: number
           enabled: boolean
           id: number
           model: string
@@ -2366,6 +2447,9 @@ export type Database = {
           updated_by: string | null
         }
         Insert: {
+          burst_limit_per_minute?: number
+          daily_total_alert_threshold?: number
+          daily_total_cap?: number
           enabled?: boolean
           id?: number
           model?: string
@@ -2375,6 +2459,9 @@ export type Database = {
           updated_by?: string | null
         }
         Update: {
+          burst_limit_per_minute?: number
+          daily_total_alert_threshold?: number
+          daily_total_cap?: number
           enabled?: boolean
           id?: number
           model?: string
@@ -2500,6 +2587,7 @@ export type Database = {
         Returns: undefined
       }
       can_submit_public_fbi: { Args: { _email: string }; Returns: boolean }
+      cleanup_tutor_events: { Args: never; Returns: undefined }
       compute_module_metrics: { Args: { _module_id: string }; Returns: Json }
       delete_email: {
         Args: { message_id: number; queue_name: string }
