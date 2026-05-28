@@ -35,10 +35,13 @@ export const AdminTutorCommand = () => {
   const qc = useQueryClient();
   const [windowDays, setWindowDays] = useState<7 | 30>(7);
 
-  const since = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - windowDays);
-    return d.toISOString();
+  const { since, prevSince } = useMemo(() => {
+    const now = new Date();
+    const since = new Date(now);
+    since.setDate(since.getDate() - windowDays);
+    const prevSince = new Date(since);
+    prevSince.setDate(prevSince.getDate() - windowDays);
+    return { since: since.toISOString(), prevSince: prevSince.toISOString() };
   }, [windowDays]);
 
   const { data: events, isLoading: loadingEvents } = useQuery({
@@ -49,6 +52,20 @@ export const AdminTutorCommand = () => {
         .select("id, user_id, trail_id, pill_title, user_chars, assistant_chars, tokens_estimate, latency_ms, off_scope, helpful, created_at")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
+        .limit(5000);
+      if (error) throw error;
+      return (data ?? []) as EventRow[];
+    },
+  });
+
+  const { data: prevEvents } = useQuery({
+    queryKey: ["admin-tutor-events-prev", windowDays],
+    queryFn: async (): Promise<EventRow[]> => {
+      const { data, error } = await supabase
+        .from("tutor_message_events")
+        .select("id, user_id, helpful, latency_ms, off_scope, created_at")
+        .gte("created_at", prevSince)
+        .lt("created_at", since)
         .limit(5000);
       if (error) throw error;
       return (data ?? []) as EventRow[];
