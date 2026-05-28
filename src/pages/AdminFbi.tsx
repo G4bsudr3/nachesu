@@ -541,7 +541,7 @@ const AdminFbi = () => {
             </TabsContent>
 
             <TabsContent value="tutor">
-              <AdminTutor />
+              <AdminTutorCommand />
             </TabsContent>
 
             <TabsContent value="feedback">
