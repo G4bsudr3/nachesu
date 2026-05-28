@@ -433,7 +433,14 @@ export const TutorChat = ({
 
 
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto p-5 space-y-4"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions text"
+          aria-busy={streaming}
+        >
           {!tutorEnabled && <TutorDisabledNotice />}
           {tutorEnabled && messages.length === 0 && !streaming && (
             <motion.div
