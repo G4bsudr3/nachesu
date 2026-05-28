@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TutorRecentMessages } from "./TutorRecentMessages";
+import { TutorSafetyEscalations } from "./TutorSafetyEscalations";
 
 type EventRow = {
   id: string;
@@ -89,7 +90,7 @@ export const AdminTutorCommand = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tutor_settings")
-        .select("id, enabled, per_user_daily_limit, model, fallback_model, system_prompt_addon, daily_total_cap, burst_limit_per_minute, daily_total_alert_threshold, updated_at")
+        .select("id, enabled, per_user_daily_limit, model, fallback_model, system_prompt_addon, daily_total_cap, burst_limit_per_minute, daily_total_alert_threshold, safety_notify_emails, updated_at")
         .eq("id", 1)
         .maybeSingle();
       if (error) throw error;
@@ -167,7 +168,7 @@ export const AdminTutorCommand = () => {
   });
 
   const saveSettings = useMutation({
-    mutationFn: async (patch: Partial<{ enabled: boolean; per_user_daily_limit: number; model: string; fallback_model: string; system_prompt_addon: string; daily_total_cap: number; burst_limit_per_minute: number; daily_total_alert_threshold: number }>) => {
+    mutationFn: async (patch: Partial<{ enabled: boolean; per_user_daily_limit: number; model: string; fallback_model: string; system_prompt_addon: string; daily_total_cap: number; burst_limit_per_minute: number; daily_total_alert_threshold: number; safety_notify_emails: string[] }>) => {
       const { error } = await supabase.from("tutor_settings").update(patch).eq("id", 1);
       if (error) throw error;
     },
@@ -277,7 +278,7 @@ export const AdminTutorCommand = () => {
     );
   }
 
-  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", fallback_model: "google/gemini-2.5-flash-lite", system_prompt_addon: "", daily_total_cap: 2000, burst_limit_per_minute: 10, daily_total_alert_threshold: 0.8 };
+  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", fallback_model: "google/gemini-2.5-flash-lite", system_prompt_addon: "", daily_total_cap: 2000, burst_limit_per_minute: 10, daily_total_alert_threshold: 0.8, safety_notify_emails: [] as string[] };
 
   const cap = s.daily_total_cap ?? 2000;
   const used = todayCounter?.total_count ?? 0;
@@ -454,33 +455,7 @@ export const AdminTutorCommand = () => {
         </div>
       </section>
 
-      {(safety?.length ?? 0) > 0 && (
-        <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
-          <h2 className="font-display uppercase text-xl mb-4">últimos eventos de segurança</h2>
-          <div className="space-y-2 max-h-80 overflow-auto">
-            {(safety ?? []).slice(0, 20).map((ev) => (
-              <div key={ev.id} className="rounded-xl border border-perestroika-preto/10 bg-white/40 p-3">
-                <div className="flex items-center justify-between gap-3 mb-1">
-                  <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-vermelho">
-                    {ev.risk_level.replace("_", " ")}
-                  </span>
-                  <span className="font-body text-[10px] text-perestroika-preto/55 tabular-nums">
-                    {fmtDate(ev.created_at)}
-                  </span>
-                </div>
-                <p className="font-body text-sm text-perestroika-preto/85 leading-snug">
-                  {ev.message_excerpt}
-                </p>
-                {ev.intervention_shown && (
-                  <p className="font-body text-xs text-perestroika-preto/55 mt-2">
-                    intervenção: {ev.intervention_shown}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <TutorSafetyEscalations />
 
       <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
         <div className="flex items-center justify-between mb-3">
@@ -676,6 +651,29 @@ export const AdminTutorCommand = () => {
                 }
               }}
               className="bg-white/60"
+            />
+          </div>
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4 md:col-span-2">
+            <Label className="font-display uppercase text-xs tracking-wide">emails de alerta de segurança</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
+              educadores que recebem email imediato quando o tutor detecta evento severo (autolesão, abuso, etc). um por linha.
+            </p>
+            <Textarea
+              defaultValue={(s.safety_notify_emails ?? []).join("\n")}
+              rows={3}
+              onBlur={(e) => {
+                const list = e.target.value
+                  .split(/[\n,]/)
+                  .map((x) => x.trim().toLowerCase())
+                  .filter((x) => x.includes("@"));
+                const current = (s.safety_notify_emails ?? []).join("|");
+                if (list.join("|") !== current) {
+                  saveSettings.mutate({ safety_notify_emails: list });
+                }
+              }}
+              className="bg-white/60 font-body text-sm"
+              placeholder="dudu@escola.sebraebh.com.br&#10;frattz@naches.com.br"
             />
           </div>
 
