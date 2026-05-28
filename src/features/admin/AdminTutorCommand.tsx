@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, MessageCircle, ThumbsUp, Timer, Users, Sparkles, RefreshCw } from "lucide-react";
+import { Loader2, MessageCircle, ThumbsUp, Timer, Users, Sparkles, RefreshCw, ShieldAlert, Gauge } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -69,12 +69,41 @@ export const AdminTutorCommand = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tutor_settings")
-        .select("id, enabled, per_user_daily_limit, model, system_prompt_addon, updated_at")
+        .select("id, enabled, per_user_daily_limit, model, system_prompt_addon, daily_total_cap, burst_limit_per_minute, daily_total_alert_threshold, updated_at")
         .eq("id", 1)
         .maybeSingle();
       if (error) throw error;
       return data;
     },
+  });
+
+  const { data: safety, isLoading: loadingSafety } = useQuery({
+    queryKey: ["admin-tutor-safety", windowDays],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tutor_safety_events")
+        .select("id, user_id, trail_id, risk_level, risk_score, message_excerpt, intervention_shown, acknowledged_at, created_at")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: todayCounter } = useQuery({
+    queryKey: ["admin-tutor-today-counter"],
+    queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data, error } = await supabase
+        .from("tutor_daily_counters")
+        .select("date, total_count, last_alert_sent_at")
+        .eq("date", today)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    refetchInterval: 60_000,
   });
 
   const { data: digest } = useQuery({
@@ -118,7 +147,7 @@ export const AdminTutorCommand = () => {
   });
 
   const saveSettings = useMutation({
-    mutationFn: async (patch: Partial<{ enabled: boolean; per_user_daily_limit: number; model: string; system_prompt_addon: string }>) => {
+    mutationFn: async (patch: Partial<{ enabled: boolean; per_user_daily_limit: number; model: string; system_prompt_addon: string; daily_total_cap: number; burst_limit_per_minute: number; daily_total_alert_threshold: number }>) => {
       const { error } = await supabase.from("tutor_settings").update(patch).eq("id", 1);
       if (error) throw error;
     },
@@ -190,7 +219,19 @@ export const AdminTutorCommand = () => {
     );
   }
 
-  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", system_prompt_addon: "" };
+  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", system_prompt_addon: "", daily_total_cap: 2000, burst_limit_per_minute: 10, daily_total_alert_threshold: 0.8 };
+
+  const cap = s.daily_total_cap ?? 2000;
+  const used = todayCounter?.total_count ?? 0;
+  const usagePct = cap > 0 ? Math.min(100, Math.round((used / cap) * 100)) : 0;
+  const alertPct = Math.round((s.daily_total_alert_threshold ?? 0.8) * 100);
+  const capState: "ok" | "alert" | "blocked" = usagePct >= 100 ? "blocked" : usagePct >= alertPct ? "alert" : "ok";
+
+  const safetyByLevel = (safety ?? []).reduce<Record<string, number>>((acc, ev) => {
+    acc[ev.risk_level] = (acc[ev.risk_level] ?? 0) + 1;
+    return acc;
+  }, {});
+  const safetyTotal = (safety ?? []).length;
 
   return (
     <div className="space-y-8">
@@ -242,6 +283,104 @@ export const AdminTutorCommand = () => {
           hint="heurística automática"
         />
       </section>
+
+      <section className="grid gap-3 md:grid-cols-2">
+        <div
+          className={`rounded-2xl border p-5 ${
+            capState === "blocked"
+              ? "border-perestroika-vermelho/40 bg-perestroika-vermelho/10"
+              : capState === "alert"
+                ? "border-perestroika-laranja/40 bg-perestroika-laranja/10"
+                : "border-perestroika-preto/15 bg-perestroika-bege/40"
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-perestroika-preto/70">
+              <Gauge className="h-4 w-4" />
+              <span className="font-body text-[10px] uppercase tracking-[0.2em]">uso hoje</span>
+            </div>
+            <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+              cap {cap} · alerta {alertPct}%
+            </span>
+          </div>
+          <p className="font-display text-4xl leading-none tabular-nums">
+            {used}<span className="text-xl text-perestroika-preto/40"> / {cap}</span>
+          </p>
+          <div className="h-2 mt-3 rounded-full bg-perestroika-preto/5 overflow-hidden">
+            <div
+              className={`h-full transition-all ${
+                capState === "blocked" ? "bg-perestroika-vermelho" : capState === "alert" ? "bg-perestroika-laranja" : "bg-primary/70"
+              }`}
+              style={{ width: `${usagePct}%` }}
+            />
+          </div>
+          <p className="font-body text-xs text-perestroika-preto/55 mt-2">
+            {capState === "blocked"
+              ? "cap atingido. novas mensagens recebem 429."
+              : capState === "alert"
+                ? "perto do cap. monitora."
+                : "uso saudável."}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-perestroika-preto/70">
+              <ShieldAlert className="h-4 w-4" />
+              <span className="font-body text-[10px] uppercase tracking-[0.2em]">eventos de risco</span>
+            </div>
+            <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+              últimos {windowDays}d
+            </span>
+          </div>
+          <p className="font-display text-4xl leading-none tabular-nums">{safetyTotal}</p>
+          <div className="flex flex-wrap gap-2 mt-3">
+            {["self_harm", "abuse", "bullying", "emotional_distress"].map((lvl) => {
+              const n = safetyByLevel[lvl] ?? 0;
+              if (n === 0) return null;
+              return (
+                <span
+                  key={lvl}
+                  className="font-body text-[10px] uppercase tracking-[0.18em] rounded-full px-2 py-1 bg-perestroika-preto/5 text-perestroika-preto/75"
+                >
+                  {lvl.replace("_", " ")} · {n}
+                </span>
+              );
+            })}
+            {safetyTotal === 0 && (
+              <span className="font-body text-xs text-perestroika-preto/55">nenhum sinal de risco no período.</span>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {(safety?.length ?? 0) > 0 && (
+        <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+          <h2 className="font-display uppercase text-xl mb-4">últimos eventos de segurança</h2>
+          <div className="space-y-2 max-h-80 overflow-auto">
+            {(safety ?? []).slice(0, 20).map((ev) => (
+              <div key={ev.id} className="rounded-xl border border-perestroika-preto/10 bg-white/40 p-3">
+                <div className="flex items-center justify-between gap-3 mb-1">
+                  <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-vermelho">
+                    {ev.risk_level.replace("_", " ")}
+                  </span>
+                  <span className="font-body text-[10px] text-perestroika-preto/55 tabular-nums">
+                    {fmtDate(ev.created_at)}
+                  </span>
+                </div>
+                <p className="font-body text-sm text-perestroika-preto/85 leading-snug">
+                  {ev.message_excerpt}
+                </p>
+                {ev.intervention_shown && (
+                  <p className="font-body text-xs text-perestroika-preto/55 mt-2">
+                    intervenção: {ev.intervention_shown}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
         <div className="flex items-center justify-between mb-3">
@@ -368,6 +507,55 @@ export const AdminTutorCommand = () => {
                 <SelectItem value="google/gemini-2.5-pro">gemini 2.5 pro</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+            <Label className="font-display uppercase text-xs tracking-wide">cap total diário</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">teto agregado de mensagens da turma por dia.</p>
+            <Input
+              type="number"
+              min={0}
+              defaultValue={s.daily_total_cap ?? 2000}
+              onBlur={(e) => {
+                const n = parseInt(e.target.value, 10);
+                if (!Number.isNaN(n) && n !== s.daily_total_cap) saveSettings.mutate({ daily_total_cap: n });
+              }}
+              className="bg-white/60"
+            />
+          </div>
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+            <Label className="font-display uppercase text-xs tracking-wide">burst por minuto</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">limite de mensagens por estudante em 60s.</p>
+            <Input
+              type="number"
+              min={1}
+              defaultValue={s.burst_limit_per_minute ?? 10}
+              onBlur={(e) => {
+                const n = parseInt(e.target.value, 10);
+                if (!Number.isNaN(n) && n !== s.burst_limit_per_minute) saveSettings.mutate({ burst_limit_per_minute: n });
+              }}
+              className="bg-white/60"
+            />
+          </div>
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+            <Label className="font-display uppercase text-xs tracking-wide">alerta de cap (%)</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">% do cap pra acionar alerta visual (ex: 80).</p>
+            <Input
+              type="number"
+              min={1}
+              max={100}
+              defaultValue={Math.round((s.daily_total_alert_threshold ?? 0.8) * 100)}
+              onBlur={(e) => {
+                const n = parseInt(e.target.value, 10);
+                if (!Number.isNaN(n) && n >= 1 && n <= 100) {
+                  const v = n / 100;
+                  if (v !== s.daily_total_alert_threshold) saveSettings.mutate({ daily_total_alert_threshold: v });
+                }
+              }}
+              className="bg-white/60"
+            />
           </div>
 
           <div className="rounded-xl border border-perestroika-preto/10 p-4 md:col-span-2">
