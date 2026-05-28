@@ -22,7 +22,7 @@ const sumCourses = (cs: CourseMetrics[]) => ({
 });
 
 const AdminHome = () => {
-  const { signOut } = useAuth();
+  
   const { data, isLoading } = useAdminMetrics();
   const { insight, regenerate, regenerating } = useAdminInsight();
   const [scope, setScope] = useState<ScopeId>("all");
