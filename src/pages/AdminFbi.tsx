@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams, useSearchParams, useMatch } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams, useMatch } from "react-router-dom";
 import { useUrlState } from "@/hooks/useUrlState";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronRight, Copy, Download, Search } from "lucide-react";
