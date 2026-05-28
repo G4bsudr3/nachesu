@@ -293,28 +293,44 @@ export const AdminTutorCommand = () => {
           >
             30d
           </Button>
+          <TutorRecentMessages windowDays={windowDays} />
         </div>
       </header>
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi icon={<MessageCircle className="h-4 w-4" />} label="perguntas" value={kpis.totalMsgs} hint={`${kpis.uniqStudents} estudantes únicos`} />
+        <Kpi
+          icon={<MessageCircle className="h-4 w-4" />}
+          label="perguntas"
+          value={kpis.totalMsgs}
+          hint={`${kpis.uniqStudents} estudantes únicos`}
+          delta={kpis.delta.totalMsgs}
+          deltaUnit="%"
+        />
         <Kpi
           icon={<ThumbsUp className="h-4 w-4" />}
           label="taxa útil"
           value={kpis.helpfulRate === null ? "—" : `${kpis.helpfulRate}%`}
-          hint="👍 sobre avaliadas"
+          hint="sobre avaliadas"
+          delta={kpis.delta.helpfulRate}
+          deltaUnit="pp"
         />
         <Kpi
           icon={<Timer className="h-4 w-4" />}
           label="latência média"
           value={kpis.avgLatency === null ? "—" : `${(kpis.avgLatency / 1000).toFixed(1)}s`}
           hint="resposta completa"
+          delta={kpis.delta.avgLatency}
+          deltaUnit="%"
+          invert
         />
         <Kpi
           icon={<Sparkles className="h-4 w-4" />}
           label="fora de escopo"
           value={kpis.offScope}
-          hint="heurística automática"
+          hint="termos proibidos da eletiva"
+          delta={kpis.delta.offScope}
+          deltaUnit="%"
+          invert
         />
       </section>
 
