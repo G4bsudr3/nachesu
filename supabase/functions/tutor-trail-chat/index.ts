@@ -756,7 +756,12 @@ mensagem do estudante:
     });
 
     return new Response(stream, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "text/event-stream",
+        "x-tutor-model": modelToUse,
+        ...(usedFallback ? { "x-tutor-fallback": "1" } : {}),
+      },
     });
   } catch (e) {
     console.error("tutor-trail-chat:", e);
