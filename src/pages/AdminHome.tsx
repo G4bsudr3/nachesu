@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { RefreshCw, Sparkles, Flame, TrendingUp, AlertTriangle } from "lucide-react";
+import { RefreshCw, Sparkles, BarChart3, Flame, TrendingUp, AlertTriangle } from "lucide-react";
 import { useAdminMetrics, type CourseMetrics, type ScopeId } from "@/hooks/useAdminMetrics";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
 import { ActionQueue } from "@/components/admin/home/ActionQueue";
