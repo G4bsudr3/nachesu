@@ -1,0 +1,1 @@
+UPDATE public.module_pills SET body_md = '6 min com o frattz, se você quiser saber de onde isso vem. pode pular tranquilo.' WHERE id = '3e5e6cee-f080-4ffb-b3ff-7b221e71ecc7';
