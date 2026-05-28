@@ -39,8 +39,18 @@ Deno.serve(async (req) => {
       });
     }
 
+    // janela parametrizada (7 ou 30 dias) pra alinhar com a barra de KPIs
+    let windowDays = 7;
+    try {
+      const body = await req.clone().json();
+      const n = Number(body?.windowDays);
+      if (n === 7 || n === 30) windowDays = n;
+    } catch {
+      // sem body, mantém 7
+    }
     const periodEnd = new Date();
-    const periodStart = new Date(periodEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const periodStart = new Date(periodEnd.getTime() - windowDays * 24 * 60 * 60 * 1000);
+    const scopeKey = `tutor:${windowDays}d`;
 
     const [evRes, convRes, trailRes] = await Promise.all([
       admin.from("tutor_message_events")
@@ -144,7 +154,7 @@ tom: direto, sem corporativês, sem encher linguiça. máximo 6 linhas por seç�
     };
 
     await admin.from("admin_insights").insert({
-      scope: "tutor:7d",
+      scope: scopeKey,
       summary_md: summaryMd,
       raw_metrics: raw,
       period_start: periodStart.toISOString(),

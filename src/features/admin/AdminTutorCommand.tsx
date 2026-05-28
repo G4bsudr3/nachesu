@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TutorRecentMessages } from "./TutorRecentMessages";
 
 type EventRow = {
   id: string;
@@ -35,10 +36,13 @@ export const AdminTutorCommand = () => {
   const qc = useQueryClient();
   const [windowDays, setWindowDays] = useState<7 | 30>(7);
 
-  const since = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - windowDays);
-    return d.toISOString();
+  const { since, prevSince } = useMemo(() => {
+    const now = new Date();
+    const since = new Date(now);
+    since.setDate(since.getDate() - windowDays);
+    const prevSince = new Date(since);
+    prevSince.setDate(prevSince.getDate() - windowDays);
+    return { since: since.toISOString(), prevSince: prevSince.toISOString() };
   }, [windowDays]);
 
   const { data: events, isLoading: loadingEvents } = useQuery({
@@ -49,6 +53,20 @@ export const AdminTutorCommand = () => {
         .select("id, user_id, trail_id, pill_title, user_chars, assistant_chars, tokens_estimate, latency_ms, off_scope, helpful, created_at")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
+        .limit(5000);
+      if (error) throw error;
+      return (data ?? []) as EventRow[];
+    },
+  });
+
+  const { data: prevEvents } = useQuery({
+    queryKey: ["admin-tutor-events-prev", windowDays],
+    queryFn: async (): Promise<EventRow[]> => {
+      const { data, error } = await supabase
+        .from("tutor_message_events")
+        .select("id, user_id, helpful, latency_ms, off_scope, created_at")
+        .gte("created_at", prevSince)
+        .lt("created_at", since)
         .limit(5000);
       if (error) throw error;
       return (data ?? []) as EventRow[];
@@ -107,12 +125,12 @@ export const AdminTutorCommand = () => {
   });
 
   const { data: digest } = useQuery({
-    queryKey: ["admin-tutor-digest"],
+    queryKey: ["admin-tutor-digest", windowDays],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("admin_insights")
         .select("summary_md, generated_at")
-        .eq("scope", "tutor:7d")
+        .eq("scope", `tutor:${windowDays}d`)
         .order("generated_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -133,7 +151,7 @@ export const AdminTutorCommand = () => {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          body: JSON.stringify({}),
+          body: JSON.stringify({ windowDays }),
         },
       );
       if (!resp.ok) throw new Error(await resp.text());
@@ -141,7 +159,7 @@ export const AdminTutorCommand = () => {
     },
     onSuccess: () => {
       toast.success("digest regenerado");
-      qc.invalidateQueries({ queryKey: ["admin-tutor-digest"] });
+      qc.invalidateQueries({ queryKey: ["admin-tutor-digest", windowDays] });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "erro ao gerar"),
   });
@@ -160,17 +178,34 @@ export const AdminTutorCommand = () => {
   });
 
   const kpis = useMemo(() => {
-    const list = events ?? [];
-    const uniqStudents = new Set(list.map((e) => e.user_id)).size;
-    const totalMsgs = list.length;
-    const rated = list.filter((e) => e.helpful !== null);
-    const helpful = rated.filter((e) => (e.helpful ?? 0) > 0).length;
-    const helpfulRate = rated.length > 0 ? Math.round((helpful / rated.length) * 100) : null;
-    const latencies = list.map((e) => e.latency_ms).filter((v): v is number => typeof v === "number");
-    const avgLatency = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : null;
-    const offScope = list.filter((e) => e.off_scope).length;
-    return { uniqStudents, totalMsgs, helpfulRate, avgLatency, offScope };
-  }, [events]);
+    const calc = (list: EventRow[]) => {
+      const uniqStudents = new Set(list.map((e) => e.user_id)).size;
+      const totalMsgs = list.length;
+      const rated = list.filter((e) => e.helpful !== null);
+      const helpful = rated.filter((e) => (e.helpful ?? 0) > 0).length;
+      const helpfulRate = rated.length > 0 ? Math.round((helpful / rated.length) * 100) : null;
+      const latencies = list.map((e) => e.latency_ms).filter((v): v is number => typeof v === "number");
+      const avgLatency = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : null;
+      const offScope = list.filter((e) => e.off_scope).length;
+      return { uniqStudents, totalMsgs, helpfulRate, avgLatency, offScope };
+    };
+    const cur = calc(events ?? []);
+    const prev = calc((prevEvents ?? []) as EventRow[]);
+    const pct = (a: number, b: number) => (b === 0 ? null : Math.round(((a - b) / b) * 100));
+    return {
+      ...cur,
+      delta: {
+        totalMsgs: pct(cur.totalMsgs, prev.totalMsgs),
+        helpfulRate:
+          cur.helpfulRate !== null && prev.helpfulRate !== null && prev.helpfulRate > 0
+            ? cur.helpfulRate - prev.helpfulRate
+            : null,
+        avgLatency:
+          cur.avgLatency !== null && prev.avgLatency !== null ? pct(cur.avgLatency, prev.avgLatency) : null,
+        offScope: pct(cur.offScope, prev.offScope),
+      },
+    };
+  }, [events, prevEvents]);
 
   const sparkline = useMemo(() => {
     const list = events ?? [];
@@ -259,28 +294,44 @@ export const AdminTutorCommand = () => {
           >
             30d
           </Button>
+          <TutorRecentMessages windowDays={windowDays} />
         </div>
       </header>
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi icon={<MessageCircle className="h-4 w-4" />} label="perguntas" value={kpis.totalMsgs} hint={`${kpis.uniqStudents} estudantes únicos`} />
+        <Kpi
+          icon={<MessageCircle className="h-4 w-4" />}
+          label="perguntas"
+          value={kpis.totalMsgs}
+          hint={`${kpis.uniqStudents} estudantes únicos`}
+          delta={kpis.delta.totalMsgs}
+          deltaUnit="%"
+        />
         <Kpi
           icon={<ThumbsUp className="h-4 w-4" />}
           label="taxa útil"
           value={kpis.helpfulRate === null ? "—" : `${kpis.helpfulRate}%`}
-          hint="👍 sobre avaliadas"
+          hint="sobre avaliadas"
+          delta={kpis.delta.helpfulRate}
+          deltaUnit="pp"
         />
         <Kpi
           icon={<Timer className="h-4 w-4" />}
           label="latência média"
           value={kpis.avgLatency === null ? "—" : `${(kpis.avgLatency / 1000).toFixed(1)}s`}
           hint="resposta completa"
+          delta={kpis.delta.avgLatency}
+          deltaUnit="%"
+          invert
         />
         <Kpi
           icon={<Sparkles className="h-4 w-4" />}
           label="fora de escopo"
           value={kpis.offScope}
-          hint="heurística automática"
+          hint="termos proibidos da eletiva"
+          delta={kpis.delta.offScope}
+          deltaUnit="%"
+          invert
         />
       </section>
 
@@ -586,18 +637,45 @@ const Kpi = ({
   label,
   value,
   hint,
+  delta,
+  deltaUnit,
+  invert,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number | string;
   hint: string;
-}) => (
-  <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
-    <div className="flex items-center gap-2 text-perestroika-preto/60 mb-2">
-      {icon}
-      <span className="font-body text-[10px] uppercase tracking-[0.2em]">{label}</span>
+  delta?: number | null;
+  deltaUnit?: "%" | "pp";
+  invert?: boolean;
+}) => {
+  const showDelta = typeof delta === "number" && !Number.isNaN(delta);
+  const up = showDelta && delta! > 0;
+  const positive = showDelta ? (invert ? !up && delta !== 0 : up) : null;
+  const color =
+    positive === null
+      ? "text-perestroika-preto/45"
+      : positive
+        ? "text-emerald-700"
+        : delta === 0
+          ? "text-perestroika-preto/45"
+          : "text-perestroika-vermelho";
+  return (
+    <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+      <div className="flex items-center gap-2 text-perestroika-preto/60 mb-2">
+        {icon}
+        <span className="font-body text-[10px] uppercase tracking-[0.2em]">{label}</span>
+      </div>
+      <p className="font-display text-4xl leading-none tabular-nums">{value}</p>
+      <div className="flex items-baseline justify-between gap-2 mt-2">
+        <p className="font-body text-xs text-perestroika-preto/55">{hint}</p>
+        {showDelta && (
+          <span className={`font-body text-[10px] uppercase tracking-[0.18em] tabular-nums ${color}`}>
+            {delta! > 0 ? "↑" : delta! < 0 ? "↓" : "·"} {Math.abs(delta!)}
+            {deltaUnit ?? "%"}
+          </span>
+        )}
+      </div>
     </div>
-    <p className="font-display text-4xl leading-none tabular-nums">{value}</p>
-    <p className="font-body text-xs text-perestroika-preto/55 mt-2">{hint}</p>
-  </div>
-);
+  );
+};
