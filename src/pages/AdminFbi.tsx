@@ -279,7 +279,7 @@ const AdminFbi = () => {
               type="button"
               onClick={() => {
                 const qs = searchParams.toString();
-                const url = `${window.location.origin}/admin/${currentTab}${qs ? `?${qs}` : ""}`;
+                const url = `${window.location.origin}${routePrefix}/${currentTab}${qs ? `?${qs}` : ""}`;
                 navigator.clipboard.writeText(url).then(
                   () => toast.success("link da aba copiado"),
                   () => toast.error("não consegui copiar"),
