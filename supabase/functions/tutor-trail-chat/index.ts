@@ -182,6 +182,52 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
+    // gating: settings (kill switch + limite diário + modelo + addon)
+    let settings = {
+      enabled: true,
+      per_user_daily_limit: 0,
+      model: "google/gemini-2.5-flash",
+      system_prompt_addon: null as string | null,
+    };
+    try {
+      const { data: s } = await admin
+        .from("tutor_settings")
+        .select("enabled, per_user_daily_limit, model, system_prompt_addon")
+        .eq("id", 1)
+        .maybeSingle();
+      if (s) settings = { ...settings, ...s };
+    } catch (e) {
+      console.warn("tutor_settings load fail, usando defaults:", e);
+    }
+
+    if (!settings.enabled) {
+      return new Response(
+        JSON.stringify({ error: "o tutor tá pausado pela equipe. tenta de novo mais tarde." }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (settings.per_user_daily_limit > 0) {
+      // BRT (-3h) — calcula início do dia local
+      const nowMs = Date.now();
+      const brtNow = new Date(nowMs - 3 * 60 * 60 * 1000);
+      brtNow.setUTCHours(0, 0, 0, 0);
+      const startOfDayUtc = new Date(brtNow.getTime() + 3 * 60 * 60 * 1000).toISOString();
+      const { count } = await admin
+        .from("tutor_message_events")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .gte("created_at", startOfDayUtc);
+      if ((count ?? 0) >= settings.per_user_daily_limit) {
+        return new Response(
+          JSON.stringify({
+            error: `você bateu o limite de ${settings.per_user_daily_limit} perguntas por dia. volta amanhã.`,
+          }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+    }
+
     // contexto: trilha + módulos da trilha + progresso do aluno
     const [trailRes, modulesRes, progressRes, convRes] = await Promise.all([
       admin
