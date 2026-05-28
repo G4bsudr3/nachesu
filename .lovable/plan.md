@@ -1,64 +1,91 @@
-# Diagnóstico + auditoria mobile
+## 1. Por que o módulo 1 não abriu no mobile
 
-## o que provavelmente aconteceu no seu login
+Não é bug de mobile. Conferi o banco: o módulo 1 das duas eletivas está com `available_from = 2026-05-28 09:00 UTC`. O `now()` do servidor quando você testou era `08:30 UTC`. O `useEletivaProgress` trata módulo fora da janela como "não liberado", então qualquer tentativa de abrir caía no `ModuloLockedHero` ("módulo ainda não rolou"). Mesma coisa aconteceria no desktop.
 
-A combinação "joão tá pensando" + "precisa publicar o projeto" ao recarregar é um sintoma clássico do **ambiente de preview do Lovable em mobile**, não do código do app:
+**Correção (migração de dados, não código):**
+- `UPDATE modules SET available_from = NULL WHERE number = 1` para ambas as eletivas (sem janela = aberto desde sempre).
+- Manter `available_from` dos módulos 2-20 como está (cadência semanal continua valendo).
 
-- "joão tá pensando" = `RootErrorBoundary` capturou uma exceção JS (provavelmente no `signInWithPassword` ou em algo que tentou rodar logo após o login)
-- "precisa publicar o projeto" = mensagem do **wrapper do preview** (`id-preview--...lovable.app`), não da nossa aplicação. Acontece quando o iframe perde estado em mobile
+Bônus de UX no `ModuloLockedHero`: quando faltam menos de 2h pra abrir, mostrar contador em horas em vez de "em 0 dias", pra não dar impressão de bug igual a essa.
 
-O auth real em `nachesu.lovable.app` (URL publicada) costuma funcionar nesse cenário. Antes de qualquer fix, **plano passo 1 = reproduzir no domínio publicado pra separar bug de app vs bug de preview**.
+## 2. Home estratégica, distinta de /app/trilhas
 
-## o plano
+Hoje a home e a `/app/trilhas` repetem dois sinais: progresso "X de Y" e lista de módulos. A regra dura do projeto já diz "1 próximo passo único em destaque" — vamos levar isso a sério e dar à home um papel diferente do mapa.
 
-### 1. reproduzir e isolar (sem mexer em código ainda)
-- Abrir `https://nachesu.lovable.app` no mobile (não o preview), tentar login com `mateusfrattezi@gmail.com`
-- Se funcionar: era preview-only, seguimos só com a auditoria de UX
-- Se quebrar de verdade: capturar a stack via logs do Supabase (`auth_logs` + Edge logs) e do RootErrorBoundary (já loga via `logger.error`)
-- Os logs de auth recentes mostram login 200 OK com seu user às 08:07, então **a request em si está passando** — o crash é client-side pós-login
+**Princípio:** Trilhas = mapa (panorama). Home = painel de comando do dia (decisão).
 
-### 2. auditoria mobile sistemática (842x682 hoje, mas testar 375x812 e 414x896)
-Rotas críticas a validar visualmente + funcionalmente no viewport mobile:
+### Estrutura nova da home (`/app`)
 
 ```text
-público
- ├─ /                     index/landing
- ├─ /auth                 login + magic link
- ├─ /reset-password       fluxo recuperação
- └─ /pending              conta aguardando aprovação
-
-aluno
- ├─ /app                  dashboard (hero + switcher + cadência)
- ├─ /app/eletivas         lista de matrículas
- ├─ /app/eletiva/:slug    fallback eletiva
- ├─ /app/modulo/:n        módulo (pílulas + PBL + registro)
- ├─ /app/trilhas          mapa de trilhas
- ├─ /app/tutor            chat joão-de-barro
- ├─ /app/notificacoes     avisos
- └─ /app/conta            settings
+┌─────────────────────────────────────────────┐
+│ saudação contextual (sem números repetidos) │
+│ + switcher (se 2+ matrículas)               │
+├─────────────────────────────────────────────┤
+│ HERO ÚNICO: próximo módulo                  │
+│  · nome + objetivo + tempo + trilha         │
+│  · CTA grande "começar/voltar pro módulo NN"│
+│  · "ver mapa completo" como link discreto   │
+├─────────────────────────────────────────────┤
+│ PAINEL DE COMANDO (3 cards compactos)       │
+│  a) cadência da semana                      │
+│     "módulo N abre em X dias" ou "aberto    │
+│     agora · ~50 min"                        │
+│  b) última pílula tocada                    │
+│     "continue de onde parou: <pílula>" se   │
+│     houver pílula iniciada e não concluída  │
+│  c) tutor da eletiva                        │
+│     pergunta-semente baseada no módulo      │
+│     atual ("posso te ajudar a destravar a   │
+│     pílula B?") → abre /app/tutor com       │
+│     prompt pré-preenchido                   │
+├─────────────────────────────────────────────┤
+│ FAIXA "o que vem por aí" (opcional, só se   │
+│ módulo atual já está concluído):            │
+│  · prévia do próximo módulo bloqueado +     │
+│    countdown                                │
+└─────────────────────────────────────────────┘
 ```
 
-Checks por tela: nav mobile fixa não cobre conteúdo (padding-bottom respeitado), touch targets ≥ 44px, scrollbar sem overflow horizontal, decoração absoluta atrás do texto, headings legíveis, CTAs alcançáveis com polegar, sem flash de loading infinito.
+### O que sai da home
 
-### 3. blindar o caminho de login no client
-Mesmo que o crash venha do preview, vale endurecer o que rodar **após** o `signInWithPassword` no `Auth.tsx`:
-- Garantir try/catch em volta de qualquer fetch pós-login (perfil, role, enrollments) pra não derrubar a tela inteira via boundary
-- Confirmar que `useProfileStatus` + `useUserRole` lidam com `null` sem throw
-- Verificar redirect pós-login em mobile (window.location vs navigate)
+- "X de Y fechados" sai do `EletivaCard` e do `DashboardGreeting`. Esse número fica em `/app/trilhas` (lá faz sentido, é o mapa).
+- `ArchiveSection`, `NextActionHero` legado, `JourneyChips` continuam só atrás do `eletiva_extras_enabled` (já estão).
 
-### 4. signature moment do erro (sem mexer no copy se já estiver bom)
-O `RootErrorBoundary` atual já tem joão thinking + 2 CTAs (recarregar / voltar pro início). Validar que renderiza bem em 375px e que o link "voltar pro início" não cai num loop se o erro for no próprio `/app`.
+### O que muda em `/app/trilhas`
 
-### 5. entregáveis ao final
-- Lista de bugs mobile encontrados + correção de cada (commit por área: auth, dashboard, módulo, nav)
-- Confirmação se o crash original foi preview-only ou app real
-- Print do dashboard mobile pós-fix pra você validar
+Nada estrutural. Continua sendo o mapa completo 4×5 com a contagem total. Vira a única fonte de "panorama".
 
-## fora de escopo
-- Refazer design mobile do zero
-- Mudar fluxo de auth (magic link vs senha) — só blindar o que existe
-- Mexer em RLS, schema ou edge functions (a menos que apareça erro real lá)
+## 3. Arquivos a tocar
 
-## perguntas antes de começar
-1. Quer que eu já reproduza no `nachesu.lovable.app` via browser tool (mobile viewport) **agora** pra confirmar se o bug original é preview-only? (recomendo sim — economiza horas de caça-fantasma)
-2. Algum fluxo mobile que você sabe que tá especialmente ruim e quer priorizar? (ex: módulo, tutor, switcher de eletiva)
+**Dados:**
+- Nova migração: zerar `available_from` dos módulos 1 das duas eletivas.
+
+**Home (`src/pages/AppDashboard.tsx`):**
+- Remover `WeekCadenceStrip` solto (vira card dentro do novo painel).
+- Inserir novo bloco `<DashboardCommandPanel />` abaixo do `EletivaCard`.
+
+**Novo componente `src/components/dashboard/DashboardCommandPanel.tsx`:**
+- Lê o mesmo `snapshot` do `useEletivaProgress` (sem refetch).
+- 3 cards: cadência, última pílula, atalho tutor.
+- Para "última pílula" usa `student_pill_progress` + módulo atual.
+- Para "tutor" gera prompt-semente do tipo "tô no módulo NN <título>, me ajuda a destravar" e linka `/app/tutor?seed=...`.
+
+**Limpeza no `EletivaCard.tsx`:**
+- Tirar a linha "X de Y fechados" do estado em-andamento (evita duplicar com Trilhas).
+- Manter hero do próximo passo intacto.
+
+**`DashboardGreeting.tsx`:**
+- Tirar "totalCompleted/totalPublished" da copy. Mantém saudação por horário + dias desde última atividade.
+
+**`TutorPage.tsx`:**
+- Aceitar `?seed=...` na URL e injetar como mensagem inicial no input (não envia sozinho, deixa o estudante editar).
+
+**`src/components/eletiva/ModuloLockedHero.tsx`** (se existir lá ou no Modulo.tsx):
+- Mostrar horas quando o release está a menos de 24h.
+
+## 4. Fora de escopo
+
+- Não mexer no schema, RLS, edge functions.
+- Não mexer no design dos módulos nem na página Trilhas.
+- Não trazer vocabulário Chŏra.
+- Não adicionar gamificação artificial (streak com chamas, badges).
