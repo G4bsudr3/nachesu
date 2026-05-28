@@ -28,7 +28,10 @@ import { TutorUsageChip } from "@/components/chora-bot/TutorUsageChip";
 import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice";
 import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
 import { TutorStarterPrompts } from "@/components/chora-bot/TutorStarterPrompts";
+import { TutorSafetyNotice } from "@/components/chora-bot/TutorSafetyNotice";
+import { TutorConsentModal } from "@/components/chora-bot/TutorConsentModal";
 import { useTutorSettings } from "@/hooks/useTutorSettings";
+import { useTutorConsent } from "@/hooks/useTutorConsent";
 
 
 type Msg = { role: "user" | "assistant"; content: string; safety?: boolean };
