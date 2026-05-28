@@ -337,43 +337,54 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/admin/certificate-sandbox"
-                element={
-                  <AdminRoute>
-                    <AdminCertificateSandbox />
-                  </AdminRoute>
-                }
-              />
-              {/* rota antiga: redireciona pra sandbox novo */}
+              {/* rota antiga sandbox: redireciona pra novo path (mantém compat) */}
               <Route
                 path="/admin/preview/feedback-final"
                 element={<Navigate to="/admin/certificate-sandbox" replace />}
               />
+
+              {/* redirects de URLs legado antigas → novo prefixo /admin/legado/:tab */}
+              {[
+                "fbi",
+                "prework",
+                "missoes",
+                "cartas",
+                "artworks",
+                "convidados",
+                "emails",
+                "feedback-d1",
+                "feedback-final",
+                "carta-futuro",
+                "votacao-projetos",
+                "chora-bot",
+              ].map((tab) => (
+                <Route
+                  key={`legacy-${tab}`}
+                  path={`/admin/${tab}`}
+                  element={<Navigate to={`/admin/legado/${tab}`} replace />}
+                />
+              ))}
+
+              {/* shell admin com sidebar + command palette */}
               <Route
-                path="/admin/aula/:n"
                 element={
                   <AdminRoute>
-                    <AdminAula />
+                    <AdminLayout />
                   </AdminRoute>
                 }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <AdminRoute>
-                    <AdminFbi />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/:tab"
-                element={
-                  <AdminRoute>
-                    <AdminFbi />
-                  </AdminRoute>
-                }
-              />
+              >
+                <Route path="/admin" element={<AdminHome />} />
+                <Route path="/admin/risco" element={<AdminRisco />} />
+                <Route path="/admin/turma/:courseId" element={<AdminTurma />} />
+                <Route path="/admin/aluno/:userId" element={<AdminStudentProfile />} />
+                <Route path="/admin/certificate-sandbox" element={<AdminCertificateSandbox />} />
+                <Route path="/admin/aula/:n" element={<AdminAula />} />
+                <Route path="/admin/legado" element={<Navigate to="/admin/legado/fbi" replace />} />
+                <Route path="/admin/legado/:tab" element={<AdminFbi />} />
+                {/* compat: /admin/:tab continua respondendo no AdminFbi pra abas "operação" antigas */}
+                <Route path="/admin/:tab" element={<AdminFbi />} />
+              </Route>
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
