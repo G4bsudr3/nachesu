@@ -188,20 +188,32 @@ export const TutorChat = ({
 
       if (!resp.ok || !resp.body) {
         const errText = await resp.text().catch(() => "");
-        let parsed: { error?: string } = {};
+        let parsed: { error?: string; code?: string } = {};
         try {
           parsed = JSON.parse(errText);
         } catch {
           // não json
         }
+        if (resp.status === 412 || parsed.code === "consent_required") {
+          setShowConsent(true);
+          failWith("você precisa aceitar o termo antes de usar o tutor.");
+          return;
+        }
         let msg = parsed.error ?? "deu ruim ao falar com o tutor.";
-        if (resp.status === 429) msg = "muitas perguntas em sequência. respira uns segundos e tenta de novo.";
+        if (resp.status === 429) {
+          if (parsed.code === "burst_limit") msg = "calma, você mandou muitas perguntas seguidas. respira e tenta de novo em alguns segundos.";
+          else if (parsed.code === "global_daily_cap") msg = "tutor pausado por hoje. volta amanhã.";
+          else if (parsed.code === "user_daily_limit") msg = parsed.error ?? msg;
+          else msg = "muitas perguntas em sequência. respira uns segundos e tenta de novo.";
+        }
         else if (resp.status === 402) msg = "créditos da ia esgotaram. avisa a equipe da escola.";
         else if (resp.status === 401) msg = "sua sessão caiu. faz login de novo.";
         toast.error(msg);
         failWith(msg);
         return;
       }
+
+      const safetyLevel = resp.headers.get("x-tutor-safety");
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
