@@ -20,8 +20,10 @@ type EventRow = {
   assistant_chars: number;
   tokens_estimate: number;
   latency_ms: number | null;
+  ttfb_ms: number | null;
   off_scope: boolean;
   helpful: number | null;
+  helpful_reason: string | null;
   created_at: string;
 };
 
