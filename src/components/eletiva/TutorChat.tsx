@@ -77,6 +77,8 @@ export const TutorChat = ({
   const { data: snapshot } = useEletivaProgress();
   const { data: tutorSettings } = useTutorSettings();
   const tutorEnabled = tutorSettings?.enabled !== false;
+  const { data: consent, refetch: refetchConsent } = useTutorConsent();
+  const [showConsent, setShowConsent] = useState(false);
 
   // resumo da trilha atual: módulos concluídos + módulo em andamento
   const buildTrailContext = (): { done: string[]; current: string | null } => {
