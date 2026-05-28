@@ -219,7 +219,19 @@ export const AdminTutorCommand = () => {
     );
   }
 
-  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", system_prompt_addon: "" };
+  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", system_prompt_addon: "", daily_total_cap: 2000, burst_limit_per_minute: 10, daily_total_alert_threshold: 0.8 };
+
+  const cap = s.daily_total_cap ?? 2000;
+  const used = todayCounter?.total_count ?? 0;
+  const usagePct = cap > 0 ? Math.min(100, Math.round((used / cap) * 100)) : 0;
+  const alertPct = Math.round((s.daily_total_alert_threshold ?? 0.8) * 100);
+  const capState: "ok" | "alert" | "blocked" = usagePct >= 100 ? "blocked" : usagePct >= alertPct ? "alert" : "ok";
+
+  const safetyByLevel = (safety ?? []).reduce<Record<string, number>>((acc, ev) => {
+    acc[ev.risk_level] = (acc[ev.risk_level] ?? 0) + 1;
+    return acc;
+  }, {});
+  const safetyTotal = (safety ?? []).length;
 
   return (
     <div className="space-y-8">
