@@ -277,7 +277,7 @@ export const AdminTutorCommand = () => {
     );
   }
 
-  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", system_prompt_addon: "", daily_total_cap: 2000, burst_limit_per_minute: 10, daily_total_alert_threshold: 0.8 };
+  const s = settings ?? { enabled: true, per_user_daily_limit: 50, model: "google/gemini-2.5-flash", fallback_model: "google/gemini-2.5-flash-lite", system_prompt_addon: "", daily_total_cap: 2000, burst_limit_per_minute: 10, daily_total_alert_threshold: 0.8 };
 
   const cap = s.daily_total_cap ?? 2000;
   const used = todayCounter?.total_count ?? 0;
