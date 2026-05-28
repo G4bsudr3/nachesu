@@ -71,6 +71,8 @@ export const TutorChat = ({
   const [lastFailedText, setLastFailedText] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: snapshot } = useEletivaProgress();
+  const { data: tutorSettings } = useTutorSettings();
+  const tutorEnabled = tutorSettings?.enabled !== false;
 
   // resumo da trilha atual: módulos concluídos + módulo em andamento
   const buildTrailContext = (): { done: string[]; current: string | null } => {
