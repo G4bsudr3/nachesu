@@ -150,7 +150,7 @@ export const AdminTutorCommand = () => {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          body: JSON.stringify({}),
+          body: JSON.stringify({ windowDays }),
         },
       );
       if (!resp.ok) throw new Error(await resp.text());
