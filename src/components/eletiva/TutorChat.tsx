@@ -507,13 +507,21 @@ export const TutorChat = ({
                       className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm whitespace-pre-wrap ${
+                        className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm ${
                           m.role === "user"
-                            ? "bg-perestroika-preto text-perestroika-bege"
+                            ? "bg-perestroika-preto text-perestroika-bege whitespace-pre-wrap"
                             : "bg-white/70 border border-perestroika-preto/15"
                         }`}
                       >
-                        {m.content || (
+                        {m.content ? (
+                          m.role === "assistant" ? (
+                            <div className="prose prose-sm max-w-none font-body text-perestroika-preto prose-p:my-1.5 prose-headings:font-display prose-headings:uppercase prose-headings:tracking-wide prose-strong:text-perestroika-preto prose-a:text-primary prose-a:underline-offset-2">
+                              <TutorMarkdown content={m.content} />
+                            </div>
+                          ) : (
+                            m.content
+                          )
+                        ) : (
                           <span className="inline-flex items-center gap-2 text-perestroika-preto/50">
                             <motion.span
                               animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
