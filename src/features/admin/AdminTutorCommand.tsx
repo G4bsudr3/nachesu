@@ -301,11 +301,9 @@ export const AdminTutorCommand = () => {
               regenerar
             </Button>
           </div>
-          {digest?.payload ? (
+          {digest?.summary_md ? (
             <div className="space-y-3 font-body text-sm text-perestroika-preto/85 whitespace-pre-wrap">
-              {typeof digest.payload === "string"
-                ? digest.payload
-                : JSON.stringify(digest.payload, null, 2)}
+              {digest.summary_md}
               <p className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/45 mt-2">
                 gerado em {fmtDate(digest.generated_at as string)}
               </p>
