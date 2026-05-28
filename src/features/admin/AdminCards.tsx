@@ -179,7 +179,7 @@ export const AdminCards = () => {
     if (!r.card?.share_token) return;
     const url = `${window.location.origin}/carta/${r.card.share_token}`;
     navigator.clipboard.writeText(url);
-    const who = r.nickname || firstName(r.display_name) || "aluno";
+    const who = r.nickname || firstName(r.display_name) || "estudante";
     toast.success(`link de ${who} copiado`);
   };
 
@@ -191,7 +191,7 @@ export const AdminCards = () => {
     }
     const block = published
       .map((r) => {
-        const who = r.nickname || firstName(r.display_name) || "aluno";
+        const who = r.nickname || firstName(r.display_name) || "estudante";
         return `${who} → ${window.location.origin}/carta/${r.card!.share_token}`;
       })
       .join("\n");
@@ -261,7 +261,7 @@ export const AdminCards = () => {
   const handleBatch = async () => {
     if (pendingRows.length === 0) return;
     const ok = window.confirm(
-      `gerar carta para ${pendingRows.length} aluno(s) sem carta? vai rodar uma de cada vez. consome créditos de IA (texto + imagem por aluno).`,
+      `gerar carta para ${pendingRows.length} estudante(s) sem carta? vai rodar uma de cada vez. consome créditos de IA (texto + imagem por estudante).`,
     );
     if (!ok) return;
     setBatchMode("generate");
@@ -271,19 +271,19 @@ export const AdminCards = () => {
   const handleExpandBatch = async () => {
     if (expandableRows.length === 0) return;
     const ok = window.confirm(
-      `expandir ${expandableRows.length} carta(s) existente(s)? mantém o arquétipo e gera só tagline, superpoder, sombra e próximo movimento. consome créditos de IA (1 chamada de texto por aluno).`,
+      `expandir ${expandableRows.length} carta(s) existente(s)? mantém o arquétipo e gera só tagline, superpoder, sombra e próximo movimento. consome créditos de IA (1 chamada de texto por estudante).`,
     );
     if (!ok) return;
     setBatchMode("expand");
     await runBatch(expandableRows, expandFields, "expansão");
   };
 
-  /** regera tudo do zero pra todos os alunos com fbi: texto+arquetipo → imagem → og.
+  /** regera tudo do zero pra todos os estudantes com fbi: texto+arquetipo → imagem → og.
    *  apaga e re-classifica. usar quando o pipeline mudou. */
   const handleFullRegenBatch = async () => {
     if (rows.length === 0) return;
     const ok = window.confirm(
-      `regerar TUDO do zero (texto + imagem + og) pra ${rows.length} aluno(s)? ` +
+      `regerar TUDO do zero (texto + imagem + og) pra ${rows.length} estudante(s)? ` +
         `essa é a opção pesada: re-classifica arquetipo, regera ilustração e og:image. ` +
         `vai consumir créditos de IA. continuar?`,
     );
@@ -295,7 +295,7 @@ export const AdminCards = () => {
   const handlePublishAllBatch = async () => {
     if (publishableRows.length === 0) return;
     const ok = window.confirm(
-      `publicar ${publishableRows.length} carta(s)? cada aluno passa a ter link público compartilhável. cada publicação gera 1 og:image (consome créditos de IA).`,
+      `publicar ${publishableRows.length} carta(s)? cada estudante passa a ter link público compartilhável. cada publicação gera 1 og:image (consome créditos de IA).`,
     );
     if (!ok) return;
     setBatchMode("publish");
@@ -321,7 +321,7 @@ export const AdminCards = () => {
           <p className="mt-2 text-perestroika-preto/70 text-sm">
             {loading
               ? "carregando…"
-              : `${rows.length} alunos com fbi enviado · ${pendingRows.length} sem carta`}
+              : `${rows.length} estudantes com fbi enviado · ${pendingRows.length} sem carta`}
           </p>
         </div>
         <div className="flex flex-row flex-wrap gap-2 items-center">
@@ -434,7 +434,7 @@ export const AdminCards = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
-              <TableHead className="uppercase text-xs tracking-wide">aluno</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">estudante</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">fbi enviado</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">arquétipo</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">status</TableHead>
@@ -590,12 +590,12 @@ export const AdminCards = () => {
 
           {selected?.card && (
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px]">
-              {/* preview da carta como o aluno vai ver */}
+              {/* preview da carta como o estudante vai ver */}
               <div className="border-r border-perestroika-preto/10 max-h-[80vh] overflow-y-auto bg-perestroika-bege">
-                {/* tarot card renderizada (igual ao que o aluno vê em /app/carta e /c/{token}) */}
+                {/* tarot card renderizada (igual ao que o estudante vê em /app/carta e /c/{token}) */}
                 <div className="px-6 pt-6 pb-4 flex flex-col items-center gap-2 border-b border-perestroika-preto/10">
                   <div className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50 self-start">
-                    tarot card (preview do aluno)
+                    tarot card (preview do estudante)
                   </div>
                   <div className="w-[300px] py-2">
                     <TarotCard

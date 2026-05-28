@@ -11,7 +11,7 @@ interface Props {
 }
 
 /**
- * Renderiza a entrega do aluno pro professor:
+ * Renderiza a entrega do estudante pro professor:
  * - cada pílula numerada com kind + título
  * - cada bloco em par pergunta/resposta
  * - pílula sem resposta vira chip "não respondida"
@@ -44,7 +44,7 @@ export const DeliverableAnswersList = ({ deliverable }: Props) => {
   if (visible.length === 0) {
     return (
       <p className="text-sm text-perestroika-preto/50 italic">
-        este módulo só tem pílulas de leitura. o aluno marcou como concluído sem
+        este módulo só tem pílulas de leitura. o estudante marcou como concluído sem
         respostas escritas.
       </p>
     );

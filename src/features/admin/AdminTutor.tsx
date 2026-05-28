@@ -79,7 +79,7 @@ export const AdminTutor = () => {
       const msgs = Array.isArray(row.messages) ? (row.messages as Array<{ role?: string }>) : [];
       const userMsgs = msgs.filter((m) => m?.role === "user").length;
 
-      // conversa só conta se aluno mandou pelo menos 1 mensagem
+      // conversa só conta se estudante mandou pelo menos 1 mensagem
       if (userMsgs === 0) return;
 
       const trail = trailMap.get(row.trail_id);
@@ -151,14 +151,14 @@ export const AdminTutor = () => {
       <header>
         <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none">tutor IA</h1>
         <p className="font-body text-sm text-perestroika-preto/65 mt-2 max-w-xl">
-          intera&ccedil;&otilde;es do joão-de-barro com a turma. 1 conversa = 1 dupla aluno + trilha (a infra j&aacute; deduplica). conversas sem nenhuma mensagem do aluno n&atilde;o entram nos n&uacute;meros.
+          intera&ccedil;&otilde;es do joão-de-barro com a turma. 1 conversa = 1 dupla estudante + trilha (a infra j&aacute; deduplica). conversas sem nenhuma mensagem do estudante n&atilde;o entram nos n&uacute;meros.
         </p>
       </header>
 
       <section className="grid gap-3 sm:grid-cols-3">
         <StatCard icon={<MessageCircle className="h-4 w-4" />} label="conversas ativas" value={totals.conversations} hint={`${totals.totalUserMessages} perguntas no total`} />
-        <StatCard icon={<Users className="h-4 w-4" />} label="alunos engajados" value={totals.uniqueStudents} hint="únicos no histórico" />
-        <StatCard icon={<Clock className="h-4 w-4" />} label="mensagens totais" value={totals.totalMessages} hint="aluno + tutor somados" />
+        <StatCard icon={<Users className="h-4 w-4" />} label="estudantes engajados" value={totals.uniqueStudents} hint="únicos no histórico" />
+        <StatCard icon={<Clock className="h-4 w-4" />} label="mensagens totais" value={totals.totalMessages} hint="estudante + tutor somados" />
       </section>
 
       <section className="rounded-2xl border border-perestroika-preto/15 overflow-hidden bg-perestroika-bege/30">
@@ -167,9 +167,9 @@ export const AdminTutor = () => {
             <TableRow>
               <TableHead className="font-display uppercase text-xs">trilha</TableHead>
               <TableHead className="font-display uppercase text-xs text-right">conversas</TableHead>
-              <TableHead className="font-display uppercase text-xs text-right">alunos únicos</TableHead>
+              <TableHead className="font-display uppercase text-xs text-right">estudantes únicos</TableHead>
               <TableHead className="font-display uppercase text-xs text-right">perguntas</TableHead>
-              <TableHead className="font-display uppercase text-xs text-right">média/aluno</TableHead>
+              <TableHead className="font-display uppercase text-xs text-right">média/estudante</TableHead>
               <TableHead className="font-display uppercase text-xs">última atividade</TableHead>
             </TableRow>
           </TableHeader>

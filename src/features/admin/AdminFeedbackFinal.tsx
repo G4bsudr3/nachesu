@@ -238,7 +238,7 @@ export const AdminFeedbackFinal = () => {
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 text-perestroika-preto/50">
           {rows.length === 0
-            ? "ninguém respondeu ainda. quando você liberar a pesquisa pro aluno, as respostas aparecem aqui."
+            ? "ninguém respondeu ainda. quando você liberar a pesquisa pro estudante, as respostas aparecem aqui."
             : "nenhum resultado pra essa busca"}
         </div>
       ) : (

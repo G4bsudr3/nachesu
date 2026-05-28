@@ -85,7 +85,7 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
     queryKey: ["admin-pills-preview", module?.id],
     enabled: !!module?.id,
     queryFn: async () => {
-      // o preview simula o que o aluno vê: filtra rascunhos.
+      // o preview simula o que o estudante vê: filtra rascunhos.
       const { data, error } = await supabase
         .from("module_pills")
         .select(
@@ -121,7 +121,7 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
                 {module ? String(module.number).padStart(2, "0") : ""}
               </DialogTitle>
               <DialogDescription className="text-xs">
-                como o aluno vê em <code>/app/modulo/{module?.number}</code>.{" "}
+                como o estudante vê em <code>/app/modulo/{module?.number}</code>.{" "}
                 {!isAvailable && (
                   <span className="text-perestroika-preto/70">
                     (módulo ainda não está visível pra turma)

@@ -489,7 +489,7 @@ export const AdminTutorCommand = () => {
                   <div className="flex items-baseline justify-between mb-1">
                     <span className="font-body text-sm lowercase">{t.title}</span>
                     <span className="font-body text-xs text-perestroika-preto/60 tabular-nums">
-                      {t.msgs} perguntas · {t.students.size} alunos
+                      {t.msgs} perguntas · {t.students.size} estudantes
                     </span>
                   </div>
                   <div className="h-2 rounded-full bg-perestroika-preto/5 overflow-hidden">
@@ -548,7 +548,7 @@ export const AdminTutorCommand = () => {
           </div>
 
           <div className="rounded-xl border border-perestroika-preto/10 p-4">
-            <Label className="font-display uppercase text-xs tracking-wide">limite diário por aluno</Label>
+            <Label className="font-display uppercase text-xs tracking-wide">limite diário por estudante</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">0 = sem limite.</p>
             <Input
               type="number"

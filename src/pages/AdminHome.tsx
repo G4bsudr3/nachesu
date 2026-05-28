@@ -45,14 +45,14 @@ const AdminHome = () => {
     },
     {
       count: totals.em_risco_critico,
-      label: "alunos em risco crítico",
+      label: "estudantes em risco crítico",
       to: "/admin/risco",
       tone: "alert" as const,
       hint: "21+ dias sem aparecer",
     },
     {
       count: Math.max(0, totals.em_risco - totals.em_risco_critico),
-      label: "alunos em risco médio",
+      label: "estudantes em risco médio",
       to: "/admin/risco",
       tone: "warn" as const,
       hint: "entre 7 e 21 dias",

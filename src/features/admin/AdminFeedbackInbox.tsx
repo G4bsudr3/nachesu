@@ -163,7 +163,7 @@ export const AdminFeedbackInbox = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
-              <TableHead className="uppercase text-xs tracking-wide">aluno</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">estudante</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">módulo</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">enviado</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">status</TableHead>

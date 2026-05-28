@@ -172,7 +172,7 @@ export const AdminFeedbackDia1 = () => {
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 text-perestroika-preto/50 font-body">
           {rows.length === 0
-            ? "ninguém respondeu ainda. o banner aparece pra cada aluno no /app/hub 🤙"
+            ? "ninguém respondeu ainda. o banner aparece pra cada estudante no /app/hub 🤙"
             : "nenhum resultado pra essa busca"}
         </div>
       ) : (

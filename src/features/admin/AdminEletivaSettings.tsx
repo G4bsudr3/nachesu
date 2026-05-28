@@ -14,7 +14,7 @@ type ExtrasRow = { key: string; value: string | null };
 
 /**
  * settings da eletiva. controla feature flags que decidem
- * se features herdadas do chŏra ficam acessíveis pros alunos +
+ * se features herdadas do chŏra ficam acessíveis pros estudantes +
  * regra pedagógica de desbloqueio sequencial.
  *
  * extras agora são por eletiva: cada curso tem seu próprio toggle.
@@ -131,7 +131,7 @@ export const AdminEletivaSettings = () => {
               desbloqueio sequencial
             </Label>
             <p className="text-sm text-muted-foreground max-w-md">
-              quando ligado, o aluno só vê o módulo seguinte depois de fechar o anterior. quando desligado (modo livre), todos os módulos publicados ficam abertos pra qualquer ordem.
+              quando ligado, o estudante só vê o módulo seguinte depois de fechar o anterior. quando desligado (modo livre), todos os módulos publicados ficam abertos pra qualquer ordem.
             </p>
           </div>
           <Switch
