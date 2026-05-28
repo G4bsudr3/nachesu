@@ -23,6 +23,7 @@ export type Database = {
           period_end: string | null
           period_start: string | null
           raw_metrics: Json | null
+          retention_until: string
           scope: string
           summary_md: string
         }
@@ -34,6 +35,7 @@ export type Database = {
           period_end?: string | null
           period_start?: string | null
           raw_metrics?: Json | null
+          retention_until?: string
           scope?: string
           summary_md: string
         }
@@ -45,6 +47,7 @@ export type Database = {
           period_end?: string | null
           period_start?: string | null
           raw_metrics?: Json | null
+          retention_until?: string
           scope?: string
           summary_md?: string
         }
@@ -2334,6 +2337,7 @@ export type Database = {
           course_id: string | null
           created_at: string
           helpful: number | null
+          helpful_reason: string | null
           id: string
           latency_ms: number
           model: string | null
@@ -2343,6 +2347,7 @@ export type Database = {
           retention_until: string
           tokens_estimate: number
           trail_id: string
+          ttfb_ms: number | null
           user_chars: number
           user_id: string
         }
@@ -2351,6 +2356,7 @@ export type Database = {
           course_id?: string | null
           created_at?: string
           helpful?: number | null
+          helpful_reason?: string | null
           id?: string
           latency_ms?: number
           model?: string | null
@@ -2360,6 +2366,7 @@ export type Database = {
           retention_until?: string
           tokens_estimate?: number
           trail_id: string
+          ttfb_ms?: number | null
           user_chars?: number
           user_id: string
         }
@@ -2368,6 +2375,7 @@ export type Database = {
           course_id?: string | null
           created_at?: string
           helpful?: number | null
+          helpful_reason?: string | null
           id?: string
           latency_ms?: number
           model?: string | null
@@ -2377,6 +2385,7 @@ export type Database = {
           retention_until?: string
           tokens_estimate?: number
           trail_id?: string
+          ttfb_ms?: number | null
           user_chars?: number
           user_id?: string
         }
@@ -2439,6 +2448,7 @@ export type Database = {
           daily_total_alert_threshold: number
           daily_total_cap: number
           enabled: boolean
+          fallback_model: string | null
           id: number
           model: string
           per_user_daily_limit: number
@@ -2451,6 +2461,7 @@ export type Database = {
           daily_total_alert_threshold?: number
           daily_total_cap?: number
           enabled?: boolean
+          fallback_model?: string | null
           id?: number
           model?: string
           per_user_daily_limit?: number
@@ -2463,6 +2474,7 @@ export type Database = {
           daily_total_alert_threshold?: number
           daily_total_cap?: number
           enabled?: boolean
+          fallback_model?: string | null
           id?: number
           model?: string
           per_user_daily_limit?: number
@@ -2587,6 +2599,7 @@ export type Database = {
         Returns: undefined
       }
       can_submit_public_fbi: { Args: { _email: string }; Returns: boolean }
+      cleanup_admin_insights: { Args: never; Returns: undefined }
       cleanup_tutor_events: { Args: never; Returns: undefined }
       compute_module_metrics: { Args: { _module_id: string }; Returns: Json }
       delete_email: {
