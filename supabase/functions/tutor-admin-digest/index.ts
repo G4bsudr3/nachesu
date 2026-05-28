@@ -140,6 +140,7 @@ tom: direto, sem corporativês, sem encher linguiça. máximo 6 linhas por seç�
     const raw = {
       totalQuestions, uniqueStudents, offScopePct, helpfulPct,
       helpfulCount, unhelpfulCount, sampleSize: userQuestions.length,
+      anonymized: true,
     };
 
     await admin.from("admin_insights").insert({
