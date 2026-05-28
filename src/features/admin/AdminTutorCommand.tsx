@@ -158,7 +158,7 @@ export const AdminTutorCommand = () => {
     },
     onSuccess: () => {
       toast.success("digest regenerado");
-      qc.invalidateQueries({ queryKey: ["admin-tutor-digest"] });
+      qc.invalidateQueries({ queryKey: ["admin-tutor-digest", windowDays] });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "erro ao gerar"),
   });
