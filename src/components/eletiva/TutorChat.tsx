@@ -30,6 +30,7 @@ import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice"
 import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
 import { TutorSafetyNotice } from "@/components/chora-bot/TutorSafetyNotice";
 import { TutorConsentModal } from "@/components/chora-bot/TutorConsentModal";
+import { TutorContextChip } from "@/components/chora-bot/TutorContextChip";
 import { useTutorConsent } from "@/hooks/useTutorConsent";
 
 type Msg = {
