@@ -23,7 +23,7 @@ export const ProtectedRoute = ({ children, allowPending = false }: ProtectedRout
 
   if (loading || (user && statusLoading)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-perestroika-bege">
+      <div className="min-h-dvh flex items-center justify-center bg-perestroika-bege">
         <div className="font-display uppercase text-3xl text-perestroika-preto/40 animate-pulse">
           carregando...
         </div>

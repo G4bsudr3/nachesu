@@ -1,60 +1,64 @@
-## objetivo
-travar acesso de cada estudante à sua única eletiva via `course_invites`, sem mexer em schema ou em código de app.
+# Diagnóstico + auditoria mobile
 
-## listas validadas
-- **economia-circular (dudu)**: 118 estudantes, planilha `Lista_eletiva_1º_SEMESTRE_-_Dudu.xlsx` → aba `Economia Circular`
-- **ia-na-pratica (frattz)**: 147 estudantes, planilha `Lista_eletiva_1º_SEMESTRE_-_Frattz.xlsx` → aba `Inteligência Artificial`
-- zero sobreposição entre as duas listas (verificado, 0 e-mails em comum)
-- e-mails normalizados (lowercase + trim) já no formato `nome11xxx@edu.sebrae.com.br`
-- a aba "Planilha1" (282 linhas) que existe nos dois arquivos é lista geral da escola → **ignorada**
+## o que provavelmente aconteceu no seu login
 
-## como o mecanismo já funciona (não precisa criar nada novo)
-- `course_invites(course_id, email_normalized)` com unique constraint
-- trigger `handle_new_user` cria profile no signup
-- trigger `claim_course_invites_on_signup` lê o primeiro convite do e-mail, cria `enrollments` na eletiva certa e marca o convite como claimed
-- trigger `enforce_single_active_enrollment` já impede 2ª matrícula ativa fora de admin
-- ou seja: inserindo 1 convite por estudante em sua eletiva = acesso travado a só uma
+A combinação "joão tá pensando" + "precisa publicar o projeto" ao recarregar é um sintoma clássico do **ambiente de preview do Lovable em mobile**, não do código do app:
 
-## execução
+- "joão tá pensando" = `RootErrorBoundary` capturou uma exceção JS (provavelmente no `signInWithPassword` ou em algo que tentou rodar logo após o login)
+- "precisa publicar o projeto" = mensagem do **wrapper do preview** (`id-preview--...lovable.app`), não da nossa aplicação. Acontece quando o iframe perde estado em mobile
 
-### passo 1 — seed de convites (1 chamada `insert`)
-inserir 265 linhas em `public.course_invites`:
-- 147 com `course_id = c0a00000-0000-0000-0000-000000000002`? **não** → ia-na-pratica é `...001`
-- 118 com `course_id = c0a00000-0000-0000-0000-000000000002` (economia-circular)
-- 147 com `course_id = c0a00000-0000-0000-0000-000000000001` (ia-na-pratica)
-- `email_normalized` lowercase
-- `ON CONFLICT (course_id, email_normalized) DO NOTHING` pra ser idempotente
+O auth real em `nachesu.lovable.app` (URL publicada) costuma funcionar nesse cenário. Antes de qualquer fix, **plano passo 1 = reproduzir no domínio publicado pra separar bug de app vs bug de preview**.
 
-### passo 2 — backfill pros 4 usuários que já existem na base
-rodar uma vez:
-```sql
-INSERT INTO enrollments (user_id, course_id)
-SELECT au.id, ci.course_id
-FROM auth.users au
-JOIN course_invites ci ON ci.email_normalized = lower(au.email)
-WHERE ci.claimed_at IS NULL
-ON CONFLICT DO NOTHING;
+## o plano
 
-UPDATE course_invites
-SET claimed_at = now(), claimed_by = au.id
-FROM auth.users au
-WHERE course_invites.email_normalized = lower(au.email)
-  AND course_invites.claimed_at IS NULL;
+### 1. reproduzir e isolar (sem mexer em código ainda)
+- Abrir `https://nachesu.lovable.app` no mobile (não o preview), tentar login com `mateusfrattezi@gmail.com`
+- Se funcionar: era preview-only, seguimos só com a auditoria de UX
+- Se quebrar de verdade: capturar a stack via logs do Supabase (`auth_logs` + Edge logs) e do RootErrorBoundary (já loga via `logger.error`)
+- Os logs de auth recentes mostram login 200 OK com seu user às 08:07, então **a request em si está passando** — o crash é client-side pós-login
+
+### 2. auditoria mobile sistemática (842x682 hoje, mas testar 375x812 e 414x896)
+Rotas críticas a validar visualmente + funcionalmente no viewport mobile:
+
+```text
+público
+ ├─ /                     index/landing
+ ├─ /auth                 login + magic link
+ ├─ /reset-password       fluxo recuperação
+ └─ /pending              conta aguardando aprovação
+
+aluno
+ ├─ /app                  dashboard (hero + switcher + cadência)
+ ├─ /app/eletivas         lista de matrículas
+ ├─ /app/eletiva/:slug    fallback eletiva
+ ├─ /app/modulo/:n        módulo (pílulas + PBL + registro)
+ ├─ /app/trilhas          mapa de trilhas
+ ├─ /app/tutor            chat joão-de-barro
+ ├─ /app/notificacoes     avisos
+ └─ /app/conta            settings
 ```
 
-### passo 3 — verificação
-- `SELECT course_id, count(*) FROM course_invites GROUP BY 1` → deve dar 118 e 147
-- `SELECT count(*) FROM course_invites WHERE claimed_at IS NOT NULL` → confere quantos dos 4 já existentes foram reconciliados
+Checks por tela: nav mobile fixa não cobre conteúdo (padding-bottom respeitado), touch targets ≥ 44px, scrollbar sem overflow horizontal, decoração absoluta atrás do texto, headings legíveis, CTAs alcançáveis com polegar, sem flash de loading infinito.
 
-## fora de escopo (não toco agora)
-- envio de magic link em massa (admin faz manual ou via outro fluxo)
-- mudança em RLS, schema, código frontend
-- tabela `invited_participants` (legado Chŏra) fica intocada
-- alunos com 2 e-mails ou e-mail diferente do que está na planilha (não há sinal disso nos dados)
+### 3. blindar o caminho de login no client
+Mesmo que o crash venha do preview, vale endurecer o que rodar **após** o `signInWithPassword` no `Auth.tsx`:
+- Garantir try/catch em volta de qualquer fetch pós-login (perfil, role, enrollments) pra não derrubar a tela inteira via boundary
+- Confirmar que `useProfileStatus` + `useUserRole` lidam com `null` sem throw
+- Verificar redirect pós-login em mobile (window.location vs navigate)
 
-## risco / pegadinha
-- se o domínio Sebrae redirecionar e-mails (alias) e o aluno logar com endereço diferente do listado, o trigger não casa. nesse caso o admin precisa adicionar o convite manualmente. fora da automação atual.
-- a planilha do dudu tem 1 nome em case misto (`Lucas Felipe Silva De Oliveira`); todos os e-mails já foram normalizados em lowercase no passo de leitura.
+### 4. signature moment do erro (sem mexer no copy se já estiver bom)
+O `RootErrorBoundary` atual já tem joão thinking + 2 CTAs (recarregar / voltar pro início). Validar que renderiza bem em 375px e que o link "voltar pro início" não cai num loop se o erro for no próprio `/app`.
 
-## pra liberar
-preciso passar pra build mode pra rodar o `insert` em massa.
+### 5. entregáveis ao final
+- Lista de bugs mobile encontrados + correção de cada (commit por área: auth, dashboard, módulo, nav)
+- Confirmação se o crash original foi preview-only ou app real
+- Print do dashboard mobile pós-fix pra você validar
+
+## fora de escopo
+- Refazer design mobile do zero
+- Mudar fluxo de auth (magic link vs senha) — só blindar o que existe
+- Mexer em RLS, schema ou edge functions (a menos que apareça erro real lá)
+
+## perguntas antes de começar
+1. Quer que eu já reproduza no `nachesu.lovable.app` via browser tool (mobile viewport) **agora** pra confirmar se o bug original é preview-only? (recomendo sim — economiza horas de caça-fantasma)
+2. Algum fluxo mobile que você sabe que tá especialmente ruim e quer priorizar? (ex: módulo, tutor, switcher de eletiva)
