@@ -24,6 +24,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { BotMessage } from "@/components/chora-bot/BotMessage";
 import { UserMessage } from "@/components/chora-bot/UserMessage";
+import { TutorUsageChip } from "@/components/chora-bot/TutorUsageChip";
+import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice";
+import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
+import { TutorStarterPrompts } from "@/components/chora-bot/TutorStarterPrompts";
+import { useTutorSettings } from "@/hooks/useTutorSettings";
+import { useQueryClient as useQC } from "@tanstack/react-query";
 
 type Msg = { role: "user" | "assistant"; content: string };
 type TrailRow = {
