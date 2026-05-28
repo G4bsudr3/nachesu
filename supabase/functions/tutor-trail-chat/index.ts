@@ -806,6 +806,20 @@ mensagem do estudante:
                 const offScopeRe = /foge\s+um\s+pouco\s+daqui|isso\s+aí\s+o\s+\S+\s+resolve\s+melhor|fala\s+com\s+ele\s+no\s+encontro/i;
                 offScope = offScopeRe.test(assistantText);
               }
+              // proteção de dados: hash + redact (sem texto cru no banco)
+              const enc2 = new TextEncoder();
+              const hashBuf = await crypto.subtle.digest("SHA-256", enc2.encode(message));
+              const hashHex = Array.from(new Uint8Array(hashBuf))
+                .map((b) => b.toString(16).padStart(2, "0")).join("");
+              // redação simples por regex (emails, telefones, @handles, nomes próprios após "sou/me chamo")
+              const redacted = message
+                .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[email]")
+                .replace(/(?:\+?55\s*)?\(?\d{2}\)?\s*9?\d{4}[-\s]?\d{4}/g, "[telefone]")
+                .replace(/@[a-zA-Z0-9_.]{3,}/g, "[handle]")
+                .replace(/\b(?:sou|me\s+chamo|sou\s+o|sou\s+a)\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+)/gi, "$0[nome]")
+                .replace(/\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, "[cpf]")
+                .slice(0, 500);
+
               await admin.from("tutor_message_events").insert({
                 user_id: userId,
                 course_id: trail.course_id ?? null,
@@ -819,6 +833,11 @@ mensagem do estudante:
                 ttfb_ms: ttfbMs,
                 off_scope: offScope,
                 model: modelToUse,
+                message_hash: hashHex,
+                message_redacted: redacted,
+                message_length: message.length,
+                language: language,
+                topic_tag: topicTag,
               });
             } catch (logErr) {
               console.error("tutor event log fail:", logErr);
