@@ -52,7 +52,7 @@ export const AdminTutorCommand = () => {
     queryFn: async (): Promise<EventRow[]> => {
       const { data, error } = await supabase
         .from("tutor_message_events")
-        .select("id, user_id, trail_id, pill_title, user_chars, assistant_chars, tokens_estimate, latency_ms, off_scope, helpful, created_at")
+        .select("id, user_id, trail_id, pill_title, user_chars, assistant_chars, tokens_estimate, latency_ms, ttfb_ms, off_scope, helpful, helpful_reason, created_at")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
         .limit(5000);
