@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { Menu, Command as CommandIcon } from "lucide-react";
 import { AdminSidebar, OPERACAO, LEGADO } from "./AdminSidebar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { CommandPalette, useCommandPaletteHotkey } from "../CommandPalette";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { Badge } from "@/components/ui/badge";
@@ -40,16 +40,14 @@ export const AdminLayout = () => {
 
       <div className="flex-1 min-w-0 flex flex-col">
         <header className="sticky top-0 z-30 h-12 flex items-center gap-3 px-3 sm:px-4 border-b border-perestroika-preto/10 bg-perestroika-bege/85 backdrop-blur">
-          <SheetTrigger asChild>
-            <button
-              type="button"
-              onClick={() => setMobileOpen(true)}
-              className="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-perestroika-preto/5"
-              aria-label="abrir menu"
-            >
-              <Menu className="w-4 h-4" />
-            </button>
-          </SheetTrigger>
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-perestroika-preto/5"
+            aria-label="abrir menu"
+          >
+            <Menu className="w-4 h-4" />
+          </button>
 
           <div className="lg:hidden flex items-center gap-2">
             <NachesULogo variant="dark" />
