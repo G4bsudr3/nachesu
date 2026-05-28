@@ -440,13 +440,19 @@ const TutorPage = () => {
                   isLast || (i === messages.length - 2 && messages[messages.length - 1]?.role === "user");
                 return (
                   <div key={i}>
-                    <BotMessage content={m.content} streaming={streaming && isLast} />
-                    {!streaming && m.content && trailId && (
-                      <TutorMessageActions
-                        content={m.content}
-                        trailId={trailId}
-                        isLatest={isLastAssistant}
-                      />
+                    {m.safety ? (
+                      <TutorSafetyNotice content={m.content} />
+                    ) : (
+                      <>
+                        <BotMessage content={m.content} streaming={streaming && isLast} />
+                        {!streaming && m.content && trailId && (
+                          <TutorMessageActions
+                            content={m.content}
+                            trailId={trailId}
+                            isLatest={isLastAssistant}
+                          />
+                        )}
+                      </>
                     )}
                   </div>
                 );
