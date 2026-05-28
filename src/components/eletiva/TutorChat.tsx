@@ -591,6 +591,7 @@ export const TutorChat = ({
                 }
               }}
               placeholder={streaming ? "joão-de-barro está pensando..." : "pergunte o que travou..."}
+              aria-label="mensagem pro tutor joão-de-barro"
               rows={1}
               maxLength={2000}
               disabled={streaming}
