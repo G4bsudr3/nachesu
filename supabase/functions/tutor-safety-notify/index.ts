@@ -57,11 +57,6 @@ Deno.serve(async (req) => {
       ? settings!.safety_notify_emails.filter((e: any) => typeof e === 'string' && e.includes('@'))
       : []
 
-    if (recipients.length === 0) {
-      console.warn('[tutor-safety-notify] no recipients configured')
-      return json({ ok: true, skipped: 'no_recipients' }, 200)
-    }
-
     // 3. busca título da trilha (best-effort)
     let trailTitle = 'tutor ia'
     if (ev.trail_id) {
@@ -73,7 +68,7 @@ Deno.serve(async (req) => {
       if (t?.title) trailTitle = t.title.toLowerCase()
     }
 
-    // 4. cria escalação
+    // 4. cria escalação SEMPRE (mesmo sem recipients, pra ficar visível na fila do admin)
     const slaHours = SLA_BY_CATEGORY[category] ?? 24
     const studentLabel = `estudante #${ev.user_id.slice(0, 4)}`
     const adminUrl = `${Deno.env.get('PUBLIC_APP_URL') ?? 'https://nachesu.lovable.app'}/admin/tutor`
@@ -92,6 +87,12 @@ Deno.serve(async (req) => {
       .select('id')
       .single()
     if (escErr) console.error('[tutor-safety-notify] escalation insert failed', escErr)
+
+    if (recipients.length === 0) {
+      console.warn('[tutor-safety-notify] no recipients configured, escalation created but no email sent')
+      return json({ ok: true, escalation_id: escalation?.id, skipped: 'no_recipients' }, 200)
+    }
+
 
     // 5. dispara email pra cada destinatário
     const sendPromises = recipients.map((to) =>

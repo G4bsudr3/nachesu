@@ -21,10 +21,14 @@ export const TutorConsentModal = ({ open, onAccepted }: Props) => {
   const handleAccept = async () => {
     if (!user) return;
     setLoading(true);
+    const now = new Date().toISOString();
+    // upsert garante que mesmo sem linha em profiles o consentimento persiste
     const { error } = await supabase
       .from("profiles")
-      .update({ tutor_consent_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+      .upsert(
+        { user_id: user.id, tutor_consent_at: now },
+        { onConflict: "user_id" },
+      );
     setLoading(false);
     if (error) {
       toast.error("não consegui registrar agora, tenta de novo");
@@ -35,7 +39,7 @@ export const TutorConsentModal = ({ open, onAccepted }: Props) => {
 
   return (
     <Dialog open={open}>
-      <DialogContent className="max-w-md" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-md [&>button]:hidden" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-2xl">antes de começar, um aviso rápido</DialogTitle>
           <DialogDescription className="pt-2 text-foreground/80 leading-relaxed space-y-3">
