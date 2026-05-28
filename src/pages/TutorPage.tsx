@@ -251,7 +251,11 @@ const TutorPage = () => {
               assistantSoFar += delta;
               setMessages((prev) => {
                 const copy = [...prev];
-                copy[copy.length - 1] = { role: "assistant", content: assistantSoFar };
+                copy[copy.length - 1] = {
+                  role: "assistant",
+                  content: assistantSoFar,
+                  safety: !!safetyLevel,
+                };
                 return copy;
               });
             }
