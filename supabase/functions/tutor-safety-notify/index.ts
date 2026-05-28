@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     }
 
     // 4. cria escalação
-    const slaHours = SLA_BY_CATEGORY[ev.category] ?? 24
+    const slaHours = SLA_BY_CATEGORY[category] ?? 24
     const studentLabel = `estudante #${ev.user_id.slice(0, 4)}`
     const adminUrl = `${Deno.env.get('PUBLIC_APP_URL') ?? 'https://nachesu.lovable.app'}/admin/tutor`
 
@@ -83,8 +83,8 @@ Deno.serve(async (req) => {
       .insert({
         safety_event_id: ev.id,
         user_id: ev.user_id,
-        category: ev.category,
-        severity: ev.severity,
+        category,
+        severity,
         sla_hours: slaHours,
         notified_emails: recipients,
         status: 'open',
@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
       .single()
     if (escErr) console.error('[tutor-safety-notify] escalation insert failed', escErr)
 
-    // 5. dispara email pra cada destinatário (idempotency por escalação+destinatário)
+    // 5. dispara email pra cada destinatário
     const sendPromises = recipients.map((to) =>
       supabase.functions.invoke('send-transactional-email', {
         body: {
@@ -102,9 +102,9 @@ Deno.serve(async (req) => {
           idempotencyKey: `tutor-safety-${escalation?.id ?? ev.id}-${to}`,
           templateData: {
             studentLabel,
-            category: ev.category,
-            severity: ev.severity,
-            redactedMessage: ev.message_redacted ?? '(sem trecho disponível)',
+            category,
+            severity,
+            redactedMessage: redacted,
             trailTitle,
             occurredAt: ev.created_at,
             adminUrl,
