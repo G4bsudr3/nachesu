@@ -636,18 +636,45 @@ const Kpi = ({
   label,
   value,
   hint,
+  delta,
+  deltaUnit,
+  invert,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number | string;
   hint: string;
-}) => (
-  <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
-    <div className="flex items-center gap-2 text-perestroika-preto/60 mb-2">
-      {icon}
-      <span className="font-body text-[10px] uppercase tracking-[0.2em]">{label}</span>
+  delta?: number | null;
+  deltaUnit?: "%" | "pp";
+  invert?: boolean;
+}) => {
+  const showDelta = typeof delta === "number" && !Number.isNaN(delta);
+  const up = showDelta && delta! > 0;
+  const positive = showDelta ? (invert ? !up && delta !== 0 : up) : null;
+  const color =
+    positive === null
+      ? "text-perestroika-preto/45"
+      : positive
+        ? "text-emerald-700"
+        : delta === 0
+          ? "text-perestroika-preto/45"
+          : "text-perestroika-vermelho";
+  return (
+    <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+      <div className="flex items-center gap-2 text-perestroika-preto/60 mb-2">
+        {icon}
+        <span className="font-body text-[10px] uppercase tracking-[0.2em]">{label}</span>
+      </div>
+      <p className="font-display text-4xl leading-none tabular-nums">{value}</p>
+      <div className="flex items-baseline justify-between gap-2 mt-2">
+        <p className="font-body text-xs text-perestroika-preto/55">{hint}</p>
+        {showDelta && (
+          <span className={`font-body text-[10px] uppercase tracking-[0.18em] tabular-nums ${color}`}>
+            {delta! > 0 ? "↑" : delta! < 0 ? "↓" : "·"} {Math.abs(delta!)}
+            {deltaUnit ?? "%"}
+          </span>
+        )}
+      </div>
     </div>
-    <p className="font-display text-4xl leading-none tabular-nums">{value}</p>
-    <p className="font-body text-xs text-perestroika-preto/55 mt-2">{hint}</p>
-  </div>
-);
+  );
+};
