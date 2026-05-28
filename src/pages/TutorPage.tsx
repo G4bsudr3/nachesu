@@ -31,7 +31,7 @@ import { TutorStarterPrompts } from "@/components/chora-bot/TutorStarterPrompts"
 import { useTutorSettings } from "@/hooks/useTutorSettings";
 
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string; safety?: boolean };
 type TrailRow = {
   id: string;
   title: string;
