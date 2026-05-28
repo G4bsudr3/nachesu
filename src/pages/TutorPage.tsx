@@ -29,7 +29,7 @@ import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice"
 import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
 import { TutorStarterPrompts } from "@/components/chora-bot/TutorStarterPrompts";
 import { useTutorSettings } from "@/hooks/useTutorSettings";
-import { useQueryClient as useQC } from "@tanstack/react-query"; void useQC;
+
 
 type Msg = { role: "user" | "assistant"; content: string };
 type TrailRow = {
