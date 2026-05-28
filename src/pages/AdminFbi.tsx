@@ -112,7 +112,7 @@ const TAB_LABELS: Record<AdminTab, string> = {
 };
 
 const AdminFbi = () => {
-  const _auth = useAuth(); void _auth;
+  useAuth(); // mantém contexto montado
   const navigate = useNavigate();
   const { tab: tabFromPath } = useParams<{ tab?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
