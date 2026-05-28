@@ -48,7 +48,7 @@ import { AdminEletivaSettings } from "@/features/admin/AdminEletivaSettings";
 import { AdminEletivas } from "@/features/admin/AdminEletivas";
 import { AdminEletivaReview } from "@/features/admin/AdminEletivaReview";
 import { AdminTrilha } from "@/features/admin/AdminTrilha";
-import { AdminTutor } from "@/features/admin/AdminTutor";
+import { AdminTutorCommand } from "@/features/admin/AdminTutorCommand";
 import { AdminFeedbackInbox } from "@/features/admin/AdminFeedbackInbox";
 import { AdminNudgeTemplates } from "@/features/admin/AdminNudgeTemplates";
 import { AdminRubrics } from "@/features/admin/AdminRubrics";
