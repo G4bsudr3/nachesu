@@ -199,11 +199,29 @@ const TutorPage = () => {
 
       if (!resp.ok || !resp.body) {
         const body = await resp.json().catch(() => ({}));
+        if (resp.status === 412 || body?.code === "consent_required") {
+          setShowConsent(true);
+          setMessages(base);
+          if (!rawText) setInput(text);
+          setStreaming(false);
+          return;
+        }
         let msg = body.error || "deu ruim ao falar com o tutor.";
-        if (resp.status === 429) msg = "muitas perguntas em sequência. respira uns segundos.";
-        else if (resp.status === 402) msg = "créditos da ia esgotaram. avisa a equipe da escola.";
+        if (resp.status === 429) {
+          if (body?.code === "burst_limit") {
+            msg = "calma, você mandou muitas perguntas seguidas. respira e tenta de novo em alguns segundos.";
+          } else if (body?.code === "global_daily_cap") {
+            msg = "tutor pausado por hoje. volta amanhã.";
+          } else if (body?.code === "user_daily_limit") {
+            msg = body.error;
+          } else {
+            msg = "muitas perguntas em sequência. respira uns segundos.";
+          }
+        } else if (resp.status === 402) msg = "créditos da ia esgotaram. avisa a equipe da escola.";
         throw new Error(msg);
       }
+
+      const safetyLevel = resp.headers.get("x-tutor-safety");
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
