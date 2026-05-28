@@ -24,6 +24,10 @@ import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { useTutorSettings } from "@/hooks/useTutorSettings";
+import { TutorUsageChip } from "@/components/chora-bot/TutorUsageChip";
+import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice";
+import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
 
 type Msg = {
   role: "user" | "assistant";
