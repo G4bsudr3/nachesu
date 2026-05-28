@@ -27,14 +27,14 @@ const buildContextLine = (
   }
   // primeiro acesso (nunca começou nada, mas tem módulo aberto)
   if (totalCompleted === 0) {
-    return "bom te ver por aqui. abaixo, o seu próximo passo.";
+    return "bom te ver por aqui. seu próximo passo tá logo abaixo.";
   }
   // pausa longa
   if (daysSinceLastActivity !== null && daysSinceLastActivity >= 7) {
     return `faz ${daysSinceLastActivity} dias. retoma quando der.`;
   }
   // em curso
-  return `boa, você tá construindo. ${totalCompleted}/${totalPublished} fechados.`;
+  return "boa, você tá construindo. continua de onde parou.";
 };
 
 export const DashboardGreeting = ({

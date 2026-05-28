@@ -247,11 +247,6 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
           />
           {trail?.title.toLowerCase() ?? "trilha"}
         </span>
-        {totalCompleted > 0 && (
-          <span className="text-perestroika-preto/55 tabular-nums">
-            {totalCompleted} de {totalPublished} fechados
-          </span>
-        )}
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
