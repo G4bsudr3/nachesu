@@ -1,202 +1,104 @@
 
-# admin command center · plano completo
+## escopo
 
-## diagnóstico crítico do admin hoje
+fechar o que ficou em aberto do plano admin antes de tocar no tutor IA:
 
-andei o admin de ponta a ponta. o que está acontecendo:
+1. plugar a rota `/admin` → `AdminHome` (command center) e mover o `AdminFbi` legado pra `/admin/legado`.
+2. envelopar todas as rotas admin num `AdminLayout` com **shadcn sidebar** (colapsável, com gatilho sempre visível).
+3. adicionar **command palette** global (`cmdk`) com atalho `cmd/ctrl+k` pra pular entre seções.
+4. configurar **redirects** das URLs antigas (`/admin/fbi`, `/admin/prework`, `/admin/chora-bot`, etc.) pra `/admin/legado/:tab` mantendo deep-link.
+5. atualizar `.lovable/plan.md` e validar build.
 
-**1. a porta de entrada é o lugar errado.** `/admin` cai em `AdminFbi` (legado Chŏra do evento presencial). nada que importa pra operação NachesU está em primeiro plano.
+## diagnóstico do que falta
 
-**2. 22 abas em uma única linha.** `AdminFbi.tsx` (645 linhas) controla: eletivas, revisão, trilha, tutor IA, feedback, materiais, pendentes, usuários, nudges, rubricas, settings + 12 abas Chŏra escondidas atrás de toggle. é um menu, não um painel.
+- `src/pages/AdminHome.tsx` já existe (command center pronto), mas `App.tsx` linha 381 ainda renderiza `AdminFbi` em `/admin` — o command center não tá no ar.
+- todas as outras rotas admin (`/admin/risco`, `/admin/turma/:courseId`, `/admin/aluno/:userId`, `/admin/certificate-sandbox`, `/admin/aula/:n`) vivem soltas, cada página com header próprio. zero shell comum, zero nav lateral.
+- `AdminFbi.tsx` (645 linhas) é o "menu de 22 abas" com `Tabs` que opera tudo via `/admin/:tab`. já tem split visual entre "operação NachesU" (sempre visível) e "ferramentas Chŏra (legado)" colapsadas, mas tudo no mesmo arquivo. mover pra `/admin/legado` resolve o ruído sem perder funcionalidade.
+- nenhum command palette existe ainda. `cmdk` não está nas deps.
 
-**3. `AdminStats` é só uma contagem.** 4 cards (matrículas / alunos ativos / pendentes / módulos publicados) com filtro de curso + período. zero séries temporais, zero funil, zero alertas, zero comparação, zero AI. um aluno entrou hoje? cinco abandonaram? não dá pra saber sem clicar em três telas.
+## o que muda
 
-**4. dados ricos no banco estão invisíveis.** existem `student_engagement_risk`, `student_module_progress`, `student_pill_progress`, `module_ratings`, `module_deliverables`, `student_alerts`, `prework_progress`, `tutorial_progress`. quase nada disso aparece no `/admin` raiz. `AdminTurma` e `AdminRisco` existem mas são rotas separadas que ninguém descobre.
+### 1. `AdminLayout.tsx` com sidebar
 
-**5. zero hierarquia de ação.** o admin não sabe *o que fazer hoje*. tudo é navegação livre. não tem fila ("3 entregas esperando revisão · 2 alunos em risco crítico · 7 pendentes pra aprovar").
+novo arquivo `src/components/admin/layout/AdminLayout.tsx`:
 
-**6. zero insight gerado.** com Lovable AI Gateway de graça, ninguém usa AI pra resumir "a turma de IA está 18% atrás de Economia Circular no módulo 3, principal trava: pílula B". seria 1 chamada Gemini Flash por dia.
+- `<SidebarProvider>` em volta de tudo, `div` raiz `w-full min-h-dvh bg-perestroika-bege`.
+- `<AdminSidebar />` com `collapsible="icon"` (mantém faixa estreita com ícones quando colapsada).
+- header sticky (`h-12`, `border-b border-perestroika-preto/10`) com `<SidebarTrigger />` à esquerda + breadcrumb + atalho `cmd+k` indicado.
+- `<Outlet />` no main.
+- componente compartilha mascote `<EletivaSymbol pose="thinking" />` mini no rodapé da sidebar (signature moment leve).
 
-**7. mobile do admin é deficiente.** abas inline-flex wrap viram parede vertical no celular; tabelas com 6 colunas escapam pra direita.
+`src/components/admin/layout/AdminSidebar.tsx`:
 
-## princípios novos (maio 2026, edtech assíncrono)
+- 2 grupos de navegação, mapeando rotas que **já existem** (não invento destino novo):
+  - **operação** (sempre aberto): início (`/admin`), eletivas (`/admin/eletivas`), revisão (`/admin/review`), trilha (`/admin/trilha`), tutor IA (`/admin/tutor`), feedback (`/admin/feedback`), pendentes (`/admin/pending`), materiais (`/admin/materiais`), risco (`/admin/risco`), usuários (`/admin/usuarios`), nudges (`/admin/nudges`), rubricas (`/admin/rubricas`), settings (`/admin/eletiva`).
+  - **legado Chŏra** (collapsible, `defaultOpen` se `pathname` começa com `/admin/legado`): fbi, pré-work, missões, cartas, artworks, convidados, emails, feedback dia 1, pesquisa final, carta futuro, votação projetos, chora bot.
+- ícones via `lucide-react` (Home, BookOpen, Compass, Brain, Inbox, Hourglass, Package, AlertTriangle, Users, Bell, ClipboardList, Settings, Archive, etc.).
+- `NavLink` + `isActive`, classes Perestroika (`bg-perestroika-preto/5` ativo, hover suave). botão "sair" no `SidebarFooter`.
 
-vindos de Linear (action-first), Vercel (insights inline), Posthog (cohort + funnel embutidos), Duolingo School Portal (signal over data), Notion AI (resumo proativo):
+### 2. rotas em `App.tsx`
 
-1. **action over data**: a primeira tela responde "o que precisa de você agora?", não "quantos alunos tem?"
-2. **insight over dashboard**: AI escreve 3 frases todo dia sobre a turma. gráfico é suporte da frase, não o contrário.
-3. **funil > silos**: matriculados → ativaram conta → completaram módulo 1 → completaram trilha 1 → entregaram final. uma vista, uma narrativa.
-4. **segmento > linha**: estudante existe em segmentos (em chama, em risco, dormente, novo). bulk action por segmento.
-5. **command palette**: cmd/ctrl+k abre tudo. nada de hunting em 22 abas.
-6. **mobile-first do admin**: o frattz revisa do celular. tudo cabe.
+- envolver todo o bloco admin num `<Route element={<AdminRoute><AdminLayout/></AdminRoute>}>`.
+- dentro:
+  - `path="/admin"` → `<AdminHome />` (novo command center, já pronto).
+  - `path="/admin/risco"` → `AdminRisco`.
+  - `path="/admin/turma/:courseId"` → `AdminTurma`.
+  - `path="/admin/aluno/:userId"` → `AdminStudentProfile`.
+  - `path="/admin/certificate-sandbox"` → `AdminCertificateSandbox`.
+  - `path="/admin/aula/:n"` → `AdminAula`.
+  - `path="/admin/legado"` e `path="/admin/legado/:tab"` → `<AdminFbi />` (renderiza dentro do layout, sem o header próprio dele — vou condicionar a `inLayout` prop ou remover o header local quando estiver dentro do layout).
+  - `path="/admin/:tab"` → mantém `<AdminFbi />` por enquanto pra não quebrar bookmarks; só que `AdminFbi` agora aceita slugs novos e legados.
 
-## proposta: 5 seções, 1 home
+**redirects** (`<Route element={<Navigate />}>`):
 
-substitui as 22 abas por **5 áreas** + **home command center**. nada é apagado, só rearrumado e priorizado. legado Chŏra continua acessível atrás da flag `eletiva_extras_enabled`.
+- `/admin/aula/X` mantém intacto (não muda).
+- legado por aba: `/admin/fbi`, `/admin/prework`, `/admin/missoes`, `/admin/cartas`, `/admin/artworks`, `/admin/convidados`, `/admin/emails`, `/admin/feedback-d1`, `/admin/feedback-final`, `/admin/carta-futuro`, `/admin/votacao-projetos`, `/admin/chora-bot` → `<Navigate to="/admin/legado/:tab" replace />` (preserva `tab` no path).
 
-```text
-/admin                  → Command Center (novo)
-/admin/turma/:slug      → Turma (já existe, vira protagonista)
-/admin/aluno/:id        → Aluno (já existe, ganha timeline + AI)
-/admin/conteudo         → Conteúdo (trilha + tutor + materiais + rubricas)
-/admin/operacao         → Operação (pendentes + nudges + emails + risco)
-/admin/legado           → tudo Chŏra atrás de toggle
-```
+### 3. `AdminFbi` adaptado
 
-### 1 · `/admin` Command Center (tela nova)
+- aceita renderização "dentro do layout": detecta via `useMatch('/admin/legado/*')` ou prop. quando true, **omite** o header `<NachesULogo />` + breadcrumb local + botões sair (já no layout) e **só renderiza** as abas + conteúdos.
+- ajusta `VALID_TABS` e `handleTabChange` pra navegar pra `/admin/legado/:tab` quando montado nessa rota; pra `/admin/:tab` quando vier do path antigo (compatibilidade).
+- nas abas "operação" (eletivas, review, trilha, tutor, feedback, etc.) o componente continua válido em `/admin/:tab` mas o **destino preferencial** no menu vira a página dedicada quando existir (ex.: `/admin/tutor` continua dentro de `AdminFbi`, sem mexer agora — só vou criar página dedicada quando tocar no tutor IA).
 
-estrutura mobile-first, uma coluna, três blocos:
+### 4. command palette (`cmdk`)
 
-**bloco A · fila de hoje** (acima da dobra, sempre)
-```text
-┌──────────────────────────────────────┐
-│ HOJE, 28 MAI                          │
-│                                       │
-│ 3 entregas esperando revisão    →    │
-│ 2 alunos em risco crítico (21d) →    │
-│ 7 cadastros aguardando aprovar  →    │
-│ 1 módulo agendado pra amanhã    →    │
-└──────────────────────────────────────┘
-```
-cada linha vira ação direta. zero é estado celebrado ("tudo no jeito"). conta consolidada das duas eletivas, com chip pra filtrar por eletiva.
+- `bun add cmdk` (já é dependência do shadcn em geral; confirmo presença antes de instalar).
+- `src/components/admin/CommandPalette.tsx`:
+  - escuta `cmd/ctrl+k` global via `useEffect` em `AdminLayout`.
+  - `<CommandDialog>` shadcn com grupos: "ir para" (todos os destinos do sidebar), "ações rápidas" (regenerar insight do digest — chama `useAdminInsight().regenerate`, copiar link da aba atual, sair).
+  - busca fuzzy embutida do `cmdk`.
+  - registra atalho no `<SidebarFooter>`: `⌘K` chip mostrando atalho.
 
-**bloco B · pulso da turma** (insight AI + sparkline)
-```text
-┌──────────────────────────────────────┐
-│ resumo da semana · gerado por IA      │
-│                                       │
-│ IA na Prática perdeu 12% de ritmo    │
-│ no módulo 3. a pílula B tem 4         │
-│ avaliações ≤2. Economia Circular vai │
-│ bem, mas 5 alunos travaram no PBL    │
-│ do módulo 2.                          │
-│                                       │
-│ [ver detalhe]   gerado 9h12          │
-└──────────────────────────────────────┘
-```
-- edge function `admin-insight-digest` roda diário às 9h, salva em `admin_insights` (tabela nova, 1 linha por dia por escopo). usa `google/gemini-3.5-flash` (rápido + barato + bom em pt-BR).
-- input: agregados de matrículas, conclusões, risco, ratings, deliverables, comentários de feedback dos últimos 7d vs 7d anteriores.
-- prompt em pt-BR, tom Naches lowercase, 3 frases, **só fato + comparação**, sem corporativês. proibido em-dash, hashtag, emoji.
-- frattz aperta um botão "regenerar agora" se quiser.
+### 5. `.lovable/plan.md`
 
-**bloco C · gráficos vivos** (4 tiles compactos com Recharts)
-1. **funil de ativação** (barra horizontal): matriculados → primeiro login → módulo 1 completo → trilha 1 completa → entrega final. % e contagem absoluta por eletiva.
-2. **calor de módulos** (heatmap 4×5): cada célula = módulo, cor = % de conclusão da turma. clicável → `/admin/aula/:n`.
-3. **engajamento 14 dias** (sparkline área): atividade diária por eletiva, 2 linhas sobrepostas.
-4. **distribuição de risco** (donut compacto): em chama / em ritmo / lento / em risco / dormente.
+- atualizo o bloco "admin · command center" pra refletir: shell `AdminLayout`, sidebar, command palette, `/admin/legado/:tab` ativo, AdminTutor próxima etapa.
 
-### 2 · `/admin/turma/:slug` Turma
+### 6. validar build
 
-a `AdminTurma` que já existe vira o protagonista. acrescenta:
-- toggle no command center pra filtrar tudo por essa turma
-- coluna nova "última pílula" no ritmo dos módulos
-- aba lateral "segmentos" (em chama, em ritmo, em risco, dormente, novo) com bulk action: cutucar / abrir / exportar csv
+- depois das edições, a harness roda `tsc`/build automático; checo `code--read_console_logs` em busca de erros do dev server e, se preciso, faço uma navegação rápida a `/admin` e `/admin/legado/fbi` pra confirmar render sem regressão.
 
-### 3 · `/admin/aluno/:id` Aluno
+## arquivos
 
-a tela atual (`AdminStudentProfile`) ganha:
-- **timeline cronológica** unificada: login, módulo iniciado, pílula completa, deliverable enviado, mensagem do tutor, nudge recebido. uma linha por evento, agrupada por dia.
-- **mini resumo AI** opcional ("esta estudante avança rápido mas para na pílula C de cada módulo. provável fadiga de fim de bloco.") gerado on demand, não automático.
-- ações inline: enviar mensagem, marcar como prioridade, registrar nota interna.
+**criados**
+- `src/components/admin/layout/AdminLayout.tsx`
+- `src/components/admin/layout/AdminSidebar.tsx`
+- `src/components/admin/CommandPalette.tsx`
 
-### 4 · `/admin/conteudo`
+**editados**
+- `src/App.tsx` (envelopa rotas admin no layout; adiciona redirects legado; `/admin` → `AdminHome`)
+- `src/pages/AdminFbi.tsx` (modo "dentro do layout" + suporte a `/admin/legado/:tab` no `handleTabChange`)
+- `src/pages/AdminHome.tsx` (remove header próprio do command center, fica só o conteúdo; o shell vem do layout)
+- `.lovable/plan.md`
 
-consolida 4 abas atuais (`trilha`, `tutor`, `materiais`, `rubricas`) numa sub-navegação local. nada muda no conteúdo de cada uma, só agrupa.
+**não toco agora**
+- `AdminTutor.tsx` (próximo plano, do tutor IA).
+- nenhuma rota fora de `/admin/*`.
+- nenhuma tabela ou edge function.
 
-### 5 · `/admin/operacao`
+## risco
 
-consolida `pending`, `risco`, `nudges`, `emails`, `feedback inbox` em sub-navegação. é a casa do trabalho operacional invisível.
+- `AdminFbi` é pesado (645 linhas) e ainda concentra abas "operação"; transformar ele em "dentro do layout sem header próprio" + suporte a `/admin/legado/:tab` exige cuidado pra não quebrar `useUrlState`. mitigação: condicional simples por `useMatch`, tabs continuam navegando dentro do prefixo correto.
+- redirects podem entrar em loop se um path antigo apontar pra si mesmo. mitigação: lista explícita de slugs legado e `Navigate replace`.
+- command palette + sidebar em paralelo: foco do trigger e do shortcut precisam não competir; testo `cmd+k` com sidebar aberta e colapsada.
 
-### 6 · `/admin/legado`
-
-toda a galáxia Chŏra (fbi, prework, missoes, cartas, artworks, convidados, carta-futuro, votacao-projetos, chora-bot, feedback-d1, feedback-final) atrás de toggle único. preserva URLs existentes via redirect. só aparece se `useEletivaExtras().enabled === true`.
-
-### 7 · command palette (cmd/ctrl + k)
-
-componente novo `AdminCommandPalette` usando o `cmdk` (já vem com shadcn). indexa: estudantes (search por nome/email/nickname), módulos, ações ("ver pendentes", "exportar csv da turma X", "rodar nudge agora"). atalho de teclado global no layout admin.
-
-### 8 · layout admin com sidebar
-
-`AdminFbi.tsx` (645 linhas) some. nasce `AdminLayout.tsx` com:
-- `Sidebar` shadcn collapsible (5 itens fixos + legado opcional)
-- `SidebarTrigger` no header
-- `AdminCommandPalette` montado no layout
-- mobile: sidebar vira sheet (já é o default do shadcn sidebar)
-- preserva o `<AdminRoute>` guard
-
-URL canônica vira `/admin/<seção>`. URLs antigas (`/admin/fbi`, `/admin/missoes` etc.) redirecionam pra `/admin/legado/<aba>` sem quebrar links.
-
-### 9 · mobile do admin
-
-- KPIs em grid de 2 colunas no mobile (não 4)
-- tabelas viram cards verticais < 640px (mesma técnica do `AdminRisco` mas aplicada uniformemente)
-- fila de hoje sempre primeiro
-- sidebar vira sheet com trigger no header
-
-## escopo técnico
-
-### frontend (novo)
-- `src/pages/AdminHome.tsx` — Command Center
-- `src/components/admin/layout/AdminLayout.tsx` + `AdminSidebar.tsx`
-- `src/components/admin/home/ActionQueue.tsx`
-- `src/components/admin/home/InsightDigest.tsx`
-- `src/components/admin/home/ActivationFunnel.tsx` (Recharts)
-- `src/components/admin/home/ModuleHeatmap.tsx`
-- `src/components/admin/home/EngagementSparkline.tsx` (Recharts)
-- `src/components/admin/home/RiskDistribution.tsx` (Recharts donut)
-- `src/components/admin/AdminCommandPalette.tsx` (cmdk)
-- `src/hooks/useAdminMetrics.ts` — agrega tudo em 1 query react-query, cache 60s
-- `src/hooks/useAdminInsight.ts` — lê `admin_insights` + botão regenerar
-
-### frontend (refator)
-- `AdminFbi.tsx` deletado, lógica das abas que sobrevivem migra pros novos containers
-- `AdminTurma.tsx` ganha sub-aba "segmentos"
-- `AdminStudentProfile` ganha timeline + AI summary
-- `AppRoutes`: nova hierarquia `/admin`, `/admin/conteudo/:tab?`, `/admin/operacao/:tab?`, `/admin/legado/:tab?` com redirects das URLs antigas
-
-### backend
-- **migração**: tabela `admin_insights` (id, scope text [global|course_id], summary_md, generated_at, model, period_start, period_end, raw_metrics jsonb). RLS: admin lê tudo, ninguém mais lê. GRANT explícito.
-- **edge function nova** `admin-insight-digest` (verify_jwt = false pro cron, mas check de admin token via header pra chamada manual). roda diariamente via pg_cron 9h BRT, ou sob demanda quando frattz aperta "regenerar".
-- **edge function nova** `admin-metrics-snapshot` opcional pra pré-agregar funil/heatmap se ficar lento (só se a query react-query passar de ~600ms).
-- prompt do digest usa `google/gemini-3.5-flash` via Lovable AI Gateway (zero key).
-
-### libs
-- `recharts` já está no projeto (assumido pelo stack). se não estiver: `bun add recharts`.
-- `cmdk` já vem com shadcn command. ok.
-
-### testes
-- testes existentes (52) continuam passando
-- adicionar 1 teste de smoke pro `AdminHome` (renderiza fila, insight placeholder, 4 tiles)
-- 1 teste pro redirect das URLs antigas
-
-## o que **não** está no escopo
-
-- nada do conteúdo de aluno (`/app`)
-- nada de mexer em pílulas, rubricas, materiais existentes
-- nada de tirar features legadas Chŏra, só mover pra `/admin/legado`
-- não vou renomear tabelas nem mexer no schema dos dados de aluno
-- não vou trocar a permissão do dudu (esse trabalho ficou pra outro plano)
-
-## ordem de execução
-
-1. migration: tabela `admin_insights` + grants + RLS
-2. edge function `admin-insight-digest` + agendamento
-3. `AdminLayout` + `AdminSidebar` + redirects de URL
-4. `AdminHome` com fila + insight + 4 tiles
-5. `AdminCommandPalette` + atalho global
-6. `AdminTurma` ganha segmentos
-7. `AdminStudentProfile` ganha timeline + AI on demand
-8. polish mobile + qa final
-
-## risco / mitigação
-
-- **risco de quebrar URL bookmarked**: redirect server-side de toda rota antiga pra equivalente nova. testado em smoke.
-- **risco de edge function travar**: digest cacheado por dia; se falhar, mostra "sem resumo hoje, [tentar agora]".
-- **risco de query do funil pesada**: começa com cliente puro; se >600ms, move pra função pré-agregada.
-
-## sucesso
-
-- frattz abre `/admin` no celular de manhã e em < 5s sabe o que precisa fazer hoje
-- 1 frase em pt-BR diz o que mudou na semana
-- 22 abas viraram 5 + legado opcional
-- nenhuma feature antiga foi perdida, só repriorizada
+quando aprovar, sigo nessa ordem: 1) AdminLayout + AdminSidebar, 2) App.tsx (rotas + redirects), 3) AdminFbi (modo embutido), 4) AdminHome (limpar header duplicado), 5) CommandPalette, 6) plan.md, 7) validar build/preview.
