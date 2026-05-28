@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp, Loader2, RefreshCw, Trash2, X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import {
   Sheet,
