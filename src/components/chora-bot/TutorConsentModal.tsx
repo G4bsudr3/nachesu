@@ -37,22 +37,25 @@ export const TutorConsentModal = ({ open, onAccepted }: Props) => {
     <Dialog open={open}>
       <DialogContent className="max-w-md" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle className="text-2xl">como o tutor guarda suas perguntas</DialogTitle>
+          <DialogTitle className="text-2xl">antes de começar, um aviso rápido</DialogTitle>
           <DialogDescription className="pt-2 text-foreground/80 leading-relaxed space-y-3">
             <span className="block">
-              suas perguntas ficam guardadas por até <strong>90 dias</strong> pra melhorar o tutor.
+              suas perguntas ficam guardadas por até <strong>30 dias</strong>, sem texto cru: a gente salva só uma versão <strong>anonimizada</strong> (nome, telefone, email, cpf são removidos automaticamente).
             </span>
             <span className="block">
-              educadores podem ver <strong>agregados anônimos</strong> (sem nome, email ou telefone) pra entender as dúvidas da turma.
+              educadores veem só <strong>agregados anônimos</strong> da turma pra entender as dúvidas. ninguém lê suas mensagens uma a uma.
             </span>
             <span className="block">
-              mensagens que envolvem situação de risco ficam por <strong>365 dias</strong> pra que adultos responsáveis possam acompanhar.
+              <strong>uma exceção importante:</strong> se você escrever sobre se machucar, sofrer bullying ou estar em perigo, seu educador é avisado na hora. isso existe pra te proteger.
+            </span>
+            <span className="block text-sm text-foreground/60">
+              o tutor não é terapeuta nem amigo. pra desabafo de verdade, fala com gente. tô aqui pra te ajudar a aprender.
             </span>
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button onClick={handleAccept} disabled={loading} className="w-full sm:w-auto">
-            {loading ? "registrando..." : "entendi, quero usar o tutor"}
+            {loading ? "registrando..." : "entendi, bora"}
           </Button>
         </DialogFooter>
       </DialogContent>

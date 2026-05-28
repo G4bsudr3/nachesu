@@ -173,3 +173,19 @@ Como não pedimos autorização de responsável, **aumentamos a transparência a
 7. Só então: ativar `tutor_enabled=true` em produção.
 
 Pronto pra implementar quando aprovar. Se quiser, posso também já desenhar o template do email de escalação e o esqueleto do protocolo offline pra Dudu/frattz revisarem.
+---
+
+## Fase D · status de execução (2026-05-28)
+
+**Concluído nesta etapa:**
+- Migração: `tutor_safety_events.message_redacted`, `tutor_settings.tutor_enabled`/`acknowledgment_required`, `tutor_safety_escalations` (user_id/category/severity/sla_hours/status), trigger automático em INSERT de safety_event severo (self_harm/abuse) via pg_net → `tutor-safety-notify`.
+- Edge function `tutor-safety-notify`: lê evento, cria escalação, dispara email pra cada educador em `tutor_settings.safety_notify_emails`, com SLA por categoria (self_harm 2h, abuse 4h, illegal 6h, hate 12h).
+- Email template `tutor-safety-alert` (registry atualizado): identifier anonimizado, trecho redacted, CTA pro painel admin.
+- `tutor-trail-chat`: redação PII calculada cedo (`redactedEarly`) e salva nos 3 inserts de `tutor_safety_events` (classifier_failure, forbidden, severe).
+- Frontend: TutorConsentModal com copy nova (30d, anonimização, exceção de safety, "entendi bora"). Banner permanente de transparência no header do chat. TutorDisabledNotice reformulado como fallback completo com canais alternativos + CVV.
+
+**Pendente (próximas iterações):**
+- Configurar `tutor_settings.safety_notify_emails` em produção com emails reais de Dudu e frattz (via admin panel ou insert manual).
+- Painel admin: fila de `tutor_safety_escalations` com fluxo acknowledge → followup → close, toggle global de `tutor_enabled`.
+- Testes adversariais (30 casos, ≥90% acerto, 0 falso negativo em self_harm/abuse).
+- Burst escalonado: já tem campos no schema (`burst_soft_threshold=5`, `burst_pause_threshold=8`), falta plugar lógica em `tutor-trail-chat`.
