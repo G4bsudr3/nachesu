@@ -27,19 +27,30 @@ export const ModuloLockedHero = ({
 }: Props) => {
   const releasesInFuture = availableFrom && new Date(availableFrom).getTime() > Date.now();
   const releaseDate = releasesInFuture ? new Date(availableFrom!) : null;
-  const daysUntil = releaseDate
-    ? Math.max(0, Math.ceil((releaseDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+  const msUntil = releaseDate ? releaseDate.getTime() - Date.now() : null;
+  const hoursUntil = msUntil !== null ? Math.ceil(msUntil / (1000 * 60 * 60)) : null;
+  const daysUntil = msUntil !== null
+    ? Math.max(0, Math.ceil(msUntil / (1000 * 60 * 60 * 24)))
     : null;
 
   const headline = releasesInFuture
     ? "esse módulo ainda não abriu"
     : "esse módulo abre quando você fechar o anterior";
 
+  // se falta menos de 24h, fala em horas. evita "em 0 dias" parecendo bug.
+  const whenStr = hoursUntil !== null && hoursUntil <= 24
+    ? hoursUntil <= 1
+      ? "em menos de 1h"
+      : `em ~${hoursUntil}h`
+    : daysUntil !== null
+      ? `em ${daysUntil} ${daysUntil === 1 ? "dia" : "dias"}`
+      : "";
+
   const subhead = releasesInFuture
     ? `o ritmo da eletiva é semanal. esse módulo entra em ${releaseDate!.toLocaleDateString("pt-BR", {
         day: "2-digit",
         month: "long",
-      })}${daysUntil !== null ? ` · em ${daysUntil} ${daysUntil === 1 ? "dia" : "dias"}` : ""}.`
+      })}${whenStr ? ` · ${whenStr}` : ""}.`
     : prevModuleNumber
       ? `a eletiva é em escada. termina o módulo ${String(prevModuleNumber).padStart(2, "0")}${
           prevModuleTitle ? ` — "${prevModuleTitle.toLowerCase()}"` : ""
