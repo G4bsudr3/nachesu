@@ -385,7 +385,8 @@ export const TutorChat = ({
         </SheetHeader>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4">
-          {messages.length === 0 && !streaming && (
+          {!tutorEnabled && <TutorDisabledNotice />}
+          {tutorEnabled && messages.length === 0 && !streaming && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
