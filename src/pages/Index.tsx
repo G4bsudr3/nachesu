@@ -607,7 +607,7 @@ const Index = () => {
             {[
               {
                 q: "preciso saber programar pra entrar?",
-                a: "não. a maioria dos alunos começa do zero. a gente usa ferramentas de no-code e ia que fazem o trabalho pesado. você foca em pensar, decidir e construir.",
+                a: "não. a maioria dos estudantes começa do zero. a gente usa ferramentas de no-code e ia que fazem o trabalho pesado. você foca em pensar, decidir e construir.",
               },
               {
                 q: "como funciona a aula na prática?",
