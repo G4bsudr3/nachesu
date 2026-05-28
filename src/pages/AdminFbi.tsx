@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ChevronDown, ChevronRight, Copy, Download, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { NachesULogo } from "@/components/brand/NachesULogo";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -112,7 +112,7 @@ const TAB_LABELS: Record<AdminTab, string> = {
 };
 
 const AdminFbi = () => {
-  const { signOut } = useAuth();
+  const _auth = useAuth(); void _auth;
   const navigate = useNavigate();
   const { tab: tabFromPath } = useParams<{ tab?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
