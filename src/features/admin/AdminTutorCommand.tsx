@@ -82,8 +82,10 @@ export const AdminTutorCommand = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("admin_insights")
-        .select("payload, generated_at")
+        .select("summary_md, generated_at")
         .eq("scope", "tutor:7d")
+        .order("generated_at", { ascending: false })
+        .limit(1)
         .maybeSingle();
       if (error) throw error;
       return data;
