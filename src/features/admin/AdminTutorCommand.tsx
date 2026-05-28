@@ -177,17 +177,34 @@ export const AdminTutorCommand = () => {
   });
 
   const kpis = useMemo(() => {
-    const list = events ?? [];
-    const uniqStudents = new Set(list.map((e) => e.user_id)).size;
-    const totalMsgs = list.length;
-    const rated = list.filter((e) => e.helpful !== null);
-    const helpful = rated.filter((e) => (e.helpful ?? 0) > 0).length;
-    const helpfulRate = rated.length > 0 ? Math.round((helpful / rated.length) * 100) : null;
-    const latencies = list.map((e) => e.latency_ms).filter((v): v is number => typeof v === "number");
-    const avgLatency = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : null;
-    const offScope = list.filter((e) => e.off_scope).length;
-    return { uniqStudents, totalMsgs, helpfulRate, avgLatency, offScope };
-  }, [events]);
+    const calc = (list: EventRow[]) => {
+      const uniqStudents = new Set(list.map((e) => e.user_id)).size;
+      const totalMsgs = list.length;
+      const rated = list.filter((e) => e.helpful !== null);
+      const helpful = rated.filter((e) => (e.helpful ?? 0) > 0).length;
+      const helpfulRate = rated.length > 0 ? Math.round((helpful / rated.length) * 100) : null;
+      const latencies = list.map((e) => e.latency_ms).filter((v): v is number => typeof v === "number");
+      const avgLatency = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : null;
+      const offScope = list.filter((e) => e.off_scope).length;
+      return { uniqStudents, totalMsgs, helpfulRate, avgLatency, offScope };
+    };
+    const cur = calc(events ?? []);
+    const prev = calc((prevEvents ?? []) as EventRow[]);
+    const pct = (a: number, b: number) => (b === 0 ? null : Math.round(((a - b) / b) * 100));
+    return {
+      ...cur,
+      delta: {
+        totalMsgs: pct(cur.totalMsgs, prev.totalMsgs),
+        helpfulRate:
+          cur.helpfulRate !== null && prev.helpfulRate !== null && prev.helpfulRate > 0
+            ? cur.helpfulRate - prev.helpfulRate
+            : null,
+        avgLatency:
+          cur.avgLatency !== null && prev.avgLatency !== null ? pct(cur.avgLatency, prev.avgLatency) : null,
+        offScope: pct(cur.offScope, prev.offScope),
+      },
+    };
+  }, [events, prevEvents]);
 
   const sparkline = useMemo(() => {
     const list = events ?? [];
