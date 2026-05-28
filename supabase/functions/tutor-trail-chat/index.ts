@@ -242,7 +242,7 @@ Deno.serve(async (req) => {
       return new Date(brtNow.getTime() + 3 * 60 * 60 * 1000).toISOString();
     };
 
-    // burst rate-limit: max N por 60s
+    // burst rate-limit escalonado (5 aviso suave · 8 pausa 30s · 10 pausa 2min)
     if (settings.burst_limit_per_minute > 0) {
       const since = new Date(Date.now() - 60 * 1000).toISOString();
       const { count: burstCount } = await admin
@@ -250,18 +250,37 @@ Deno.serve(async (req) => {
         .select("id", { count: "exact", head: true })
         .eq("user_id", userId)
         .gte("created_at", since);
-      if ((burstCount ?? 0) >= settings.burst_limit_per_minute) {
+      const c = burstCount ?? 0;
+      const hard = settings.burst_limit_per_minute;
+      const pause = (settings as { burst_pause_threshold?: number }).burst_pause_threshold ?? 8;
+      const soft = (settings as { burst_soft_threshold?: number }).burst_soft_threshold ?? 5;
+
+      if (c >= hard) {
         return new Response(
           JSON.stringify({
-            error: "calma, você mandou muitas perguntas seguidas. respira e tenta de novo em alguns segundos.",
-            code: "burst_limit",
-            retry_after_s: 30,
+            error: "calma, muitas perguntas em sequência. respira e volta em 2 minutos.",
+            code: "burst_hard",
+            retry_after_s: 120,
+            severity: "hard",
           }),
-          {
-            status: 429,
-            headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "30" },
-          },
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "120" } },
         );
+      }
+      if (c >= pause) {
+        return new Response(
+          JSON.stringify({
+            error: "tá indo muito rápido. respira 30 segundos e tenta de novo.",
+            code: "burst_pause",
+            retry_after_s: 30,
+            severity: "pause",
+          }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "30" } },
+        );
+      }
+      // soft warning: deixa passar mas devolve header pro frontend mostrar aviso
+      if (c >= soft) {
+        // não bloqueia, só sinaliza
+        (req as unknown as { __burstSoft?: boolean }).__burstSoft = true;
       }
     }
 
