@@ -21,10 +21,14 @@ export const TutorConsentModal = ({ open, onAccepted }: Props) => {
   const handleAccept = async () => {
     if (!user) return;
     setLoading(true);
+    const now = new Date().toISOString();
+    // upsert garante que mesmo sem linha em profiles o consentimento persiste
     const { error } = await supabase
       .from("profiles")
-      .update({ tutor_consent_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+      .upsert(
+        { user_id: user.id, tutor_consent_at: now },
+        { onConflict: "user_id" },
+      );
     setLoading(false);
     if (error) {
       toast.error("não consegui registrar agora, tenta de novo");
