@@ -1,4 +1,4 @@
-// blocos atômicos que o renderer de entrega monta a partir do conteúdo do aluno
+// blocos atômicos que o renderer de entrega monta a partir do conteúdo do estudante
 // + schema da pílula. cada resolver de pílula devolve um array desses.
 
 export type AnswerBlock =

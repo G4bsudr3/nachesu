@@ -346,7 +346,7 @@ function MetricsPanel({
 
   const cards = [
     {
-      label: "alunos no curso",
+      label: "estudantes no curso",
       value: m.total_students,
       hint: "perfis aprovados (não admin)",
     },
@@ -657,7 +657,7 @@ function DeliverablesPanel({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>aluno</TableHead>
+                <TableHead>estudante</TableHead>
                 <TableHead>itens</TableHead>
                 <TableHead>fluxos</TableHead>
                 <TableHead>status</TableHead>
@@ -721,7 +721,7 @@ function exportDeliverablesCsv(rows: DeliverableRow[], moduleNumber: number) {
     return;
   }
   const header = [
-    "aluno",
+    "estudante",
     "user_id",
     "status",
     "enviado_em",

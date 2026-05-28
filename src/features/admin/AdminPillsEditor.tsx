@@ -368,7 +368,7 @@ export const AdminPillsEditor = ({
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
             {pills?.length ?? 0} pílula(s). arrasta pelo punho ⠿ pra
-            reordenar. a ordem aqui é a que o aluno vê no módulo.
+            reordenar. a ordem aqui é a que o estudante vê no módulo.
           </p>
           <Button
             type="button"
@@ -447,7 +447,7 @@ export const AdminPillsEditor = ({
             <AlertDialogHeader>
               <AlertDialogTitle>remover esta pílula?</AlertDialogTitle>
               <AlertDialogDescription>
-                "{pendingDelete?.title}" vai sumir pra todos os alunos. essa
+                "{pendingDelete?.title}" vai sumir pra todos os estudantes. essa
                 ação não dá pra desfazer.
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -498,7 +498,7 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
     transform: CSS.Transform.toString(transform),
     transition,
     // pílulas em rascunho ficam opacas mesmo paradas, pra deixar claro que o
-    // aluno não tá vendo.
+    // estudante não tá vendo.
     opacity: isDragging ? 0.5 : pill.published ? 1 : 0.55,
     zIndex: isDragging ? 50 : "auto",
   };
@@ -730,8 +730,8 @@ const PillFormDialog = ({
               </Label>
               <p className="text-[11px] text-muted-foreground">
                 {values.published
-                  ? "alunos veem essa pílula no módulo"
-                  : "só admins veem. salva tranquilo, nada vaza pro aluno"}
+                  ? "estudantes veem essa pílula no módulo"
+                  : "só admins veem. salva tranquilo, nada vaza pro estudante"}
               </p>
             </div>
             <Switch

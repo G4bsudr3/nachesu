@@ -46,7 +46,7 @@ export const PageHeader = ({
       )}
     >
       {/* esquerda: back ou logo */}
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink-0">
         {back ? (
           <Link
             to={back.to}

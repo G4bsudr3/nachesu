@@ -124,7 +124,7 @@ const AdminRisco = () => {
           <div className="flex items-center gap-3 mb-2">
             <AlertTriangle className="h-6 w-6 text-perestroika-vermelho" />
             <h1 className="font-display text-4xl sm:text-5xl uppercase tracking-tight text-perestroika-preto">
-              alunos em risco
+              estudantes em risco
             </h1>
           </div>
           <p className="font-body text-sm text-perestroika-preto/65">

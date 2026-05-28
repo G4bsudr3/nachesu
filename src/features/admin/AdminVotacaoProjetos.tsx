@@ -118,7 +118,7 @@ export const AdminVotacaoProjetos = () => {
             votação · projetos
           </h1>
           <p className="mt-3 text-perestroika-preto/70">
-            cria sessões, abre, fecha e vê o ranking completo. aluno só vê top 10 quando fechar.
+            cria sessões, abre, fecha e vê o ranking completo. estudante só vê top 10 quando fechar.
           </p>
         </div>
         <Button

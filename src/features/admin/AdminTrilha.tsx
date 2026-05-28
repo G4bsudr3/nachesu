@@ -217,7 +217,7 @@ export const AdminTrilha = () => {
           eletiva · trilha
         </h2>
         <p className="text-sm text-muted-foreground max-w-2xl">
-          publique módulos e configure quando ficam disponíveis pros alunos. um módulo só
+          publique módulos e configure quando ficam disponíveis pros estudantes. um módulo só
           aparece pra turma quando está <strong>publicado</strong> e a data de liberação
           já passou (ou está vazia).
         </p>
@@ -366,8 +366,8 @@ export const AdminTrilha = () => {
                           type="button"
                           onClick={() => setPreviewModule(m)}
                           className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-perestroika-preto/10 transition-colors"
-                          aria-label="ver preview do aluno"
-                          title="ver preview do aluno"
+                          aria-label="ver preview do estudante"
+                          title="ver preview do estudante"
                         >
                           <ScanEye className="w-4 h-4" />
                         </button>
@@ -565,7 +565,7 @@ const EditModuleDialog = ({
                 onChange={(e) => handleChange("objective", e.target.value)}
                 rows={3}
                 maxLength={500}
-                placeholder="o que o aluno vai sair sabendo ou fazendo depois desse módulo"
+                placeholder="o que o estudante vai sair sabendo ou fazendo depois desse módulo"
               />
               {errors.objective && (
                 <p className="text-xs text-destructive">{errors.objective}</p>
@@ -677,8 +677,8 @@ const TrailPblEditor = ({ trails }: TrailPblEditorProps) => {
           tutor IA · problema central de cada trilha
         </h3>
         <p className="text-xs text-muted-foreground">
-          o que você escrever aqui vai pro system prompt do joão-de-barro quando o aluno conversar com ele
-          dentro de uma pílula de exercício PBL. seja específico: o problema, o desafio, o que o aluno precisa
+          o que você escrever aqui vai pro system prompt do joão-de-barro quando o estudante conversar com ele
+          dentro de uma pílula de exercício PBL. seja específico: o problema, o desafio, o que o estudante precisa
           destravar. deixe vazio pra desligar o foco PBL nessa trilha.
         </p>
       </div>

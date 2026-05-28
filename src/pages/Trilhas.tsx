@@ -122,7 +122,7 @@ const Trilhas = () => {
                 o mapa inteiro
               </h1>
               <p className="font-body text-base text-perestroika-preto/75 max-w-2xl">
-                com {activeCourse.professor_name.toLowerCase()}. {totalCompleted} de {totalPublished} módulos liberados já são seus.
+                com {activeCourse.professor_name.toLowerCase()}. você já concluiu {totalCompleted} de {totalPublished} {totalPublished === 1 ? "módulo disponível" : "módulos disponíveis"}.
               </p>
             </div>
             <EletivaSwitcher />

@@ -107,7 +107,7 @@ export const AdminStats = () => {
           modDraftQ = modDraftQ.eq("trails.course_id", courseId);
         }
 
-        // alunos ativos: enrollments status=active (filtrados por curso, sem período)
+        // estudantes ativos: enrollments status=active (filtrados por curso, sem período)
         let activeQ = supabase.from("enrollments").select("user_id, course_id").eq("status", "active");
         if (courseId !== "all") activeQ = activeQ.eq("course_id", courseId);
 
@@ -206,7 +206,7 @@ export const AdminStats = () => {
           />
           <Card
             icon={Users}
-            label="alunos ativos"
+            label="estudantes ativos"
             value={stats.totalAlunos}
             hint={courseId === "all" ? "únicos em qualquer eletiva" : "matriculados nesta eletiva"}
             delay={0.05}
@@ -229,7 +229,7 @@ export const AdminStats = () => {
             to="/admin/trilha"
           />
           {courseId === "all" && (
-            <Card icon={BookMarked} label="alunos por eletiva" delay={0.2} className="sm:col-span-2 lg:col-span-4">
+            <Card icon={BookMarked} label="estudantes por eletiva" delay={0.2} className="sm:col-span-2 lg:col-span-4">
               {stats.porCurso.length === 0 ? (
                 <p className="font-body text-xs text-perestroika-preto/50">nenhuma eletiva ainda</p>
               ) : (
@@ -243,7 +243,7 @@ export const AdminStats = () => {
                         {c.title.toLowerCase()}
                       </button>
                       <span className="font-body text-xs tabular-nums text-perestroika-preto/60">
-                        {c.matriculas} aluno{c.matriculas === 1 ? "" : "s"}
+                        {c.matriculas} estudante{c.matriculas === 1 ? "" : "s"}
                       </span>
                     </li>
                   ))}

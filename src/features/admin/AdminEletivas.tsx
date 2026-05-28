@@ -53,7 +53,7 @@ export function AdminEletivas() {
     <div className="space-y-4">
       <h2 className="font-display text-2xl uppercase">eletivas</h2>
       <p className="font-body text-sm text-perestroika-preto/70">
-        cada eletiva tem seus alunos (convidados por email), seu professor e seus módulos liberados manualmente.
+        cada eletiva tem seus estudantes (convidados por email), seu professor e seus módulos liberados manualmente.
       </p>
 
       {isLoading ? (
@@ -154,7 +154,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
       });
       if (error) throw error;
 
-      // se algum email já é aluno cadastrado, cria a matrícula direto
+      // se algum email já é estudante cadastrado, cria a matrícula direto
       const { data: existingUsers } = await supabase.rpc("admin_list_users");
       const matched = (existingUsers ?? []).filter((u: any) =>
         list.includes(String(u.email).toLowerCase())
@@ -221,7 +221,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
         <h3 className="font-display text-lg uppercase">convites por email</h3>
       </div>
       <p className="font-body text-xs text-perestroika-preto/60">
-        cole emails (um por linha, vírgula ou espaço). quando o aluno fizer signup com esse email, vira matrícula.
+        cole emails (um por linha, vírgula ou espaço). quando o estudante fizer signup com esse email, vira matrícula.
       </p>
       <Textarea
         value={emails}

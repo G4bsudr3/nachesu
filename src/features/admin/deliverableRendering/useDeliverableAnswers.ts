@@ -16,7 +16,7 @@ type PillRow = {
 };
 
 /**
- * dado um deliverable enviado pelo aluno, busca todas as pílulas daquele módulo
+ * dado um deliverable enviado pelo estudante, busca todas as pílulas daquele módulo
  * e resolve cada uma contra o content jsonb. devolve em ordem do módulo.
  *
  * essa é a fonte única de verdade do "como mostrar a entrega pro professor".

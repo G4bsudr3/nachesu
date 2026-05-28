@@ -139,8 +139,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     onSuccess: (_, verdict) => {
       toast.success(
         verdict === "aprovado"
-          ? "feedback enviado, aluno notificado"
-          : "ajuste solicitado, aluno pode reabrir e re-enviar",
+          ? "feedback enviado, estudante notificado"
+          : "ajuste solicitado, estudante pode reabrir e re-enviar",
       );
       qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
       onOpenChange(false);
@@ -212,7 +212,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
 
   if (!deliverable) return null;
   const studentName =
-    deliverable.profile?.display_name ?? deliverable.profile?.nickname ?? "aluno";
+    deliverable.profile?.display_name ?? deliverable.profile?.nickname ?? "estudante";
   const moduleLabel = deliverable.module
     ? `módulo ${String(deliverable.module.number).padStart(2, "0")} · ${deliverable.module.title}`
     : "módulo";
@@ -255,7 +255,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
 
         <div className="mt-6">
           <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3">
-            entrega do aluno
+            entrega do estudante
           </p>
           <DeliverableAnswersList deliverable={deliverable} />
         </div>
@@ -420,7 +420,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           </p>
           {messages.length === 0 ? (
             <p className="text-xs italic text-perestroika-preto/40 mb-3">
-              nenhuma mensagem ainda. responda ao aluno se precisar.
+              nenhuma mensagem ainda. responda ao estudante se precisar.
             </p>
           ) : (
             <ul className="space-y-3 mb-4">
@@ -435,7 +435,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-[10px] uppercase tracking-wide text-perestroika-preto/55">
-                      {m.author_role === "student" ? (m.author_name ?? "aluno") : (m.author_name ?? "educador")}
+                      {m.author_role === "student" ? (m.author_name ?? "estudante") : (m.author_name ?? "educador")}
                     </span>
                     <span className="text-[10px] text-perestroika-preto/40">
                       {new Date(m.created_at).toLocaleString("pt-BR", {
@@ -454,7 +454,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           <Textarea
             value={reply}
             onChange={(e) => setReply(e.target.value.slice(0, 4000))}
-            placeholder="responder ao aluno..."
+            placeholder="responder ao estudante..."
             rows={3}
             className="bg-white/60 border-perestroika-preto/20 font-body text-sm"
           />

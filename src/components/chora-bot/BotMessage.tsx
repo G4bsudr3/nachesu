@@ -16,14 +16,10 @@ export const BotMessage = ({ content, streaming = false }: BotMessageProps) => {
     <div className="flex gap-3 items-start">
       <BotAvatar size={36} ring={false} />
       <div
-        className="flex-1 min-w-0 rounded-2xl bg-perestroika-bege px-4 py-3 relative"
+        className="flex-1 min-w-0 rounded-2xl bg-perestroika-bege px-4 py-3 relative border-l-[3px]"
         style={{
           boxShadow: "0 1px 0 rgba(9,9,9,0.04)",
-          borderLeft: "3px solid transparent",
-          backgroundImage:
-            "linear-gradient(hsl(35 47% 90% / 0.5), hsl(35 47% 90% / 0.5)), linear-gradient(180deg, #fe7b02, #fd4644, #f756a6, #6f77fc)",
-          backgroundOrigin: "border-box",
-          backgroundClip: "padding-box, border-box",
+          borderLeftColor: "hsl(var(--primary))",
         }}
       >
         {content ? (
