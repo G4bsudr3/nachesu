@@ -683,6 +683,28 @@ mensagem do estudante:
             } catch (logErr) {
               console.error("tutor event log fail:", logErr);
             }
+
+            // incrementa contador global do dia (cap de custo)
+            try {
+              const todayStr = brtDate();
+              const { data: cur } = await admin
+                .from("tutor_daily_counters")
+                .select("total_count")
+                .eq("date", todayStr)
+                .maybeSingle();
+              await admin
+                .from("tutor_daily_counters")
+                .upsert(
+                  {
+                    date: todayStr,
+                    total_count: (cur?.total_count ?? 0) + 1,
+                    updated_at: new Date().toISOString(),
+                  },
+                  { onConflict: "date" },
+                );
+            } catch (cErr) {
+              console.error("daily counter fail:", cErr);
+            }
           }
           controller.close();
         }
