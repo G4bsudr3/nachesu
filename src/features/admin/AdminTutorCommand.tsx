@@ -180,6 +180,12 @@ export const AdminTutorCommand = () => {
   });
 
   const kpis = useMemo(() => {
+    const median = (arr: number[]) => {
+      if (!arr.length) return null;
+      const s = [...arr].sort((a, b) => a - b);
+      const mid = Math.floor(s.length / 2);
+      return s.length % 2 ? s[mid] : Math.round((s[mid - 1] + s[mid]) / 2);
+    };
     const calc = (list: EventRow[]) => {
       const uniqStudents = new Set(list.map((e) => e.user_id)).size;
       const totalMsgs = list.length;
@@ -188,8 +194,10 @@ export const AdminTutorCommand = () => {
       const helpfulRate = rated.length > 0 ? Math.round((helpful / rated.length) * 100) : null;
       const latencies = list.map((e) => e.latency_ms).filter((v): v is number => typeof v === "number");
       const avgLatency = latencies.length ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : null;
+      const ttfbs = list.map((e) => e.ttfb_ms).filter((v): v is number => typeof v === "number" && v > 0);
+      const medianTtfb = median(ttfbs);
       const offScope = list.filter((e) => e.off_scope).length;
-      return { uniqStudents, totalMsgs, helpfulRate, avgLatency, offScope };
+      return { uniqStudents, totalMsgs, helpfulRate, avgLatency, medianTtfb, offScope };
     };
     const cur = calc(events ?? []);
     const prev = calc((prevEvents ?? []) as EventRow[]);
@@ -204,10 +212,23 @@ export const AdminTutorCommand = () => {
             : null,
         avgLatency:
           cur.avgLatency !== null && prev.avgLatency !== null ? pct(cur.avgLatency, prev.avgLatency) : null,
+        medianTtfb:
+          cur.medianTtfb !== null && prev.medianTtfb !== null ? pct(cur.medianTtfb, prev.medianTtfb) : null,
         offScope: pct(cur.offScope, prev.offScope),
       },
     };
   }, [events, prevEvents]);
+
+  const negReasons = useMemo(() => {
+    const map = new Map<string, number>();
+    (events ?? []).forEach((e) => {
+      if (e.helpful === -1 && e.helpful_reason) {
+        const k = e.helpful_reason.replace(/_/g, " ");
+        map.set(k, (map.get(k) ?? 0) + 1);
+      }
+    });
+    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
+  }, [events]);
 
   const sparkline = useMemo(() => {
     const list = events ?? [];
