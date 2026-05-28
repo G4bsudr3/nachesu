@@ -28,11 +28,15 @@ import { useTutorSettings } from "@/hooks/useTutorSettings";
 import { TutorUsageChip } from "@/components/chora-bot/TutorUsageChip";
 import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice";
 import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
+import { TutorSafetyNotice } from "@/components/chora-bot/TutorSafetyNotice";
+import { TutorConsentModal } from "@/components/chora-bot/TutorConsentModal";
+import { useTutorConsent } from "@/hooks/useTutorConsent";
 
 type Msg = {
   role: "user" | "assistant";
   content: string;
   context?: { done: string[]; current: string | null } | null;
+  safety?: boolean;
 };
 
 interface TutorChatProps {
