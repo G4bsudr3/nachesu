@@ -24,6 +24,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { BotMessage } from "@/components/chora-bot/BotMessage";
 import { UserMessage } from "@/components/chora-bot/UserMessage";
+import { TutorUsageChip } from "@/components/chora-bot/TutorUsageChip";
+import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice";
+import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
+import { TutorStarterPrompts } from "@/components/chora-bot/TutorStarterPrompts";
+import { useTutorSettings } from "@/hooks/useTutorSettings";
+
 
 type Msg = { role: "user" | "assistant"; content: string };
 type TrailRow = {
@@ -50,6 +56,7 @@ const TutorPage = () => {
   const queryClient = useQueryClient();
   const { data: enrollments } = useMyEnrollments();
   const { slug: activeSlug } = useActiveEletiva();
+  const { data: tutorSettings } = useTutorSettings();
 
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -300,7 +307,8 @@ const TutorPage = () => {
         <span className="font-display uppercase tracking-[0.15em] text-base sm:text-lg text-perestroika-preto">
           tutor ia
         </span>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
+          <TutorUsageChip />
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button
@@ -379,13 +387,20 @@ const TutorPage = () => {
 
       <main className="flex-1 flex flex-col min-w-0">
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-10">
-          {messages.length === 0 ? (
-            <div className="max-w-2xl mx-auto h-full flex items-center justify-center py-12">
+          {tutorSettings && !tutorSettings.enabled ? (
+            <div className="max-w-2xl mx-auto py-12">
+              <TutorDisabledNotice />
+            </div>
+          ) : messages.length === 0 ? (
+            <div className="max-w-2xl mx-auto h-full flex flex-col items-center justify-center py-12 gap-5">
               <p className="font-body text-perestroika-preto/60 text-center text-base sm:text-lg leading-relaxed">
                 {activeTrail
                   ? `oi, eu sou o joão-de-barro. conversando sobre ${activeTrail.title.toLowerCase()}. manda sua dúvida.`
                   : "carregando trilha..."}
               </p>
+              {activeTrail && (
+                <TutorStarterPrompts onPick={(t) => void send(t)} />
+              )}
             </div>
           ) : (
             <div className="max-w-3xl mx-auto space-y-5">
@@ -394,17 +409,26 @@ const TutorPage = () => {
                 if (m.role === "user") {
                   return <UserMessage key={i} content={m.content} initials={userInitials} />;
                 }
+                const isLastAssistant =
+                  isLast || (i === messages.length - 2 && messages[messages.length - 1]?.role === "user");
                 return (
-                  <BotMessage
-                    key={i}
-                    content={m.content}
-                    streaming={streaming && isLast}
-                  />
+                  <div key={i}>
+                    <BotMessage content={m.content} streaming={streaming && isLast} />
+                    {!streaming && m.content && trailId && (
+                      <TutorMessageActions
+                        content={m.content}
+                        trailId={trailId}
+                        isLatest={isLastAssistant}
+                      />
+                    )}
+                  </div>
                 );
               })}
             </div>
           )}
         </div>
+
+
 
         <div className="border-t border-perestroika-preto/10 px-4 py-3 md:px-6 md:py-4 bg-perestroika-bege">
           <div className="max-w-3xl mx-auto">

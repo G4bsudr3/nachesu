@@ -24,6 +24,10 @@ import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { useTutorSettings } from "@/hooks/useTutorSettings";
+import { TutorUsageChip } from "@/components/chora-bot/TutorUsageChip";
+import { TutorDisabledNotice } from "@/components/chora-bot/TutorDisabledNotice";
+import { TutorMessageActions } from "@/components/chora-bot/TutorMessageActions";
 
 type Msg = {
   role: "user" | "assistant";
@@ -67,6 +71,8 @@ export const TutorChat = ({
   const [lastFailedText, setLastFailedText] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: snapshot } = useEletivaProgress();
+  const { data: tutorSettings } = useTutorSettings();
+  const tutorEnabled = tutorSettings?.enabled !== false;
 
   // resumo da trilha atual: módulos concluídos + módulo em andamento
   const buildTrailContext = (): { done: string[]; current: string | null } => {
@@ -313,7 +319,8 @@ export const TutorChat = ({
                 </SheetTitle>
               </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
+              <TutorUsageChip />
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <button
@@ -378,7 +385,8 @@ export const TutorChat = ({
         </SheetHeader>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4">
-          {messages.length === 0 && !streaming && (
+          {!tutorEnabled && <TutorDisabledNotice />}
+          {tutorEnabled && messages.length === 0 && !streaming && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -446,6 +454,15 @@ export const TutorChat = ({
                     )}
                   </div>
                 </motion.div>
+                {m.role === "assistant" && m.content && !streaming && (
+                  <div className="flex justify-start">
+                    <TutorMessageActions
+                      content={m.content}
+                      trailId={trailId}
+                      isLatest={i === messages.length - 1}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </AnimatePresence>
