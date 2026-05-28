@@ -1,0 +1,1 @@
+UPDATE public.module_pills SET duration_min_low = 6, duration_min_high = 7 WHERE id = '3e5e6cee-f080-4ffb-b3ff-7b221e71ecc7';
