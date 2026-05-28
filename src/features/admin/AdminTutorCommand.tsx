@@ -610,6 +610,27 @@ export const AdminTutorCommand = () => {
           </div>
 
           <div className="rounded-xl border border-perestroika-preto/10 p-4">
+            <Label className="font-display uppercase text-xs tracking-wide">modelo de fallback</Label>
+            <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
+              usado automaticamente quando o principal falha (5xx, 429, timeout).
+            </p>
+            <Select
+              defaultValue={s.fallback_model ?? "google/gemini-2.5-flash-lite"}
+              onValueChange={(v) => saveSettings.mutate({ fallback_model: v })}
+            >
+              <SelectTrigger className="bg-white/60">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="google/gemini-2.5-flash-lite">gemini 2.5 flash lite</SelectItem>
+                <SelectItem value="google/gemini-2.5-flash">gemini 2.5 flash</SelectItem>
+                <SelectItem value="google/gemini-2.5-pro">gemini 2.5 pro</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+
+          <div className="rounded-xl border border-perestroika-preto/10 p-4">
             <Label className="font-display uppercase text-xs tracking-wide">cap total diário</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">teto agregado de mensagens da turma por dia.</p>
             <Input
