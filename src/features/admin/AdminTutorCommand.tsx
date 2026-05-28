@@ -455,33 +455,7 @@ export const AdminTutorCommand = () => {
         </div>
       </section>
 
-      {(safety?.length ?? 0) > 0 && (
-        <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
-          <h2 className="font-display uppercase text-xl mb-4">últimos eventos de segurança</h2>
-          <div className="space-y-2 max-h-80 overflow-auto">
-            {(safety ?? []).slice(0, 20).map((ev) => (
-              <div key={ev.id} className="rounded-xl border border-perestroika-preto/10 bg-white/40 p-3">
-                <div className="flex items-center justify-between gap-3 mb-1">
-                  <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-vermelho">
-                    {ev.risk_level.replace("_", " ")}
-                  </span>
-                  <span className="font-body text-[10px] text-perestroika-preto/55 tabular-nums">
-                    {fmtDate(ev.created_at)}
-                  </span>
-                </div>
-                <p className="font-body text-sm text-perestroika-preto/85 leading-snug">
-                  {ev.message_excerpt}
-                </p>
-                {ev.intervention_shown && (
-                  <p className="font-body text-xs text-perestroika-preto/55 mt-2">
-                    intervenção: {ev.intervention_shown}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <TutorSafetyEscalations />
 
       <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
         <div className="flex items-center justify-between mb-3">
