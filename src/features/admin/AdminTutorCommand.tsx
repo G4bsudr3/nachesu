@@ -167,7 +167,7 @@ export const AdminTutorCommand = () => {
   });
 
   const saveSettings = useMutation({
-    mutationFn: async (patch: Partial<{ enabled: boolean; per_user_daily_limit: number; model: string; system_prompt_addon: string; daily_total_cap: number; burst_limit_per_minute: number; daily_total_alert_threshold: number }>) => {
+    mutationFn: async (patch: Partial<{ enabled: boolean; per_user_daily_limit: number; model: string; fallback_model: string; system_prompt_addon: string; daily_total_cap: number; burst_limit_per_minute: number; daily_total_alert_threshold: number }>) => {
       const { error } = await supabase.from("tutor_settings").update(patch).eq("id", 1);
       if (error) throw error;
     },
