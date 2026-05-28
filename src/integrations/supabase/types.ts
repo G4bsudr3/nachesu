@@ -2410,6 +2410,7 @@ export type Database = {
         Row: {
           acknowledged_at: string | null
           acknowledged_by: string | null
+          category: string | null
           closed_at: string | null
           closed_by: string | null
           created_at: string
@@ -2419,11 +2420,16 @@ export type Database = {
           notified_emails: string[]
           offline_followup_at: string | null
           safety_event_id: string
+          severity: string | null
+          sla_hours: number
+          status: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           acknowledged_at?: string | null
           acknowledged_by?: string | null
+          category?: string | null
           closed_at?: string | null
           closed_by?: string | null
           created_at?: string
@@ -2433,11 +2439,16 @@ export type Database = {
           notified_emails?: string[]
           offline_followup_at?: string | null
           safety_event_id: string
+          severity?: string | null
+          sla_hours?: number
+          status?: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           acknowledged_at?: string | null
           acknowledged_by?: string | null
+          category?: string | null
           closed_at?: string | null
           closed_by?: string | null
           created_at?: string
@@ -2447,7 +2458,11 @@ export type Database = {
           notified_emails?: string[]
           offline_followup_at?: string | null
           safety_event_id?: string
+          severity?: string | null
+          sla_hours?: number
+          status?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -2467,6 +2482,7 @@ export type Database = {
           id: string
           intervention_shown: string | null
           message_excerpt: string
+          message_redacted: string | null
           model_used: string | null
           module_id: string | null
           retention_until: string
@@ -2483,6 +2499,7 @@ export type Database = {
           id?: string
           intervention_shown?: string | null
           message_excerpt: string
+          message_redacted?: string | null
           model_used?: string | null
           module_id?: string | null
           retention_until?: string
@@ -2499,6 +2516,7 @@ export type Database = {
           id?: string
           intervention_shown?: string | null
           message_excerpt?: string
+          message_redacted?: string | null
           model_used?: string | null
           module_id?: string | null
           retention_until?: string
@@ -2512,6 +2530,7 @@ export type Database = {
       }
       tutor_settings: {
         Row: {
+          acknowledgment_required: boolean
           burst_limit_per_minute: number
           burst_pause_threshold: number
           burst_soft_threshold: number
@@ -2524,10 +2543,12 @@ export type Database = {
           per_user_daily_limit: number
           safety_notify_emails: string[]
           system_prompt_addon: string | null
+          tutor_enabled: boolean
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          acknowledgment_required?: boolean
           burst_limit_per_minute?: number
           burst_pause_threshold?: number
           burst_soft_threshold?: number
@@ -2540,10 +2561,12 @@ export type Database = {
           per_user_daily_limit?: number
           safety_notify_emails?: string[]
           system_prompt_addon?: string | null
+          tutor_enabled?: boolean
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          acknowledgment_required?: boolean
           burst_limit_per_minute?: number
           burst_pause_threshold?: number
           burst_soft_threshold?: number
@@ -2556,6 +2579,7 @@ export type Database = {
           per_user_daily_limit?: number
           safety_notify_emails?: string[]
           system_prompt_addon?: string | null
+          tutor_enabled?: boolean
           updated_at?: string
           updated_by?: string | null
         }
