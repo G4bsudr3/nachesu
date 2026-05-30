@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 
 import { toast } from "sonner";
-import { ChevronLeft, Mail, Lock, Unlock } from "lucide-react";
+import { ChevronLeft, Mail, Lock, Unlock, Send } from "lucide-react";
 
 type Course = {
   id: string;
@@ -214,6 +214,28 @@ function InvitesPanel({ courseId }: { courseId: string }) {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["course-invites", courseId] }),
   });
 
+  const sendInviteEmails = useMutation({
+    mutationFn: async (opts: { onlyUnclaimed: boolean; extras?: string[] }) => {
+      const { data, error } = await supabase.functions.invoke("send-course-invites-batch", {
+        body: {
+          course_id: courseId,
+          only_unclaimed: opts.onlyUnclaimed,
+          extra_recipients: opts.extras ?? [],
+        },
+      });
+      if (error) throw error;
+      return data as { queued: number; total: number; errors: { email: string; error: string }[] };
+    },
+    onSuccess: (res) => {
+      toast.success(`${res.queued} convite(s) por email enfileirado(s)`);
+      if (res.errors?.length) {
+        toast.error(`${res.errors.length} falha(s): ${res.errors.slice(0, 3).map(e => e.email).join(", ")}`, { duration: 8000 });
+      }
+      qc.invalidateQueries({ queryKey: ["course-invites", courseId] });
+    },
+    onError: (e: any) => toast.error(e.message ?? "erro ao enviar convites"),
+  });
+
   return (
     <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-white space-y-4">
       <div className="flex items-center gap-2">
@@ -237,6 +259,28 @@ function InvitesPanel({ courseId }: { courseId: string }) {
       >
         {addInvites.isPending ? "convidando..." : "convidar"}
       </Button>
+
+      <div className="pt-2 border-t border-perestroika-preto/10 space-y-2">
+        <p className="font-body text-xs text-perestroika-preto/60">
+          dispara o email de convite "entrar na nachesu" pra todo mundo da lista que ainda não logou.
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            const pending = invites.filter((i: any) => !i.claimed_at).length;
+            if (!confirm(`enviar email de convite pra ${pending} estudante(s) que ainda não logou?`)) return;
+            sendInviteEmails.mutate({ onlyUnclaimed: true });
+          }}
+          disabled={sendInviteEmails.isPending}
+          className="w-full"
+        >
+          <Send className="h-4 w-4 mr-2" />
+          {sendInviteEmails.isPending ? "enviando..." : "enviar email pra quem não logou"}
+        </Button>
+      </div>
+
+
 
       <div className="space-y-1 max-h-80 overflow-auto">
         <p className="font-body text-xs uppercase tracking-wide text-perestroika-preto/55">
