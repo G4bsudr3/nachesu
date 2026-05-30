@@ -36,7 +36,13 @@ Deno.serve(async (req) => {
   const admin = createClient(supabaseUrl, serviceKey)
 
   // permite chamada via service-role (server-to-server) OU usuário admin logado
-  const isServiceRole = auth.includes(serviceKey)
+  const tokenOnly = auth.replace(/^Bearer\s+/i, '').trim()
+  let isServiceRole = false
+  try {
+    const payload = JSON.parse(atob(tokenOnly.split('.')[1] || ''))
+    isServiceRole = payload?.role === 'service_role'
+  } catch { /* not a jwt */ }
+
   if (!isServiceRole) {
     const { data: { user }, error: userErr } = await userClient.auth.getUser()
     if (userErr || !user) {
