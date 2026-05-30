@@ -1,54 +1,47 @@
-## Causa raiz
+## Respostas às suas perguntas
 
-Os estudantes cadastrados por planilha entram com `profiles.status = 'pending'` (trigger `handle_new_user` marca como pending quando o email não está em `invited_participants`).
+1. **URL de login**: confirmei no código — `https://nachesu.lovable.app/auth?email=<email>` já é suportado (Auth.tsx linha 83 lê `?email=` e pré-preenche). Vou usar essa.
+2. **Disparo**: automático na migração + envia também pra `mateusfrattezi@gmail.com` e `frattz@naches.app` (test pra você ver como ficou).
+3. **Reenvio em Economia Circular**: confirmei os 3 que já logaram — `bernardo11536`, `mateus.frattz`, `maria11633` (todos `@edu.sebrae.com.br`). São os reais que pediram acesso e foram aprovados antes. **Não reenvio** pra eles (`only_unclaimed=true`).
 
-Quando você clica **aprovar** em `/admin/pendentes`, o código roda:
+## Plano
 
-```ts
-supabase.from("profiles").update({ status: "active", ... }).eq("user_id", userId)
-```
+### 1. Backfill dos 19 invites (migração SQL)
+`INSERT … ON CONFLICT DO NOTHING` em `course_invites` pros 19 emails Frattz na eletiva IA na Prática (`c0a00000-…-001`).
 
-Mas as policies RLS atuais de `public.profiles` só têm:
+### 2. Template de email transacional
+`supabase/functions/_shared/transactional-email-templates/course-invite.tsx`:
 
-- SELECT: todos autenticados
-- INSERT: só o próprio user (`auth.uid() = user_id`)
-- UPDATE: **só o próprio user** (`auth.uid() = user_id`)
+- React Email, fundo branco, paleta Perestroika (rosa primary), tipografia Urbanist via fallback `Arial, sans-serif` (email-safe)
+- Header: wordmark "nachesu" em League Gothic-style (fallback Impact)
+- Saudação lowercase: "seu acesso à eletiva tá liberado"
+- Nome da eletiva + nome do educador (Dudu ou frattz)
+- Botão CTA "entrar na nachesu" linkando `https://nachesu.lovable.app/auth?email=<email>`
+- Microcopy: "é só clicar no botão e fazer login com esse mesmo email."
+- Assinatura: "nachesu · em parceria com escola sebrae"
+- Props: `{ courseTitle, educatorName, loginUrl }`
+- Subject: `seu acesso à eletiva <nome> tá liberado`
+- Registrar em `registry.ts` como `'course-invite'`
 
-Não existe policy permitindo admin atualizar profile de outra pessoa. Resultado: o UPDATE afeta 0 linhas, o Supabase retorna sucesso (sem erro), o toast mostra "aprovado", mas o status no banco continua `pending`. Verifiquei no banco: os 6 perfis pendentes recentes (Julia, Bernardo, Tiago, Maria, Victor) seguem todos com `status='pending'` mesmo após sua tentativa de aprovação.
+### 3. Edge function `send-course-invites-batch`
+Admin-only (valida JWT + `has_role admin`). Body: `{ course_id, only_unclaimed=true, extra_recipients?: string[] }`.
 
-Quando o estudante loga, `ProtectedRoute` lê o status, vê `pending` e joga ele de volta pra `/app/pending`. Loop infinito.
+Para cada destinatário, invoca `send-transactional-email` com `idempotencyKey: course-invite-${course_id}-${email}` (dedupe garante que reexecuções não duplicam). Retorna `{ queued, errors }`.
 
-O mesmo problema afeta o botão **arquivar** e qualquer outra ação admin sobre profile alheio (ex: salvar quiet hours em `AdminStudentProfile`).
+Justificativa do loop: cada item é um convite individual triggered por uma matrícula pré-existente (equivalente operacional do welcome email atrasado, análogo ao `import-perestroika-spreadsheet` existente). Não é marketing.
 
-## Correção
+### 4. Disparo automático pós-migração
+Logo após a migração, eu mesmo invoco a função 3x via `curl_edge_functions`:
+- IA na Prática (Frattz) — 41 destinatários, só unclaimed (~39 envios)
+- Economia Circular (Dudu) — 118 destinatários, só unclaimed (~115 envios)
+- Extras: `mateusfrattezi@gmail.com` e `frattz@naches.app` recebem o template de IA na Prática como amostra
 
-Migração SQL adicionando duas policies em `public.profiles`:
+### 5. Botão admin (uso futuro)
+Em `AdminEletivas.tsx`, por curso: "reenviar convite pra quem ainda não logou" com confirmação mostrando contagem. Pra você poder usar de novo se entrarem mais estudantes via planilha.
 
-1. `admin atualiza qualquer profile` — UPDATE USING `has_role(auth.uid(), 'admin')`
-2. Backfill: setar `status='active'` + `approved_at=now()` + `approved_by_admin_id=<frattz>` nos 6 perfis pending atuais (você já tinha intenção de aprovar todos).
+### 6. Deploy
+Deploy de `send-course-invites-batch` e `send-transactional-email` (com registry novo).
 
-Sem mudança de schema, sem código React — o fluxo de aprovar já estava certo, só faltava a permissão.
+## Confirmações finais
 
-## Verificação
-
-- Após migração: `SELECT count(*) FROM profiles WHERE status='pending'` deve voltar 0.
-- Próxima aprovação de novo cadastro deve persistir status `active`.
-- Estudantes afetados conseguem logar e cair em `/app` normal.
-
-## Detalhes técnicos
-
-```sql
-CREATE POLICY "admin atualiza qualquer profile"
-ON public.profiles FOR UPDATE
-TO authenticated
-USING (public.has_role(auth.uid(), 'admin'::public.app_role))
-WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
-
-UPDATE public.profiles
-SET status='active',
-    approved_at=now(),
-    approved_by_admin_id='eeb9045d-9b35-42dd-98e4-355269f0a082'
-WHERE status='pending';
-```
-
-(o user_id do frattz `hey@frattz.com` já está confirmado no banco.)
+Posso executar? Resposta única ("sim") basta.
