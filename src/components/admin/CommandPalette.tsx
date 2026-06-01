@@ -40,18 +40,23 @@ export const CommandPalette = ({
     }
     let cancelled = false;
     const t = setTimeout(async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("user_id, email, full_name")
-        .or(`email.ilike.%${trimmed}%,full_name.ilike.%${trimmed}%`)
-        .limit(6);
+      const { data, error } = await supabase.rpc("admin_list_users");
       if (cancelled) return;
-      if (error) {
+      if (error || !data) {
         setHits([]);
         return;
       }
-      setHits((data ?? []) as StudentHit[]);
-    }, 180);
+      const q = trimmed.toLowerCase();
+      const filtered = (data as Array<{ user_id: string; email: string | null; display_name: string | null; nickname: string | null }>)
+        .filter((u) =>
+          (u.email ?? "").toLowerCase().includes(q) ||
+          (u.display_name ?? "").toLowerCase().includes(q) ||
+          (u.nickname ?? "").toLowerCase().includes(q),
+        )
+        .slice(0, 6)
+        .map((u) => ({ user_id: u.user_id, email: u.email, display_name: u.display_name, nickname: u.nickname }));
+      setHits(filtered);
+    }, 200);
     return () => {
       cancelled = true;
       clearTimeout(t);
