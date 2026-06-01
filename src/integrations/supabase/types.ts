@@ -2685,6 +2685,8 @@ export type Database = {
       admin_list_users: {
         Args: never
         Returns: {
+          course_slugs: string[]
+          courses: string[]
           created_at: string
           display_name: string
           email: string
