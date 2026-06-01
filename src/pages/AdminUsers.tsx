@@ -1,11 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink } from "lucide-react";
+import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -25,6 +32,8 @@ type AdminUser = {
   created_at: string | null;
   roles: string[];
   is_admin: boolean;
+  courses: string[];
+  course_slugs: string[];
 };
 
 type AdminListUsersRpc = {
@@ -47,6 +56,8 @@ const AdminUsers = () => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [courseFilter, setCourseFilter] = useState<string>("all");
+  const [domainFilter, setDomainFilter] = useState<string>("all");
   const [busyUserId, setBusyUserId] = useState<string | null>(null);
 
   const loadUsers = async () => {
@@ -86,18 +97,46 @@ const AdminUsers = () => {
     };
   }, []);
 
+  const courseOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    users.forEach((u) => {
+      u.course_slugs.forEach((slug, i) => {
+        if (slug && !map.has(slug)) map.set(slug, u.courses[i] ?? slug);
+      });
+    });
+    return Array.from(map.entries());
+  }, [users]);
+
+  const domainOptions = useMemo(() => {
+    const set = new Set<string>();
+    users.forEach((u) => {
+      const d = u.email?.split("@")[1];
+      if (d) set.add(d);
+    });
+    return Array.from(set).sort();
+  }, [users]);
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return users;
-
     return users.filter((item) => {
-      const haystack = [item.email, item.display_name, item.nickname, item.status, item.roles.join(" ")]
+      if (courseFilter === "none") {
+        if (item.course_slugs.length > 0) return false;
+      } else if (courseFilter !== "all") {
+        if (!item.course_slugs.includes(courseFilter)) return false;
+      }
+      if (domainFilter !== "all") {
+        const d = item.email?.split("@")[1];
+        if (d !== domainFilter) return false;
+      }
+      if (!q) return true;
+      const haystack = [item.email, item.display_name, item.nickname, item.status, item.roles.join(" "), item.courses.join(" ")]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [users, search]);
+  }, [users, search, courseFilter, domainFilter]);
+
 
   const grantAdmin = async (target: AdminUser) => {
     setBusyUserId(target.user_id);
@@ -175,21 +214,48 @@ const AdminUsers = () => {
         </div>
       </div>
 
-      <div className="relative max-w-xl">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/50" />
-        <Input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="buscar por email, nome, nickname ou papel…"
-          className="pl-9 bg-white/60 border-perestroika-preto/20"
-        />
+      <div className="flex flex-col md:flex-row md:items-center gap-3">
+        <div className="relative flex-1 max-w-xl">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/50" />
+          <Input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="buscar por email, nome, nickname, papel ou eletiva…"
+            className="pl-9 bg-white/60 border-perestroika-preto/20"
+          />
+        </div>
+        <Select value={courseFilter} onValueChange={setCourseFilter}>
+          <SelectTrigger className="w-full md:w-56 bg-white/60 border-perestroika-preto/20">
+            <SelectValue placeholder="eletiva" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">todas as eletivas</SelectItem>
+            <SelectItem value="none">sem matrícula</SelectItem>
+            {courseOptions.map(([slug, title]) => (
+              <SelectItem key={slug} value={slug}>{title}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={domainFilter} onValueChange={setDomainFilter}>
+          <SelectTrigger className="w-full md:w-56 bg-white/60 border-perestroika-preto/20">
+            <SelectValue placeholder="domínio" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">todos os domínios</SelectItem>
+            {domainOptions.map((d) => (
+              <SelectItem key={d} value={d}>@{d}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
+
 
       <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
               <TableHead className="uppercase text-xs tracking-wide">usuário</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">eletiva</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">status</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">papéis</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">criado</TableHead>
@@ -199,7 +265,7 @@ const AdminUsers = () => {
           <TableBody>
             {loading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
                   carregando usuários…
                 </TableCell>
               </TableRow>
@@ -207,7 +273,7 @@ const AdminUsers = () => {
 
             {!loading && filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
                   nenhum usuário com esse filtro.
                 </TableCell>
               </TableRow>
@@ -227,6 +293,20 @@ const AdminUsers = () => {
                       <p className="text-xs text-perestroika-preto/60">{item.email}</p>
                     </div>
                   </div>
+                </TableCell>
+                <TableCell>
+                  {item.courses.length === 0 ? (
+                    <span className="text-xs text-perestroika-preto/40">sem matrícula</span>
+                  ) : (
+                    <div className="flex flex-wrap gap-1.5">
+                      {item.courses.map((title) => (
+                        <Badge key={title} className="bg-accent/15 text-accent hover:bg-accent/20 gap-1">
+                          <BookOpen className="h-3 w-3" />
+                          {title}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <Badge className="bg-perestroika-preto/5 text-perestroika-preto hover:bg-perestroika-preto/10">
