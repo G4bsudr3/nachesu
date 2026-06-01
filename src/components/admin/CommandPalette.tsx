@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Command } from "cmdk";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
