@@ -97,18 +97,46 @@ const AdminUsers = () => {
     };
   }, []);
 
+  const courseOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    users.forEach((u) => {
+      u.course_slugs.forEach((slug, i) => {
+        if (slug && !map.has(slug)) map.set(slug, u.courses[i] ?? slug);
+      });
+    });
+    return Array.from(map.entries());
+  }, [users]);
+
+  const domainOptions = useMemo(() => {
+    const set = new Set<string>();
+    users.forEach((u) => {
+      const d = u.email?.split("@")[1];
+      if (d) set.add(d);
+    });
+    return Array.from(set).sort();
+  }, [users]);
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return users;
-
     return users.filter((item) => {
-      const haystack = [item.email, item.display_name, item.nickname, item.status, item.roles.join(" ")]
+      if (courseFilter === "none") {
+        if (item.course_slugs.length > 0) return false;
+      } else if (courseFilter !== "all") {
+        if (!item.course_slugs.includes(courseFilter)) return false;
+      }
+      if (domainFilter !== "all") {
+        const d = item.email?.split("@")[1];
+        if (d !== domainFilter) return false;
+      }
+      if (!q) return true;
+      const haystack = [item.email, item.display_name, item.nickname, item.status, item.roles.join(" "), item.courses.join(" ")]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [users, search]);
+  }, [users, search, courseFilter, domainFilter]);
+
 
   const grantAdmin = async (target: AdminUser) => {
     setBusyUserId(target.user_id);
