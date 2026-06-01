@@ -2712,6 +2712,22 @@ export type Database = {
         Returns: number
       }
       generate_share_token: { Args: never; Returns: string }
+      get_course_invite_log: {
+        Args: { _course_id: string; _limit?: number; _since: string }
+        Returns: {
+          course_id: string
+          created_at: string
+          error_message: string
+          message_id: string
+          processing_ms: number
+          recipient_email: string
+          status: string
+        }[]
+      }
+      get_course_invite_stats: {
+        Args: { _course_id: string; _since: string }
+        Returns: Json
+      }
       get_my_card_state: {
         Args: never
         Returns: {
@@ -2806,6 +2822,7 @@ export type Database = {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean
       }
+      is_sebrae_edu_email: { Args: { _email: string }; Returns: boolean }
       lookup_invited_canonical: {
         Args: { _email: string }
         Returns: {
