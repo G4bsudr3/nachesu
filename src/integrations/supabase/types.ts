@@ -2697,6 +2697,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_set_profile_status: {
+        Args: { _status: string; _user_id: string }
+        Returns: undefined
+      }
       assert_module_in_scope: {
         Args: { _module_id: string }
         Returns: undefined
