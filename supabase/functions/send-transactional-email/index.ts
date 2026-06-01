@@ -310,6 +310,7 @@ Deno.serve(async (req) => {
     template_name: templateName,
     recipient_email: effectiveRecipient,
     status: 'pending',
+    metadata: metadata,
   })
 
   const { error: enqueueError } = await supabase.rpc('enqueue_email', {
