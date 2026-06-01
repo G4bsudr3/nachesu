@@ -7,6 +7,7 @@ import {
   Compass,
   Brain,
   Inbox,
+  Mail,
   Package,
   Hourglass,
   AlertTriangle,
