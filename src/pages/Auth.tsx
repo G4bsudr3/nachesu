@@ -43,6 +43,26 @@ const validateEmail = async (email: string): Promise<EmailValidationResult> => {
   }
 };
 
+interface SebraeEligibility {
+  is_sebrae: boolean;
+  has_pre_invite: boolean;
+  account_exists: boolean;
+  needs_course_choice: boolean;
+  courses: Array<{ id: string; slug: string; title: string }>;
+}
+
+const checkSebrae = async (email: string): Promise<SebraeEligibility | null> => {
+  try {
+    const { data, error } = await supabase.functions.invoke("check-sebrae-eligibility", {
+      body: { email },
+    });
+    if (error || !data) return null;
+    return data as SebraeEligibility;
+  } catch {
+    return null;
+  }
+};
+
 type AuthPhase = "idle" | "checking" | "sending" | "logging-in" | "resetting";
 
 const PHASE_LABELS: Record<Exclude<AuthPhase, "idle">, string> = {
