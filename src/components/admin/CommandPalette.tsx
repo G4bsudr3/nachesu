@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Command } from "cmdk";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { LogOut, Link2, Sparkles, Search, UserCheck } from "lucide-react";
+import { LogOut, Link2, Sparkles, Search, UserCheck, User } from "lucide-react";
 import { OPERACAO, LEGADO } from "./layout/AdminSidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
 import { supabase } from "@/integrations/supabase/client";
+
+type StudentHit = { user_id: string; email: string | null; display_name: string | null; nickname: string | null };
 
 export const CommandPalette = ({
   open,
@@ -20,6 +22,46 @@ export const CommandPalette = ({
   const { signOut } = useAuth();
   const { regenerate } = useAdminInsight();
   const [busy, setBusy] = useState(false);
+  const [query, setQuery] = useState("");
+  const [hits, setHits] = useState<StudentHit[]>([]);
+  const trimmed = query.trim();
+
+  useEffect(() => {
+    if (!open) {
+      setQuery("");
+      setHits([]);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (trimmed.length < 2) {
+      setHits([]);
+      return;
+    }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const { data, error } = await supabase.rpc("admin_list_users");
+      if (cancelled) return;
+      if (error || !data) {
+        setHits([]);
+        return;
+      }
+      const q = trimmed.toLowerCase();
+      const filtered = (data as Array<{ user_id: string; email: string | null; display_name: string | null; nickname: string | null }>)
+        .filter((u) =>
+          (u.email ?? "").toLowerCase().includes(q) ||
+          (u.display_name ?? "").toLowerCase().includes(q) ||
+          (u.nickname ?? "").toLowerCase().includes(q),
+        )
+        .slice(0, 6)
+        .map((u) => ({ user_id: u.user_id, email: u.email, display_name: u.display_name, nickname: u.nickname }));
+      setHits(filtered);
+    }, 200);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [trimmed]);
 
   const run = (fn: () => void | Promise<void>) => async () => {
     onOpenChange(false);
@@ -37,7 +79,9 @@ export const CommandPalette = ({
       <div className="flex items-center gap-2 px-4 border-b border-perestroika-preto/10">
         <Search className="w-4 h-4 text-perestroika-preto/40" />
         <Command.Input
-          placeholder="busca seção, ação…"
+          value={query}
+          onValueChange={setQuery}
+          placeholder="busca seção, ação ou estudante (email, nome)…"
           className="flex-1 h-12 bg-transparent outline-none font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40"
         />
       </div>
@@ -45,6 +89,28 @@ export const CommandPalette = ({
         <Command.Empty className="px-3 py-6 text-center text-[12px] text-perestroika-preto/50">
           nada por aqui
         </Command.Empty>
+
+        {hits.length > 0 && (
+          <Command.Group heading="estudantes">
+            {hits.map((s) => {
+              const name = s.display_name || s.nickname || s.email || s.user_id;
+              return (
+                <Command.Item
+                  key={s.user_id}
+                  value={`estudante ${s.email ?? ""} ${s.display_name ?? ""} ${s.nickname ?? ""} ${s.user_id}`}
+                  onSelect={run(() => navigate(`/admin/aluno/${s.user_id}`))}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+                >
+                  <User className="w-4 h-4" />
+                  <span className="truncate">{name}</span>
+                  {s.email && s.email !== name && (
+                    <span className="ml-auto text-[11px] text-perestroika-preto/40 truncate max-w-[40%]">{s.email}</span>
+                  )}
+                </Command.Item>
+              );
+            })}
+          </Command.Group>
+        )}
 
         <Command.Group heading="ir para">
           {OPERACAO.map((i) => (
