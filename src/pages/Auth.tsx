@@ -94,6 +94,8 @@ const Auth = () => {
   const submitting = phase !== "idle";
   const [sent, setSent] = useState(false);
   const [aliasHint, setAliasHint] = useState<string | null>(null);
+  const [sebraeChoice, setSebraeChoice] = useState<SebraeEligibility | null>(null);
+  const [chosenCourseSlug, setChosenCourseSlug] = useState<string | null>(null);
 
   const [searchParams] = useSearchParams();
   const fromCarta = searchParams.get("from") === "carta";
