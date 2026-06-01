@@ -146,7 +146,7 @@ const AdminUsers = () => {
 
     if (error) {
       logger.error("[admin/users] dar admin:", error);
-      toast.error("tu precisa ser admin pra mexer nisso");
+      toast.error("você precisa ser admin pra mexer nisso");
     } else {
       toast.success(`${target.email} agora é admin`);
       await loadUsers();
@@ -156,7 +156,7 @@ const AdminUsers = () => {
 
   const removeAdmin = async (target: AdminUser) => {
     if (target.user_id === user?.id) {
-      toast.error("pra não te trancar pra fora, pede outro admin pra remover teu acesso.");
+      toast.error("pra não te trancar pra fora, pede outro admin pra remover seu acesso.");
       return;
     }
 
@@ -169,7 +169,7 @@ const AdminUsers = () => {
 
     if (error) {
       logger.error("[admin/users] remover admin:", error);
-      toast.error("tu precisa ser admin pra mexer nisso");
+      toast.error("você precisa ser admin pra mexer nisso");
     } else {
       toast.success(`${target.email} não é mais admin`);
       await loadUsers();
