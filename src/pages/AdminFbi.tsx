@@ -46,6 +46,7 @@ import { AdminVotacaoProjetos } from "@/features/admin/AdminVotacaoProjetos";
 import { AdminChoraBot } from "@/features/admin/AdminChoraBot";
 import { AdminEletivaSettings } from "@/features/admin/AdminEletivaSettings";
 import { AdminEletivas } from "@/features/admin/AdminEletivas";
+import { AdminConvites } from "@/features/admin/AdminConvites";
 import { AdminEletivaReview } from "@/features/admin/AdminEletivaReview";
 import { AdminTrilha } from "@/features/admin/AdminTrilha";
 import { AdminTutorCommand } from "@/features/admin/AdminTutorCommand";
