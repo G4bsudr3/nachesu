@@ -81,6 +81,21 @@ export const AdminFeedbackInbox = () => {
     status: statusFilter,
   });
 
+  // realtime: refetch quando entrega muda
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-feedback-inbox")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "module_deliverables" },
+        () => refetch(),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
+
   const revisadosCount = useMemo(
     () => all.filter((d) => d.reviewed_at !== null && d.status !== "ajuste").length,
     [all],
