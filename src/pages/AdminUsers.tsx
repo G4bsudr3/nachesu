@@ -294,6 +294,20 @@ const AdminUsers = () => {
                     </div>
                   </div>
                 </TableCell>
+                <TableCell>
+                  {item.courses.length === 0 ? (
+                    <span className="text-xs text-perestroika-preto/40">sem matrícula</span>
+                  ) : (
+                    <div className="flex flex-wrap gap-1.5">
+                      {item.courses.map((title) => (
+                        <Badge key={title} className="bg-accent/15 text-accent hover:bg-accent/20 gap-1">
+                          <BookOpen className="h-3 w-3" />
+                          {title}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <Badge className="bg-perestroika-preto/5 text-perestroika-preto hover:bg-perestroika-preto/10">
                     {item.status ?? "sem status"}
