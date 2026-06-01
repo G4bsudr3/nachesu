@@ -358,7 +358,7 @@ const AdminUsers = () => {
                       type="button"
                       onClick={() => resetPassword(item)}
                       disabled={busyUserId === item.user_id}
-                      title="redefinir senha para chora2026"
+                      title="gerar senha nova aleatória"
                       className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
                     >
                       <KeyRound className="h-4 w-4" />

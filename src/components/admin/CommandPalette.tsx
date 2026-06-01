@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Command } from "cmdk";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { LogOut, Link2, Sparkles, Search } from "lucide-react";
+import { LogOut, Link2, Sparkles, Search, UserCheck } from "lucide-react";
 import { OPERACAO, LEGADO } from "./layout/AdminSidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
+import { supabase } from "@/integrations/supabase/client";
 
 export const CommandPalette = ({
   open,
@@ -75,6 +76,41 @@ export const CommandPalette = ({
 
         <Command.Group heading="ações">
           <Command.Item
+            value="acao aprovar proximo pendente"
+            disabled={busy}
+            onSelect={run(async () => {
+              setBusy(true);
+              try {
+                const { data, error } = await supabase.rpc("admin_list_pending_profiles");
+                if (error) throw error;
+                const next = (data ?? [])[0] as { user_id: string; email: string } | undefined;
+                if (!next) {
+                  toast("nenhum pendente na fila");
+                  return;
+                }
+                const { error: rpcError } = await (
+                  supabase as unknown as {
+                    rpc: (n: string, a: Record<string, unknown>) => Promise<{ error: Error | null }>;
+                  }
+                ).rpc("admin_set_profile_status", {
+                  _user_id: next.user_id,
+                  _status: "active",
+                });
+                if (rpcError) throw rpcError;
+                toast.success(`${next.email} aprovado`);
+              } catch (e) {
+                const msg = e instanceof Error ? e.message : String(e);
+                toast.error("não rolou aprovar", { description: msg.slice(0, 120) });
+              } finally {
+                setBusy(false);
+              }
+            })}
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+          >
+            <UserCheck className="w-4 h-4" />
+            aprovar próximo pendente
+          </Command.Item>
+          <Command.Item
             value="acao regenerar resumo ia insight"
             disabled={busy}
             onSelect={run(async () => {
@@ -82,8 +118,9 @@ export const CommandPalette = ({
               try {
                 await regenerate();
                 toast.success("resumo atualizado");
-              } catch (e: any) {
-                toast.error("não consegui gerar", { description: e?.message?.slice(0, 120) });
+              } catch (e) {
+                const msg = e instanceof Error ? e.message : String(e);
+                toast.error("não consegui gerar", { description: msg.slice(0, 120) });
               } finally {
                 setBusy(false);
               }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Inbox, RefreshCcw } from "lucide-react";
@@ -80,6 +80,21 @@ export const AdminFeedbackInbox = () => {
     moduleId,
     status: statusFilter,
   });
+
+  // realtime: refetch quando entrega muda
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-feedback-inbox")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "module_deliverables" },
+        () => refetch(),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
 
   const revisadosCount = useMemo(
     () => all.filter((d) => d.reviewed_at !== null && d.status !== "ajuste").length,
