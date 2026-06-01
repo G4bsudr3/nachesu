@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
 import { supabase } from "@/integrations/supabase/client";
 
-type StudentHit = { user_id: string; email: string | null; full_name: string | null };
+type StudentHit = { user_id: string; email: string | null; display_name: string | null; nickname: string | null };
 
 export const CommandPalette = ({
   open,
