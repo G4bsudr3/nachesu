@@ -228,7 +228,7 @@ const FeedbackBlock = ({ label, value }: { label: string; value: string | null }
     {value ? (
       <p className="font-body text-sm text-perestroika-preto whitespace-pre-wrap">{value}</p>
     ) : (
-      <p className="font-body text-sm text-perestroika-preto/30">—</p>
+      <p className="font-body text-sm text-perestroika-preto/30">–</p>
     )}
   </div>
 );

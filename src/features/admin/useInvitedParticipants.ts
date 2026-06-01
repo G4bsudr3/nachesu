@@ -45,7 +45,7 @@ export const useInvitedParticipants = () => {
 
     const emails = (invited ?? []).map((r) => r.email.toLowerCase());
 
-    // perfis com mesmo email (já criaram conta) — via fbi_responses como ponte (tem email)
+    // perfis com mesmo email (já criaram conta) – via fbi_responses como ponte (tem email)
     // mais simples: chega no fbi_responses pra detectar quem já tem conta (user_id not null) ou submeteu
     const { data: fbiData } = await supabase
       .from("fbi_responses")

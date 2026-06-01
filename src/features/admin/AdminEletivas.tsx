@@ -196,7 +196,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
       toast.success(`${res.total} convite(s) enviado(s)`);
       if (res.conflicts.length > 0) {
         toast.error(
-          `${res.conflicts.length} já matriculado(s) em outra eletiva — não migrado(s): ${res.conflicts.join(", ")}`,
+          `${res.conflicts.length} já matriculado(s) em outra eletiva – não migrado(s): ${res.conflicts.join(", ")}`,
           { duration: 8000 },
         );
       }

@@ -217,7 +217,7 @@ const AdminRisco = () => {
                     <tr key={`${r.user_id}-${r.course_id}`} className="font-body text-sm">
                       <td className="px-4 py-3 text-perestroika-preto">{name}</td>
                       <td className="px-4 py-3 hidden sm:table-cell text-perestroika-preto/70">
-                        {course?.title ?? "—"}
+                        {course?.title ?? "–"}
                       </td>
                       <td className="px-4 py-3 text-perestroika-preto/70">
                         {r.days_inactive}d

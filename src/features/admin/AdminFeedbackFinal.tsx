@@ -40,7 +40,7 @@ const escapeCsv = (val: unknown) => {
 };
 
 const avg = (nums: number[]): string => {
-  if (nums.length === 0) return "—";
+  if (nums.length === 0) return "–";
   return (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(1);
 };
 
@@ -204,7 +204,7 @@ export const AdminFeedbackFinal = () => {
         </div>
       </div>
 
-      {/* análise IA — manchete */}
+      {/* análise IA – manchete */}
       {!loading && <FeedbackFinalAnalysis totalRespostas={rows.length} />}
 
       {/* cards de média */}
@@ -338,7 +338,7 @@ const Block = ({ label, value, highlight }: { label: string; value: string | nul
         {value}
       </p>
     ) : (
-      <p className="font-body text-sm text-perestroika-preto/30">—</p>
+      <p className="font-body text-sm text-perestroika-preto/30">–</p>
     )}
   </div>
 );

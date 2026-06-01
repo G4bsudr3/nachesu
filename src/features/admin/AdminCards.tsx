@@ -31,7 +31,7 @@ import { CartaCompleta } from "@/components/carta/CartaCompleta";
 import { TarotCard } from "@/components/carta/TarotCard";
 
 const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -465,7 +465,7 @@ export const AdminCards = () => {
                 return (
                   <TableRow key={r.user_id} className="hover:bg-perestroika-preto/5">
                     <TableCell className="font-medium">
-                      {r.display_name ?? r.email ?? "—"}
+                      {r.display_name ?? r.email ?? "–"}
                       {r.nickname && (
                         <span className="text-perestroika-preto/50 text-xs ml-2">@{r.nickname}</span>
                       )}
@@ -488,7 +488,7 @@ export const AdminCards = () => {
                           <span>{ARCHETYPE_LABEL[r.card.archetype] ?? r.card.archetype}</span>
                         </span>
                       ) : (
-                        <span className="text-perestroika-preto/30">—</span>
+                        <span className="text-perestroika-preto/30">–</span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -517,7 +517,7 @@ export const AdminCards = () => {
                       ) : isReady ? (
                         <Badge variant="outline" className="text-xs text-perestroika-preto/50">rascunho</Badge>
                       ) : (
-                        <span className="text-perestroika-preto/20 text-xs">—</span>
+                        <span className="text-perestroika-preto/20 text-xs">–</span>
                       )}
                     </TableCell>
                     <TableCell className="text-right">

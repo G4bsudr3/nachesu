@@ -31,7 +31,7 @@ type TrailStats = {
 };
 
 const fmtDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -182,7 +182,7 @@ export const AdminTutor = () => {
               </TableRow>
             )}
             {perTrail.map((t) => {
-              const avg = t.uniqueStudents > 0 ? (t.totalUserMessages / t.uniqueStudents).toFixed(1) : "—";
+              const avg = t.uniqueStudents > 0 ? (t.totalUserMessages / t.uniqueStudents).toFixed(1) : "–";
               return (
                 <TableRow key={t.trail_id}>
                   <TableCell className="font-body text-sm">{t.title.toLowerCase()}</TableCell>

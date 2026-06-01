@@ -70,7 +70,7 @@ const EXPERIENCIA_LABEL: Record<string, string> = {
 };
 
 const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -443,19 +443,19 @@ const AdminFbi = () => {
                           <TableCell className="text-xs text-perestroika-preto/70 whitespace-nowrap">
                             {formatDate(r.submitted_at)}
                           </TableCell>
-                          <TableCell className="font-medium whitespace-nowrap">{r.nome ?? "—"}</TableCell>
-                          <TableCell className="text-perestroika-preto/80 whitespace-nowrap">{r.cidade ?? "—"}</TableCell>
-                          <TableCell className="text-perestroika-preto/80">{r.trabalho ?? "—"}</TableCell>
+                          <TableCell className="font-medium whitespace-nowrap">{r.nome ?? "–"}</TableCell>
+                          <TableCell className="text-perestroika-preto/80 whitespace-nowrap">{r.cidade ?? "–"}</TableCell>
+                          <TableCell className="text-perestroika-preto/80">{r.trabalho ?? "–"}</TableCell>
                           <TableCell>
                             {r.experiencia_lovable ? (
                               <Badge variant="outline" className="text-xs whitespace-nowrap">
                                 {EXPERIENCIA_LABEL[r.experiencia_lovable] ?? r.experiencia_lovable}
                               </Badge>
                             ) : (
-                              "—"
+                              "–"
                             )}
                           </TableCell>
-                          <TableCell className="text-perestroika-preto/80">{r.idade ?? "—"}</TableCell>
+                          <TableCell className="text-perestroika-preto/80">{r.idade ?? "–"}</TableCell>
                         </TableRow>
                       ))}
                   </TableBody>
@@ -630,7 +630,7 @@ const DetailRow = ({
         <div className={`text-perestroika-preto ${multiline ? "whitespace-pre-wrap" : ""}`}>{value}</div>
       )
     ) : (
-      <div className="text-perestroika-preto/30">—</div>
+      <div className="text-perestroika-preto/30">–</div>
     )}
   </div>
 );

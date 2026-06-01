@@ -66,7 +66,7 @@ const ROTATIONS: Variables["rotation"][] = ["static", "tilt", "dynamic"];
 const NOISES: Variables["noise"][] = ["subtle", "medium", "heavy"];
 
 const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -447,7 +447,7 @@ export const AdminArtworks = () => {
           </h2>
           <p className="mt-2 text-perestroika-preto/70 text-sm max-w-2xl">
             gerados via nano banana pro. cada arquétipo tem 1 arte ativa, reaproveitada em todas as cartas.
-            por padrão, gerar salva no histórico sem ativar — você compara e escolhe qual fica.
+            por padrão, gerar salva no histórico sem ativar – você compara e escolhe qual fica.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -583,7 +583,7 @@ export const AdminArtworks = () => {
                     </h3>
                   </div>
                   <p className="text-[11px] text-perestroika-preto/50 uppercase tracking-wide">
-                    {hasArt ? `gerado ${formatDate(artwork.generated_at)}` : "—"}
+                    {hasArt ? `gerado ${formatDate(artwork.generated_at)}` : "–"}
                   </p>
                 </div>
 
@@ -1029,7 +1029,7 @@ export const AdminArtworks = () => {
                     ativa
                   </span>
                   <span className="text-[10px] uppercase tracking-wide opacity-70">
-                    {active ? formatDate(active.generated_at) : "—"}
+                    {active ? formatDate(active.generated_at) : "–"}
                   </span>
                 </div>
                 {active ? (

@@ -8,7 +8,7 @@ import type { StudentProfile } from "./useStudentProfile";
 import { logger } from "@/lib/logger";
 
 const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",

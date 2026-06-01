@@ -274,7 +274,7 @@ export const AdminEmails = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-xs text-perestroika-vermelho/90 max-w-[300px] truncate">
-                    {r.error_message ?? "—"}
+                    {r.error_message ?? "–"}
                   </TableCell>
                 </TableRow>
               ))}
@@ -295,7 +295,7 @@ export const AdminEmails = () => {
               <DetailRow label="destinatário" value={selected.recipient_email} />
               <DetailRow label="status" value={selected.status} />
               <DetailRow label="quando" value={formatDate(selected.created_at)} />
-              <DetailRow label="message_id" value={selected.message_id ?? "—"} />
+              <DetailRow label="message_id" value={selected.message_id ?? "–"} />
               {selected.error_message && (
                 <div>
                   <div className="text-xs uppercase tracking-wide text-perestroika-preto/60 mb-1">
@@ -358,7 +358,7 @@ const StatCard = ({
 const DetailRow = ({ label, value }: { label: string; value: string | null }) => (
   <div className="flex flex-col gap-1">
     <div className="text-xs uppercase tracking-wide text-perestroika-preto/60">{label}</div>
-    <div className="text-perestroika-preto break-all">{value ?? "—"}</div>
+    <div className="text-perestroika-preto break-all">{value ?? "–"}</div>
   </div>
 );
 
