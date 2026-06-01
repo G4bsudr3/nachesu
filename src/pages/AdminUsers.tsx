@@ -255,6 +255,7 @@ const AdminUsers = () => {
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
               <TableHead className="uppercase text-xs tracking-wide">usuário</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">eletiva</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">status</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">papéis</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">criado</TableHead>
@@ -264,7 +265,7 @@ const AdminUsers = () => {
           <TableBody>
             {loading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
                   carregando usuários…
                 </TableCell>
               </TableRow>
@@ -272,7 +273,7 @@ const AdminUsers = () => {
 
             {!loading && filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
                   nenhum usuário com esse filtro.
                 </TableCell>
               </TableRow>
