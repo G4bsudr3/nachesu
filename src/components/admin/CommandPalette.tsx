@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Command } from "cmdk";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { LogOut, Link2, Sparkles, Search, UserCheck } from "lucide-react";
+import { LogOut, Link2, Sparkles, Search, UserCheck, User } from "lucide-react";
 import { OPERACAO, LEGADO } from "./layout/AdminSidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
 import { supabase } from "@/integrations/supabase/client";
+
+type StudentHit = { user_id: string; email: string | null; full_name: string | null };
 
 export const CommandPalette = ({
   open,
