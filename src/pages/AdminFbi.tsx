@@ -85,11 +85,12 @@ const escapeCsv = (val: unknown) => {
   return `"${s}"`;
 };
 
-const VALID_TABS = ["eletivas", "review", "eletiva", "trilha", "tutor", "feedback", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
   eletivas: "eletivas · cursos",
+  convites: "convites · email",
   review: "eletivas · revisão",
   eletiva: "eletiva · settings",
   trilha: "eletiva · trilha",
