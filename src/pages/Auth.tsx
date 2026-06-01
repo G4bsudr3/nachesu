@@ -142,15 +142,32 @@ const Auth = () => {
     return <Navigate to={target} replace />;
   }
 
-  const sendMagicLink = async (targetEmail: string) => {
+  const sendMagicLink = async (targetEmail: string, courseSlug?: string | null) => {
     const { error } = await supabase.auth.signInWithOtp({
       email: targetEmail,
-      options: { emailRedirectTo: `${window.location.origin}/app` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/app`,
+        data: courseSlug ? { chosen_course_slug: courseSlug } : undefined,
+      },
     });
     if (error) throw error;
     localStorage.setItem(EMAIL_LS_KEY, targetEmail);
     setSent(true);
     toast.success("link mágico enviado para o seu email");
+  };
+
+  const confirmSebraeChoice = async () => {
+    if (!sebraeChoice || !chosenCourseSlug) return;
+    const cleanEmail = email.trim().toLowerCase();
+    setPhase("sending");
+    try {
+      await sendMagicLink(cleanEmail, chosenCourseSlug);
+      setSebraeChoice(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "não consegui enviar o link");
+    } finally {
+      setPhase("idle");
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
