@@ -191,6 +191,17 @@ const Auth = () => {
           setAliasHint(canonical.canonical);
           return;
         }
+
+        // sebrae sem convite prévio: oferece escolher a eletiva antes de enviar o link
+        if (cleanEmail.endsWith("@edu.sebrae.com.br") && !hasPassword) {
+          const sebrae = await checkSebrae(cleanEmail);
+          if (sebrae && sebrae.needs_course_choice) {
+            setSebraeChoice(sebrae);
+            setChosenCourseSlug(sebrae.courses[0]?.slug ?? null);
+            return;
+          }
+        }
+
         validation = await validateEmail(cleanEmail);
         if (!validation.can_enter) {
           toast.info(SOON_MESSAGE, { duration: 7000 });
