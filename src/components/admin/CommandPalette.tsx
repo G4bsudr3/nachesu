@@ -79,7 +79,9 @@ export const CommandPalette = ({
       <div className="flex items-center gap-2 px-4 border-b border-perestroika-preto/10">
         <Search className="w-4 h-4 text-perestroika-preto/40" />
         <Command.Input
-          placeholder="busca seção, ação…"
+          value={query}
+          onValueChange={setQuery}
+          placeholder="busca seção, ação ou estudante (email, nome)…"
           className="flex-1 h-12 bg-transparent outline-none font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40"
         />
       </div>
@@ -87,6 +89,28 @@ export const CommandPalette = ({
         <Command.Empty className="px-3 py-6 text-center text-[12px] text-perestroika-preto/50">
           nada por aqui
         </Command.Empty>
+
+        {hits.length > 0 && (
+          <Command.Group heading="estudantes">
+            {hits.map((s) => {
+              const name = s.display_name || s.nickname || s.email || s.user_id;
+              return (
+                <Command.Item
+                  key={s.user_id}
+                  value={`estudante ${s.email ?? ""} ${s.display_name ?? ""} ${s.nickname ?? ""} ${s.user_id}`}
+                  onSelect={run(() => navigate(`/admin/aluno/${s.user_id}`))}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+                >
+                  <User className="w-4 h-4" />
+                  <span className="truncate">{name}</span>
+                  {s.email && s.email !== name && (
+                    <span className="ml-auto text-[11px] text-perestroika-preto/40 truncate max-w-[40%]">{s.email}</span>
+                  )}
+                </Command.Item>
+              );
+            })}
+          </Command.Group>
+        )}
 
         <Command.Group heading="ir para">
           {OPERACAO.map((i) => (
