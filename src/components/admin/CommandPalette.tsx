@@ -22,6 +22,41 @@ export const CommandPalette = ({
   const { signOut } = useAuth();
   const { regenerate } = useAdminInsight();
   const [busy, setBusy] = useState(false);
+  const [query, setQuery] = useState("");
+  const [hits, setHits] = useState<StudentHit[]>([]);
+  const trimmed = query.trim();
+
+  useEffect(() => {
+    if (!open) {
+      setQuery("");
+      setHits([]);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (trimmed.length < 2) {
+      setHits([]);
+      return;
+    }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("user_id, email, full_name")
+        .or(`email.ilike.%${trimmed}%,full_name.ilike.%${trimmed}%`)
+        .limit(6);
+      if (cancelled) return;
+      if (error) {
+        setHits([]);
+        return;
+      }
+      setHits((data ?? []) as StudentHit[]);
+    }, 180);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [trimmed]);
 
   const run = (fn: () => void | Promise<void>) => async () => {
     onOpenChange(false);
