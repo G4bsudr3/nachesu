@@ -1,11 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink } from "lucide-react";
+import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -25,6 +32,8 @@ type AdminUser = {
   created_at: string | null;
   roles: string[];
   is_admin: boolean;
+  courses: string[];
+  course_slugs: string[];
 };
 
 type AdminListUsersRpc = {
