@@ -214,15 +214,41 @@ const AdminUsers = () => {
         </div>
       </div>
 
-      <div className="relative max-w-xl">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/50" />
-        <Input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="buscar por email, nome, nickname ou papel…"
-          className="pl-9 bg-white/60 border-perestroika-preto/20"
-        />
+      <div className="flex flex-col md:flex-row md:items-center gap-3">
+        <div className="relative flex-1 max-w-xl">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/50" />
+          <Input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="buscar por email, nome, nickname, papel ou eletiva…"
+            className="pl-9 bg-white/60 border-perestroika-preto/20"
+          />
+        </div>
+        <Select value={courseFilter} onValueChange={setCourseFilter}>
+          <SelectTrigger className="w-full md:w-56 bg-white/60 border-perestroika-preto/20">
+            <SelectValue placeholder="eletiva" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">todas as eletivas</SelectItem>
+            <SelectItem value="none">sem matrícula</SelectItem>
+            {courseOptions.map(([slug, title]) => (
+              <SelectItem key={slug} value={slug}>{title}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={domainFilter} onValueChange={setDomainFilter}>
+          <SelectTrigger className="w-full md:w-56 bg-white/60 border-perestroika-preto/20">
+            <SelectValue placeholder="domínio" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">todos os domínios</SelectItem>
+            {domainOptions.map((d) => (
+              <SelectItem key={d} value={d}>@{d}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
+
 
       <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
         <Table>
