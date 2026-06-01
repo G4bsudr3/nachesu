@@ -146,7 +146,7 @@ const AdminUsers = () => {
 
     if (error) {
       logger.error("[admin/users] dar admin:", error);
-      toast.error("tu precisa ser admin pra mexer nisso");
+      toast.error("você precisa ser admin pra mexer nisso");
     } else {
       toast.success(`${target.email} agora é admin`);
       await loadUsers();
@@ -156,7 +156,7 @@ const AdminUsers = () => {
 
   const removeAdmin = async (target: AdminUser) => {
     if (target.user_id === user?.id) {
-      toast.error("pra não te trancar pra fora, pede outro admin pra remover teu acesso.");
+      toast.error("pra não te trancar pra fora, pede outro admin pra remover seu acesso.");
       return;
     }
 
@@ -169,7 +169,7 @@ const AdminUsers = () => {
 
     if (error) {
       logger.error("[admin/users] remover admin:", error);
-      toast.error("tu precisa ser admin pra mexer nisso");
+      toast.error("você precisa ser admin pra mexer nisso");
     } else {
       toast.success(`${target.email} não é mais admin`);
       await loadUsers();
@@ -179,20 +179,34 @@ const AdminUsers = () => {
 
   const resetPassword = async (target: AdminUser) => {
     const ok = window.confirm(
-      `redefinir a senha de ${target.email} para "chora2026"?`
+      `gerar uma senha nova pra ${target.email}? a senha vai aparecer aqui uma vez só, copie e mande pra pessoa.`,
     );
     if (!ok) return;
 
+    // senha aleatória de 12 chars (sem ambíguos 0/O/1/l)
+    const alphabet = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const bytes = new Uint8Array(12);
+    crypto.getRandomValues(bytes);
+    const newPassword = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+
     setBusyUserId(target.user_id);
     const { data, error } = await supabase.functions.invoke("admin-reset-password", {
-      body: { target_user_id: target.user_id, new_password: "chora2026" },
+      body: { target_user_id: target.user_id, new_password: newPassword },
     });
 
     if (error || (data as { error?: string })?.error) {
       logger.error("[admin/users] reset senha:", error ?? data);
       toast.error("não rolou redefinir a senha");
     } else {
-      toast.success(`senha de ${target.email} agora é chora2026`);
+      try {
+        await navigator.clipboard.writeText(newPassword);
+      } catch {
+        // sem clipboard: tudo bem, a senha já apareceu no toast
+      }
+      toast.success(`senha nova de ${target.email}`, {
+        description: `${newPassword} (copiada pra área de transferência)`,
+        duration: 20000,
+      });
     }
     setBusyUserId(null);
   };

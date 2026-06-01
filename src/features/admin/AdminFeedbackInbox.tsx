@@ -27,7 +27,7 @@ import {
 import { FeedbackReviewDrawer } from "./FeedbackReviewDrawer";
 
 const timeAgo = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   const diff = Date.now() - new Date(iso).getTime();
   const minutes = Math.floor(diff / 60000);
   if (minutes < 60) return `${minutes}min`;
@@ -207,7 +207,7 @@ export const AdminFeedbackInbox = () => {
                     <TableCell className="text-sm">
                       {d.module
                         ? `${String(d.module.number).padStart(2, "0")} · ${d.module.title}`
-                        : "—"}
+                        : "–"}
                     </TableCell>
                     <TableCell className="text-xs text-perestroika-preto/70 whitespace-nowrap">
                       há {timeAgo(d.submitted_at)}

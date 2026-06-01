@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { AlertTriangle, CheckCircle2, ExternalLink, RefreshCw } from "lucide-react";
 
-// fonte de verdade da landing pública /eletivas — manter espelhado
+// fonte de verdade da landing pública /eletivas – manter espelhado
 const PUBLIC_META: Record<string, { pitch: string; descLonga: string; tag: string }> = {
   "ia-na-pratica": {
     pitch: "construa seu primeiro app com ia, do problema ao mvp no ar.",
@@ -208,7 +208,7 @@ function CourseReview({ course }: { course: Course }) {
 
         <div>
           <div className="text-xs uppercase tracking-wide text-muted-foreground">título</div>
-          <div className="text-base">{course.title} <span className="text-muted-foreground">— {course.professor_name}</span></div>
+          <div className="text-base">{course.title} <span className="text-muted-foreground">– {course.professor_name}</span></div>
         </div>
 
         {publicMeta && (
@@ -258,7 +258,7 @@ function CourseReview({ course }: { course: Course }) {
             {(scopeQuery.data ?? []).map((i, idx) => (
               <li key={`${i.pill_id}-${i.term}-${idx}`} className="text-destructive">
                 · m{String(i.module_number).padStart(2, "0")} <span className="opacity-70">›</span>{" "}
-                {i.pill_kind} "{i.pill_title}" — termo <code>"{i.term}"</code>
+                {i.pill_kind} "{i.pill_title}" – termo <code>"{i.term}"</code>
               </li>
             ))}
           </ul>

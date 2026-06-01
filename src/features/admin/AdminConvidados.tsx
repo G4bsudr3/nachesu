@@ -51,7 +51,7 @@ const editSchema = schema.omit({ email: true });
 type EditValues = z.infer<typeof editSchema>;
 
 const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -362,10 +362,10 @@ export const AdminConvidados = () => {
                   </TableCell>
                   <TableCell className="font-medium whitespace-nowrap">{r.email}</TableCell>
                   <TableCell className="text-perestroika-preto/80 whitespace-nowrap">
-                    {r.name ?? "—"}
+                    {r.name ?? "–"}
                   </TableCell>
                   <TableCell className="text-perestroika-preto/80 whitespace-nowrap">
-                    {r.nickname ?? "—"}
+                    {r.nickname ?? "–"}
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
                     {r.has_fbi ? (
@@ -375,7 +375,7 @@ export const AdminConvidados = () => {
                     ) : r.fbi_started ? (
                       <span className="text-xs text-perestroika-preto/50 italic">rascunho</span>
                     ) : (
-                      <span className="text-xs text-perestroika-preto/30">—</span>
+                      <span className="text-xs text-perestroika-preto/30">–</span>
                     )}
                   </TableCell>
                   <TableCell>

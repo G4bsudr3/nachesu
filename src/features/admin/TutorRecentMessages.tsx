@@ -116,7 +116,7 @@ export const TutorRecentMessages = ({ windowDays }: { windowDays: 7 | 30 }) => {
               <div key={r.id} className="rounded-xl border border-perestroika-preto/10 bg-white/50 p-3">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
-                    {r.trail_id ? trailMap.get(r.trail_id) ?? "—" : "sem trilha"}
+                    {r.trail_id ? trailMap.get(r.trail_id) ?? "–" : "sem trilha"}
                     {r.pill_title ? ` · ${r.pill_title}` : ""}
                   </span>
                   <span className="font-body text-[10px] text-perestroika-preto/55 tabular-nums">{fmt(r.created_at)}</span>

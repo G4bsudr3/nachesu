@@ -207,7 +207,7 @@ const AdminTurma = () => {
   const totalRisks = risks.length;
 
   const fmtHours = (h: number | null) => {
-    if (h === null || !Number.isFinite(h)) return "—";
+    if (h === null || !Number.isFinite(h)) return "–";
     if (h < 1) return `${Math.round(h * 60)}min`;
     return `${h.toFixed(1)}h`;
   };

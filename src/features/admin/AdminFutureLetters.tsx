@@ -182,7 +182,7 @@ export const AdminFutureLetters = () => {
                         </div>
 
                         <div className="text-xs text-perestroika-preto/55 mb-2 flex gap-3 flex-wrap">
-                          <span>salva: {g.submitted_at ? fmtDate(g.submitted_at) : "—"}</span>
+                          <span>salva: {g.submitted_at ? fmtDate(g.submitted_at) : "–"}</span>
                         </div>
 
                         <details className="mt-2">

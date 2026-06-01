@@ -693,7 +693,7 @@ function DeliverablesPanel({
                     <TableCell className="font-body text-xs text-perestroika-preto/65">
                       {r.submitted_at
                         ? new Date(r.submitted_at).toLocaleString("pt-BR")
-                        : "—"}
+                        : "–"}
                     </TableCell>
                   </TableRow>
                 );

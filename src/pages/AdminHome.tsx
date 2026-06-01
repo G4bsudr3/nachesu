@@ -230,7 +230,7 @@ const AdminHome = () => {
                           <Link
                             key={m.id}
                             to={`/admin/aula/${m.number}`}
-                            title={`módulo ${m.number} — ${m.title}: ${m.completed}/${m.started} (${m.pct}%)${m.avg_rating !== null ? ` · nota ${m.avg_rating}` : ""}`}
+                            title={`módulo ${m.number} – ${m.title}: ${m.completed}/${m.started} (${m.pct}%)${m.avg_rating !== null ? ` · nota ${m.avg_rating}` : ""}`}
                             className="aspect-square rounded-lg flex items-center justify-center font-display text-sm tabular-nums hover:scale-110 transition-transform"
                             style={{
                               backgroundColor: heatColor(m.pct, m.started),
@@ -268,7 +268,7 @@ const AdminHome = () => {
           </Tile>
         </div>
 
-        {/* secondary nav — links pras seções existentes */}
+        {/* secondary nav – links pras seções existentes */}
         <section className="pt-2">
           <p className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/50 mb-2">
             ir para

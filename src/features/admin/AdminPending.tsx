@@ -22,7 +22,7 @@ type PendingRow = {
 };
 
 const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -135,7 +135,7 @@ export const AdminPending = () => {
                   </TableCell>
                   <TableCell className="font-medium">{r.email}</TableCell>
                   <TableCell className="text-perestroika-preto/80">
-                    {r.display_name ?? r.nickname ?? "—"}
+                    {r.display_name ?? r.nickname ?? "–"}
                   </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-2">

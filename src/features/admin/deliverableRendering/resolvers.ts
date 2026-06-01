@@ -43,7 +43,7 @@ const computeState = (blocks: AnswerBlock[]): ResolvedAnswer["state"] => {
 };
 
 // ============================================================
-// resolvers — recebem (pill, content) e devolvem blocks[]
+// resolvers – recebem (pill, content) e devolvem blocks[]
 // ============================================================
 
 function resolveEditorial(pill: PillForResolve, content: DeliverableContent): AnswerBlock[] {
@@ -370,9 +370,9 @@ function resolveRadar(
       kind: "list",
       question: `item ${idx + 1}`,
       items: [
-        { label: "o quê", value: item.what || "—" },
-        { label: "onde", value: item.where || "—" },
-        { label: "fluxo", value: fluxoLabel(item.fluxo) || "—" },
+        { label: "o quê", value: item.what || "–" },
+        { label: "onde", value: item.where || "–" },
+        { label: "fluxo", value: fluxoLabel(item.fluxo) || "–" },
       ],
     });
     if (item.evidence_kind && item.evidence_kind !== "none") {

@@ -76,7 +76,7 @@ export const StudentProgressPanel = ({ userId }: Props) => {
                 <Calendar className="w-3 h-3" />
                 {c.lastActivityAt
                   ? new Date(c.lastActivityAt).toLocaleDateString("pt-BR")
-                  : "—"}
+                  : "–"}
               </span>
               <span className={`inline-flex items-center gap-1.5 ${toneClass[risk.tone]}`}>
                 <Activity className="w-3 h-3" /> {risk.text}

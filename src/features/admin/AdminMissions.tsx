@@ -62,7 +62,7 @@ const statusConfig: Record<Status, { label: string; classes: string; icon: typeo
 };
 
 const formatDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",

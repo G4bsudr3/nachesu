@@ -42,7 +42,7 @@ type ConvRow = {
 };
 
 const formatBRDate = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
 };
 

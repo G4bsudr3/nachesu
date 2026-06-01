@@ -33,7 +33,7 @@ type TrailRow = { id: string; title: string; order_index: number };
 const fmtDate = (iso: string | null) =>
   iso
     ? new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })
-    : "—";
+    : "–";
 
 export const AdminTutorCommand = () => {
   const qc = useQueryClient();
@@ -334,7 +334,7 @@ export const AdminTutorCommand = () => {
         <Kpi
           icon={<ThumbsUp className="h-4 w-4" />}
           label="taxa útil"
-          value={kpis.helpfulRate === null ? "—" : `${kpis.helpfulRate}%`}
+          value={kpis.helpfulRate === null ? "–" : `${kpis.helpfulRate}%`}
           hint="sobre avaliadas"
           delta={kpis.delta.helpfulRate}
           deltaUnit="pp"
@@ -342,7 +342,7 @@ export const AdminTutorCommand = () => {
         <Kpi
           icon={<Timer className="h-4 w-4" />}
           label="ttfb mediano"
-          value={kpis.medianTtfb === null ? "—" : `${(kpis.medianTtfb / 1000).toFixed(2)}s`}
+          value={kpis.medianTtfb === null ? "–" : `${(kpis.medianTtfb / 1000).toFixed(2)}s`}
           hint="1º byte do tutor"
           delta={kpis.delta.medianTtfb}
           deltaUnit="%"
@@ -351,7 +351,7 @@ export const AdminTutorCommand = () => {
         <Kpi
           icon={<Timer className="h-4 w-4" />}
           label="latência média"
-          value={kpis.avgLatency === null ? "—" : `${(kpis.avgLatency / 1000).toFixed(1)}s`}
+          value={kpis.avgLatency === null ? "–" : `${(kpis.avgLatency / 1000).toFixed(1)}s`}
           hint="resposta completa"
           delta={kpis.delta.avgLatency}
           deltaUnit="%"

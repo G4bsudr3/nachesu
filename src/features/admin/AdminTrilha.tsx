@@ -91,7 +91,7 @@ const parseLocalDateTime = (val: string): string | null => {
 };
 
 const formatDisplayDate = (iso: string | null): string => {
-  if (!iso) return "—";
+  if (!iso) return "–";
   return new Date(iso).toLocaleString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -321,7 +321,7 @@ export const AdminTrilha = () => {
                           style={{ backgroundColor: trailColor }}
                           aria-hidden="true"
                         />
-                        {trail?.title?.toLowerCase() ?? "—"}
+                        {trail?.title?.toLowerCase() ?? "–"}
                       </span>
                     </TableCell>
                     <TableCell className="text-xs text-perestroika-preto/70 whitespace-nowrap">
