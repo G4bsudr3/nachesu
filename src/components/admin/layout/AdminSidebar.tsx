@@ -7,6 +7,7 @@ import {
   Compass,
   Brain,
   Inbox,
+  Mail,
   Package,
   Hourglass,
   AlertTriangle,
@@ -28,6 +29,7 @@ type Item = { to: string; label: string; icon: LucideIcon; exact?: boolean };
 export const OPERACAO: Item[] = [
   { to: "/admin", label: "início", icon: Home, exact: true },
   { to: "/admin/eletivas", label: "eletivas", icon: BookOpen },
+  { to: "/admin/convites", label: "convites · email", icon: Mail },
   { to: "/admin/review", label: "revisão", icon: ClipboardCheck },
   { to: "/admin/trilha", label: "trilha", icon: Compass },
   { to: "/admin/tutor", label: "tutor IA", icon: Brain },

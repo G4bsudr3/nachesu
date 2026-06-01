@@ -43,6 +43,26 @@ const validateEmail = async (email: string): Promise<EmailValidationResult> => {
   }
 };
 
+interface SebraeEligibility {
+  is_sebrae: boolean;
+  has_pre_invite: boolean;
+  account_exists: boolean;
+  needs_course_choice: boolean;
+  courses: Array<{ id: string; slug: string; title: string }>;
+}
+
+const checkSebrae = async (email: string): Promise<SebraeEligibility | null> => {
+  try {
+    const { data, error } = await supabase.functions.invoke("check-sebrae-eligibility", {
+      body: { email },
+    });
+    if (error || !data) return null;
+    return data as SebraeEligibility;
+  } catch {
+    return null;
+  }
+};
+
 type AuthPhase = "idle" | "checking" | "sending" | "logging-in" | "resetting";
 
 const PHASE_LABELS: Record<Exclude<AuthPhase, "idle">, string> = {
@@ -74,6 +94,8 @@ const Auth = () => {
   const submitting = phase !== "idle";
   const [sent, setSent] = useState(false);
   const [aliasHint, setAliasHint] = useState<string | null>(null);
+  const [sebraeChoice, setSebraeChoice] = useState<SebraeEligibility | null>(null);
+  const [chosenCourseSlug, setChosenCourseSlug] = useState<string | null>(null);
 
   const [searchParams] = useSearchParams();
   const fromCarta = searchParams.get("from") === "carta";
@@ -120,15 +142,32 @@ const Auth = () => {
     return <Navigate to={target} replace />;
   }
 
-  const sendMagicLink = async (targetEmail: string) => {
+  const sendMagicLink = async (targetEmail: string, courseSlug?: string | null) => {
     const { error } = await supabase.auth.signInWithOtp({
       email: targetEmail,
-      options: { emailRedirectTo: `${window.location.origin}/app` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/app`,
+        data: courseSlug ? { chosen_course_slug: courseSlug } : undefined,
+      },
     });
     if (error) throw error;
     localStorage.setItem(EMAIL_LS_KEY, targetEmail);
     setSent(true);
     toast.success("link mágico enviado para o seu email");
+  };
+
+  const confirmSebraeChoice = async () => {
+    if (!sebraeChoice || !chosenCourseSlug) return;
+    const cleanEmail = email.trim().toLowerCase();
+    setPhase("sending");
+    try {
+      await sendMagicLink(cleanEmail, chosenCourseSlug);
+      setSebraeChoice(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "não consegui enviar o link");
+    } finally {
+      setPhase("idle");
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -152,6 +191,17 @@ const Auth = () => {
           setAliasHint(canonical.canonical);
           return;
         }
+
+        // sebrae sem convite prévio: oferece escolher a eletiva antes de enviar o link
+        if (cleanEmail.endsWith("@edu.sebrae.com.br") && !hasPassword) {
+          const sebrae = await checkSebrae(cleanEmail);
+          if (sebrae && sebrae.needs_course_choice) {
+            setSebraeChoice(sebrae);
+            setChosenCourseSlug(sebrae.courses[0]?.slug ?? null);
+            return;
+          }
+        }
+
         validation = await validateEmail(cleanEmail);
         if (!validation.can_enter) {
           toast.info(SOON_MESSAGE, { duration: 7000 });
@@ -337,6 +387,40 @@ const Auth = () => {
                       className="inline-flex items-center min-h-11 px-4 rounded-xl bg-perestroika-preto text-perestroika-bege font-body text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-transform"
                     >
                       usar esse email
+                    </button>
+                  </div>
+                )}
+
+                {sebraeChoice && sebraeChoice.needs_course_choice && (
+                  <div className="rounded-2xl border border-perestroika-preto/20 bg-perestroika-preto/5 p-4 space-y-3 animate-fade-up">
+                    <p className="font-body text-sm text-perestroika-preto leading-snug">
+                      reconheci seu email da escola sebrae. em qual eletiva você se inscreveu?
+                    </p>
+                    <div className="space-y-2">
+                      {sebraeChoice.courses.map((c) => (
+                        <label
+                          key={c.slug}
+                          className="flex items-center gap-3 rounded-xl border border-perestroika-preto/15 p-3 cursor-pointer hover:bg-perestroika-preto/5 transition-colors"
+                        >
+                          <input
+                            type="radio"
+                            name="sebrae-course"
+                            value={c.slug}
+                            checked={chosenCourseSlug === c.slug}
+                            onChange={() => setChosenCourseSlug(c.slug)}
+                            className="accent-perestroika-preto"
+                          />
+                          <span className="font-body text-sm lowercase">{c.title}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={confirmSebraeChoice}
+                      disabled={!chosenCourseSlug || submitting}
+                      className="inline-flex items-center min-h-11 px-4 rounded-xl bg-perestroika-preto text-perestroika-bege font-body text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100 transition-transform"
+                    >
+                      enviar meu link
                     </button>
                   </div>
                 )}
