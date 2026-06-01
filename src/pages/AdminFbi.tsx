@@ -46,6 +46,7 @@ import { AdminVotacaoProjetos } from "@/features/admin/AdminVotacaoProjetos";
 import { AdminChoraBot } from "@/features/admin/AdminChoraBot";
 import { AdminEletivaSettings } from "@/features/admin/AdminEletivaSettings";
 import { AdminEletivas } from "@/features/admin/AdminEletivas";
+import { AdminConvites } from "@/features/admin/AdminConvites";
 import { AdminEletivaReview } from "@/features/admin/AdminEletivaReview";
 import { AdminTrilha } from "@/features/admin/AdminTrilha";
 import { AdminTutorCommand } from "@/features/admin/AdminTutorCommand";
@@ -84,11 +85,12 @@ const escapeCsv = (val: unknown) => {
   return `"${s}"`;
 };
 
-const VALID_TABS = ["eletivas", "review", "eletiva", "trilha", "tutor", "feedback", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
   eletivas: "eletivas · cursos",
+  convites: "convites · email",
   review: "eletivas · revisão",
   eletiva: "eletiva · settings",
   trilha: "eletiva · trilha",
@@ -300,6 +302,7 @@ const AdminFbi = () => {
             {/* operação NachesU (sempre visível, ordem por frequência de uso) */}
             <TabsList className="bg-perestroika-preto/5 mb-3 inline-flex flex-wrap h-auto">
               <TabsTrigger value="eletivas" className="uppercase tracking-wide text-xs">eletivas</TabsTrigger>
+              <TabsTrigger value="convites" className="uppercase tracking-wide text-xs">convites</TabsTrigger>
               <TabsTrigger value="review" className="uppercase tracking-wide text-xs">revisão</TabsTrigger>
               <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
               <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
@@ -518,6 +521,10 @@ const AdminFbi = () => {
 
             <TabsContent value="eletivas">
               <AdminEletivas />
+            </TabsContent>
+
+            <TabsContent value="convites">
+              <AdminConvites />
             </TabsContent>
 
             <TabsContent value="review">

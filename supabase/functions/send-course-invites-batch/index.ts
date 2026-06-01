@@ -125,6 +125,10 @@ Deno.serve(async (req) => {
             educatorName,
             loginUrl,
           },
+          metadata: {
+            course_id: courseId,
+            course_title: courseTitle,
+          },
         },
       })
       if (error) {
