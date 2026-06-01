@@ -523,6 +523,10 @@ const AdminFbi = () => {
               <AdminEletivas />
             </TabsContent>
 
+            <TabsContent value="convites">
+              <AdminConvites />
+            </TabsContent>
+
             <TabsContent value="review">
               <AdminEletivaReview />
             </TabsContent>
