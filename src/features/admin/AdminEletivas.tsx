@@ -53,7 +53,7 @@ export function AdminEletivas() {
     <div className="space-y-4">
       <h2 className="font-display text-2xl uppercase">eletivas</h2>
       <p className="font-body text-sm text-perestroika-preto/70">
-        cada eletiva tem seus estudantes (convidados por email), seu professor e seus módulos liberados manualmente.
+        cada eletiva tem seus estudantes (convidados por email), seu educador e seus módulos liberados manualmente.
       </p>
 
       {isLoading ? (
@@ -248,7 +248,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
       <Textarea
         value={emails}
         onChange={(e) => setEmails(e.target.value)}
-        placeholder="aluno1@escola.br&#10;aluno2@escola.br"
+        placeholder="estudante1@edu.sebrae.com.br&#10;estudante2@edu.sebrae.com.br"
         rows={4}
         className="font-body text-sm"
       />

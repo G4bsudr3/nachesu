@@ -85,7 +85,7 @@ const escapeCsv = (val: unknown) => {
   return `"${s}"`;
 };
 
-const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
@@ -104,6 +104,8 @@ const TAB_LABELS: Record<AdminTab, string> = {
   materiais: "materiais hub",
   pending: "pendentes",
   usuarios: "usuários",
+  nudges: "nudges · evasão",
+  rubricas: "rubricas",
   convidados: "convidados",
   emails: "emails · log",
   "feedback-d1": "feedback dia 1",
@@ -264,7 +266,7 @@ const AdminFbi = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <AdminStats />
+          {/* AdminStats removido daqui: a home (/admin) já é a fonte única de métricas via useAdminMetrics. */}
 
           <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
             <nav
