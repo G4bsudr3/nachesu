@@ -391,6 +391,40 @@ const Auth = () => {
                   </div>
                 )}
 
+                {sebraeChoice && sebraeChoice.needs_course_choice && (
+                  <div className="rounded-2xl border border-perestroika-preto/20 bg-perestroika-preto/5 p-4 space-y-3 animate-fade-up">
+                    <p className="font-body text-sm text-perestroika-preto leading-snug">
+                      reconheci seu email da escola sebrae. em qual eletiva você se inscreveu?
+                    </p>
+                    <div className="space-y-2">
+                      {sebraeChoice.courses.map((c) => (
+                        <label
+                          key={c.slug}
+                          className="flex items-center gap-3 rounded-xl border border-perestroika-preto/15 p-3 cursor-pointer hover:bg-perestroika-preto/5 transition-colors"
+                        >
+                          <input
+                            type="radio"
+                            name="sebrae-course"
+                            value={c.slug}
+                            checked={chosenCourseSlug === c.slug}
+                            onChange={() => setChosenCourseSlug(c.slug)}
+                            className="accent-perestroika-preto"
+                          />
+                          <span className="font-body text-sm lowercase">{c.title}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={confirmSebraeChoice}
+                      disabled={!chosenCourseSlug || submitting}
+                      className="inline-flex items-center min-h-11 px-4 rounded-xl bg-perestroika-preto text-perestroika-bege font-body text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100 transition-transform"
+                    >
+                      enviar meu link
+                    </button>
+                  </div>
+                )}
+
                 <div className="relative">
                   <label htmlFor="auth-password" className="sr-only">
                     senha (opcional)
