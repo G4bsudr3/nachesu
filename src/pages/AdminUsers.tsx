@@ -56,6 +56,8 @@ const AdminUsers = () => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [courseFilter, setCourseFilter] = useState<string>("all");
+  const [domainFilter, setDomainFilter] = useState<string>("all");
   const [busyUserId, setBusyUserId] = useState<string | null>(null);
 
   const loadUsers = async () => {
