@@ -36,10 +36,20 @@ Deno.serve(async (req) => {
   // busca entrega + módulo + perfil
   const { data: del, error: delErr } = await admin
     .from('module_deliverables')
-    .select('id, user_id, module_id, content, feedback, module:modules(id, number, title, summary, rubric_id), profile:profiles!module_deliverables_user_id_fkey(display_name, nickname)')
+    .select('id, user_id, module_id, content, feedback, module:modules(id, number, title, summary, rubric_id)')
     .eq('id', deliverableId)
     .maybeSingle()
-  if (delErr || !del) return json({ error: 'entrega não encontrada' }, 404)
+  if (delErr || !del) {
+    console.error('deliverable lookup failed', { deliverableId, delErr })
+    return json({ error: 'entrega não encontrada', detail: delErr?.message }, 404)
+  }
+
+  const { data: profileRow } = await admin
+    .from('profiles')
+    .select('display_name, nickname')
+    .eq('user_id', del.user_id)
+    .maybeSingle()
+  ;(del as any).profile = profileRow
 
   // rubrica vinculada ao módulo ou default
   let rubricId = (del as any).module?.rubric_id ?? null
