@@ -165,27 +165,93 @@ export function PillClassificador3x3({
         </div>
       )}
 
-      {!hasEnoughRadar && !radarQuery.isLoading && (
-        <div className="rounded-2xl border-2 border-perestroika-vermelho/40 bg-perestroika-vermelho/[0.08] p-4 flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 mt-0.5 text-perestroika-vermelho shrink-0" aria-hidden />
-          <div className="space-y-2">
-            <p className="font-body text-sm text-perestroika-preto">
-              precisa de pelo menos 3 itens no seu radar pra fazer essa missão. volta na missão 1 e completa antes de seguir.
-            </p>
-            {schema.radar_fallback_href && (
-              <Link
-                to={schema.radar_fallback_href}
-                className="inline-flex items-center gap-1 font-body text-xs uppercase tracking-wider underline"
-                style={{ color: accent }}
-              >
-                voltar pra missão 1 <ArrowRight className="h-3 w-3" aria-hidden />
-              </Link>
-            )}
-          </div>
+      {!hasEnoughRadar && (
+        <div className="space-y-3">
+          {radarQuery.isLoading ? (
+            <div className="grid gap-2 sm:grid-cols-3">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege/60 h-24 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="rounded-2xl border-2 border-perestroika-vermelho/40 bg-perestroika-vermelho/[0.08] p-4 flex items-start gap-3">
+                <AlertTriangle className="h-5 w-5 mt-0.5 text-perestroika-vermelho shrink-0" aria-hidden />
+                <p className="font-body text-sm text-perestroika-preto">
+                  {`faltam ${3 - radarItems.length} ${
+                    3 - radarItems.length === 1 ? "item" : "itens"
+                  } no seu radar da missão 1 pra liberar essa missão.`}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+                  seu radar até agora
+                </p>
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {[0, 1, 2].map((i) => {
+                    const item = radarItems[i];
+                    const filled = !!item;
+                    return (
+                      <div
+                        key={i}
+                        className={`rounded-2xl p-4 min-h-[6rem] flex flex-col gap-1 ${
+                          filled
+                            ? "border-2 bg-perestroika-bege"
+                            : "border-2 border-dashed bg-perestroika-bege/40"
+                        }`}
+                        style={
+                          filled
+                            ? { borderColor: "#75BF9C" }
+                            : { borderColor: "rgba(9,9,9,0.18)" }
+                        }
+                      >
+                        <span
+                          className="font-display leading-none"
+                          style={{
+                            color: filled ? "#1f4f3a" : "rgba(9,9,9,0.25)",
+                            fontSize: "clamp(20px, 3vw, 28px)",
+                          }}
+                          aria-hidden
+                        >
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        {filled ? (
+                          <p className="font-body text-sm text-perestroika-preto leading-snug">
+                            {item.text}
+                          </p>
+                        ) : (
+                          <p className="font-body text-xs text-perestroika-preto/55 leading-snug">
+                            faltando — volta na missão 1 e adiciona um item aqui.
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                {schema.radar_fallback_href && (
+                  <Link
+                    to={schema.radar_fallback_href}
+                    className="inline-flex items-center gap-1 font-body text-xs uppercase tracking-wider underline"
+                    style={{ color: accent }}
+                  >
+                    voltar pra missão 1 <ArrowRight className="h-3 w-3" aria-hidden />
+                  </Link>
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
 
-      <section aria-label="itens a classificar" className="space-y-3">
+      <section
+        aria-label="itens a classificar"
+        aria-disabled={!hasEnoughRadar}
+        className={`space-y-3 ${!hasEnoughRadar ? "pointer-events-none opacity-60" : ""}`}
+      >
         {allItems.map((item, idx) => {
           const isRadar = item.id.startsWith("radar-");
           const chosen = classifications[item.id];
