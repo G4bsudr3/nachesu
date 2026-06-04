@@ -15,11 +15,13 @@ import {
   PillChecklistPacto,
   PillPBLCorfTriplo,
   PillGuiaDePrompts,
+  PillClassificador3x3,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
   type PblCorfValue,
   type GuiaPromptsValue,
+  type ClassificadorValue,
 } from "@/components/eletiva/pills";
 
 
@@ -173,6 +175,7 @@ export const ModuloPillList = ({
   const pblEstruturado = (content.pbl_estruturado ?? {}) as Record<string, Record<string, unknown>>;
   const pblCorf = (content.pbl_corf ?? {}) as Record<string, PblCorfValue>;
   const guiaPrompts = (content.guia_prompts ?? {}) as Record<string, GuiaPromptsValue>;
+  const classificadorMap = (content.classificacao_aula2 ?? {}) as Record<string, ClassificadorValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -325,6 +328,25 @@ export const ModuloPillList = ({
             </PillCardShell>
           );
         }
+        if (schemaType === "classificador_linear_circular_regenerativo") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+              <PillClassificador3x3
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={classificadorMap[pill.id] ?? {}}
+                classMap={classificadorMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
 
 
 
