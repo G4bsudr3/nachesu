@@ -137,6 +137,13 @@ export function PillEditorial({
         </motion.section>
       )}
 
+      {/* slot opcional: signature corf (módulo 2, pílula b) */}
+      {schema.signature_corf && (
+        <motion.section {...reveal} aria-label="framework corf">
+          <CorfSignature accent={accent} caption={schema.signature_corf.caption} />
+        </motion.section>
+      )}
+
       {/* momento 2 — vídeo */}
       {schema.video?.url && (
         <motion.section {...reveal} aria-label="vídeo principal">
