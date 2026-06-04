@@ -6,6 +6,8 @@ import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import { CorfSignature } from "./CorfSignature";
+import { ComparacaoNiveis, type NivelItem } from "./ComparacaoNiveis";
 
 type Schema = {
   type?: "pilula_editorial";
@@ -13,6 +15,9 @@ type Schema = {
     md?: string;
     destaque_numero?: string;
     destaque_legenda?: string;
+  };
+  signature_corf?: {
+    caption?: string;
   };
   video?: {
     title: string;
@@ -24,6 +29,11 @@ type Schema = {
   aprofundamento?: {
     md?: string;
     destaque?: string;
+  };
+  comparacao_niveis?: {
+    titulo?: string;
+    cenario?: string;
+    niveis: NivelItem[];
   };
   reflexao?: {
     prompt?: string;
@@ -127,6 +137,13 @@ export function PillEditorial({
         </motion.section>
       )}
 
+      {/* slot opcional: signature corf (módulo 2, pílula b) */}
+      {schema.signature_corf && (
+        <motion.section {...reveal} aria-label="framework corf">
+          <CorfSignature accent={accent} caption={schema.signature_corf.caption} />
+        </motion.section>
+      )}
+
       {/* momento 2 — vídeo */}
       {schema.video?.url && (
         <motion.section {...reveal} aria-label="vídeo principal">
@@ -171,6 +188,18 @@ export function PillEditorial({
               </p>
             </div>
           )}
+        </motion.section>
+      )}
+
+      {/* slot opcional: comparação de níveis de prompt (módulo 2, pílula c) */}
+      {schema.comparacao_niveis && schema.comparacao_niveis.niveis.length > 0 && (
+        <motion.section {...reveal} aria-label="comparação de níveis">
+          <ComparacaoNiveis
+            accent={accent}
+            titulo={schema.comparacao_niveis.titulo}
+            cenario={schema.comparacao_niveis.cenario}
+            niveis={schema.comparacao_niveis.niveis}
+          />
         </motion.section>
       )}
 

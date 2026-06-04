@@ -13,9 +13,13 @@ import {
   PillEditorial,
   PillPBLEstruturado,
   PillChecklistPacto,
+  PillPBLCorfTriplo,
+  PillGuiaDePrompts,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
+  type PblCorfValue,
+  type GuiaPromptsValue,
 } from "@/components/eletiva/pills";
 
 
@@ -167,6 +171,8 @@ export const ModuloPillList = ({
   const reflections = (content.reflections ?? {}) as Record<string, string>;
   const pblResponses = (content.pbl_responses ?? {}) as Record<string, string>;
   const pblEstruturado = (content.pbl_estruturado ?? {}) as Record<string, Record<string, unknown>>;
+  const pblCorf = (content.pbl_corf ?? {}) as Record<string, PblCorfValue>;
+  const guiaPrompts = (content.guia_prompts ?? {}) as Record<string, GuiaPromptsValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -283,6 +289,43 @@ export const ModuloPillList = ({
             </PillCardShell>
           );
         }
+        if (schemaType === "pbl_corf_triplo") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+              <PillPBLCorfTriplo
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={pblCorf[pill.id] ?? {}}
+                corfMap={pblCorf}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "guia_de_prompts") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+              <PillGuiaDePrompts
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={guiaPrompts[pill.id] ?? {}}
+                guiaMap={guiaPrompts}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
 
 
         // ---- vídeo embedado simples (loom/youtube, sem entrega) ----
