@@ -328,6 +328,25 @@ export const ModuloPillList = ({
             </PillCardShell>
           );
         }
+        if (schemaType === "classificador_linear_circular_regenerativo") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+              <PillClassificador3x3
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={classificadorMap[pill.id] ?? {}}
+                classMap={classificadorMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
 
 
 
