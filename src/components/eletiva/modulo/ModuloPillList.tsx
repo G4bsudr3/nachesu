@@ -289,6 +289,43 @@ export const ModuloPillList = ({
             </PillCardShell>
           );
         }
+        if (schemaType === "pbl_corf_triplo") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+              <PillPBLCorfTriplo
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={pblCorf[pill.id] ?? {}}
+                corfMap={pblCorf}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "guia_de_prompts") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+              <PillGuiaDePrompts
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={guiaPrompts[pill.id] ?? {}}
+                guiaMap={guiaPrompts}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
 
 
         // ---- vídeo embedado simples (loom/youtube, sem entrega) ----
