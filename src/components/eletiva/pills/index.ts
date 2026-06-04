@@ -9,6 +9,8 @@ export { PillPBLEstruturado } from "./PillPBLEstruturado";
 export { PillChecklistPacto } from "./PillChecklistPacto";
 export { PillPBLCorfTriplo } from "./PillPBLCorfTriplo";
 export type { PblCorfValue } from "./PillPBLCorfTriplo";
+export { PillClassificador3x3 } from "./PillClassificador3x3";
+export type { ClassificadorValue } from "./PillClassificador3x3";
 export { PillGuiaDePrompts } from "./PillGuiaDePrompts";
 export type { GuiaPromptsValue } from "./PillGuiaDePrompts";
 export { CorfSignature } from "./CorfSignature";
