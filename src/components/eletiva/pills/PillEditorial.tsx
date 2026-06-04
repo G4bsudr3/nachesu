@@ -191,6 +191,18 @@ export function PillEditorial({
         </motion.section>
       )}
 
+      {/* slot opcional: comparação de níveis de prompt (módulo 2, pílula c) */}
+      {schema.comparacao_niveis && schema.comparacao_niveis.niveis.length > 0 && (
+        <motion.section {...reveal} aria-label="comparação de níveis">
+          <ComparacaoNiveis
+            accent={accent}
+            titulo={schema.comparacao_niveis.titulo}
+            cenario={schema.comparacao_niveis.cenario}
+            niveis={schema.comparacao_niveis.niveis}
+          />
+        </motion.section>
+      )}
+
       {/* momento 4 — pausa reflexiva */}
       {schema.reflexao?.prompt && (
         <motion.section {...reveal} aria-label="pausa reflexiva">
