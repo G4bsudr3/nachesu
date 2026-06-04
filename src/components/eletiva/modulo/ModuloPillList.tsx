@@ -13,9 +13,13 @@ import {
   PillEditorial,
   PillPBLEstruturado,
   PillChecklistPacto,
+  PillPBLCorfTriplo,
+  PillGuiaDePrompts,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
+  type PblCorfValue,
+  type GuiaPromptsValue,
 } from "@/components/eletiva/pills";
 
 
