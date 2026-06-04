@@ -175,6 +175,7 @@ export const ModuloPillList = ({
   const pblEstruturado = (content.pbl_estruturado ?? {}) as Record<string, Record<string, unknown>>;
   const pblCorf = (content.pbl_corf ?? {}) as Record<string, PblCorfValue>;
   const guiaPrompts = (content.guia_prompts ?? {}) as Record<string, GuiaPromptsValue>;
+  const classificadorMap = (content.classificacao_aula2 ?? {}) as Record<string, ClassificadorValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
