@@ -6,6 +6,8 @@ import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import { CorfSignature } from "./CorfSignature";
+import { ComparacaoNiveis, type NivelItem } from "./ComparacaoNiveis";
 
 type Schema = {
   type?: "pilula_editorial";
@@ -13,6 +15,9 @@ type Schema = {
     md?: string;
     destaque_numero?: string;
     destaque_legenda?: string;
+  };
+  signature_corf?: {
+    caption?: string;
   };
   video?: {
     title: string;
@@ -24,6 +29,11 @@ type Schema = {
   aprofundamento?: {
     md?: string;
     destaque?: string;
+  };
+  comparacao_niveis?: {
+    titulo?: string;
+    cenario?: string;
+    niveis: NivelItem[];
   };
   reflexao?: {
     prompt?: string;
