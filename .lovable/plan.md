@@ -1,64 +1,75 @@
-## módulo 2 — prompt engineering: pedir bem é pensar bem
+## aula 2 — economia circular: "reciclar não é o suficiente"
 
-reuso máximo do que o módulo 1 já tem (PillEditorial, PillVideoEmbed, fluxo de bloqueio sequencial, dashboard, modulo page) + 3 novas peças visuais autorais pra entregar o conteúdo do doc sem perder o tom NachesU.
+doc da aula 2 chegou agora. é a aula `7dd1ad90-…` (trilha enxergar, módulo 2), hoje só com 5 pílulas placeholder. vou substituir todo o conteúdo seguindo o padrão visual e técnico atual da plataforma — sem inventar tabela nova, sem importar a paleta duduo crua, mantendo NachesU.
 
-### 1. migração de conteúdo (substitui as pílulas placeholder do módulo 2)
+### 1. identidade visual (adaptação parcial conforme combinado)
 
-módulo 2 já existe em DB (`5f394184…`, trilha Fundamentos & IA) com 5 pílulas placeholder publicadas. uma migração `update_module_2_prompt_engineering`:
+- mantém League Gothic + Urbanist, bege #f2e4d8, mascote joão-de-barro (poses por contexto), tom lowercase + você.
+- accent específico da trilha 1 (economia circular) = **laranja #F25E3D** já vem via `trailColorByOrder`; reuso onde o doc pede destaque.
+- classificador usa 3 cores semânticas só pra categorizar:
+  - linear = cinza grafite (`#9AA0A7`)
+  - circular = verde sálvia (`#75BF9C`)
+  - regenerativo = azul royal (`#448FF2`)
+  - aplicadas só nos chips de classificação, não na cromia geral.
+- ignoro Sora 800 / fundo escuro / doodles duduo — tom NachesU bege + League Gothic prevalece.
 
-- `UPDATE modules` → title `prompt engineering: pedir bem é pensar bem`, objective conforme doc, `total_minutes = 50`.
-- `DELETE FROM module_pills WHERE module_id = …` (placeholders atuais).
-- `INSERT` 5 novas pílulas, todas published, sequencial 1→5:
-  1. **pílula A** `pilula_editorial` — conteúdo bruto do doc, vídeo Pedro Burgos out/2025.
-  2. **pílula B** `pilula_editorial_corf` (novo schema) — gancho + **signature CORF** + vídeo mai/2026 + aprofundamento + reflexão + síntese.
-  3. **pílula C** `pilula_editorial` com novo campo opcional `comparacao_niveis` (3 cards lado a lado) — vídeo mar/2026.
-  4. **exercício PBL** `pbl_corf_triplo` (novo schema) — 3 entregas (prompt CORF + 2 prints + reflexão por prompt) + conclusão geral.
-  5. **registro** `guia_de_prompts` (novo schema) — 3 templates editáveis + 2 prints + reflexão final.
+### 2. migração de conteúdo (substitui as 5 pílulas placeholder)
 
-interaction_schema com o texto completo do doc (gancho, vídeo, aprofundamento, destaque, reflexão, síntese) pra cada uma. nada hardcoded em componente.
+`UPDATE modules` no `7dd1ad90-…`: title = `reciclar não é o suficiente`, objective conforme doc, `total_minutes = 50`.
 
-### 2. componentes novos (frontend)
+`DELETE FROM module_pills WHERE module_id = '7dd1ad90-…'` + `INSERT` 5 novas, todas published:
 
-todos no padrão visual do módulo 1 (Recoleta + Caveat + paleta naches), com `useAutoSaveField` e `EvidenceUploader` reaproveitados.
+1. **abertura** `pilula_a` schema `video_with_transcript` (`PillAbertura`) — headline "reciclar não é o suficiente" + subheadline + vídeo intro aula 2 + transcrição em accordion.
+2. **conteúdo curado + perguntas-guia** `pilula_b` schema `curated_content_with_questions` (`PillConteudoCurado` ✓ já existe) — 2 cards (vídeo TV Senado + texto Ellen MacArthur) + 3 perguntas (long_text, single_choice com feedback, long_text).
+3. **exercício PBL — classificador 3×3** `exercicio_pbl` schema novo `classificador_linear_circular_regenerativo` (componente novo `PillClassificador3x3`) — 10 itens fixos do doc + 3 puxados do radar da aula 1.
+4. **checagem rápida** `pilula_c` schema `quiz` (`PillQuiz` ✓ já suporta single + multi_choice) — 3 perguntas (cenário garrafa reciclada, multi-select de práticas regenerativas, long_text salvo pra encontro 5).
+5. **bônus opcional** `registro` schema `bonus_text` (`PillBonus` ✓) — story of stuff com disclaimer + campo opcional.
 
-- `src/components/eletiva/pills/CorfSignature.tsx` — bloco animado: 4 cards C / O / R / F, Recoleta clamp(96-150px), stagger 200ms, mask reveal por baixo revelando palavra (Contexto / Objetivo / Regras / Formato). respeita `useReducedMotion`. usado dentro de PillEditorial via slot novo `signature_corf`.
-- `src/components/eletiva/pills/ComparacaoNiveis.tsx` — 3 cards verticais (nível fraco / OK / forte) com prompt + resposta esperada, paleta com escalada de saturação. injetado em PillEditorial via slot opcional `comparacao_niveis`.
-- `src/components/eletiva/pills/PillPBLCorfTriplo.tsx` — fork enxuto do PillPBLEstruturado:
-  - lista os 3 prompts ruins do doc como cards Caveat numerados.
-  - 3 blocos de entrega (prompt CORF textarea com placeholder CORF, print ruim, print CORF, "o que mudou").
-  - bloco final "conclusão geral" (textarea).
-  - validação: cada bloco precisa de textarea ≥ 2 chars + 2 evidências + textarea final.
-  - salva em `content.pbl_corf` (mapa por pillId pra não colidir com pbl_estruturado).
-- `src/components/eletiva/pills/PillGuiaDePrompts.tsx` — registro com:
-  - 3 templates editáveis (Estudar, Redação, Resumo) renderizados como cards com `<textarea>` mono-spaced pré-preenchido pelos templates do doc (placeholders `[...]` clicáveis pra editar).
-  - 2 uploads (melhor resposta / segunda melhor) + por que cada uma.
-  - textarea de reflexão final.
-  - salva em `content.guia_prompts`.
+todo o copy (gancho, transcript, feedbacks, gabarito interno) vai no `interaction_schema` jsonb — nada hardcoded no componente.
 
-### 3. integração no dispatcher
+### 3. componente novo — `PillClassificador3x3`
+
+`src/components/eletiva/pills/PillClassificador3x3.tsx`:
+
+- lê 10 `fixed_items` do schema + busca 3 primeiros itens do radar da aula 1 do mesmo usuário (deliverable do módulo `d89dc321`, campo `content.items[0..2].label`).
+- se aluno tiver menos de 3 itens no radar, banner caveat: "precisa de pelo menos 3 itens no seu radar — volta lá e completa antes de seguir" + link `/app/eletiva/economia-circular/modulo/1`.
+- cada um dos 13 itens vira card com chip de categoria (3 botões linear / circular / regenerativo). escolha salva em `content.classificacao_aula2[item_id]`.
+- validação: 13 classificados + 3 justificativas (textarea ≥ 50 chars) escolhidas pelo aluno via toggle "justificar este".
+- destaque amarelo (#F2BC57 adaptado pro bege NachesU) com o lembrete "linear = vaza valor / circular = mantém / regenerativo = devolve mais do que tira".
+- tela de conclusão (dentro da própria pílula) mostra resumo visual com os 13 cards coloridos por categoria.
+- autosave debounced via `useAutoSaveField` (padrão atual). evidências não são necessárias.
+
+helper novo `useAula1RadarItems(userId, courseSlug)` — query simples no `module_deliverables` do módulo 1 do mesmo curso, retornando `items[0..2]`.
+
+### 4. integração no dispatcher
 
 `ModuloPillList.tsx`:
-- adicionar slots `signature_corf` e `comparacao_niveis` ao tipo Schema de PillEditorial e renderizar quando presentes.
-- adicionar branches `schemaType === "pbl_corf_triplo"` e `schemaType === "guia_de_prompts"` direcionando pros novos componentes.
+- adicionar branch `schemaType === "classificador_linear_circular_regenerativo"` → `PillClassificador3x3`.
+- nenhum outro componente precisa mudar (B, C, abertura e bônus já existem).
 
-### 4. validação visual + funcional
+export do componente em `src/components/eletiva/pills/index.ts`.
 
-- abrir `/app/eletiva/ia-na-pratica/modulo/2` com user de teste já com módulo 1 concluído → checar fluxo completo, autosave, validação, animação CORF em desktop + mobile, reduced-motion fallback.
-- conferir bloqueio sequencial: pílula A liberada, B só abre quando A é concluída, etc.
-- conferir que celebração final dispara ao concluir registro.
-- rodar tests existentes (`bunx vitest run`) pra garantir que nada do módulo 1 regrediu.
+### 5. vídeo intro
+
+`Vídeo Intro Aula 2.mov` (~70MB) → subir como asset via `lovable-assets create --file /mnt/user-uploads/...`, salvar pointer JSON em `src/assets`. URL vai pro `interaction_schema.video.url` da pílula 1.
+
+### 6. validação visual + funcional
+
+- abrir `/app/eletiva/economia-circular/modulo/2` com user-teste já com aula 1 concluída (3+ itens no radar) → fluxo completo, autosave, validação, classificador colorido em desktop + mobile.
+- testar fallback: user sem aula 1 → banner avisa e bloqueia avanço.
+- bloqueio sequencial: pílula B só abre após A, etc.
+- multi-select da checagem (pergunta 2) precisa marcar 2 corretas → confirmar que `PillQuiz` valida múltiplas corretas (já valida; uso o schema `correct_values[]`).
+- `bunx vitest run` pra garantir que nada regrediu.
 
 ### detalhes técnicos
 
-- nenhum schema novo precisa de migração em outra tabela: tudo cabe em `module_pills.interaction_schema` (jsonb) + `module_deliverables.content` (jsonb).
-- vídeos via `PillVideoPlayer` (já lida com YouTube).
-- copy: tudo lowercase, "você", sem em-dash, sem hashtag.
-- accent das pílulas da trilha 1 = `#fe7b02` (laranja), já vem do `trailColorByOrder`.
-- nenhum mexe em RLS (module_pills/module_deliverables já têm políticas certas).
-- arquivos novos exportados via `src/components/eletiva/pills/index.ts`.
+- só toca em `module_pills` + componentes frontend. nenhuma migração de schema.
+- `content.classificacao_aula2` é um sub-objeto novo em `module_deliverables.content` (jsonb), não colide com `items` / `guided_answers` / `quiz_answers`.
+- mantém RLS atual (políticas já estão certas).
+- copy: lowercase, "você", zero em-dash, zero hashtag, zero emoji.
 
 ### fora de escopo
 
-- editor admin pra esses novos schemas (admin pode editar via SQL nesse momento; AdminPillsEditor fica pra depois).
-- módulos 3-20.
-- gamificação / XP.
+- dashboard do professor com distribuição agregada das classificações (item bom, mas fora do MVP do estudante; abrimos issue depois).
+- editor admin pra esses schemas novos.
+- aula 3 (iceberg + mapa de atores) — já tem plano em espera, foco agora é só aula 2.
