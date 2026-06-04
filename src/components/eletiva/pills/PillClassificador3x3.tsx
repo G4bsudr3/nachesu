@@ -247,7 +247,11 @@ export function PillClassificador3x3({
         </div>
       )}
 
-      <section aria-label="itens a classificar" className="space-y-3">
+      <section
+        aria-label="itens a classificar"
+        aria-disabled={!hasEnoughRadar}
+        className={`space-y-3 ${!hasEnoughRadar ? "pointer-events-none opacity-60" : ""}`}
+      >
         {allItems.map((item, idx) => {
           const isRadar = item.id.startsWith("radar-");
           const chosen = classifications[item.id];
