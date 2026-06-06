@@ -43,6 +43,11 @@ export const AdminRubrics = () => {
     const slug = editing.slug?.trim() || slugify(name);
     const criteria = (editing.criteria ?? []).filter((c) => c.label.trim().length > 0);
     if (criteria.length === 0) return toast.error("adiciona pelo menos 1 critério");
+    const scoreType = (editing.score_type ?? "none") as "none" | "numeric" | "letter";
+    const scoreMax = Number(editing.score_max ?? 10);
+    if (scoreType === "numeric" && (!Number.isFinite(scoreMax) || scoreMax < 1 || scoreMax > 100)) {
+      return toast.error("nota máxima precisa estar entre 1 e 100");
+    }
     try {
       await upsert.mutateAsync({
         id: editing.id,
@@ -51,6 +56,8 @@ export const AdminRubrics = () => {
         description: editing.description ?? null,
         is_default: editing.is_default ?? false,
         criteria,
+        score_type: scoreType,
+        score_max: scoreType === "numeric" ? scoreMax : 10,
       });
       toast.success(editing.id ? "rubrica atualizada" : "rubrica criada");
       setEditing(null);
@@ -167,6 +174,42 @@ export const AdminRubrics = () => {
                 />
                 marcar como rubrica padrão (substitui a anterior)
               </label>
+
+              <div className="rounded-md border border-perestroika-preto/15 p-3 space-y-2">
+                <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 block">
+                  pontuação
+                </label>
+                <select
+                  value={(editing.score_type ?? "none") as string}
+                  onChange={(e) =>
+                    setEditing({ ...editing, score_type: e.target.value as "none" | "numeric" })
+                  }
+                  className="w-full bg-white/60 border border-perestroika-preto/20 rounded-md px-2 py-1.5 text-sm"
+                >
+                  <option value="none">sem pontuação (só feedback)</option>
+                  <option value="numeric">pontuação numérica</option>
+                </select>
+                {editing.score_type === "numeric" && (
+                  <div>
+                    <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+                      nota máxima
+                    </label>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={100}
+                      value={editing.score_max ?? 10}
+                      onChange={(e) =>
+                        setEditing({ ...editing, score_max: Number(e.target.value) })
+                      }
+                      className="bg-white/60 h-8"
+                    />
+                    <p className="text-[10px] text-perestroika-preto/50 mt-1">
+                      ex: 10 vira "nota: 8 / 10" no card do estudante.
+                    </p>
+                  </div>
+                )}
+              </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">

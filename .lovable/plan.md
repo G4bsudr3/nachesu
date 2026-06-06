@@ -1,40 +1,35 @@
-# status · revisão crítica nachesU (executada)
+## Form de rubrica editável no admin
 
-todas as 5 etapas do plano "revisão crítica nachesU" foram aplicadas. resumo do que ficou no código:
+Adicionar controles de `score_type` e `score_max` no formulário de rubricas do admin, completando a migration já aplicada nas etapas anteriores.
 
-## etapa 1 · resolvers faltantes
-- `src/features/admin/deliverableRendering/types.ts` — `PillSchemaType` extendido com `classificador_linear_circular_regenerativo`, `pbl_corf_triplo`, `guia_de_prompts`, `video_embed`, `video_with_transcript`.
-- `resolvers.ts` — 3 novos resolvers + dispatcher + fallback `resolveUnknownWithData` que mostra dump raw se a pílula tem dados mas nenhum schema reconhecido.
-- `DeliverableAnswersList.tsx` — usa `answer.order` em vez de `idx`; passivas com dados (fallback raw) deixam de ser filtradas.
+### Escopo
 
-## etapa 2 · parar de corromper entregas
-- `Modulo.tsx` — autocomplete via `togglePillMutation` não chama mais `submitDeliverableIfExists()`. submit segue manual via `completeMutation`.
-- `pills/useDeliverable.ts` — query só carrega; criação migrou para `ensureDeliverable` chamado no primeiro save (on-write).
-- migration one-shot deletou rascunhos vazios com >7 dias parados.
+1. **`src/features/admin/useRubrics.ts`**
+   - Estender o tipo `Rubric` com `score_type` ("numeric" | "none") e `score_max` (number | null).
+   - Incluir os campos no `select` e nas mutations de create/update.
 
-## etapa 3 · avaliação útil
-- migration: `module_deliverables.score numeric(5,2)`, `rubrics.score_max smallint default 10`, `rubrics.score_type text default 'none' check(...)`.
-- `useRubrics.ts` — `Rubric` carrega `score_type`/`score_max`/`is_fallback`. `normalize()` consolidado.
-- `FeedbackReviewDrawer.tsx` — drawer `sm:max-w-2xl lg:max-w-3xl`. Mutations separadas em `approveMutation`/`ajustarMutation`. Botões desabilitam até feedback ≥5 chars. Input numérico de nota aparece quando `rubric.score_type === "numeric"`. Histórico abre por padrão com badge de contagem. Fallback de rubrica padrão indicado abaixo do nome. `confirm()` da IA virou `AlertDialog`.
-- `usePendingDeliverables.ts` — `.limit(500)` + `staleTime: 30_000`.
-- `AdminFeedbackInbox.tsx` — campo de busca por nome/apelido; `TableRow.onClick` removido (revisar = botão; nome = link); `timeAgo` reativo via `useNow` 60s.
+2. **Form de rubrica no admin** (provavelmente `RubricsManager.tsx` ou similar — confirmar no build)
+   - Adicionar um `Select` com duas opções: "sem pontuação" e "pontuação numérica".
+   - Quando `score_type === "numeric"`, mostrar `Input` numérico pra `score_max` (default 10, min 1, max 100).
+   - Quando `none`, esconder o campo e salvar `score_max` como `null`.
+   - Validação: `score_max` obrigatório se `numeric`.
 
-## etapa 4 · confiança do aluno
-- `SaveIndicator.tsx` — dispara `toast.error` ao entrar em estado de erro; copy "não salvou · tenta digitar de novo".
-- `Modulo.tsx` (branch `!isUnlocked`) — agora envelopa `bg-perestroika-bege`, `MobileNav` e `EletivaFooter`.
-- `EletivaHome.tsx` — `loading` agora inclui `snapLoading` quando o curso já está conhecido.
-- `ModuloPillList.tsx` — botão "marcar/concluída" `min-h-[44px]`.
-- `ModuloFeedbackCard.tsx` — fallback quando `status === "ajuste"` sem texto.
-- `DeliverableStatusPill.tsx` — "card laranja" → "card de feedback".
+3. **`FeedbackReviewDrawer.tsx`**
+   - Ler `score_type` da rubrica ativa.
+   - Esconder o input de score quando `score_type === "none"`.
+   - Quando `numeric`, mostrar o `score_max` como sufixo ("/ 10") e validar range.
 
-## etapa 5 · polimento
-- `ModuloHeader.tsx` — `{totalMinutes} min` ou "tempo variável".
-- `ModuloProgressBar.tsx` — `if (!visible) return null` no lugar de `aria-hidden`.
-- `Modulo.tsx` — barra usa `requiredPills` como total quando existem obrigatórias.
-- `TutorChat.tsx` — chips visíveis sempre que não streaming; hint shift+enter `hidden sm:block`.
-- `ModuloFooter.tsx` — copy alinhada ("só marque quando tiver entregue de verdade").
+4. **`DeliverableAnswersList` / card do feedback no estudante**
+   - Quando existir `score` salvo, exibir como "nota: X / Y" usando o `score_max` da rubrica.
+   - Se `score_type === "none"`, não mostrar nada.
 
-## fora de escopo (anotado pra próximo)
-- formulário no `AdminRubrics.tsx` pra editar `score_type`/`score_max` (hoje só via SQL ou default).
-- substituir `confirm()` na deleção de rubrica.
-- redesenho do inbox em layout kanban + exportação CSV.
+### Fora de escopo
+
+- Nenhuma migration nova (schema já tem os campos).
+- Sem mudança em pílulas, resolvers ou fluxo do estudante além da exibição da nota.
+- Sem rubric por módulo nova — usa as existentes.
+
+### Validação
+
+- Criar rubrica numeric com max 10, dar nota 8 no drawer, conferir exibição "8 / 10" no card do estudante.
+- Trocar rubrica pra `none`, conferir que o input de score some no drawer e a nota não aparece no card.
