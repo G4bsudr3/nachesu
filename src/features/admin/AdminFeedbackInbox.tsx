@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Inbox, RefreshCcw } from "lucide-react";
+import { Inbox, RefreshCcw, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -30,11 +31,21 @@ const timeAgo = (iso: string | null) => {
   if (!iso) return "–";
   const diff = Date.now() - new Date(iso).getTime();
   const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return "agora";
   if (minutes < 60) return `${minutes}min`;
   const hours = Math.floor(minutes / 60);
   if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
   return `${days}d`;
+};
+
+/** força re-render a cada minuto pra "há Xmin" não congelar */
+const useNow = () => {
+  const [, setN] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setN((n) => n + 1), 60_000);
+    return () => clearInterval(id);
+  }, []);
 };
 
 export const AdminFeedbackInbox = () => {
