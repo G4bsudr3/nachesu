@@ -11,6 +11,7 @@ import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { ModuloSkeleton } from "@/components/eletiva/modulo/ModuloSkeleton";
 import { TutorChat } from "@/components/eletiva/TutorChat";
 import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
