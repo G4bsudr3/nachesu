@@ -43,6 +43,11 @@ export const AdminRubrics = () => {
     const slug = editing.slug?.trim() || slugify(name);
     const criteria = (editing.criteria ?? []).filter((c) => c.label.trim().length > 0);
     if (criteria.length === 0) return toast.error("adiciona pelo menos 1 critério");
+    const scoreType = (editing.score_type ?? "none") as "none" | "numeric" | "letter";
+    const scoreMax = Number(editing.score_max ?? 10);
+    if (scoreType === "numeric" && (!Number.isFinite(scoreMax) || scoreMax < 1 || scoreMax > 100)) {
+      return toast.error("nota máxima precisa estar entre 1 e 100");
+    }
     try {
       await upsert.mutateAsync({
         id: editing.id,
@@ -51,6 +56,8 @@ export const AdminRubrics = () => {
         description: editing.description ?? null,
         is_default: editing.is_default ?? false,
         criteria,
+        score_type: scoreType,
+        score_max: scoreType === "numeric" ? scoreMax : 10,
       });
       toast.success(editing.id ? "rubrica atualizada" : "rubrica criada");
       setEditing(null);
