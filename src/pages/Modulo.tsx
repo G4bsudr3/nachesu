@@ -11,6 +11,7 @@ import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { ModuloSkeleton } from "@/components/eletiva/modulo/ModuloSkeleton";
 import { TutorChat } from "@/components/eletiva/TutorChat";
 import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
@@ -271,7 +272,9 @@ const Modulo = () => {
           },
           { onConflict: "user_id,module_id" },
         );
-        await submitDeliverableIfExists();
+        // NÃO submete o deliverable aqui — submit virou ação manual via
+        // completeMutation (etapa 2 da revisão crítica). isso evita promover
+        // rascunhos em branco quando o aluno só marca leitura.
         const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
         const nextWasLocked =
           next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
@@ -322,7 +325,7 @@ const Modulo = () => {
   const isUnlocked = isAdmin || (snapshot?.unlockedModuleIds.has(moduleRow.id) ?? false);
   if (!isUnlocked) {
     return (
-      <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
+      <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
         <PageHeader showLogo logoLink="/app" />
         <ModuloLockedHero
           moduleNumber={moduleRow.number}
@@ -331,6 +334,13 @@ const Modulo = () => {
           availableFrom={moduleRow.available_from}
           courseSlug={courseSlug}
         />
+        <MobileNav />
+        <footer
+          className="relative z-10 container max-w-3xl pb-10"
+          style={{ marginBottom: "var(--mobile-nav-h, 0px)" }}
+        >
+          <EletivaFooter tone="dark" />
+        </footer>
       </div>
     );
   }
@@ -345,8 +355,8 @@ const Modulo = () => {
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
       <ModuloProgressBar
-        total={totalPills}
-        done={donePills}
+        total={requiredPills.length > 0 ? requiredPills.length : totalPills}
+        done={requiredPills.length > 0 ? doneRequired : donePills}
         trailColor={trailColor}
         moduleNumber={moduleRow.number}
         moduleTitle={moduleRow.title}

@@ -38,8 +38,9 @@ export const DeliverableAnswersList = ({ deliverable }: Props) => {
     );
   }
 
-  // só esconde pílulas 100% passivas (abertura sem nenhum bloco) pra não poluir
-  const visible = answers.filter((a) => a.state !== "passiva");
+  // só esconde pílulas 100% passivas sem nenhum bloco; pílulas com qualquer
+  // dado (mesmo via fallback raw) precisam aparecer pro educador.
+  const visible = answers.filter((a) => !(a.state === "passiva" && a.blocks.length === 0));
 
   if (visible.length === 0) {
     return (
@@ -52,8 +53,8 @@ export const DeliverableAnswersList = ({ deliverable }: Props) => {
 
   return (
     <div className="space-y-4">
-      {visible.map((a, idx) => (
-        <PillAnswerCard key={a.pillId} answer={a} index={idx} />
+      {visible.map((a) => (
+        <PillAnswerCard key={a.pillId} answer={a} index={a.order} />
       ))}
     </div>
   );

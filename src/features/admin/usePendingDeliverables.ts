@@ -30,12 +30,14 @@ export function usePendingDeliverables(opts: {
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["admin-deliverables-inbox"],
+    staleTime: 30_000,
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("module_deliverables")
         .select("*")
         .not("submitted_at", "is", null)
-        .order("submitted_at", { ascending: true });
+        .order("submitted_at", { ascending: true })
+        .limit(500);
       if (error) throw error;
       const list = (rows ?? []) as DeliverableRow[];
       if (list.length === 0) return [] as DeliverableInbox[];

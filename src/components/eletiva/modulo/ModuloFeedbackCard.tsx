@@ -143,7 +143,14 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
       <h3 className="font-display uppercase text-xl sm:text-2xl mb-2 leading-tight">
         feedback do educador
       </h3>
-      {fb.feedback && <FeedbackMarkdown>{fb.feedback}</FeedbackMarkdown>}
+      {fb.feedback ? (
+        <FeedbackMarkdown>{fb.feedback}</FeedbackMarkdown>
+      ) : isAjuste ? (
+        <p className="font-body text-sm text-perestroika-preto/70 italic">
+          o educador pediu um ajuste mas ainda não escreveu o detalhe. vai detalhar
+          em breve por aqui.
+        </p>
+      ) : null}
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-3">
           {tags.map((t) => (

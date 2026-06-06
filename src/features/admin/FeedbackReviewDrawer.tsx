@@ -18,6 +18,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import type { DeliverableInbox } from "./usePendingDeliverables";
 import { DeliverableAnswersList } from "./deliverableRendering/DeliverableAnswersList";
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
@@ -57,10 +68,14 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
   const [showPreview, setShowPreview] = useState(false);
   const [reply, setReply] = useState("");
   const [drafting, setDrafting] = useState(false);
+  const [aiConfirmOpen, setAiConfirmOpen] = useState(false);
+  const [score, setScore] = useState<string>("");
 
   const { data: rubric } = useRubricForModule(deliverable?.module?.id ?? null);
   const chips: Array<{ label: string; description?: string }> =
     rubric?.criteria?.length ? rubric.criteria : FALLBACK_CHIPS;
+  const usesScore = rubric?.score_type === "numeric";
+  const scoreMax = rubric?.score_max ?? 10;
 
   const existingVerdict = useMemo(() => {
     const c = (deliverable?.content ?? {}) as Record<string, unknown>;
@@ -86,16 +101,28 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     setTags((c.review_tags as string[]) ?? []);
     setShowPreview(false);
     setReply("");
+    const existingScore = (deliverable as unknown as { score?: number | null }).score;
+    setScore(existingScore !== undefined && existingScore !== null ? String(existingScore) : "");
   }, [deliverable]);
 
   useEffect(() => {
     if (open && deliverable) markRead();
-  }, [open, deliverable, markRead, messages.length]);
+    // intencionalmente sem messages.length nas deps — markRead já é estável
+    // e mensagens novas chegam via realtime do hook
+  }, [open, deliverable, markRead]);
+
+  const trimmedFeedback = feedback.trim();
+  const feedbackValid = trimmedFeedback.length >= 5;
+  const parsedScore = score.trim() === "" ? null : Number(score.replace(",", "."));
+  const scoreInvalid =
+    usesScore &&
+    parsedScore !== null &&
+    (Number.isNaN(parsedScore) || parsedScore < 0 || parsedScore > scoreMax);
 
   const persistReview = async (verdict: Verdict) => {
     if (!deliverable || !user) throw new Error("sem contexto");
-    const trimmed = feedback.trim();
-    if (trimmed.length < 5) throw new Error("escreve um feedback (mínimo 5 caracteres)");
+    if (!feedbackValid) throw new Error("escreve um feedback (mínimo 5 caracteres)");
+    if (scoreInvalid) throw new Error(`nota precisa estar entre 0 e ${scoreMax}`);
 
     const currentContent = (deliverable.content ?? {}) as Record<string, unknown>;
     const prevHistory = (currentContent.history as ReviewHistoryEntry[] | undefined) ?? [];
@@ -120,33 +147,42 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     };
 
     const nextStatus = verdict === "ajustar" ? "ajuste" : "revisado";
+    const updatePayload: Record<string, unknown> = {
+      feedback: trimmedFeedback,
+      reviewer_id: user.id,
+      reviewed_at: new Date().toISOString(),
+      status: nextStatus,
+      content: nextContent as never,
+    };
+    if (usesScore) updatePayload.score = parsedScore;
 
     const { error } = await supabase
       .from("module_deliverables")
-      .update({
-        feedback: trimmed,
-        reviewer_id: user.id,
-        reviewed_at: new Date().toISOString(),
-        status: nextStatus,
-        content: nextContent as never,
-      })
+      .update(updatePayload as never)
       .eq("id", deliverable.id);
     if (error) throw error;
   };
 
-  const reviewMutation = useMutation({
-    mutationFn: persistReview,
-    onSuccess: (_, verdict) => {
-      toast.success(
-        verdict === "aprovado"
-          ? "feedback enviado, estudante notificado"
-          : "ajuste solicitado, estudante pode reabrir e re-enviar",
-      );
+  const approveMutation = useMutation({
+    mutationFn: () => persistReview("aprovado"),
+    onSuccess: () => {
+      toast.success("feedback enviado, estudante notificado");
       qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
       onOpenChange(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const ajustarMutation = useMutation({
+    mutationFn: () => persistReview("ajustar"),
+    onSuccess: () => {
+      toast.success("ajuste solicitado, estudante pode reabrir e re-enviar");
+      qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
+      onOpenChange(false);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const reviewPending = approveMutation.isPending || ajustarMutation.isPending;
 
   const reopenMutation = useMutation({
     mutationFn: async () => {
@@ -183,9 +219,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
 
   const handleDraftWithAI = async () => {
     if (!deliverable) return;
-    if (feedback.trim().length > 0) {
-      if (!confirm("já existe texto no feedback. substituir pelo rascunho da IA?")) return;
-    }
+    setAiConfirmOpen(false);
     setDrafting(true);
     try {
       const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
@@ -228,7 +262,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto bg-perestroika-bege">
+      <SheetContent side="right" className="w-full sm:max-w-2xl lg:max-w-3xl overflow-y-auto bg-perestroika-bege">
         <SheetHeader>
           <SheetTitle className="font-display uppercase text-3xl text-left">
             {studentName}
@@ -261,9 +295,15 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
         </div>
 
         {history.length > 0 && (
-          <details className="mt-5 rounded-xl border border-perestroika-preto/15 bg-white/40 p-3">
-            <summary className="cursor-pointer text-[11px] uppercase tracking-wide text-perestroika-preto/60">
-              histórico de rodadas ({history.length})
+          <details
+            open
+            className="mt-5 rounded-xl border border-perestroika-preto/15 bg-white/40 p-3"
+          >
+            <summary className="cursor-pointer text-[11px] uppercase tracking-wide text-perestroika-preto/60 flex items-center gap-2">
+              <span>histórico de rodadas</span>
+              <Badge variant="outline" className="text-[10px] uppercase">
+                {history.length}ª rodada anterior{history.length > 1 ? "es" : ""}
+              </Badge>
             </summary>
             <ul className="mt-3 space-y-3">
               {history.map((h, i) => (
@@ -284,14 +324,24 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
         )}
 
         <div className="mt-6">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
-              critérios {rubric?.name ? `· ${rubric.name}` : ""}
-            </p>
+          <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
+            <div className="min-w-0">
+              <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+                critérios {rubric?.name ? `· ${rubric.name}` : ""}
+              </p>
+              {rubric?.is_fallback && (
+                <p className="text-[10px] text-perestroika-preto/45 mt-0.5">
+                  rubrica padrão (módulo sem rubrica vinculada)
+                </p>
+              )}
+            </div>
             <button
               type="button"
               disabled={drafting}
-              onClick={handleDraftWithAI}
+              onClick={() => {
+                if (feedback.trim().length > 0) setAiConfirmOpen(true);
+                else void handleDraftWithAI();
+              }}
               className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-1 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50"
               title="rascunhar feedback com IA com base na rubrica"
             >
@@ -358,6 +408,30 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           </p>
         </div>
 
+        {usesScore && (
+          <div className="mt-5">
+            <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 block mb-1.5">
+              nota (0 a {scoreMax}) · opcional
+            </label>
+            <Input
+              type="number"
+              inputMode="decimal"
+              step="0.5"
+              min={0}
+              max={scoreMax}
+              value={score}
+              onChange={(e) => setScore(e.target.value)}
+              className="w-32 bg-white/60 border-perestroika-preto/20 font-body text-sm"
+              placeholder={`até ${scoreMax}`}
+            />
+            {scoreInvalid && (
+              <p className="mt-1 text-[10px] text-perestroika-vermelho">
+                a nota precisa estar entre 0 e {scoreMax}.
+              </p>
+            )}
+          </div>
+        )}
+
         {alreadyReviewed && (
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-perestroika-preto/60">
             <Badge variant="outline" className="uppercase">
@@ -380,26 +454,34 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           </div>
         )}
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            disabled={reviewMutation.isPending}
-            onClick={() => reviewMutation.mutate("aprovado")}
-            className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 min-h-[40px]"
-          >
-            {reviewMutation.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <CheckCircle2 className="w-4 h-4" />
+        <div className="mt-6 flex flex-wrap gap-3 items-start">
+          <div className="flex flex-col gap-1">
+            <button
+              type="button"
+              disabled={reviewPending || !feedbackValid || scoreInvalid}
+              onClick={() => approveMutation.mutate()}
+              className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:hover:scale-100 min-h-[40px]"
+            >
+              {approveMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4" />
+              )}
+              aprovar
+            </button>
+            {!feedbackValid && (
+              <span className="text-[10px] text-perestroika-preto/55 px-2">
+                escreve ao menos 5 caracteres no feedback
+              </span>
             )}
-            aprovar
-          </button>
+          </div>
           <button
             type="button"
-            disabled={reviewMutation.isPending}
-            onClick={() => reviewMutation.mutate("ajustar")}
+            disabled={reviewPending || !feedbackValid || scoreInvalid}
+            onClick={() => ajustarMutation.mutate()}
             className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-5 py-2.5 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50 min-h-[40px]"
           >
+            {ajustarMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             pedir ajuste
           </button>
           {alreadyReviewed && (
@@ -475,6 +557,24 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
             </button>
           </div>
         </div>
+
+        <AlertDialog open={aiConfirmOpen} onOpenChange={setAiConfirmOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>substituir feedback pelo rascunho da IA?</AlertDialogTitle>
+              <AlertDialogDescription>
+                já existe texto escrito. se continuar, o feedback atual será trocado pelo
+                rascunho gerado.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={() => void handleDraftWithAI()}>
+                sim, substituir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </SheetContent>
     </Sheet>
   );

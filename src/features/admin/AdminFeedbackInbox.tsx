@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Inbox, RefreshCcw } from "lucide-react";
+import { Inbox, RefreshCcw, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -30,6 +31,7 @@ const timeAgo = (iso: string | null) => {
   if (!iso) return "–";
   const diff = Date.now() - new Date(iso).getTime();
   const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return "agora";
   if (minutes < 60) return `${minutes}min`;
   const hours = Math.floor(minutes / 60);
   if (hours < 24) return `${hours}h`;
@@ -37,11 +39,22 @@ const timeAgo = (iso: string | null) => {
   return `${days}d`;
 };
 
+/** força re-render a cada minuto pra "há Xmin" não congelar */
+const useNow = () => {
+  const [, setN] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setN((n) => n + 1), 60_000);
+    return () => clearInterval(id);
+  }, []);
+};
+
 export const AdminFeedbackInbox = () => {
+  useNow();
   const [statusFilter, setStatusFilter] = useState<InboxFilter>("pendentes");
   const [courseId, setCourseId] = useState<string | null>(null);
   const [moduleId, setModuleId] = useState<string | null>(null);
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
+  const [search, setSearch] = useState("");
 
   const { data: courses } = useQuery({
     queryKey: ["admin-feedback-courses"],
@@ -100,6 +113,23 @@ export const AdminFeedbackInbox = () => {
     () => all.filter((d) => d.reviewed_at !== null && d.status !== "ajuste").length,
     [all],
   );
+
+  const searchTerm = search.trim().toLowerCase();
+  const filteredData = useMemo(() => {
+    if (!searchTerm) return data;
+    return data.filter((d) => {
+      const haystack = [
+        d.profile?.display_name,
+        d.profile?.nickname,
+        d.module?.title,
+        d.user_id,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(searchTerm);
+    });
+  }, [data, searchTerm]);
 
   return (
     <div>
@@ -174,6 +204,16 @@ export const AdminFeedbackInbox = () => {
         </Select>
       </div>
 
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/40 pointer-events-none" />
+        <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="buscar por nome ou apelido do estudante…"
+          className="pl-9 bg-white/60 border-perestroika-preto/20"
+        />
+      </div>
+
       <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
         <Table>
           <TableHeader>
@@ -193,27 +233,24 @@ export const AdminFeedbackInbox = () => {
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && data.length === 0 && (
+            {!isLoading && filteredData.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
-                  nada por aqui. fila vazia é boa notícia.
+                  {searchTerm
+                    ? "nenhum estudante bate com essa busca."
+                    : "nada por aqui. fila vazia é boa notícia."}
                 </TableCell>
               </TableRow>
             )}
             {!isLoading &&
-              data.map((d) => {
+              filteredData.map((d) => {
                 const name =
                   d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8);
                 return (
-                  <TableRow
-                    key={d.id}
-                    className="cursor-pointer hover:bg-perestroika-preto/5"
-                    onClick={() => setSelected(d)}
-                  >
+                  <TableRow key={d.id} className="hover:bg-perestroika-preto/5">
                     <TableCell className="font-medium">
                       <Link
                         to={`/admin/aluno/${d.user_id}`}
-                        onClick={(e) => e.stopPropagation()}
                         className="hover:underline"
                       >
                         {name}
@@ -245,11 +282,8 @@ export const AdminFeedbackInbox = () => {
                     <TableCell className="text-right">
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelected(d);
-                        }}
-                        className="text-xs uppercase tracking-wide underline hover:no-underline"
+                        onClick={() => setSelected(d)}
+                        className="text-xs uppercase tracking-wide underline hover:no-underline min-h-[36px] px-2"
                       >
                         revisar
                       </button>

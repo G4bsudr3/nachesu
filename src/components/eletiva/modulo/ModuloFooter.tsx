@@ -46,7 +46,7 @@ export const ModuloFooter = ({
         : `falta ${pillsRemaining} pílulas obrigatórias. cada pílula tem o próprio botão de concluir.`;
   } else {
     headline = "fechou o módulo?";
-    helper = "marca como concluído quando rodar todas as pílulas. sem pressa, sem cobrança.";
+    helper = "cada pílula tem o próprio botão de concluir — só marque quando tiver entregue de verdade.";
   }
 
   const buttonLabel = completePending

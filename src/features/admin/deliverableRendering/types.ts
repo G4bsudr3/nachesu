@@ -59,6 +59,11 @@ export type PillSchemaType =
   | "quiz"
   | "radar_form"
   | "bonus_text"
+  | "classificador_linear_circular_regenerativo"
+  | "pbl_corf_triplo"
+  | "guia_de_prompts"
+  | "video_embed"
+  | "video_with_transcript"
   | undefined;
 
 export type PillForResolve = {

@@ -155,7 +155,8 @@ const EletivaHome = () => {
 
   if (!slug) return <Navigate to="/app" replace />;
 
-  const loading = courseLoading || enrollmentsLoading;
+  // inclui snapLoading pra evitar flash de "0/0 módulos · 0%" no hero
+  const loading = courseLoading || enrollmentsLoading || (!!course?.id && snapLoading && !snapshot);
   if (loading) {
     return (
       <div className="min-h-dvh bg-perestroika-bege flex items-center justify-center">

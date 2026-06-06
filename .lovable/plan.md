@@ -1,34 +1,40 @@
-## o que muda
+# status · revisão crítica nachesU (executada)
 
-hoje o `PillClassificador3x3` mostra só um banner genérico ("precisa de pelo menos 3 itens no seu radar") quando `radarItems.length < 3`. o aluno não sabe quais slots faltam nem o que já preencheu. vou trocar isso por uma validação visual com slots numerados.
+todas as 5 etapas do plano "revisão crítica nachesU" foram aplicadas. resumo do que ficou no código:
 
-## comportamento novo
+## etapa 1 · resolvers faltantes
+- `src/features/admin/deliverableRendering/types.ts` — `PillSchemaType` extendido com `classificador_linear_circular_regenerativo`, `pbl_corf_triplo`, `guia_de_prompts`, `video_embed`, `video_with_transcript`.
+- `resolvers.ts` — 3 novos resolvers + dispatcher + fallback `resolveUnknownWithData` que mostra dump raw se a pílula tem dados mas nenhum schema reconhecido.
+- `DeliverableAnswersList.tsx` — usa `answer.order` em vez de `idx`; passivas com dados (fallback raw) deixam de ser filtradas.
 
-no `PillClassificador3x3.tsx`, quando `!hasEnoughRadar` (e o loading já terminou):
+## etapa 2 · parar de corromper entregas
+- `Modulo.tsx` — autocomplete via `togglePillMutation` não chama mais `submitDeliverableIfExists()`. submit segue manual via `completeMutation`.
+- `pills/useDeliverable.ts` — query só carrega; criação migrou para `ensureDeliverable` chamado no primeiro save (on-write).
+- migration one-shot deletou rascunhos vazios com >7 dias parados.
 
-1. mantenho o banner vermelho de bloqueio no topo, mas com texto mais específico: "faltam X itens no seu radar da missão 1 pra liberar essa missão" (X = `3 - radarItems.length`).
+## etapa 3 · avaliação útil
+- migration: `module_deliverables.score numeric(5,2)`, `rubrics.score_max smallint default 10`, `rubrics.score_type text default 'none' check(...)`.
+- `useRubrics.ts` — `Rubric` carrega `score_type`/`score_max`/`is_fallback`. `normalize()` consolidado.
+- `FeedbackReviewDrawer.tsx` — drawer `sm:max-w-2xl lg:max-w-3xl`. Mutations separadas em `approveMutation`/`ajustarMutation`. Botões desabilitam até feedback ≥5 chars. Input numérico de nota aparece quando `rubric.score_type === "numeric"`. Histórico abre por padrão com badge de contagem. Fallback de rubrica padrão indicado abaixo do nome. `confirm()` da IA virou `AlertDialog`.
+- `usePendingDeliverables.ts` — `.limit(500)` + `staleTime: 30_000`.
+- `AdminFeedbackInbox.tsx` — campo de busca por nome/apelido; `TableRow.onClick` removido (revisar = botão; nome = link); `timeAgo` reativo via `useNow` 60s.
 
-2. logo abaixo do banner, renderizo um mini-painel "seu radar até agora" com 3 slots numerados (01, 02, 03):
-   - slots preenchidos: card com check verde sálvia (`#75BF9C`), número, e o `text` do item do radar.
-   - slots vazios: card pontilhado, número apagado, label "faltando — volta na missão 1 e adiciona um item aqui".
-   - tipografia League Gothic no número, Urbanist no label, paleta bege NachesU.
+## etapa 4 · confiança do aluno
+- `SaveIndicator.tsx` — dispara `toast.error` ao entrar em estado de erro; copy "não salvou · tenta digitar de novo".
+- `Modulo.tsx` (branch `!isUnlocked`) — agora envelopa `bg-perestroika-bege`, `MobileNav` e `EletivaFooter`.
+- `EletivaHome.tsx` — `loading` agora inclui `snapLoading` quando o curso já está conhecido.
+- `ModuloPillList.tsx` — botão "marcar/concluída" `min-h-[44px]`.
+- `ModuloFeedbackCard.tsx` — fallback quando `status === "ajuste"` sem texto.
+- `DeliverableStatusPill.tsx` — "card laranja" → "card de feedback".
 
-3. mantenho o link "voltar pra missão 1" abaixo dos slots (não dentro do banner).
+## etapa 5 · polimento
+- `ModuloHeader.tsx` — `{totalMinutes} min` ou "tempo variável".
+- `ModuloProgressBar.tsx` — `if (!visible) return null` no lugar de `aria-hidden`.
+- `Modulo.tsx` — barra usa `requiredPills` como total quando existem obrigatórias.
+- `TutorChat.tsx` — chips visíveis sempre que não streaming; hint shift+enter `hidden sm:block`.
+- `ModuloFooter.tsx` — copy alinhada ("só marque quando tiver entregue de verdade").
 
-4. a seção de itens (os 10 fixos) continua renderizando, mas com `aria-disabled` e opacity reduzida (já que `ready` continua false e o CTA já está bloqueado). assim o aluno vê a missão completa pra entender, sem conseguir classificar.
-
-quando `hasEnoughRadar` for true, esse bloco some completamente — comportamento atual preservado.
-
-## detalhe técnico
-
-- só edita `src/components/eletiva/pills/PillClassificador3x3.tsx`. nada de schema, hook ou dispatcher.
-- o helper `useAula1RadarItems` já retorna até 3 itens; pra mostrar os slots vazios, gero array de 3 posições e mapeio `radarItems[i]` (undefined = vazio).
-- enquanto `radarQuery.isLoading`, renderizo skeleton dos 3 slots em vez do estado vazio (evita flash).
-- bloqueio dos cards de classificação via wrapper com `pointer-events-none opacity-60` quando `!hasEnoughRadar`.
-- copy lowercase + "você", zero em-dash, padrão NachesU.
-
-## fora de escopo
-
-- mudar o que conta como "radar" (continua `content.items[0..2]` da aula 1).
-- editar o componente da aula 1 pra empurrar pro radar.
-- mensagem do dispatcher / bloqueio sequencial entre pílulas.
+## fora de escopo (anotado pra próximo)
+- formulário no `AdminRubrics.tsx` pra editar `score_type`/`score_max` (hoje só via SQL ou default).
+- substituir `confirm()` na deleção de rubrica.
+- redesenho do inbox em layout kanban + exportação CSV.

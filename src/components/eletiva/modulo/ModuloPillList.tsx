@@ -554,7 +554,7 @@ export const ModuloPillList = ({
                 onClick={() => onTogglePill(pill)}
                 disabled={togglePending}
                 aria-pressed={done}
-                className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wide transition-colors disabled:opacity-50 ${
+                className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-4 py-2 min-h-[44px] font-body text-xs uppercase tracking-wide transition-colors disabled:opacity-50 ${
                   done
                     ? "bg-perestroika-preto text-perestroika-bege"
                     : "border border-perestroika-preto/30 hover:bg-perestroika-preto hover:text-perestroika-bege"

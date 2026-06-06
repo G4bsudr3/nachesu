@@ -95,13 +95,13 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
     },
     ajuste: {
       label: "ajuste solicitado · reabra e reenvie",
-      helper: "leia o retorno do educador no card laranja e clique em \"revisar e reenviar\".",
+      helper: "leia o retorno do educador no card de feedback acima e clique em \"revisar e reenviar\".",
       Icon: AlertCircle,
       tone: "bg-[#fd4644]/10 border-[#fd4644]/40 text-perestroika-preto",
     },
     revisado: {
       label: "retorno do educador chegou",
-      helper: "o feedback completo está logo abaixo, no card laranja.",
+      helper: "o feedback completo está logo acima, no card de feedback.",
       Icon: MessageSquareReply,
       tone: "bg-[#fe7b02]/10 border-[#fe7b02]/40 text-perestroika-preto",
     },

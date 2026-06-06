@@ -55,7 +55,7 @@ export const ModuloHeader = ({
     <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-body text-sm text-perestroika-preto/70">
       <span className="inline-flex items-center gap-1.5">
         <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-        {totalMinutes ?? 50} min
+        {totalMinutes ? `${totalMinutes} min` : "tempo variável"}
       </span>
       {isCompleted && (
         <span className="inline-flex items-center gap-1.5 text-perestroika-preto">

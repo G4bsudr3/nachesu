@@ -19,6 +19,10 @@ const kindLabel = (
   if (schemaType === "quiz") return "quiz";
   if (schemaType === "radar_form") return "radar";
   if (schemaType === "bonus_text") return "bônus";
+  if (schemaType === "classificador_linear_circular_regenerativo") return "classificador 3x3";
+  if (schemaType === "pbl_corf_triplo") return "pbl corf";
+  if (schemaType === "guia_de_prompts") return "guia de prompts";
+  if (schemaType === "video_embed" || schemaType === "video_with_transcript") return "vídeo";
   if (kind === "pilula_a") return "abertura";
   if (kind === "exercicio_pbl") return "exercício pbl";
   if (kind === "registro") return "reflexão";
@@ -414,6 +418,278 @@ function resolveBonus(
 }
 
 // ============================================================
+// classificador linear/circular/regenerativo (aula 2)
+// ============================================================
+
+type ClassificadorValueShape = {
+  classifications?: Record<string, "linear" | "circular" | "regenerativo">;
+  justifications?: Record<string, string>;
+};
+
+const catLabelClassif: Record<string, string> = {
+  linear: "linear",
+  circular: "circular",
+  regenerativo: "regenerativo",
+};
+
+function resolveClassificador3x3(
+  pill: PillForResolve,
+  content: DeliverableContent,
+): AnswerBlock[] {
+  const schema = (pill.interaction_schema ?? {}) as {
+    fixed_items?: { id: string; text: string }[];
+  };
+  const map = (content.classificacao_aula2 ?? {}) as Record<string, ClassificadorValueShape>;
+  const v = map[pill.id] ?? {};
+  const classifications = v.classifications ?? {};
+  const justifications = v.justifications ?? {};
+
+  const fixed = schema.fixed_items ?? [];
+  // itens do radar (3 do aula 1) ficam com ids radar-1/2/3 e não estão no schema
+  const radarIds = Object.keys(classifications).filter((id) => id.startsWith("radar-"));
+  const knownIds = new Set([...fixed.map((f) => f.id), ...radarIds]);
+  // garante que classificações órfãs também apareçam
+  for (const id of Object.keys(classifications)) knownIds.add(id);
+
+  if (knownIds.size === 0) {
+    return [{ kind: "empty", question: "classificação dos itens" }];
+  }
+
+  const items: { label: string; value: string }[] = [];
+  const itemsList = [
+    ...fixed,
+    ...radarIds.map((id) => ({ id, text: `(do seu radar) ${id}` })),
+    ...Array.from(knownIds)
+      .filter((id) => !fixed.some((f) => f.id === id) && !radarIds.includes(id))
+      .map((id) => ({ id, text: id })),
+  ];
+
+  for (const it of itemsList) {
+    const cat = classifications[it.id];
+    items.push({
+      label: it.text,
+      value: cat ? catLabelClassif[cat] ?? cat : "— sem categoria",
+    });
+  }
+
+  const blocks: AnswerBlock[] = [
+    { kind: "list", question: "classificação dos itens", items },
+  ];
+
+  const justEntries = Object.entries(justifications).filter(([, t]) =>
+    isFilled(t),
+  );
+  if (justEntries.length > 0) {
+    for (const [id, text] of justEntries) {
+      const itemText = itemsList.find((i) => i.id === id)?.text ?? id;
+      blocks.push({
+        kind: "text",
+        question: `justificativa · ${itemText}`,
+        answer: text,
+      });
+    }
+  } else {
+    blocks.push({ kind: "empty", question: "justificativas escritas" });
+  }
+
+  return blocks;
+}
+
+// ============================================================
+// pbl corf triplo (aula 2)
+// ============================================================
+
+type CorfEntrega = {
+  versao_corf?: string;
+  print_ruim?: {
+    evidence_kind?: string;
+    evidence_link?: string;
+    evidence_path?: string;
+    evidence_name?: string;
+  };
+  print_corf?: {
+    evidence_kind?: string;
+    evidence_link?: string;
+    evidence_path?: string;
+    evidence_name?: string;
+  };
+  o_que_mudou?: string;
+};
+
+function resolvePblCorfTriplo(
+  pill: PillForResolve,
+  content: DeliverableContent,
+): AnswerBlock[] {
+  const schema = (pill.interaction_schema ?? {}) as {
+    prompts?: { id: string; prompt_ruim: string }[];
+    conclusao?: { label: string };
+  };
+  const map = (content.pbl_corf ?? {}) as Record<
+    string,
+    { itens?: Record<string, CorfEntrega>; conclusao?: string }
+  >;
+  const v = map[pill.id] ?? {};
+  const itens = v.itens ?? {};
+  const prompts = schema.prompts ?? [];
+
+  const blocks: AnswerBlock[] = [];
+  prompts.forEach((p, idx) => {
+    const entry = itens[p.id] ?? {};
+    const num = idx + 1;
+    blocks.push({
+      kind: "text",
+      question: `prompt ${num} · original`,
+      answer: p.prompt_ruim,
+    });
+    if (isFilled(entry.versao_corf)) {
+      blocks.push({
+        kind: "text",
+        question: `prompt ${num} · versão em CORF`,
+        answer: entry.versao_corf!,
+      });
+    } else {
+      blocks.push({ kind: "empty", question: `prompt ${num} · versão em CORF` });
+    }
+    blocks.push(resolveEvidence(`prompt ${num} · print do ruim`, entry.print_ruim));
+    blocks.push(resolveEvidence(`prompt ${num} · print do CORF`, entry.print_corf));
+    if (isFilled(entry.o_que_mudou)) {
+      blocks.push({
+        kind: "text",
+        question: `prompt ${num} · o que mudou`,
+        answer: entry.o_que_mudou!,
+      });
+    } else {
+      blocks.push({ kind: "empty", question: `prompt ${num} · o que mudou` });
+    }
+  });
+
+  const conclusaoLabel = schema.conclusao?.label ?? "conclusão";
+  if (isFilled(v.conclusao)) {
+    blocks.push({ kind: "text", question: conclusaoLabel, answer: v.conclusao! });
+  } else {
+    blocks.push({ kind: "empty", question: conclusaoLabel });
+  }
+
+  return blocks;
+}
+
+// ============================================================
+// guia de prompts (aula 2)
+// ============================================================
+
+function resolveGuiaDePrompts(
+  pill: PillForResolve,
+  content: DeliverableContent,
+): AnswerBlock[] {
+  const schema = (pill.interaction_schema ?? {}) as {
+    templates?: { id: string; titulo: string; template: string }[];
+    prints?: {
+      primeiro?: { label: string; por_que_label?: string };
+      segundo?: { label: string; por_que_label?: string };
+    };
+    reflexao?: { prompt?: string };
+  };
+  const map = (content.guia_prompts ?? {}) as Record<
+    string,
+    {
+      modelos?: Record<string, string>;
+      print_1?: CorfEntrega["print_ruim"];
+      por_que_1?: string;
+      print_2?: CorfEntrega["print_ruim"];
+      por_que_2?: string;
+      reflexao?: string;
+    }
+  >;
+  const v = map[pill.id] ?? {};
+  const modelos = v.modelos ?? {};
+  const templates = schema.templates ?? [];
+
+  const blocks: AnswerBlock[] = [];
+  templates.forEach((t) => {
+    const txt = modelos[t.id] ?? "";
+    const edited = isFilled(txt) && txt.trim() !== (t.template ?? "").trim();
+    if (edited) {
+      blocks.push({ kind: "text", question: `template · ${t.titulo}`, answer: txt });
+    } else if (isFilled(txt)) {
+      blocks.push({
+        kind: "text",
+        question: `template · ${t.titulo} (não editado)`,
+        answer: txt,
+      });
+    } else {
+      blocks.push({ kind: "empty", question: `template · ${t.titulo}` });
+    }
+  });
+
+  const p1 = schema.prints?.primeiro;
+  if (p1) {
+    blocks.push(resolveEvidence(p1.label, v.print_1));
+    const q = p1.por_que_label ?? "por que esse?";
+    blocks.push(
+      isFilled(v.por_que_1)
+        ? { kind: "text", question: q, answer: v.por_que_1! }
+        : { kind: "empty", question: q },
+    );
+  }
+  const p2 = schema.prints?.segundo;
+  if (p2) {
+    blocks.push(resolveEvidence(p2.label, v.print_2));
+    const q = p2.por_que_label ?? "por que esse?";
+    blocks.push(
+      isFilled(v.por_que_2)
+        ? { kind: "text", question: q, answer: v.por_que_2! }
+        : { kind: "empty", question: q },
+    );
+  }
+
+  const rprompt = schema.reflexao?.prompt ?? "reflexão final";
+  blocks.push(
+    isFilled(v.reflexao)
+      ? { kind: "text", question: rprompt, answer: v.reflexao! }
+      : { kind: "empty", question: rprompt },
+  );
+
+  return blocks;
+}
+
+// ============================================================
+// fallback genérico: pílulas sem resolver mas com dados
+// ============================================================
+
+const KNOWN_CONTENT_KEYS_BY_PILL = [
+  "reflections",
+  "pbl_responses",
+  "pbl_estruturado",
+  "checklist",
+  "guided_answers",
+  "quiz_answers",
+  "bonus",
+  "classificacao_aula2",
+  "pbl_corf",
+  "guia_prompts",
+] as const;
+
+function resolveUnknownWithData(
+  pill: PillForResolve,
+  content: DeliverableContent,
+): AnswerBlock[] {
+  // procura qualquer "namespace" do content que tenha dado pra essa pillId
+  const blocks: AnswerBlock[] = [];
+  for (const key of KNOWN_CONTENT_KEYS_BY_PILL) {
+    const ns = (content as Record<string, unknown>)[key];
+    if (!ns || typeof ns !== "object") continue;
+    const entry = (ns as Record<string, unknown>)[pill.id];
+    if (!isFilled(entry)) continue;
+    blocks.push({
+      kind: "text",
+      question: `dados brutos · ${key}`,
+      answer: typeof entry === "string" ? entry : JSON.stringify(entry, null, 2),
+    });
+  }
+  return blocks;
+}
+
+// ============================================================
 // dispatcher
 // ============================================================
 
@@ -447,12 +723,33 @@ export function resolvePill(
     case "bonus_text":
       blocks = resolveBonus(pill, content);
       break;
+    case "classificador_linear_circular_regenerativo":
+      blocks = resolveClassificador3x3(pill, content);
+      break;
+    case "pbl_corf_triplo":
+      blocks = resolvePblCorfTriplo(pill, content);
+      break;
+    case "guia_de_prompts":
+      blocks = resolveGuiaDePrompts(pill, content);
+      break;
+    case "video_embed":
+    case "video_with_transcript":
+      // vídeos são passivos; mostra reflexão se existir no namespace padrão
+      blocks = resolveEditorial(pill, content);
+      break;
     default:
       // fallback por kind (pílulas sem schema rico)
       if (pill.kind === "registro") blocks = resolveLegacyReflexao(pill, content);
       else if (pill.kind === "exercicio_pbl") blocks = resolveLegacyPBL(pill, content);
       else blocks = []; // pílulas passivas (abertura/conteúdo só leitura)
   }
+
+  // defesa: se nada veio mas existem dados salvos pra essa pillId, mostra raw
+  if (blocks.length === 0) {
+    const raw = resolveUnknownWithData(pill, content);
+    if (raw.length > 0) blocks = raw;
+  }
+
 
   return {
     pillId: pill.id,
