@@ -29,8 +29,12 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
   const { feedbacks } = useStudentFeedback({ moduleId });
   const fb = feedbacks[0] ?? null;
   const { data: rubric } = useRubricForModule(moduleId);
-  const score = (fb as unknown as { score?: number | null } | null)?.score ?? null;
-  const showScore = !!fb && score != null && rubric?.score_type === "numeric";
+  const rawScore = (fb as unknown as { score?: number | null } | null)?.score;
+  const score = typeof rawScore === "number" && Number.isFinite(rawScore) ? rawScore : null;
+  const scoreMax =
+    rubric && typeof rubric.score_max === "number" && rubric.score_max > 0 ? rubric.score_max : null;
+  const showScore =
+    !!fb && score !== null && !!rubric && rubric.score_type === "numeric" && scoreMax !== null;
   const cardRef = useRef<HTMLElement | null>(null);
   const [reply, setReply] = useState("");
   const [showReply, setShowReply] = useState(false);
@@ -154,7 +158,7 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
         >
           <span className="text-[10px] uppercase tracking-[0.2em]">nota</span>
           <span className="text-lg leading-none">{score}</span>
-          <span className="text-xs leading-none opacity-70">/ {rubric?.score_max ?? 10}</span>
+          <span className="text-xs leading-none opacity-70">/ {scoreMax}</span>
         </div>
       )}
       {fb.feedback ? (
