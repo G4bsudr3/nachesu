@@ -67,7 +67,7 @@ export const StudentProgressPanel = ({ userId }: Props) => {
                 <div className="h-full bg-primary" style={{ width: `${c.percent}%` }} />
               </div>
               <p className="mt-1 text-[11px] text-perestroika-preto/55">
-                {c.completed} de {c.released} módulos liberados · {c.percent}%
+                {c.completed} de {c.released} módulos concluídos · {c.percent}%
               </p>
             </div>
 
