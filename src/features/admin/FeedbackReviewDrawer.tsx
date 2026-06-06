@@ -286,9 +286,15 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
         </div>
 
         {history.length > 0 && (
-          <details className="mt-5 rounded-xl border border-perestroika-preto/15 bg-white/40 p-3">
-            <summary className="cursor-pointer text-[11px] uppercase tracking-wide text-perestroika-preto/60">
-              histórico de rodadas ({history.length})
+          <details
+            open
+            className="mt-5 rounded-xl border border-perestroika-preto/15 bg-white/40 p-3"
+          >
+            <summary className="cursor-pointer text-[11px] uppercase tracking-wide text-perestroika-preto/60 flex items-center gap-2">
+              <span>histórico de rodadas</span>
+              <Badge variant="outline" className="text-[10px] uppercase">
+                {history.length}ª rodada anterior{history.length > 1 ? "es" : ""}
+              </Badge>
             </summary>
             <ul className="mt-3 space-y-3">
               {history.map((h, i) => (
@@ -309,14 +315,24 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
         )}
 
         <div className="mt-6">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
-              critérios {rubric?.name ? `· ${rubric.name}` : ""}
-            </p>
+          <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
+            <div className="min-w-0">
+              <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+                critérios {rubric?.name ? `· ${rubric.name}` : ""}
+              </p>
+              {rubric?.is_fallback && (
+                <p className="text-[10px] text-perestroika-preto/45 mt-0.5">
+                  rubrica padrão (módulo sem rubrica vinculada)
+                </p>
+              )}
+            </div>
             <button
               type="button"
               disabled={drafting}
-              onClick={handleDraftWithAI}
+              onClick={() => {
+                if (feedback.trim().length > 0) setAiConfirmOpen(true);
+                else void handleDraftWithAI();
+              }}
               className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-1 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50"
               title="rascunhar feedback com IA com base na rubrica"
             >
