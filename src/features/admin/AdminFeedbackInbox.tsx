@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Inbox, RefreshCcw, Search } from "lucide-react";
+import { Download, Inbox, RefreshCcw, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -37,6 +37,54 @@ const timeAgo = (iso: string | null) => {
   if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
   return `${days}d`;
+};
+
+const csvCell = (v: unknown) => {
+  const s = v === null || v === undefined ? "" : String(v);
+  return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
+const exportCsv = (rows: DeliverableInbox[]) => {
+  if (rows.length === 0) return;
+  const header = [
+    "estudante",
+    "apelido",
+    "user_id",
+    "modulo_numero",
+    "modulo_titulo",
+    "status",
+    "nota",
+    "enviado_em",
+    "revisado_em",
+    "feedback",
+  ];
+  const lines = rows.map((d) =>
+    [
+      d.profile?.display_name ?? "",
+      d.profile?.nickname ?? "",
+      d.user_id,
+      d.module?.number ?? "",
+      d.module?.title ?? "",
+      d.status,
+      d.score ?? "",
+      d.submitted_at ?? "",
+      d.reviewed_at ?? "",
+      (d.feedback ?? "").replace(/\n/g, " "),
+    ]
+      .map(csvCell)
+      .join(","),
+  );
+  const csv = "\uFEFF" + [header.join(","), ...lines].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const date = new Date().toISOString().slice(0, 10);
+  a.download = `nachesu-feedback-${date}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 };
 
 /** força re-render a cada minuto pra "há Xmin" não congelar */
@@ -145,14 +193,26 @@ export const AdminFeedbackInbox = () => {
               : `${pendingCount} pendentes · ${ajusteCount} em ajuste · ${revisadosCount} revisados`}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => refetch()}
-          className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10"
-        >
-          <RefreshCcw className="w-3.5 h-3.5" />
-          atualizar
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => exportCsv(filteredData)}
+            disabled={filteredData.length === 0}
+            className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-40 disabled:cursor-not-allowed"
+            title="exporta a lista filtrada como csv"
+          >
+            <Download className="w-3.5 h-3.5" />
+            csv
+          </button>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10"
+          >
+            <RefreshCcw className="w-3.5 h-3.5" />
+            atualizar
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
