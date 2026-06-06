@@ -299,6 +299,26 @@ export const AdminFeedbackInbox = () => {
         open={!!selected}
         onOpenChange={(o) => !o && setSelected(null)}
         deliverable={selected}
+        position={
+          selected
+            ? {
+                index: filteredData.findIndex((d) => d.id === selected.id),
+                total: filteredData.length,
+              }
+            : undefined
+        }
+        onPrev={(() => {
+          if (!selected) return undefined;
+          const i = filteredData.findIndex((d) => d.id === selected.id);
+          if (i <= 0) return undefined;
+          return () => setSelected(filteredData[i - 1]);
+        })()}
+        onNext={(() => {
+          if (!selected) return undefined;
+          const i = filteredData.findIndex((d) => d.id === selected.id);
+          if (i < 0 || i >= filteredData.length - 1) return undefined;
+          return () => setSelected(filteredData[i + 1]);
+        })()}
       />
     </div>
   );

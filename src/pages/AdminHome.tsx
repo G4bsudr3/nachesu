@@ -82,6 +82,29 @@ const AdminHome = () => {
     <div className="text-perestroika-preto font-body">
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
 
+        {/* banner fixo de risco crítico no topo */}
+        {totals.em_risco_critico > 0 && (
+          <Link
+            to="/admin/risco"
+            className="block rounded-2xl border-2 border-perestroika-vermelho bg-perestroika-vermelho/10 px-4 py-3 sm:px-5 sm:py-4 hover:bg-perestroika-vermelho/15 transition-colors"
+          >
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-perestroika-vermelho shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="font-display uppercase text-base sm:text-lg leading-tight text-perestroika-vermelho">
+                  {totals.em_risco_critico} {totals.em_risco_critico === 1 ? "estudante em risco crítico" : "estudantes em risco crítico"}
+                </p>
+                <p className="font-body text-xs sm:text-sm text-perestroika-preto/75 mt-0.5">
+                  21+ dias sem aparecer. olha quem é e tenta uma ponte humana.
+                </p>
+              </div>
+              <span className="hidden sm:inline-flex items-center gap-1 font-body text-[11px] uppercase tracking-wide text-perestroika-vermelho self-center shrink-0">
+                ver lista
+              </span>
+            </div>
+          </Link>
+        )}
+
         {/* scope chips */}
         <div className="flex flex-wrap items-center gap-2">
           <button
