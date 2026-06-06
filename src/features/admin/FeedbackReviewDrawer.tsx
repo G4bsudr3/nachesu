@@ -405,26 +405,34 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           </div>
         )}
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            disabled={reviewMutation.isPending}
-            onClick={() => reviewMutation.mutate("aprovado")}
-            className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 min-h-[40px]"
-          >
-            {reviewMutation.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <CheckCircle2 className="w-4 h-4" />
+        <div className="mt-6 flex flex-wrap gap-3 items-start">
+          <div className="flex flex-col gap-1">
+            <button
+              type="button"
+              disabled={reviewPending || !feedbackValid || scoreInvalid}
+              onClick={() => approveMutation.mutate()}
+              className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:hover:scale-100 min-h-[40px]"
+            >
+              {approveMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4" />
+              )}
+              aprovar
+            </button>
+            {!feedbackValid && (
+              <span className="text-[10px] text-perestroika-preto/55 px-2">
+                escreve ao menos 5 caracteres no feedback
+              </span>
             )}
-            aprovar
-          </button>
+          </div>
           <button
             type="button"
-            disabled={reviewMutation.isPending}
-            onClick={() => reviewMutation.mutate("ajustar")}
+            disabled={reviewPending || !feedbackValid || scoreInvalid}
+            onClick={() => ajustarMutation.mutate()}
             className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-5 py-2.5 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50 min-h-[40px]"
           >
+            {ajustarMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             pedir ajuste
           </button>
           {alreadyReviewed && (
