@@ -204,6 +204,16 @@ export const AdminFeedbackInbox = () => {
         </Select>
       </div>
 
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/40 pointer-events-none" />
+        <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="buscar por nome ou apelido do estudante…"
+          className="pl-9 bg-white/60 border-perestroika-preto/20"
+        />
+      </div>
+
       <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
         <Table>
           <TableHeader>
