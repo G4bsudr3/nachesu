@@ -32,20 +32,23 @@ const AccountSettings = () => {
 
   useEffect(() => {
     if (!user) return;
-    supabase
-      .from("profiles")
-      .select("has_password, instagram, linkedin, quiet_hours_start, quiet_hours_end")
-      .eq("user_id", user.id)
-      .maybeSingle()
-      .then(({ data }) => {
-        setHasPassword(Boolean(data?.has_password));
-        setInstagram(data?.instagram ?? "");
-        setLinkedin(data?.linkedin ?? "");
-        setQuietStart(
-          typeof data?.quiet_hours_start === "number" ? data.quiet_hours_start : null,
-        );
-        setQuietEnd(typeof data?.quiet_hours_end === "number" ? data.quiet_hours_end : null);
-      });
+    (supabase.rpc("get_my_profile").maybeSingle() as unknown as Promise<{
+      data: {
+        has_password: boolean | null;
+        instagram: string | null;
+        linkedin: string | null;
+        quiet_hours_start: number | null;
+        quiet_hours_end: number | null;
+      } | null;
+    }>).then(({ data }) => {
+      setHasPassword(Boolean(data?.has_password));
+      setInstagram(data?.instagram ?? "");
+      setLinkedin(data?.linkedin ?? "");
+      setQuietStart(
+        typeof data?.quiet_hours_start === "number" ? data.quiet_hours_start : null,
+      );
+      setQuietEnd(typeof data?.quiet_hours_end === "number" ? data.quiet_hours_end : null);
+    });
   }, [user]);
 
   const handleSavePassword = async () => {
