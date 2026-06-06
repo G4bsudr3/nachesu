@@ -355,8 +355,8 @@ const Modulo = () => {
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
       <ModuloProgressBar
-        total={totalPills}
-        done={donePills}
+        total={requiredPills.length > 0 ? requiredPills.length : totalPills}
+        done={requiredPills.length > 0 ? doneRequired : donePills}
         trailColor={trailColor}
         moduleNumber={moduleRow.number}
         moduleTitle={moduleRow.title}
