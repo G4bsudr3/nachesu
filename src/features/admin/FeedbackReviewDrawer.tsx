@@ -208,9 +208,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
 
   const handleDraftWithAI = async () => {
     if (!deliverable) return;
-    if (feedback.trim().length > 0) {
-      if (!confirm("já existe texto no feedback. substituir pelo rascunho da IA?")) return;
-    }
+    setAiConfirmOpen(false);
     setDrafting(true);
     try {
       const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
