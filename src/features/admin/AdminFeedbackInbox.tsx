@@ -114,6 +114,23 @@ export const AdminFeedbackInbox = () => {
     [all],
   );
 
+  const searchTerm = search.trim().toLowerCase();
+  const filteredData = useMemo(() => {
+    if (!searchTerm) return data;
+    return data.filter((d) => {
+      const haystack = [
+        d.profile?.display_name,
+        d.profile?.nickname,
+        d.module?.title,
+        d.user_id,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(searchTerm);
+    });
+  }, [data, searchTerm]);
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
