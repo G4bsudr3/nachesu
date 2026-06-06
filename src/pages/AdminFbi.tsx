@@ -29,10 +29,11 @@ const AdminTutorCommand = lazy(() => import("@/features/admin/AdminTutorCommand"
 const AdminFeedbackInbox = lazy(() => import("@/features/admin/AdminFeedbackInbox").then((m) => ({ default: m.AdminFeedbackInbox })));
 const AdminNudgeTemplates = lazy(() => import("@/features/admin/AdminNudgeTemplates").then((m) => ({ default: m.AdminNudgeTemplates })));
 const AdminRubrics = lazy(() => import("@/features/admin/AdminRubrics").then((m) => ({ default: m.AdminRubrics })));
+const AdminCopyAudit = lazy(() => import("@/features/admin/AdminCopyAudit").then((m) => ({ default: m.AdminCopyAudit })));
 const AdminUsers = lazy(() => import("./AdminUsers"));
 const AdminFbiResponses = lazy(() => import("@/features/admin/AdminFbiResponses"));
 
-const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
@@ -43,6 +44,7 @@ const TAB_LABELS: Record<AdminTab, string> = {
   trilha: "eletiva · trilha",
   tutor: "eletiva · tutor IA",
   feedback: "feedback · inbox",
+  "copy-audit": "auditoria · copy",
   fbi: "fbi · respostas",
   prework: "pré-work",
   missoes: "missões",
@@ -79,6 +81,7 @@ const TAB_COMPONENTS: Record<AdminTab, React.ComponentType> = {
   trilha: AdminTrilha,
   tutor: AdminTutorCommand,
   feedback: AdminFeedbackInbox,
+  "copy-audit": AdminCopyAudit,
   materiais: AdminMateriais,
   pending: AdminPending,
   usuarios: AdminUsers,
@@ -195,6 +198,7 @@ const AdminFbi = () => {
               <TabsTrigger value="usuarios" className="uppercase tracking-wide text-xs">usuários</TabsTrigger>
               <TabsTrigger value="nudges" className="uppercase tracking-wide text-xs">nudges</TabsTrigger>
               <TabsTrigger value="rubricas" className="uppercase tracking-wide text-xs">rubricas</TabsTrigger>
+              <TabsTrigger value="copy-audit" className="uppercase tracking-wide text-xs">auditoria copy</TabsTrigger>
               <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">settings</TabsTrigger>
             </TabsList>
 
