@@ -158,7 +158,7 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
         >
           <span className="text-[10px] uppercase tracking-[0.2em]">nota</span>
           <span className="text-lg leading-none">{score}</span>
-          <span className="text-xs leading-none opacity-70">/ {rubric?.score_max ?? 10}</span>
+          <span className="text-xs leading-none opacity-70">/ {scoreMax}</span>
         </div>
       )}
       {fb.feedback ? (
