@@ -175,6 +175,42 @@ export const AdminRubrics = () => {
                 marcar como rubrica padrão (substitui a anterior)
               </label>
 
+              <div className="rounded-md border border-perestroika-preto/15 p-3 space-y-2">
+                <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 block">
+                  pontuação
+                </label>
+                <select
+                  value={(editing.score_type ?? "none") as string}
+                  onChange={(e) =>
+                    setEditing({ ...editing, score_type: e.target.value as "none" | "numeric" })
+                  }
+                  className="w-full bg-white/60 border border-perestroika-preto/20 rounded-md px-2 py-1.5 text-sm"
+                >
+                  <option value="none">sem pontuação (só feedback)</option>
+                  <option value="numeric">pontuação numérica</option>
+                </select>
+                {editing.score_type === "numeric" && (
+                  <div>
+                    <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+                      nota máxima
+                    </label>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={100}
+                      value={editing.score_max ?? 10}
+                      onChange={(e) =>
+                        setEditing({ ...editing, score_max: Number(e.target.value) })
+                      }
+                      className="bg-white/60 h-8"
+                    />
+                    <p className="text-[10px] text-perestroika-preto/50 mt-1">
+                      ex: 10 vira "nota: 8 / 10" no card do estudante.
+                    </p>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
