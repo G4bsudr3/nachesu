@@ -2681,6 +2681,36 @@ export type Database = {
       }
     }
     Functions: {
+      admin_get_profile: {
+        Args: { _user_id: string }
+        Returns: {
+          approved_at: string | null
+          approved_by_admin_id: string | null
+          avatar_url: string | null
+          bio: string | null
+          cidade: string | null
+          created_at: string
+          display_name: string | null
+          has_password: boolean
+          id: string
+          instagram: string | null
+          linkedin: string | null
+          nickname: string | null
+          quiet_hours_end: number | null
+          quiet_hours_start: number | null
+          slug: string | null
+          status: string
+          tutor_consent_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       admin_list_pending_profiles: {
         Args: never
         Returns: {
@@ -2778,6 +2808,36 @@ export type Database = {
           submitted_at: string
         }[]
       }
+      get_my_profile: {
+        Args: never
+        Returns: {
+          approved_at: string | null
+          approved_by_admin_id: string | null
+          avatar_url: string | null
+          bio: string | null
+          cidade: string | null
+          created_at: string
+          display_name: string | null
+          has_password: boolean
+          id: string
+          instagram: string | null
+          linkedin: string | null
+          nickname: string | null
+          quiet_hours_end: number | null
+          quiet_hours_start: number | null
+          slug: string | null
+          status: string
+          tutor_consent_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_my_project_vote_result: {
         Args: { _session_id: string }
         Returns: {
@@ -2816,6 +2876,17 @@ export type Database = {
           nickname: string
           superpower_preview: string
           tagline: string
+        }[]
+      }
+      get_turma_socials: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          display_name: string
+          instagram: string
+          linkedin: string
+          nickname: string
+          user_id: string
         }[]
       }
       has_role: {

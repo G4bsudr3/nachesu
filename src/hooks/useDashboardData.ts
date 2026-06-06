@@ -47,11 +47,10 @@ export const useDashboardData = () => {
         { data: subs },
         { data: tutorialRows },
       ] = await Promise.all([
-        supabase
-          .from("profiles")
-          .select("nickname, display_name, has_password")
-          .eq("user_id", u.id)
-          .maybeSingle(),
+        supabase.rpc("get_my_profile").maybeSingle() as unknown as Promise<{
+          data: { nickname: string | null; display_name: string | null; has_password: boolean } | null;
+        }>,
+
         supabase
           .from("fbi_responses")
           .select("submitted")

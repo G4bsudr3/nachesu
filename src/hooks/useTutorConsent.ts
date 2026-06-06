@@ -13,11 +13,9 @@ export const useTutorConsent = () => {
     enabled: !!user,
     staleTime: 1000 * 60 * 10,
     queryFn: async (): Promise<{ accepted: boolean; at: string | null }> => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("tutor_consent_at")
-        .eq("user_id", user!.id)
-        .maybeSingle();
+      const { data } = (await supabase.rpc("get_my_profile").maybeSingle()) as unknown as {
+        data: { tutor_consent_at: string | null } | null;
+      };
       return {
         accepted: !!data?.tutor_consent_at,
         at: data?.tutor_consent_at ?? null,

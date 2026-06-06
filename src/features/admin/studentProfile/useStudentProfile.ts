@@ -23,7 +23,7 @@ export function useStudentProfile(userId: string | undefined) {
     enabled: !!userId,
     queryFn: async (): Promise<StudentProfile> => {
       const [{ data: profile }, { data: roles }, { data: enrolls }] = await Promise.all([
-        supabase.from("profiles").select("*").eq("user_id", userId!).maybeSingle(),
+        supabase.rpc("admin_get_profile", { _user_id: userId! }).maybeSingle() as unknown as Promise<{ data: ProfileRow | null }>,
         supabase.from("user_roles").select("role").eq("user_id", userId!),
         supabase
           .from("enrollments")
