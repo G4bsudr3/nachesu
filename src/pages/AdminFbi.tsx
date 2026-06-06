@@ -29,6 +29,7 @@ const AdminTutorCommand = lazy(() => import("@/features/admin/AdminTutorCommand"
 const AdminFeedbackInbox = lazy(() => import("@/features/admin/AdminFeedbackInbox").then((m) => ({ default: m.AdminFeedbackInbox })));
 const AdminNudgeTemplates = lazy(() => import("@/features/admin/AdminNudgeTemplates").then((m) => ({ default: m.AdminNudgeTemplates })));
 const AdminRubrics = lazy(() => import("@/features/admin/AdminRubrics").then((m) => ({ default: m.AdminRubrics })));
+const AdminCopyAudit = lazy(() => import("@/features/admin/AdminCopyAudit").then((m) => ({ default: m.AdminCopyAudit })));
 const AdminUsers = lazy(() => import("./AdminUsers"));
 const AdminFbiResponses = lazy(() => import("@/features/admin/AdminFbiResponses"));
 
