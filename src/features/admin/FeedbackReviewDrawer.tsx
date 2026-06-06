@@ -100,10 +100,18 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     // e mensagens novas chegam via realtime do hook
   }, [open, deliverable, markRead]);
 
+  const trimmedFeedback = feedback.trim();
+  const feedbackValid = trimmedFeedback.length >= 5;
+  const parsedScore = score.trim() === "" ? null : Number(score.replace(",", "."));
+  const scoreInvalid =
+    usesScore &&
+    parsedScore !== null &&
+    (Number.isNaN(parsedScore) || parsedScore < 0 || parsedScore > scoreMax);
+
   const persistReview = async (verdict: Verdict) => {
     if (!deliverable || !user) throw new Error("sem contexto");
-    const trimmed = feedback.trim();
-    if (trimmed.length < 5) throw new Error("escreve um feedback (mínimo 5 caracteres)");
+    if (!feedbackValid) throw new Error("escreve um feedback (mínimo 5 caracteres)");
+    if (scoreInvalid) throw new Error(`nota precisa estar entre 0 e ${scoreMax}`);
 
     const currentContent = (deliverable.content ?? {}) as Record<string, unknown>;
     const prevHistory = (currentContent.history as ReviewHistoryEntry[] | undefined) ?? [];
@@ -128,33 +136,42 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     };
 
     const nextStatus = verdict === "ajustar" ? "ajuste" : "revisado";
+    const updatePayload: Record<string, unknown> = {
+      feedback: trimmedFeedback,
+      reviewer_id: user.id,
+      reviewed_at: new Date().toISOString(),
+      status: nextStatus,
+      content: nextContent as never,
+    };
+    if (usesScore) updatePayload.score = parsedScore;
 
     const { error } = await supabase
       .from("module_deliverables")
-      .update({
-        feedback: trimmed,
-        reviewer_id: user.id,
-        reviewed_at: new Date().toISOString(),
-        status: nextStatus,
-        content: nextContent as never,
-      })
+      .update(updatePayload as never)
       .eq("id", deliverable.id);
     if (error) throw error;
   };
 
-  const reviewMutation = useMutation({
-    mutationFn: persistReview,
-    onSuccess: (_, verdict) => {
-      toast.success(
-        verdict === "aprovado"
-          ? "feedback enviado, estudante notificado"
-          : "ajuste solicitado, estudante pode reabrir e re-enviar",
-      );
+  const approveMutation = useMutation({
+    mutationFn: () => persistReview("aprovado"),
+    onSuccess: () => {
+      toast.success("feedback enviado, estudante notificado");
       qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
       onOpenChange(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const ajustarMutation = useMutation({
+    mutationFn: () => persistReview("ajustar"),
+    onSuccess: () => {
+      toast.success("ajuste solicitado, estudante pode reabrir e re-enviar");
+      qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
+      onOpenChange(false);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const reviewPending = approveMutation.isPending || ajustarMutation.isPending;
 
   const reopenMutation = useMutation({
     mutationFn: async () => {
