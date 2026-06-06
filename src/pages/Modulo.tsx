@@ -271,7 +271,9 @@ const Modulo = () => {
           },
           { onConflict: "user_id,module_id" },
         );
-        await submitDeliverableIfExists();
+        // NÃO submete o deliverable aqui — submit virou ação manual via
+        // completeMutation (etapa 2 da revisão crítica). isso evita promover
+        // rascunhos em branco quando o aluno só marca leitura.
         const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
         const nextWasLocked =
           next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
