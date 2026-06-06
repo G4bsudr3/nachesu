@@ -67,7 +67,7 @@ interface ReviewHistoryEntry {
   reviewer_id: string | null;
 }
 
-export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props) => {
+export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, onNext, position }: Props) => {
   const { user } = useAuth();
   const qc = useQueryClient();
   const [feedback, setFeedback] = useState("");
