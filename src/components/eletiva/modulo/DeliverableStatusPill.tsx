@@ -80,6 +80,20 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
 
   if (status === "vazio") return null;
 
+  const waitingDays = (() => {
+    if (status !== "enviado" || !data?.submitted_at) return null;
+    const ms = Date.now() - new Date(data.submitted_at).getTime();
+    return Math.floor(ms / (1000 * 60 * 60 * 24));
+  })();
+
+  const enviadoHelper = (() => {
+    if (waitingDays === null) return "seu educador vai responder por aqui em alguns dias. você recebe aviso no app assim que sair.";
+    if (waitingDays === 0) return "acabou de chegar pro educador. o retorno chega por aqui em alguns dias.";
+    if (waitingDays === 1) return "enviado ontem. o educador responde por aqui, sem pressa.";
+    if (waitingDays < 7) return `enviado há ${waitingDays} dias. tá na fila do educador.`;
+    return `enviado há ${waitingDays} dias. se ficar mais um tempo sem resposta, fala com o educador na escola.`;
+  })();
+
   const config: Record<Exclude<Status, "vazio">, { label: string; helper: string; Icon: typeof FileEdit; tone: string }> = {
     rascunho: {
       label: "rascunho",
@@ -89,7 +103,7 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
     },
     enviado: {
       label: "enviado · aguardando retorno",
-      helper: "seu educador vai responder por aqui em alguns dias. você recebe aviso no app assim que sair.",
+      helper: enviadoHelper,
       Icon: Send,
       tone: "bg-[#6f77fc]/10 border-[#6f77fc]/40 text-perestroika-preto",
     },
