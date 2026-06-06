@@ -324,7 +324,7 @@ const Modulo = () => {
   const isUnlocked = isAdmin || (snapshot?.unlockedModuleIds.has(moduleRow.id) ?? false);
   if (!isUnlocked) {
     return (
-      <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
+      <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
         <PageHeader showLogo logoLink="/app" />
         <ModuloLockedHero
           moduleNumber={moduleRow.number}
@@ -333,6 +333,13 @@ const Modulo = () => {
           availableFrom={moduleRow.available_from}
           courseSlug={courseSlug}
         />
+        <MobileNav />
+        <footer
+          className="relative z-10 container max-w-3xl pb-10"
+          style={{ marginBottom: "var(--mobile-nav-h, 0px)" }}
+        >
+          <EletivaFooter tone="dark" />
+        </footer>
       </div>
     );
   }
