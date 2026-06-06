@@ -408,6 +408,30 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
           </p>
         </div>
 
+        {usesScore && (
+          <div className="mt-5">
+            <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 block mb-1.5">
+              nota (0 a {scoreMax}) · opcional
+            </label>
+            <Input
+              type="number"
+              inputMode="decimal"
+              step="0.5"
+              min={0}
+              max={scoreMax}
+              value={score}
+              onChange={(e) => setScore(e.target.value)}
+              className="w-32 bg-white/60 border-perestroika-preto/20 font-body text-sm"
+              placeholder={`até ${scoreMax}`}
+            />
+            {scoreInvalid && (
+              <p className="mt-1 text-[10px] text-perestroika-vermelho">
+                a nota precisa estar entre 0 e {scoreMax}.
+              </p>
+            )}
+          </div>
+        )}
+
         {alreadyReviewed && (
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-perestroika-preto/60">
             <Badge variant="outline" className="uppercase">
