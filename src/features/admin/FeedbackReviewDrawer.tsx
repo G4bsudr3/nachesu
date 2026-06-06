@@ -51,6 +51,11 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   deliverable: DeliverableInbox | null;
+  /** navegação entre entregas da lista (opcional) */
+  onPrev?: () => void;
+  onNext?: () => void;
+  /** posição "i de N" no header (opcional) */
+  position?: { index: number; total: number };
 }
 
 interface ReviewHistoryEntry {
