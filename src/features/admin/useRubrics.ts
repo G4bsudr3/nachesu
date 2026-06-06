@@ -6,6 +6,8 @@ export interface RubricCriterion {
   description?: string;
 }
 
+export type RubricScoreType = "none" | "numeric" | "letter";
+
 export interface Rubric {
   id: string;
   slug: string;
@@ -13,6 +15,10 @@ export interface Rubric {
   description: string | null;
   is_default: boolean;
   criteria: RubricCriterion[];
+  score_type: RubricScoreType;
+  score_max: number;
+  /** true quando esta rubrica foi devolvida por fallback (módulo sem rubric_id) */
+  is_fallback?: boolean;
   created_at: string;
   updated_at: string;
 }
