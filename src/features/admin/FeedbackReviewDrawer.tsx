@@ -271,10 +271,41 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-2xl lg:max-w-3xl overflow-y-auto bg-perestroika-bege">
         <SheetHeader>
-          <SheetTitle className="font-display uppercase text-3xl text-left">
-            {studentName}
-          </SheetTitle>
-          <p className="text-sm text-perestroika-preto/70 text-left">{moduleLabel}</p>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <SheetTitle className="font-display uppercase text-3xl text-left">
+                {studentName}
+              </SheetTitle>
+              <p className="text-sm text-perestroika-preto/70 text-left">{moduleLabel}</p>
+            </div>
+            {(onPrev || onNext) && (
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={onPrev}
+                  disabled={!onPrev}
+                  aria-label="entrega anterior"
+                  className="w-8 h-8 rounded-full border border-perestroika-preto/20 flex items-center justify-center hover:bg-perestroika-preto/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                {position && (
+                  <span className="font-body text-[11px] tabular-nums text-perestroika-preto/55 px-1.5">
+                    {position.index + 1}/{position.total}
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={onNext}
+                  disabled={!onNext}
+                  aria-label="próxima entrega"
+                  className="w-8 h-8 rounded-full border border-perestroika-preto/20 flex items-center justify-center hover:bg-perestroika-preto/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-3 text-xs">
             <Link
               to={`/admin/aluno/${deliverable.user_id}`}
