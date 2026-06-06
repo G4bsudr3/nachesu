@@ -253,7 +253,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto bg-perestroika-bege">
+      <SheetContent side="right" className="w-full sm:max-w-2xl lg:max-w-3xl overflow-y-auto bg-perestroika-bege">
         <SheetHeader>
           <SheetTitle className="font-display uppercase text-3xl text-left">
             {studentName}
