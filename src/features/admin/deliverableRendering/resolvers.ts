@@ -19,6 +19,10 @@ const kindLabel = (
   if (schemaType === "quiz") return "quiz";
   if (schemaType === "radar_form") return "radar";
   if (schemaType === "bonus_text") return "bônus";
+  if (schemaType === "classificador_linear_circular_regenerativo") return "classificador 3x3";
+  if (schemaType === "pbl_corf_triplo") return "pbl corf";
+  if (schemaType === "guia_de_prompts") return "guia de prompts";
+  if (schemaType === "video_embed" || schemaType === "video_with_transcript") return "vídeo";
   if (kind === "pilula_a") return "abertura";
   if (kind === "exercicio_pbl") return "exercício pbl";
   if (kind === "registro") return "reflexão";
