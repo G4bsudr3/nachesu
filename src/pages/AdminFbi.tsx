@@ -33,7 +33,7 @@ const AdminCopyAudit = lazy(() => import("@/features/admin/AdminCopyAudit").then
 const AdminUsers = lazy(() => import("./AdminUsers"));
 const AdminFbiResponses = lazy(() => import("@/features/admin/AdminFbiResponses"));
 
-const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
