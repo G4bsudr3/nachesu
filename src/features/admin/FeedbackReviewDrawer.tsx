@@ -57,10 +57,14 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
   const [showPreview, setShowPreview] = useState(false);
   const [reply, setReply] = useState("");
   const [drafting, setDrafting] = useState(false);
+  const [aiConfirmOpen, setAiConfirmOpen] = useState(false);
+  const [score, setScore] = useState<string>("");
 
   const { data: rubric } = useRubricForModule(deliverable?.module?.id ?? null);
   const chips: Array<{ label: string; description?: string }> =
     rubric?.criteria?.length ? rubric.criteria : FALLBACK_CHIPS;
+  const usesScore = rubric?.score_type === "numeric";
+  const scoreMax = rubric?.score_max ?? 10;
 
   const existingVerdict = useMemo(() => {
     const c = (deliverable?.content ?? {}) as Record<string, unknown>;
@@ -86,11 +90,15 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
     setTags((c.review_tags as string[]) ?? []);
     setShowPreview(false);
     setReply("");
+    const existingScore = (deliverable as unknown as { score?: number | null }).score;
+    setScore(existingScore !== undefined && existingScore !== null ? String(existingScore) : "");
   }, [deliverable]);
 
   useEffect(() => {
     if (open && deliverable) markRead();
-  }, [open, deliverable, markRead, messages.length]);
+    // intencionalmente sem messages.length nas deps — markRead já é estável
+    // e mensagens novas chegam via realtime do hook
+  }, [open, deliverable, markRead]);
 
   const persistReview = async (verdict: Verdict) => {
     if (!deliverable || !user) throw new Error("sem contexto");
