@@ -233,27 +233,24 @@ export const AdminFeedbackInbox = () => {
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && data.length === 0 && (
+            {!isLoading && filteredData.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
-                  nada por aqui. fila vazia é boa notícia.
+                  {searchTerm
+                    ? "nenhum estudante bate com essa busca."
+                    : "nada por aqui. fila vazia é boa notícia."}
                 </TableCell>
               </TableRow>
             )}
             {!isLoading &&
-              data.map((d) => {
+              filteredData.map((d) => {
                 const name =
                   d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8);
                 return (
-                  <TableRow
-                    key={d.id}
-                    className="cursor-pointer hover:bg-perestroika-preto/5"
-                    onClick={() => setSelected(d)}
-                  >
+                  <TableRow key={d.id} className="hover:bg-perestroika-preto/5">
                     <TableCell className="font-medium">
                       <Link
                         to={`/admin/aluno/${d.user_id}`}
-                        onClick={(e) => e.stopPropagation()}
                         className="hover:underline"
                       >
                         {name}
@@ -285,11 +282,8 @@ export const AdminFeedbackInbox = () => {
                     <TableCell className="text-right">
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelected(d);
-                        }}
-                        className="text-xs uppercase tracking-wide underline hover:no-underline"
+                        onClick={() => setSelected(d)}
+                        className="text-xs uppercase tracking-wide underline hover:no-underline min-h-[36px] px-2"
                       >
                         revisar
                       </button>
