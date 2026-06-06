@@ -33,10 +33,7 @@ export function useRubrics() {
         .order("is_default", { ascending: false })
         .order("name");
       if (error) throw error;
-      return (data ?? []).map((r: any) => ({
-        ...r,
-        criteria: Array.isArray(r.criteria) ? r.criteria : [],
-      })) as Rubric[];
+      return (data ?? []).map((r: any) => normalize(r, false)) as Rubric[];
     },
   });
 }
