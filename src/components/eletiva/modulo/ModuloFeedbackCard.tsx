@@ -28,6 +28,9 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
   const qc = useQueryClient();
   const { feedbacks } = useStudentFeedback({ moduleId });
   const fb = feedbacks[0] ?? null;
+  const { data: rubric } = useRubricForModule(moduleId);
+  const score = (fb as unknown as { score?: number | null } | null)?.score ?? null;
+  const showScore = !!fb && score != null && rubric?.score_type === "numeric";
   const cardRef = useRef<HTMLElement | null>(null);
   const [reply, setReply] = useState("");
   const [showReply, setShowReply] = useState(false);
