@@ -1549,6 +1549,7 @@ export type Database = {
           module_id: string
           reviewed_at: string | null
           reviewer_id: string | null
+          score: number | null
           status: Database["public"]["Enums"]["deliverable_status"]
           submitted_at: string | null
           updated_at: string
@@ -1563,6 +1564,7 @@ export type Database = {
           module_id: string
           reviewed_at?: string | null
           reviewer_id?: string | null
+          score?: number | null
           status?: Database["public"]["Enums"]["deliverable_status"]
           submitted_at?: string | null
           updated_at?: string
@@ -1577,6 +1579,7 @@ export type Database = {
           module_id?: string
           reviewed_at?: string | null
           reviewer_id?: string | null
+          score?: number | null
           status?: Database["public"]["Enums"]["deliverable_status"]
           submitted_at?: string | null
           updated_at?: string
@@ -2068,6 +2071,8 @@ export type Database = {
           id: string
           is_default: boolean
           name: string
+          score_max: number
+          score_type: string
           slug: string
           updated_at: string
         }
@@ -2079,6 +2084,8 @@ export type Database = {
           id?: string
           is_default?: boolean
           name: string
+          score_max?: number
+          score_type?: string
           slug: string
           updated_at?: string
         }
@@ -2090,6 +2097,8 @@ export type Database = {
           id?: string
           is_default?: boolean
           name?: string
+          score_max?: number
+          score_type?: string
           slug?: string
           updated_at?: string
         }
