@@ -198,6 +198,7 @@ const AdminFbi = () => {
               <TabsTrigger value="usuarios" className="uppercase tracking-wide text-xs">usuários</TabsTrigger>
               <TabsTrigger value="nudges" className="uppercase tracking-wide text-xs">nudges</TabsTrigger>
               <TabsTrigger value="rubricas" className="uppercase tracking-wide text-xs">rubricas</TabsTrigger>
+              <TabsTrigger value="copy-audit" className="uppercase tracking-wide text-xs">auditoria copy</TabsTrigger>
               <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">settings</TabsTrigger>
             </TabsList>
 
