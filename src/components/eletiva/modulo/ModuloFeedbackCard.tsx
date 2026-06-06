@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useStudentFeedback, markFeedbackSeen } from "@/features/hub/useStudentFeedback";
 import { useDeliverableThread } from "@/features/hub/useDeliverableThread";
+import { useRubricForModule } from "@/features/admin/useRubrics";
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
 import { Textarea } from "@/components/ui/textarea";
 
