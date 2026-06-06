@@ -49,10 +49,12 @@ const useNow = () => {
 };
 
 export const AdminFeedbackInbox = () => {
+  useNow();
   const [statusFilter, setStatusFilter] = useState<InboxFilter>("pendentes");
   const [courseId, setCourseId] = useState<string | null>(null);
   const [moduleId, setModuleId] = useState<string | null>(null);
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
+  const [search, setSearch] = useState("");
 
   const { data: courses } = useQuery({
     queryKey: ["admin-feedback-courses"],
