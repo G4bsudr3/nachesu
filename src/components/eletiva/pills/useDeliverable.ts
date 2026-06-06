@@ -31,9 +31,12 @@ export function useDeliverable(moduleId: string | undefined) {
   const qc = useQueryClient();
 
   const enabled = !!user && !!moduleId;
+  const queryKey = ["module-deliverable", moduleId, user?.id];
 
+  // só carrega o que já existe — NÃO cria rascunho no mount.
+  // criação acontece on-write (primeiro save) via ensureDeliverable abaixo.
   const { data, isLoading } = useQuery({
-    queryKey: ["module-deliverable", moduleId, user?.id],
+    queryKey,
     enabled,
     queryFn: async () => {
       const { data: existing, error } = await supabase
@@ -43,40 +46,54 @@ export function useDeliverable(moduleId: string | undefined) {
         .eq("user_id", user!.id)
         .maybeSingle();
       if (error) throw error;
-      if (existing) return existing as DeliverableRow;
-
-      // primeira interação: cria rascunho vazio
-      const { data: created, error: insertError } = await supabase
-        .from("module_deliverables")
-        .insert({
-          module_id: moduleId!,
-          user_id: user!.id,
-          kind: "mixed",
-          status: "rascunho",
-          content: {},
-        })
-        .select("id, module_id, user_id, content, status, submitted_at")
-        .single();
-      if (insertError) throw insertError;
-      return created as DeliverableRow;
+      return (existing ?? null) as DeliverableRow | null;
     },
   });
 
+  const ensureDeliverable = async (): Promise<DeliverableRow> => {
+    if (data) return data;
+    // fetch fresh in case algum outro write criou paralelamente
+    const { data: existing } = await supabase
+      .from("module_deliverables")
+      .select("id, module_id, user_id, content, status, submitted_at")
+      .eq("module_id", moduleId!)
+      .eq("user_id", user!.id)
+      .maybeSingle();
+    if (existing) {
+      qc.setQueryData(queryKey, existing);
+      return existing as DeliverableRow;
+    }
+    const { data: created, error: insertError } = await supabase
+      .from("module_deliverables")
+      .insert({
+        module_id: moduleId!,
+        user_id: user!.id,
+        kind: "mixed",
+        status: "rascunho",
+        content: {},
+      })
+      .select("id, module_id, user_id, content, status, submitted_at")
+      .single();
+    if (insertError) throw insertError;
+    qc.setQueryData(queryKey, created);
+    return created as DeliverableRow;
+  };
+
   const saveMutation = useMutation({
     mutationFn: async (patch: DeliverableContent) => {
-      if (!data) throw new Error("deliverable ainda carregando");
-      const next = { ...(data.content ?? {}), ...patch };
+      if (!enabled) throw new Error("sem contexto");
+      const row = await ensureDeliverable();
+      const next = { ...(row.content ?? {}), ...patch };
       const { error } = await supabase
         .from("module_deliverables")
         .update({ content: next as never, updated_at: new Date().toISOString() })
-        .eq("id", data.id);
+        .eq("id", row.id);
       if (error) throw error;
       return next;
     },
     onSuccess: (next) => {
-      qc.setQueryData<DeliverableRow | undefined>(
-        ["module-deliverable", moduleId, user?.id],
-        (prev) => (prev ? { ...prev, content: next } : prev),
+      qc.setQueryData<DeliverableRow | null | undefined>(queryKey, (prev) =>
+        prev ? { ...prev, content: next } : prev,
       );
     },
   });
