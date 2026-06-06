@@ -557,6 +557,24 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable }: Props)
             </button>
           </div>
         </div>
+
+        <AlertDialog open={aiConfirmOpen} onOpenChange={setAiConfirmOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>substituir feedback pelo rascunho da IA?</AlertDialogTitle>
+              <AlertDialogDescription>
+                já existe texto escrito. se continuar, o feedback atual será trocado pelo
+                rascunho gerado.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={() => void handleDraftWithAI()}>
+                sim, substituir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </SheetContent>
     </Sheet>
   );
