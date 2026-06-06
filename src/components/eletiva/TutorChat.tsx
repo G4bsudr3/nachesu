@@ -577,7 +577,7 @@ export const TutorChat = ({
           className="px-4 pt-4 border-t border-perestroika-preto/15 bg-perestroika-bege"
           style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}
         >
-          {!streaming && (messages.length === 0 || !!pillContext) && (
+          {!streaming && (
             <div
               className="flex gap-1.5 overflow-x-auto pb-2 mb-2 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               role="group"
