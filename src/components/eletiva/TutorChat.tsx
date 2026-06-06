@@ -632,7 +632,7 @@ export const TutorChat = ({
               )}
             </button>
           </div>
-          <p className="text-[10px] text-perestroika-preto/40 mt-1.5 px-1">
+          <p className="text-[10px] text-perestroika-preto/40 mt-1.5 px-1 hidden sm:block">
             {streaming ? "esperando o tutor terminar..." : "shift + enter pra quebrar linha"}
           </p>
         </form>
