@@ -145,14 +145,26 @@ export const AdminFeedbackInbox = () => {
               : `${pendingCount} pendentes · ${ajusteCount} em ajuste · ${revisadosCount} revisados`}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => refetch()}
-          className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10"
-        >
-          <RefreshCcw className="w-3.5 h-3.5" />
-          atualizar
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => exportCsv(filteredData)}
+            disabled={filteredData.length === 0}
+            className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-40 disabled:cursor-not-allowed"
+            title="exporta a lista filtrada como csv"
+          >
+            <Download className="w-3.5 h-3.5" />
+            csv
+          </button>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10"
+          >
+            <RefreshCcw className="w-3.5 h-3.5" />
+            atualizar
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
