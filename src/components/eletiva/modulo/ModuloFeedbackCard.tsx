@@ -147,6 +147,16 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
       <h3 className="font-display uppercase text-xl sm:text-2xl mb-2 leading-tight">
         feedback do educador
       </h3>
+      {showScore && (
+        <div
+          className="inline-flex items-baseline gap-1 rounded-full px-3 py-1 mb-3 font-display"
+          style={{ backgroundColor: `${trailColor}20`, color: trailColor }}
+        >
+          <span className="text-[10px] uppercase tracking-[0.2em]">nota</span>
+          <span className="text-lg leading-none">{score}</span>
+          <span className="text-xs leading-none opacity-70">/ {rubric?.score_max ?? 10}</span>
+        </div>
+      )}
       {fb.feedback ? (
         <FeedbackMarkdown>{fb.feedback}</FeedbackMarkdown>
       ) : isAjuste ? (
