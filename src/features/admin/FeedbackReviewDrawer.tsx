@@ -611,6 +611,9 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             </button>
           </div>
         </div>
+        )}
+
+
 
         <AlertDialog open={aiConfirmOpen} onOpenChange={setAiConfirmOpen}>
           <AlertDialogContent>
