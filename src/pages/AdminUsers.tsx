@@ -354,6 +354,11 @@ const AdminUsers = () => {
                     <div>
                       <p className="font-medium text-perestroika-preto">
                         {item.display_name || item.nickname || item.email}
+                        {item.is_test && (
+                          <span className="ml-2 inline-flex items-center gap-1 align-middle rounded-full bg-perestroika-preto/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-perestroika-preto/70">
+                            <FlaskConical className="h-3 w-3" /> teste
+                          </span>
+                        )}
                       </p>
                       <p className="text-xs text-perestroika-preto/60">{item.email}</p>
                     </div>
