@@ -136,7 +136,7 @@ export const AdminFeedbackInbox = () => {
     },
   });
 
-  const { data, all, pendingCount, ajusteCount, isLoading, refetch } = usePendingDeliverables({
+  const { data, all, pendingCount, ajusteCount, rascunhoCount, isLoading, refetch } = usePendingDeliverables({
     courseId,
     moduleId,
     status: statusFilter,
@@ -190,7 +190,7 @@ export const AdminFeedbackInbox = () => {
             <Inbox className="w-4 h-4" />
             {isLoading
               ? "carregando…"
-              : `${pendingCount} pendentes · ${ajusteCount} em ajuste · ${revisadosCount} revisados`}
+              : `${pendingCount} pendentes · ${rascunhoCount} em rascunho · ${ajusteCount} em ajuste · ${revisadosCount} revisados`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -206,7 +206,10 @@ export const AdminFeedbackInbox = () => {
           </button>
           <button
             type="button"
-            onClick={() => refetch()}
+            onClick={async () => {
+              await refetch();
+              toast.success("inbox atualizado");
+            }}
             className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10"
           >
             <RefreshCcw className="w-3.5 h-3.5" />
@@ -257,6 +260,7 @@ export const AdminFeedbackInbox = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="pendentes">pendentes</SelectItem>
+            <SelectItem value="rascunho">em rascunho</SelectItem>
             <SelectItem value="ajuste">em ajuste</SelectItem>
             <SelectItem value="revisados">revisados</SelectItem>
             <SelectItem value="todos">todos</SelectItem>
