@@ -46,6 +46,7 @@ const TAB_LABELS: Record<AdminTab, string> = {
   tutor: "eletiva · tutor IA",
   feedback: "feedback · inbox",
   "copy-audit": "auditoria · copy",
+  autosave: "auditoria · autosave",
   fbi: "fbi · respostas",
   prework: "pré-work",
   missoes: "missões",
