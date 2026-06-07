@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink, BookOpen } from "lucide-react";
+import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink, BookOpen, FlaskConical } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
