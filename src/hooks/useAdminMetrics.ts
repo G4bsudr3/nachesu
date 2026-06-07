@@ -12,6 +12,7 @@ export interface CourseMetrics {
   pendentes_revisao: number;
   em_risco: number;
   em_risco_critico: number; // lost
+  nunca_comecaram: number; // matriculados ativos não-teste sem nenhuma atividade
   modulo_proximo: { number: number; title: string; release_at: string } | null;
   funnel: {
     matriculados: number;
