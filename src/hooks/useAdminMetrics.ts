@@ -86,7 +86,7 @@ async function fetchMetrics(): Promise<AdminMetrics> {
     );
     const courseModuleIds = courseModules.map((m) => m.id);
 
-    const [enrollRes, riskRes, delivRes, progRes, ratingRes] = await Promise.all([
+    const [enrollRes, riskRes, delivRes, progRes, ratingRes, activationRes] = await Promise.all([
       supabase
         .from("enrollments")
         .select("user_id, created_at")
@@ -117,6 +117,10 @@ async function fetchMetrics(): Promise<AdminMetrics> {
             .select("module_id, rating")
             .in("module_id", courseModuleIds)
         : Promise.resolve({ data: [] as any[] }),
+      supabase
+        .from("student_activation_pending" as never)
+        .select("user_id", { count: "exact", head: true })
+        .eq("course_id", c.id),
     ]);
 
     const enrollments = (enrollRes.data ?? []) as any[];
