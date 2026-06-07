@@ -59,7 +59,21 @@ const AdminUsers = () => {
   const [search, setSearch] = useState("");
   const [courseFilter, setCourseFilter] = useState<string>("all");
   const [domainFilter, setDomainFilter] = useState<string>("all");
+  const [hideTest, setHideTest] = useState(true);
   const [busyUserId, setBusyUserId] = useState<string | null>(null);
+
+  const mergeTestFlags = async (list: AdminUser[]): Promise<AdminUser[]> => {
+    if (list.length === 0) return list;
+    const ids = list.map((u) => u.user_id);
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("user_id, is_test")
+      .in("user_id", ids);
+    const map = new Map<string, boolean>(
+      (profs ?? []).map((p: { user_id: string; is_test: boolean | null }) => [p.user_id, !!p.is_test]),
+    );
+    return list.map((u) => ({ ...u, is_test: map.get(u.user_id) ?? false }));
+  };
 
   const loadUsers = async () => {
     setLoading(true);
