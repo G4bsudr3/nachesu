@@ -1,9 +1,13 @@
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { AlertTriangle, CheckCircle2, ExternalLink, Filter } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ExternalLink, Filter, Pencil, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -131,8 +135,37 @@ type AuditRow = {
 };
 
 export const AdminCopyAudit = () => {
+  const queryClient = useQueryClient();
   const [severityFilter, setSeverityFilter] = useState<"todos" | Severity>("todos");
   const [courseFilter, setCourseFilter] = useState<string>("todos");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [draftTitle, setDraftTitle] = useState("");
+  const [draftBody, setDraftBody] = useState("");
+
+  const saveMutation = useMutation({
+    mutationFn: async (vars: { id: string; title: string; body_md: string }) => {
+      const { error } = await supabase
+        .from("module_pills")
+        .update({ title: vars.title, body_md: vars.body_md })
+        .eq("id", vars.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("pílula atualizada");
+      queryClient.invalidateQueries({ queryKey: ["admin-copy-audit-pills"] });
+      setEditingId(null);
+    },
+    onError: (e: unknown) => {
+      toast.error(e instanceof Error ? e.message : "não consegui salvar");
+    },
+  });
+
+  const startEdit = (pill: PillRow) => {
+    setEditingId(pill.id);
+    setDraftTitle(pill.title ?? "");
+    setDraftBody(pill.body_md ?? "");
+  };
+
 
   const { data: pills, isLoading: pillsLoading } = useQuery({
     queryKey: ["admin-copy-audit-pills"],
@@ -308,7 +341,10 @@ export const AdminCopyAudit = () => {
           </div>
 
           <div className="space-y-3">
-            {filtered.map(({ pill, module, findings }) => (
+            {filtered.map(({ pill, module, findings }) => {
+              const isEditing = editingId === pill.id;
+              const isSaving = saveMutation.isPending && saveMutation.variables?.id === pill.id;
+              return (
               <div
                 key={pill.id}
                 className="rounded-lg border border-perestroika-preto/15 bg-white/60 p-4"
@@ -320,52 +356,121 @@ export const AdminCopyAudit = () => {
                       {" · "}
                       {pill.kind.replace("_", " ")}
                     </div>
-                    <div className="font-medium text-perestroika-preto mt-0.5 break-words">
-                      {pill.title || "(sem título)"}
-                    </div>
+                    {!isEditing && (
+                      <div className="font-medium text-perestroika-preto mt-0.5 break-words">
+                        {pill.title || "(sem título)"}
+                      </div>
+                    )}
                   </div>
-                  {module && (
-                    <Link
-                      to={`/admin/aula/${module.number}`}
-                      className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto shrink-0"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      editar módulo
-                    </Link>
-                  )}
+                  <div className="flex items-center gap-3 shrink-0">
+                    {!isEditing && (
+                      <button
+                        type="button"
+                        onClick={() => startEdit(pill)}
+                        className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto"
+                      >
+                        <Pencil className="w-3 h-3" />
+                        editar aqui
+                      </button>
+                    )}
+                    {module && (
+                      <Link
+                        to={`/admin/aula/${module.number}`}
+                        className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        abrir módulo
+                      </Link>
+                    )}
+                  </div>
                 </div>
 
-                <ul className="mt-3 space-y-1.5">
-                  {findings.map((f, i) => (
-                    <li
-                      key={`${f.code}-${f.where}-${i}`}
-                      className="flex flex-wrap items-baseline gap-2 text-sm"
-                    >
-                      <Badge
-                        className={
-                          f.severity === "alto"
-                            ? "bg-perestroika-vermelho text-white uppercase text-[10px]"
-                            : f.severity === "medio"
-                              ? "bg-perestroika-laranja text-white uppercase text-[10px]"
-                              : "bg-perestroika-preto/15 text-perestroika-preto uppercase text-[10px]"
+                {isEditing ? (
+                  <div className="mt-3 space-y-2">
+                    <div>
+                      <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/50">
+                        título
+                      </label>
+                      <Input
+                        value={draftTitle}
+                        onChange={(e) => setDraftTitle(e.target.value)}
+                        className="bg-white/80 border-perestroika-preto/20 mt-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/50">
+                        corpo (markdown)
+                      </label>
+                      <Textarea
+                        value={draftBody}
+                        onChange={(e) => setDraftBody(e.target.value)}
+                        rows={6}
+                        className="bg-white/80 border-perestroika-preto/20 mt-1 font-mono text-xs"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 pt-1">
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          saveMutation.mutate({
+                            id: pill.id,
+                            title: draftTitle.trim(),
+                            body_md: draftBody,
+                          })
                         }
+                        disabled={isSaving}
                       >
-                        <AlertTriangle className="w-3 h-3 mr-1" />
-                        {f.severity}
-                      </Badge>
-                      <span className="text-perestroika-preto/80">
-                        {f.where}: {f.label}
+                        {isSaving && <Loader2 className="w-3 h-3 animate-spin" />}
+                        salvar
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setEditingId(null)}
+                        disabled={isSaving}
+                      >
+                        <X className="w-3 h-3" />
+                        cancelar
+                      </Button>
+                      <span className="text-[10px] text-perestroika-preto/50 ml-auto">
+                        os avisos somem assim que o texto for salvo
                       </span>
-                      {f.excerpt && (
-                        <span className="text-xs text-perestroika-preto/55 italic">
-                          "{f.excerpt}"
+                    </div>
+                  </div>
+                ) : (
+                  <ul className="mt-3 space-y-1.5">
+                    {findings.map((f, i) => (
+                      <li
+                        key={`${f.code}-${f.where}-${i}`}
+                        className="flex flex-wrap items-baseline gap-2 text-sm"
+                      >
+                        <Badge
+                          className={
+                            f.severity === "alto"
+                              ? "bg-perestroika-vermelho text-white uppercase text-[10px]"
+                              : f.severity === "medio"
+                                ? "bg-perestroika-laranja text-white uppercase text-[10px]"
+                                : "bg-perestroika-preto/15 text-perestroika-preto uppercase text-[10px]"
+                          }
+                        >
+                          <AlertTriangle className="w-3 h-3 mr-1" />
+                          {f.severity}
+                        </Badge>
+                        <span className="text-perestroika-preto/80">
+                          {f.where}: {f.label}
                         </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+                        {f.excerpt && (
+                          <span className="text-xs text-perestroika-preto/55 italic">
+                            "{f.excerpt}"
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
