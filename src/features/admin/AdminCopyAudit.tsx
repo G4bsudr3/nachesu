@@ -135,8 +135,37 @@ type AuditRow = {
 };
 
 export const AdminCopyAudit = () => {
+  const queryClient = useQueryClient();
   const [severityFilter, setSeverityFilter] = useState<"todos" | Severity>("todos");
   const [courseFilter, setCourseFilter] = useState<string>("todos");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [draftTitle, setDraftTitle] = useState("");
+  const [draftBody, setDraftBody] = useState("");
+
+  const saveMutation = useMutation({
+    mutationFn: async (vars: { id: string; title: string; body_md: string }) => {
+      const { error } = await supabase
+        .from("module_pills")
+        .update({ title: vars.title, body_md: vars.body_md })
+        .eq("id", vars.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("pílula atualizada");
+      queryClient.invalidateQueries({ queryKey: ["admin-copy-audit-pills"] });
+      setEditingId(null);
+    },
+    onError: (e: unknown) => {
+      toast.error(e instanceof Error ? e.message : "não consegui salvar");
+    },
+  });
+
+  const startEdit = (pill: PillRow) => {
+    setEditingId(pill.id);
+    setDraftTitle(pill.title ?? "");
+    setDraftBody(pill.body_md ?? "");
+  };
+
 
   const { data: pills, isLoading: pillsLoading } = useQuery({
     queryKey: ["admin-copy-audit-pills"],
