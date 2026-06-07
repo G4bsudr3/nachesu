@@ -311,6 +311,7 @@ export const AdminFeedbackInbox = () => {
               filteredData.map((d) => {
                 const name =
                   d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8);
+                const isDraft = d.submitted_at === null && d.status === "rascunho";
                 const waitingDays = d.submitted_at && !d.reviewed_at
                   ? Math.floor((Date.now() - new Date(d.submitted_at).getTime()) / (1000 * 60 * 60 * 24))
                   : null;
@@ -338,22 +339,35 @@ export const AdminFeedbackInbox = () => {
                         : "–"}
                     </TableCell>
                     <TableCell className="text-xs whitespace-nowrap">
-                      <span
-                        className={
-                          sla === "late"
-                            ? "text-perestroika-vermelho font-medium"
-                            : sla === "warn"
-                              ? "text-perestroika-laranja font-medium"
-                              : "text-perestroika-preto/70"
-                        }
-                        title={sla === "late" ? "passou de 7 dias" : sla === "warn" ? "passou de 3 dias" : undefined}
-                      >
-                        há {timeAgo(d.submitted_at)}
-                        {sla !== "ok" && " ⚠"}
-                      </span>
+                      {isDraft ? (
+                        <span
+                          className="text-perestroika-preto/55 italic"
+                          title="rascunho ainda não enviado pro educador"
+                        >
+                          rascunho há {timeAgo(d.updated_at)}
+                        </span>
+                      ) : (
+                        <span
+                          className={
+                            sla === "late"
+                              ? "text-perestroika-vermelho font-medium"
+                              : sla === "warn"
+                                ? "text-perestroika-laranja font-medium"
+                                : "text-perestroika-preto/70"
+                          }
+                          title={sla === "late" ? "passou de 7 dias" : sla === "warn" ? "passou de 3 dias" : undefined}
+                        >
+                          há {timeAgo(d.submitted_at)}
+                          {sla !== "ok" && " ⚠"}
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell>
-                      {d.status === "ajuste" ? (
+                      {isDraft ? (
+                        <Badge variant="outline" className="uppercase text-[10px] border-perestroika-preto/30 text-perestroika-preto/60">
+                          rascunho
+                        </Badge>
+                      ) : d.status === "ajuste" ? (
                         <Badge className="bg-[#fd4644] text-white uppercase text-[10px]">
                           ajuste
                         </Badge>
@@ -373,7 +387,7 @@ export const AdminFeedbackInbox = () => {
                         onClick={() => setSelected(d)}
                         className="text-xs uppercase tracking-wide underline hover:no-underline min-h-[36px] px-2"
                       >
-                        revisar
+                        {isDraft ? "ver rascunho" : "revisar"}
                       </button>
                     </TableCell>
                   </TableRow>
