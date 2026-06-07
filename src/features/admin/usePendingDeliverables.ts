@@ -15,11 +15,15 @@ export type DeliverableInbox = DeliverableRow & {
   profile: ProfileLite | null;
 };
 
-export type InboxFilter = "pendentes" | "ajuste" | "revisados" | "todos";
+export type InboxFilter = "pendentes" | "ajuste" | "revisados" | "rascunho" | "todos";
+
+const isDraftRow = (d: { submitted_at: string | null; status: string | null }) =>
+  d.submitted_at === null && d.status === "rascunho";
 
 /**
  * fila de entregas pra revisão do professor.
- * filtros aplicados em memória pra simplicidade (volume baixo).
+ * traz tanto entregas enviadas quanto rascunhos com conteúdo (pra admin ver
+ * quem começou e tá no meio antes do estudante apertar enviar).
  */
 export function usePendingDeliverables(opts: {
   courseId?: string | null;
@@ -32,14 +36,32 @@ export function usePendingDeliverables(opts: {
     queryKey: ["admin-deliverables-inbox"],
     staleTime: 30_000,
     queryFn: async () => {
-      const { data: rows, error } = await supabase
-        .from("module_deliverables")
-        .select("*")
-        .not("submitted_at", "is", null)
-        .order("submitted_at", { ascending: true })
-        .limit(500);
-      if (error) throw error;
-      const list = (rows ?? []) as DeliverableRow[];
+      const [submittedRes, draftsRes] = await Promise.all([
+        supabase
+          .from("module_deliverables")
+          .select("*")
+          .not("submitted_at", "is", null)
+          .order("submitted_at", { ascending: true })
+          .limit(500),
+        supabase
+          .from("module_deliverables")
+          .select("*")
+          .eq("status", "rascunho")
+          .is("submitted_at", null)
+          .order("updated_at", { ascending: false })
+          .limit(500),
+      ]);
+      if (submittedRes.error) throw submittedRes.error;
+      if (draftsRes.error) throw draftsRes.error;
+
+      // só rascunhos com algum conteúdo digitado
+      const drafts = (draftsRes.data ?? []).filter((r) => {
+        const c = r.content as Record<string, unknown> | null;
+        if (!c || typeof c !== "object") return false;
+        return Object.keys(c).length > 0;
+      });
+
+      const list = [...(submittedRes.data ?? []), ...drafts] as DeliverableRow[];
       if (list.length === 0) return [] as DeliverableInbox[];
 
       const moduleIds = Array.from(new Set(list.map((r) => r.module_id)));
@@ -82,9 +104,13 @@ export function usePendingDeliverables(opts: {
   const filtered = useMemo(() => {
     if (!data) return [];
     return data.filter((d) => {
-      if (status === "pendentes" && (d.reviewed_at !== null || d.status === "ajuste")) return false;
-      if (status === "revisados" && (d.reviewed_at === null || d.status === "ajuste")) return false;
+      const draft = isDraftRow(d);
+      if (status === "pendentes" && (draft || d.reviewed_at !== null || d.status === "ajuste"))
+        return false;
+      if (status === "revisados" && (draft || d.reviewed_at === null || d.status === "ajuste"))
+        return false;
       if (status === "ajuste" && d.status !== "ajuste") return false;
+      if (status === "rascunho" && !draft) return false;
       if (courseId && d.course_id !== courseId) return false;
       if (moduleId && d.module_id !== moduleId) return false;
       return true;
@@ -92,7 +118,10 @@ export function usePendingDeliverables(opts: {
   }, [data, status, courseId, moduleId]);
 
   const pendingCount = useMemo(
-    () => (data ?? []).filter((d) => d.reviewed_at === null).length,
+    () =>
+      (data ?? []).filter(
+        (d) => !isDraftRow(d) && d.reviewed_at === null && d.status !== "ajuste",
+      ).length,
     [data],
   );
 
@@ -101,5 +130,15 @@ export function usePendingDeliverables(opts: {
     [data],
   );
 
-  return { data: filtered, all: data ?? [], pendingCount, ajusteCount, isLoading, refetch };
+  const rascunhoCount = useMemo(() => (data ?? []).filter(isDraftRow).length, [data]);
+
+  return {
+    data: filtered,
+    all: data ?? [],
+    pendingCount,
+    ajusteCount,
+    rascunhoCount,
+    isLoading,
+    refetch,
+  };
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Download, Inbox, RefreshCcw, Search } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -136,7 +137,7 @@ export const AdminFeedbackInbox = () => {
     },
   });
 
-  const { data, all, pendingCount, ajusteCount, isLoading, refetch } = usePendingDeliverables({
+  const { data, all, pendingCount, ajusteCount, rascunhoCount, isLoading, refetch } = usePendingDeliverables({
     courseId,
     moduleId,
     status: statusFilter,
@@ -190,7 +191,7 @@ export const AdminFeedbackInbox = () => {
             <Inbox className="w-4 h-4" />
             {isLoading
               ? "carregando…"
-              : `${pendingCount} pendentes · ${ajusteCount} em ajuste · ${revisadosCount} revisados`}
+              : `${pendingCount} pendentes · ${rascunhoCount} em rascunho · ${ajusteCount} em ajuste · ${revisadosCount} revisados`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -206,7 +207,10 @@ export const AdminFeedbackInbox = () => {
           </button>
           <button
             type="button"
-            onClick={() => refetch()}
+            onClick={async () => {
+              await refetch();
+              toast.success("inbox atualizado");
+            }}
             className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10"
           >
             <RefreshCcw className="w-3.5 h-3.5" />
@@ -257,6 +261,7 @@ export const AdminFeedbackInbox = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="pendentes">pendentes</SelectItem>
+            <SelectItem value="rascunho">em rascunho</SelectItem>
             <SelectItem value="ajuste">em ajuste</SelectItem>
             <SelectItem value="revisados">revisados</SelectItem>
             <SelectItem value="todos">todos</SelectItem>
@@ -306,6 +311,7 @@ export const AdminFeedbackInbox = () => {
               filteredData.map((d) => {
                 const name =
                   d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8);
+                const isDraft = d.submitted_at === null && d.status === "rascunho";
                 const waitingDays = d.submitted_at && !d.reviewed_at
                   ? Math.floor((Date.now() - new Date(d.submitted_at).getTime()) / (1000 * 60 * 60 * 24))
                   : null;
@@ -333,22 +339,35 @@ export const AdminFeedbackInbox = () => {
                         : "–"}
                     </TableCell>
                     <TableCell className="text-xs whitespace-nowrap">
-                      <span
-                        className={
-                          sla === "late"
-                            ? "text-perestroika-vermelho font-medium"
-                            : sla === "warn"
-                              ? "text-perestroika-laranja font-medium"
-                              : "text-perestroika-preto/70"
-                        }
-                        title={sla === "late" ? "passou de 7 dias" : sla === "warn" ? "passou de 3 dias" : undefined}
-                      >
-                        há {timeAgo(d.submitted_at)}
-                        {sla !== "ok" && " ⚠"}
-                      </span>
+                      {isDraft ? (
+                        <span
+                          className="text-perestroika-preto/55 italic"
+                          title="rascunho ainda não enviado pro educador"
+                        >
+                          rascunho há {timeAgo(d.updated_at)}
+                        </span>
+                      ) : (
+                        <span
+                          className={
+                            sla === "late"
+                              ? "text-perestroika-vermelho font-medium"
+                              : sla === "warn"
+                                ? "text-perestroika-laranja font-medium"
+                                : "text-perestroika-preto/70"
+                          }
+                          title={sla === "late" ? "passou de 7 dias" : sla === "warn" ? "passou de 3 dias" : undefined}
+                        >
+                          há {timeAgo(d.submitted_at)}
+                          {sla !== "ok" && " ⚠"}
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell>
-                      {d.status === "ajuste" ? (
+                      {isDraft ? (
+                        <Badge variant="outline" className="uppercase text-[10px] border-perestroika-preto/30 text-perestroika-preto/60">
+                          rascunho
+                        </Badge>
+                      ) : d.status === "ajuste" ? (
                         <Badge className="bg-[#fd4644] text-white uppercase text-[10px]">
                           ajuste
                         </Badge>
@@ -368,7 +387,7 @@ export const AdminFeedbackInbox = () => {
                         onClick={() => setSelected(d)}
                         className="text-xs uppercase tracking-wide underline hover:no-underline min-h-[36px] px-2"
                       >
-                        revisar
+                        {isDraft ? "ver rascunho" : "revisar"}
                       </button>
                     </TableCell>
                   </TableRow>
