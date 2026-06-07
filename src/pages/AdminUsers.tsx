@@ -84,7 +84,8 @@ const AdminUsers = () => {
       toast.error("não consegui carregar os usuários");
       setUsers([]);
     } else {
-      setUsers((data ?? []) as AdminUser[]);
+      const merged = await mergeTestFlags((data ?? []) as AdminUser[]);
+      setUsers(merged);
     }
     setLoading(false);
   };
@@ -102,7 +103,9 @@ const AdminUsers = () => {
         toast.error("não consegui carregar os usuários");
         setUsers([]);
       } else {
-        setUsers((data ?? []) as AdminUser[]);
+        const merged = await mergeTestFlags((data ?? []) as AdminUser[]);
+        if (cancelled) return;
+        setUsers(merged);
       }
       setLoading(false);
     })();
@@ -111,6 +114,29 @@ const AdminUsers = () => {
       cancelled = true;
     };
   }, []);
+
+  const toggleTest = async (target: AdminUser) => {
+    const next = !target.is_test;
+    setBusyUserId(target.user_id);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ is_test: next })
+      .eq("user_id", target.user_id);
+    if (error) {
+      logger.error("[admin/users] toggle is_test:", error);
+      toast.error("não consegui mexer no marcador");
+    } else {
+      toast.success(
+        next
+          ? `${target.email} agora conta como teste (some dos dashboards)`
+          : `${target.email} voltou a aparecer nos dashboards`,
+      );
+      setUsers((prev) =>
+        prev.map((u) => (u.user_id === target.user_id ? { ...u, is_test: next } : u)),
+      );
+    }
+    setBusyUserId(null);
+  };
 
   const courseOptions = useMemo(() => {
     const map = new Map<string, string>();
