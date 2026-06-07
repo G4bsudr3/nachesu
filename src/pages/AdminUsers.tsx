@@ -303,6 +303,15 @@ const AdminUsers = () => {
             ))}
           </SelectContent>
         </Select>
+        <label className="inline-flex items-center gap-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/65 cursor-pointer whitespace-nowrap">
+          <input
+            type="checkbox"
+            checked={hideTest}
+            onChange={(e) => setHideTest(e.target.checked)}
+            className="h-4 w-4 rounded border-perestroika-preto/30"
+          />
+          ocultar contas de teste
+        </label>
       </div>
 
 
