@@ -96,6 +96,11 @@ export function useDeliverable(moduleId: string | undefined) {
         prev ? { ...prev, content: next } : prev,
       );
     },
+    onError: (err) => {
+      // visibilidade defensiva: se o autosave falhar, deixa rastro no console
+      // pro suporte conseguir investigar (o SaveIndicator já mostra toast).
+      console.warn("[useDeliverable] falha ao salvar rascunho", err);
+    },
   });
 
   return {
