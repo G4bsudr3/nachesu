@@ -1,66 +1,53 @@
-## o que está acontecendo (diagnóstico no banco, agora)
+## diagnóstico
 
-rodei as queries direto na base. **o progresso está sendo salvo normal**, o problema é só de visibilidade no admin.
+`student_engagement_risk` calcula `last_activity_at = GREATEST(MAX(started_at), MAX(completed_at), enrolled_at)`. Matriculados que nunca abriram nada herdam `enrolled_at` e, se a matrícula é antiga, viram `lost` automaticamente. Os 2 "críticos" no banner são você mesmo (mateusfrattezi, matriculado em 4-mai nos 2 cursos, zero progresso). Vários "medium" são alunos que ainda nem entraram (TiagoXXX, BernardoXXX, HeitorXXX, prog=0).
 
-números reais hoje:
+## o que muda
 
-- **22 estudantes matriculados** ao todo (não 100+). 11 em IA na Prática, 13 em Economia Circular.
-- **10 estudantes já começaram** a responder a aula 1 (têm rascunho salvo no banco, com conteúdo de verdade — de 46 até 2484 caracteres por entrega).
-- **1 entrega "enviada"** formalmente (botão "enviar pro educador" clicado).
-- **1 entrega já com retorno do educador** (revisado).
-- **8 entregas em rascunho** que o inbox simplesmente **não mostra**.
+### 1. migração: flag de teste + view que ignora "nunca começou"
 
-quebrado por curso:
+- adiciona `profiles.is_test boolean not null default false`
+- recria `student_engagement_risk` excluindo:
+  - perfis com `is_test = true`
+  - matrículas sem nenhum `student_module_progress.started_at` AND sem nenhum `module_deliverables` com conteúdo (= nunca tocou nada)
+- expõe view nova `student_activation_pending` listando matriculados ativos não-teste que ainda não começaram, com `days_since_enroll`. serve pra cards informativos, nunca alerta de risco.
+- grants pra `authenticated` (admin lê via has_role nas tabelas-base, view fica security_invoker).
 
-```text
-IA na Prática              11 matriculados · 6 começaram · 1 enviou · 2 completaram módulo
-Economia Circular & Reg.   13 matriculados · 4 começaram · 0 enviou · 0 completaram módulo
+### 2. backend: hook + edge function
+
+- `useAdminMetrics`: adiciona `nunca_comecaram` por curso (contagem da `student_activation_pending`) e remove esses ids dos buckets de risco. `em_risco` e `em_risco_critico` passam a representar apenas quem começou e parou. resto é automático porque a view já filtra.
+- `check-student-evasion` (edge function): nenhuma mudança de código necessária; ao consumir a view filtrada deixa de cutucar quem nunca entrou.
+
+### 3. ui admin
+
+- `AdminHome`:
+  - banner vermelho topo só renderiza quando `em_risco_critico > 0` (e agora isso significa "começou e sumiu 21+ dias", de verdade)
+  - card "hoje" ganha uma terceira linha neutra: `X matriculados ainda não começaram` (sem cor de alerta, copy convidando ativação), clicando vai pra `/admin/risco?tab=ativacao`
+- `AdminRisco`:
+  - duas abas: `evasão` (atual, agora limpa) e `ativação pendente` (lista da nova view, com botão "convidar de novo" reaproveitando email de boas-vindas)
+  - toggle no rodapé: "incluir contas de teste" (off por padrão; só pra QA local)
+- `AdminUsers` (lista de usuários):
+  - coluna nova com toggle `is_test`, escrita direta na tabela `profiles` (admin via has_role)
+  - filtro "ocultar contas de teste" ligado por padrão
+
+### 4. seed inicial e fonte de verdade
+
+- migração marca `is_test = true` pra `mateusfrattezi`, `frattz`, `Mateus Frattz`, `duduobregon` (4 ids já identificados na auditoria) pra zerar o banner imediatamente
+- atualiza `.lovable/plan.md` com a nova definição de risco
+
+## arquivos tocados
+
+```
+supabase/migrations/<nova>.sql              novo
+src/hooks/useAdminMetrics.ts                add nunca_comecaram
+src/pages/AdminHome.tsx                     banner condicional + card neutro
+src/pages/AdminRisco.tsx                    abas + toggle teste
+src/pages/AdminUsers.tsx                    coluna is_test (se já existir lista; senão, atalho mínimo)
+.lovable/plan.md                            registrar nova regra
 ```
 
-ou seja: o autosave (`module_deliverables`, status `rascunho`) tá funcionando. o que falta é o inbox te mostrar "fulano começou e tá no meio". hoje o filtro padrão é `pendentes` (= status `enviado`), e nem existe opção `rascunho` no dropdown. por isso parece que "só 1 respondeu".
+## o que não muda
 
-## o que fazer
-
-### 1. adicionar visibilidade de rascunhos no feedback inbox
-- novo valor no filtro de status: **"em rascunho"** (já existe "pendentes / em ajuste / revisados / todos").
-- novo contador no header: `X em rascunho` ao lado de `pendentes · em ajuste · revisados`.
-- coluna "enviado" passa a mostrar `rascunho há Xd` (cinza) quando `submitted_at` é null.
-- ao abrir o drawer de uma entrega em rascunho, mostrar o conteúdo atual + aviso "ainda não foi enviado pro educador, você está vendo um rascunho", **sem permitir revisar** (não dá retorno em rascunho — só visualiza pra acompanhar).
-- exportar CSV passa a incluir rascunhos quando o filtro escolhido for "em rascunho" ou "todos".
-
-### 2. painel "panorama da turma" no admin home (curto)
-um card único acima da fila de ação, por curso:
-
-```text
-IA na Prática
-11 matriculados · 6 começaram · 1 enviou · 2 completaram aula 1
-```
-
-assim você bate o olho e sabe que o progresso tá sendo salvo, mesmo sem ninguém ter "enviado". query simples agregando `enrollments`, `module_deliverables`, `student_module_progress`.
-
-### 3. validar o botão "atualizar" do inbox
-o botão chama `refetch()` da query react-query, que já existe. provavelmente "não atualiza" porque você esperava ver mais gente — e na verdade ele tá certo, só não tinha o que mostrar com o filtro `pendentes`. depois do item 1, isso some sozinho. se ainda sentir lag, adiciono `await queryClient.invalidateQueries(...)` explícito + toast "atualizado".
-
-### 4. garantir o autosave dos estudantes (revisão defensiva)
-o `useDeliverable` + `useAutoSaveField` (debounce 700ms) já estão certos: lazy-create (não cria rascunho vazio no mount), merge por chave, mutação que escreve `content` + `updated_at`. vou só:
-- adicionar **indicador "salvando…" / "salvo há Xs"** mais visível em cada pílula da aula 1 (hoje existe mas é discreto demais — vou levantar pra `text-xs` com ícone, ancorado embaixo de cada bloco).
-- logar um `console.warn` quando o save falhar (hoje só seta `status = "error"` silencioso). sem mudar lógica, só visibilidade.
-
-## o que **não** vou mexer
-
-- schema de `module_deliverables` — está correto.
-- regra "rascunho não vira pendente automaticamente" — é proposital, o estudante precisa clicar enviar.
-- nada no fluxo do estudante além do indicador de save mais claro.
-
-## detalhes técnicos
-
-arquivos tocados:
-
-- `src/features/admin/usePendingDeliverables.ts` — adicionar `"rascunho"` em `InboxFilter`, branch de query (`status='rascunho'` + `submitted_at IS NULL`), retornar `rascunhoCount`.
-- `src/features/admin/AdminFeedbackInbox.tsx` — opção no `<Select>`, contador no header, render da coluna `enviado` pra rascunho, CSV.
-- `src/features/admin/FeedbackReviewDrawer.tsx` — modo "somente leitura" quando `status='rascunho'`.
-- `src/pages/AdminHome.tsx` (ou componente novo `AdminTurmaPanorama.tsx`) — card de panorama por curso.
-- `src/components/eletiva/pills/useDeliverable.ts` — `console.warn` no `onError` do mutation.
-- pílulas da aula 1 (`src/components/eletiva/pills/*.tsx`) — subir o indicador de autosave pra fora do hover discreto.
-
-nenhuma migration, nenhuma mudança de RLS, nenhum endpoint novo.
+- copy do banner em si (continua "21+ dias sem aparecer") só passa a aparecer quando faz sentido
+- definição de `caught_up` / thresholds de medium/high/lost (7/14/21) seguem iguais
+- nenhuma alteração em rotas públicas ou jornada do estudante
