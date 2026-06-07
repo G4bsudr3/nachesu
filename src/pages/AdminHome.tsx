@@ -59,6 +59,13 @@ const AdminHome = () => {
       hint: "entre 7 e 21 dias",
     },
     {
+      count: totals.nunca_comecaram,
+      label: "matriculados ainda não começaram",
+      to: "/admin/risco?tab=ativacao",
+      tone: "neutral" as const,
+      hint: "ainda sem atividade. um empurrãozinho ajuda.",
+    },
+    {
       count: scope === "all" ? pendentesAprovacao : 0,
       label: "cadastros aguardando aprovação",
       to: "/admin/pending",
