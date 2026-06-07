@@ -239,6 +239,7 @@ async function fetchMetrics(): Promise<AdminMetrics> {
       pendentes_revisao: delivRes.count ?? 0,
       em_risco: risks.filter((r) => ["medium", "high", "lost"].includes(r.risk_level)).length,
       em_risco_critico: risks.filter((r) => r.risk_level === "lost").length,
+      nunca_comecaram: (activationRes as { count: number | null }).count ?? 0,
       modulo_proximo: nextMod
         ? { number: nextMod.number, title: nextMod.title, release_at: nextMod.available_from as string }
         : null,
