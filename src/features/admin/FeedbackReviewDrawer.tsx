@@ -258,8 +258,10 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     ? `módulo ${String(deliverable.module.number).padStart(2, "0")} · ${deliverable.module.title}`
     : "módulo";
   const alreadyReviewed = !!deliverable.reviewed_at;
-  const statusLabel =
-    deliverable.status === "ajuste"
+  const isDraft = deliverable.submitted_at === null && deliverable.status === "rascunho";
+  const statusLabel = isDraft
+    ? "rascunho (ainda não enviado)"
+    : deliverable.status === "ajuste"
       ? "ajuste solicitado"
       : deliverable.status === "revisado"
         ? existingVerdict === "ajustar"
@@ -325,9 +327,22 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
           </div>
         </SheetHeader>
 
+        {isDraft && (
+          <div className="mt-5 rounded-2xl border-2 border-perestroika-preto/20 bg-perestroika-preto/[0.04] px-4 py-3">
+            <p className="font-body text-sm text-perestroika-preto">
+              <span className="font-medium uppercase tracking-wide text-[11px] block mb-1 text-perestroika-preto/65">
+                rascunho do estudante
+              </span>
+              ainda não foi enviado pro educador. você está vendo o que foi salvo
+              automaticamente. não dá pra revisar ou mandar feedback enquanto não
+              entregar — use isso só pra acompanhar.
+            </p>
+          </div>
+        )}
+
         <div className="mt-6">
           <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3">
-            entrega do estudante
+            {isDraft ? "conteúdo do rascunho" : "entrega do estudante"}
           </p>
           <DeliverableAnswersList deliverable={deliverable} />
         </div>
