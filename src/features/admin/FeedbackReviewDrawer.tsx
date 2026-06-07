@@ -376,6 +376,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
           </details>
         )}
 
+        {!isDraft && (
         <div className="mt-6">
           <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
             <div className="min-w-0">
