@@ -34,6 +34,7 @@ type AdminUser = {
   is_admin: boolean;
   courses: string[];
   course_slugs: string[];
+  is_test?: boolean;
 };
 
 type AdminListUsersRpc = {
