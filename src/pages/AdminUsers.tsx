@@ -412,6 +412,16 @@ const AdminUsers = () => {
                     </Link>
                     <button
                       type="button"
+                      onClick={() => toggleTest(item)}
+                      disabled={busyUserId === item.user_id}
+                      title={item.is_test ? "desmarcar como conta de teste" : "marcar como conta de teste (some dos dashboards)"}
+                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
+                    >
+                      <FlaskConical className="h-4 w-4" />
+                      {item.is_test ? "remover teste" : "marcar teste"}
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => resetPassword(item)}
                       disabled={busyUserId === item.user_id}
                       title="gerar senha nova aleatória"
