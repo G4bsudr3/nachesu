@@ -30,10 +30,11 @@ const AdminFeedbackInbox = lazy(() => import("@/features/admin/AdminFeedbackInbo
 const AdminNudgeTemplates = lazy(() => import("@/features/admin/AdminNudgeTemplates").then((m) => ({ default: m.AdminNudgeTemplates })));
 const AdminRubrics = lazy(() => import("@/features/admin/AdminRubrics").then((m) => ({ default: m.AdminRubrics })));
 const AdminCopyAudit = lazy(() => import("@/features/admin/AdminCopyAudit").then((m) => ({ default: m.AdminCopyAudit })));
+const AdminAutosaveAudit = lazy(() => import("@/features/admin/AdminAutosaveAudit").then((m) => ({ default: m.AdminAutosaveAudit })));
 const AdminUsers = lazy(() => import("./AdminUsers"));
 const AdminFbiResponses = lazy(() => import("@/features/admin/AdminFbiResponses"));
 
-const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "autosave", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
@@ -45,6 +46,7 @@ const TAB_LABELS: Record<AdminTab, string> = {
   tutor: "eletiva · tutor IA",
   feedback: "feedback · inbox",
   "copy-audit": "auditoria · copy",
+  autosave: "auditoria · autosave",
   fbi: "fbi · respostas",
   prework: "pré-work",
   missoes: "missões",
@@ -82,6 +84,7 @@ const TAB_COMPONENTS: Record<AdminTab, React.ComponentType> = {
   tutor: AdminTutorCommand,
   feedback: AdminFeedbackInbox,
   "copy-audit": AdminCopyAudit,
+  autosave: AdminAutosaveAudit,
   materiais: AdminMateriais,
   pending: AdminPending,
   usuarios: AdminUsers,

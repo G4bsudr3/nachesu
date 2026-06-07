@@ -2,15 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  recordAutosaveEvent,
+  type AutosaveFieldStatus,
+} from "./autosaveTelemetry";
 
 // payload livre que cada pílula da aula 1 grava em module_deliverables.content.
-// shape esperado:
-// {
-//   guided_answers?: Record<string, string>,
-//   items?: RadarItem[],
-//   quiz_answers?: Record<string, string | string[]>,
-//   bonus?: { fact?: string; why?: string },
-// }
 export type DeliverableContent = Record<string, unknown>;
 
 type DeliverableRow = {
@@ -22,10 +19,6 @@ type DeliverableRow = {
   submitted_at: string | null;
 };
 
-/**
- * carrega (ou cria) o deliverable do aluno pra esse módulo e devolve helper de
- * autosave por chave. usado pelas 5 pílulas da aula 1.
- */
 export function useDeliverable(moduleId: string | undefined) {
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -33,8 +26,6 @@ export function useDeliverable(moduleId: string | undefined) {
   const enabled = !!user && !!moduleId;
   const queryKey = ["module-deliverable", moduleId, user?.id];
 
-  // só carrega o que já existe — NÃO cria rascunho no mount.
-  // criação acontece on-write (primeiro save) via ensureDeliverable abaixo.
   const { data, isLoading } = useQuery({
     queryKey,
     enabled,
@@ -52,7 +43,6 @@ export function useDeliverable(moduleId: string | undefined) {
 
   const ensureDeliverable = async (): Promise<DeliverableRow> => {
     if (data) return data;
-    // fetch fresh in case algum outro write criou paralelamente
     const { data: existing } = await supabase
       .from("module_deliverables")
       .select("id, module_id, user_id, content, status, submitted_at")
@@ -97,8 +87,6 @@ export function useDeliverable(moduleId: string | undefined) {
       );
     },
     onError: (err) => {
-      // visibilidade defensiva: se o autosave falhar, deixa rastro no console
-      // pro suporte conseguir investigar (o SaveIndicator já mostra toast).
       console.warn("[useDeliverable] falha ao salvar rascunho", err);
     },
   });
@@ -111,9 +99,13 @@ export function useDeliverable(moduleId: string | undefined) {
   };
 }
 
+const RETRY_DELAYS_MS = [1500, 4000, 10000]; // 3 tentativas extras
+
 /**
- * autosave com debounce: dispara `save({ [key]: value })` ~700ms após mudar.
- * mostra estado "salvando" / "salvo" pra feedback discreto.
+ * autosave com debounce + retry automático.
+ * - dispara save ~debounceMs após mudança
+ * - em falha, reagenda com backoff (1.5s, 4s, 10s)
+ * - registra cada tentativa em telemetria pra debug por estudante
  */
 export function useAutoSaveField<T>(opts: {
   value: T;
@@ -121,29 +113,120 @@ export function useAutoSaveField<T>(opts: {
   save: (patch: DeliverableContent) => Promise<unknown>;
   field: string;
   debounceMs?: number;
-}) {
-  const { value, initial, save, field, debounceMs = 700 } = opts;
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  moduleId?: string;
+  userId?: string;
+}): AutosaveFieldStatus {
+  const { value, initial, save, field, debounceMs = 700, moduleId, userId } = opts;
+  const [status, setStatus] = useState<AutosaveFieldStatus>({
+    state: "idle",
+    attempts: 0,
+    lastSavedAt: null,
+    lastError: null,
+    nextRetryAt: null,
+  });
   const initialRef = useRef(initial);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const attemptRef = useRef(0);
+  const inFlightValue = useRef<T>(value);
+
   const sameAsInitial = useMemo(
     () => JSON.stringify(value) === JSON.stringify(initialRef.current),
     [value],
   );
 
+  const runSave = async (attempt: number, payloadValue: T) => {
+    attemptRef.current = attempt;
+    setStatus((s) => ({ ...s, state: attempt > 1 ? "retry" : "saving", attempts: attempt, nextRetryAt: null }));
+    if (moduleId && userId) {
+      recordAutosaveEvent({
+        userId,
+        moduleId,
+        field,
+        state: attempt > 1 ? "retry" : "saving",
+        attempt,
+      });
+    }
+    try {
+      await save({ [field]: payloadValue as unknown as DeliverableContent[string] });
+      const at = Date.now();
+      setStatus({ state: "saved", attempts: attempt, lastSavedAt: at, lastError: null, nextRetryAt: null });
+      if (moduleId && userId) {
+        recordAutosaveEvent({ userId, moduleId, field, state: "saved", attempt });
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const delay = RETRY_DELAYS_MS[attempt - 1];
+      if (delay !== undefined) {
+        const nextAt = Date.now() + delay;
+        setStatus({
+          state: "retry",
+          attempts: attempt,
+          lastSavedAt: null,
+          lastError: message,
+          nextRetryAt: nextAt,
+        });
+        if (moduleId && userId) {
+          recordAutosaveEvent({
+            userId,
+            moduleId,
+            field,
+            state: "error",
+            attempt,
+            error: message,
+          });
+        }
+        if (retryTimer.current) clearTimeout(retryTimer.current);
+        retryTimer.current = setTimeout(() => {
+          // valor mais recente vence
+          runSave(attempt + 1, inFlightValue.current);
+        }, delay);
+      } else {
+        setStatus({
+          state: "error",
+          attempts: attempt,
+          lastSavedAt: null,
+          lastError: message,
+          nextRetryAt: null,
+        });
+        if (moduleId && userId) {
+          recordAutosaveEvent({
+            userId,
+            moduleId,
+            field,
+            state: "error",
+            attempt,
+            error: message,
+          });
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     if (sameAsInitial) return;
-    if (timer.current) clearTimeout(timer.current);
-    setStatus("saving");
-    timer.current = setTimeout(() => {
-      save({ [field]: value as unknown as DeliverableContent[string] })
-        .then(() => setStatus("saved"))
-        .catch(() => setStatus("error"));
+    inFlightValue.current = value;
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    if (retryTimer.current) {
+      clearTimeout(retryTimer.current);
+      retryTimer.current = null;
+    }
+    setStatus((s) => ({ ...s, state: "saving", attempts: 0, nextRetryAt: null }));
+    debounceTimer.current = setTimeout(() => {
+      runSave(1, value);
     }, debounceMs);
     return () => {
-      if (timer.current) clearTimeout(timer.current);
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
     };
-  }, [value, field, save, debounceMs, sameAsInitial]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, field, debounceMs, sameAsInitial]);
+
+  // cleanup do retry pendente quando o componente desmonta
+  useEffect(() => {
+    return () => {
+      if (retryTimer.current) clearTimeout(retryTimer.current);
+    };
+  }, []);
 
   return status;
 }
