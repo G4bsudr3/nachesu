@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink, BookOpen } from "lucide-react";
+import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink, BookOpen, FlaskConical } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,6 +34,7 @@ type AdminUser = {
   is_admin: boolean;
   courses: string[];
   course_slugs: string[];
+  is_test?: boolean;
 };
 
 type AdminListUsersRpc = {
@@ -58,7 +59,21 @@ const AdminUsers = () => {
   const [search, setSearch] = useState("");
   const [courseFilter, setCourseFilter] = useState<string>("all");
   const [domainFilter, setDomainFilter] = useState<string>("all");
+  const [hideTest, setHideTest] = useState(true);
   const [busyUserId, setBusyUserId] = useState<string | null>(null);
+
+  const mergeTestFlags = async (list: AdminUser[]): Promise<AdminUser[]> => {
+    if (list.length === 0) return list;
+    const ids = list.map((u) => u.user_id);
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("user_id, is_test")
+      .in("user_id", ids);
+    const map = new Map<string, boolean>(
+      (profs ?? []).map((p: { user_id: string; is_test: boolean | null }) => [p.user_id, !!p.is_test]),
+    );
+    return list.map((u) => ({ ...u, is_test: map.get(u.user_id) ?? false }));
+  };
 
   const loadUsers = async () => {
     setLoading(true);
@@ -69,7 +84,8 @@ const AdminUsers = () => {
       toast.error("não consegui carregar os usuários");
       setUsers([]);
     } else {
-      setUsers((data ?? []) as AdminUser[]);
+      const merged = await mergeTestFlags((data ?? []) as AdminUser[]);
+      setUsers(merged);
     }
     setLoading(false);
   };
@@ -87,7 +103,9 @@ const AdminUsers = () => {
         toast.error("não consegui carregar os usuários");
         setUsers([]);
       } else {
-        setUsers((data ?? []) as AdminUser[]);
+        const merged = await mergeTestFlags((data ?? []) as AdminUser[]);
+        if (cancelled) return;
+        setUsers(merged);
       }
       setLoading(false);
     })();
@@ -96,6 +114,29 @@ const AdminUsers = () => {
       cancelled = true;
     };
   }, []);
+
+  const toggleTest = async (target: AdminUser) => {
+    const next = !target.is_test;
+    setBusyUserId(target.user_id);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ is_test: next })
+      .eq("user_id", target.user_id);
+    if (error) {
+      logger.error("[admin/users] toggle is_test:", error);
+      toast.error("não consegui mexer no marcador");
+    } else {
+      toast.success(
+        next
+          ? `${target.email} agora conta como teste (some dos dashboards)`
+          : `${target.email} voltou a aparecer nos dashboards`,
+      );
+      setUsers((prev) =>
+        prev.map((u) => (u.user_id === target.user_id ? { ...u, is_test: next } : u)),
+      );
+    }
+    setBusyUserId(null);
+  };
 
   const courseOptions = useMemo(() => {
     const map = new Map<string, string>();
@@ -119,6 +160,7 @@ const AdminUsers = () => {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return users.filter((item) => {
+      if (hideTest && item.is_test) return false;
       if (courseFilter === "none") {
         if (item.course_slugs.length > 0) return false;
       } else if (courseFilter !== "all") {
@@ -135,7 +177,7 @@ const AdminUsers = () => {
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [users, search, courseFilter, domainFilter]);
+  }, [users, search, courseFilter, domainFilter, hideTest]);
 
 
   const grantAdmin = async (target: AdminUser) => {
@@ -261,6 +303,15 @@ const AdminUsers = () => {
             ))}
           </SelectContent>
         </Select>
+        <label className="inline-flex items-center gap-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/65 cursor-pointer whitespace-nowrap">
+          <input
+            type="checkbox"
+            checked={hideTest}
+            onChange={(e) => setHideTest(e.target.checked)}
+            className="h-4 w-4 rounded border-perestroika-preto/30"
+          />
+          ocultar contas de teste
+        </label>
       </div>
 
 
@@ -303,6 +354,11 @@ const AdminUsers = () => {
                     <div>
                       <p className="font-medium text-perestroika-preto">
                         {item.display_name || item.nickname || item.email}
+                        {item.is_test && (
+                          <span className="ml-2 inline-flex items-center gap-1 align-middle rounded-full bg-perestroika-preto/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-perestroika-preto/70">
+                            <FlaskConical className="h-3 w-3" /> teste
+                          </span>
+                        )}
                       </p>
                       <p className="text-xs text-perestroika-preto/60">{item.email}</p>
                     </div>
@@ -354,6 +410,16 @@ const AdminUsers = () => {
                     >
                       <ExternalLink className="h-4 w-4" /> perfil
                     </Link>
+                    <button
+                      type="button"
+                      onClick={() => toggleTest(item)}
+                      disabled={busyUserId === item.user_id}
+                      title={item.is_test ? "desmarcar como conta de teste" : "marcar como conta de teste (some dos dashboards)"}
+                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
+                    >
+                      <FlaskConical className="h-4 w-4" />
+                      {item.is_test ? "remover teste" : "marcar teste"}
+                    </button>
                     <button
                       type="button"
                       onClick={() => resetPassword(item)}

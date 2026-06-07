@@ -1930,6 +1930,7 @@ export type Database = {
           has_password: boolean
           id: string
           instagram: string | null
+          is_test: boolean
           linkedin: string | null
           nickname: string | null
           quiet_hours_end: number | null
@@ -1951,6 +1952,7 @@ export type Database = {
           has_password?: boolean
           id?: string
           instagram?: string | null
+          is_test?: boolean
           linkedin?: string | null
           nickname?: string | null
           quiet_hours_end?: number | null
@@ -1972,6 +1974,7 @@ export type Database = {
           has_password?: boolean
           id?: string
           instagram?: string | null
+          is_test?: boolean
           linkedin?: string | null
           nickname?: string | null
           quiet_hours_end?: number | null
@@ -2659,6 +2662,23 @@ export type Database = {
       }
     }
     Views: {
+      student_activation_pending: {
+        Row: {
+          course_id: string | null
+          days_since_enroll: number | null
+          enrolled_at: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_engagement_risk: {
         Row: {
           course_id: string | null
@@ -2694,6 +2714,7 @@ export type Database = {
           has_password: boolean
           id: string
           instagram: string | null
+          is_test: boolean
           linkedin: string | null
           nickname: string | null
           quiet_hours_end: number | null
@@ -2821,6 +2842,7 @@ export type Database = {
           has_password: boolean
           id: string
           instagram: string | null
+          is_test: boolean
           linkedin: string | null
           nickname: string | null
           quiet_hours_end: number | null

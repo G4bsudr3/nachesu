@@ -15,6 +15,7 @@ const sumCourses = (cs: CourseMetrics[]) => ({
   pendentes_revisao: cs.reduce((a, c) => a + c.pendentes_revisao, 0),
   em_risco: cs.reduce((a, c) => a + c.em_risco, 0),
   em_risco_critico: cs.reduce((a, c) => a + c.em_risco_critico, 0),
+  nunca_comecaram: cs.reduce((a, c) => a + (c.nunca_comecaram ?? 0), 0),
   modulo_proximo: cs
     .map((c) => c.modulo_proximo)
     .filter(Boolean)
@@ -56,6 +57,13 @@ const AdminHome = () => {
       to: "/admin/risco",
       tone: "warn" as const,
       hint: "entre 7 e 21 dias",
+    },
+    {
+      count: totals.nunca_comecaram,
+      label: "matriculados ainda não começaram",
+      to: "/admin/risco?tab=ativacao",
+      tone: "neutral" as const,
+      hint: "ainda sem atividade. um empurrãozinho ajuda.",
     },
     {
       count: scope === "all" ? pendentesAprovacao : 0,

@@ -12,6 +12,7 @@ export interface CourseMetrics {
   pendentes_revisao: number;
   em_risco: number;
   em_risco_critico: number; // lost
+  nunca_comecaram: number; // matriculados ativos não-teste sem nenhuma atividade
   modulo_proximo: { number: number; title: string; release_at: string } | null;
   funnel: {
     matriculados: number;
@@ -85,7 +86,7 @@ async function fetchMetrics(): Promise<AdminMetrics> {
     );
     const courseModuleIds = courseModules.map((m) => m.id);
 
-    const [enrollRes, riskRes, delivRes, progRes, ratingRes] = await Promise.all([
+    const [enrollRes, riskRes, delivRes, progRes, ratingRes, activationRes] = await Promise.all([
       supabase
         .from("enrollments")
         .select("user_id, created_at")
@@ -116,6 +117,10 @@ async function fetchMetrics(): Promise<AdminMetrics> {
             .select("module_id, rating")
             .in("module_id", courseModuleIds)
         : Promise.resolve({ data: [] as any[] }),
+      supabase
+        .from("student_activation_pending" as never)
+        .select("user_id", { count: "exact", head: true })
+        .eq("course_id", c.id),
     ]);
 
     const enrollments = (enrollRes.data ?? []) as any[];
@@ -234,6 +239,7 @@ async function fetchMetrics(): Promise<AdminMetrics> {
       pendentes_revisao: delivRes.count ?? 0,
       em_risco: risks.filter((r) => ["medium", "high", "lost"].includes(r.risk_level)).length,
       em_risco_critico: risks.filter((r) => r.risk_level === "lost").length,
+      nunca_comecaram: (activationRes as { count: number | null }).count ?? 0,
       modulo_proximo: nextMod
         ? { number: nextMod.number, title: nextMod.title, release_at: nextMod.available_from as string }
         : null,
