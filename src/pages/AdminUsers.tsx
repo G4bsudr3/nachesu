@@ -160,6 +160,7 @@ const AdminUsers = () => {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return users.filter((item) => {
+      if (hideTest && item.is_test) return false;
       if (courseFilter === "none") {
         if (item.course_slugs.length > 0) return false;
       } else if (courseFilter !== "all") {
@@ -176,7 +177,7 @@ const AdminUsers = () => {
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [users, search, courseFilter, domainFilter]);
+  }, [users, search, courseFilter, domainFilter, hideTest]);
 
 
   const grantAdmin = async (target: AdminUser) => {
