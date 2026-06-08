@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { logger } from "@/lib/logger";
 
 type DeliverableRow = Database["public"]["Tables"]["module_deliverables"]["Row"];
 type ModuleLite = { id: string; number: number; title: string; trail_id: string };
@@ -20,10 +21,34 @@ export type InboxFilter = "pendentes" | "ajuste" | "revisados" | "rascunho" | "t
 const isDraftRow = (d: { submitted_at: string | null; status: string | null }) =>
   d.submitted_at === null && d.status === "rascunho";
 
+type RpcRow = {
+  id: string;
+  user_id: string;
+  module_id: string;
+  status: string;
+  submitted_at: string | null;
+  reviewed_at: string | null;
+  reviewer_id: string | null;
+  feedback: string | null;
+  score: number | null;
+  content: unknown;
+  created_at: string;
+  updated_at: string;
+  module_number: number | null;
+  module_title: string | null;
+  module_trail_id: string | null;
+  trail_title: string | null;
+  course_id: string | null;
+  profile_display_name: string | null;
+  profile_nickname: string | null;
+  profile_is_test: boolean | null;
+};
+
 /**
- * fila de entregas pra revisão do professor.
- * traz tanto entregas enviadas quanto rascunhos com conteúdo (pra admin ver
- * quem começou e tá no meio antes do estudante apertar enviar).
+ * fila de entregas pra revisão do educador.
+ * usa RPC security-definer admin_inbox_deliverables() que devolve tudo
+ * já joinado (módulo, trilha, perfil) — não dependemos da RLS de aluno
+ * pra ler dados nesse caminho.
  */
 export function usePendingDeliverables(opts: {
   courseId?: string | null;
@@ -37,68 +62,48 @@ export function usePendingDeliverables(opts: {
     queryKey: ["admin-deliverables-inbox"],
     staleTime: 30_000,
     queryFn: async () => {
-      const [submittedRes, draftsRes] = await Promise.all([
-        supabase
-          .from("module_deliverables")
-          .select("*")
-          .not("submitted_at", "is", null)
-          .order("submitted_at", { ascending: true })
-          .limit(500),
-        supabase
-          .from("module_deliverables")
-          .select("*")
-          .eq("status", "rascunho")
-          .is("submitted_at", null)
-          .order("updated_at", { ascending: false })
-          .limit(500),
-      ]);
-      if (submittedRes.error) throw submittedRes.error;
-      if (draftsRes.error) throw draftsRes.error;
-
-      // só rascunhos com algum conteúdo digitado
-      const drafts = (draftsRes.data ?? []).filter((r) => {
-        const c = r.content as Record<string, unknown> | null;
-        if (!c || typeof c !== "object") return false;
-        return Object.keys(c).length > 0;
-      });
-
-      const list = [...(submittedRes.data ?? []), ...drafts] as DeliverableRow[];
-      if (list.length === 0) return [] as DeliverableInbox[];
-
-      const moduleIds = Array.from(new Set(list.map((r) => r.module_id)));
-      const userIds = Array.from(new Set(list.map((r) => r.user_id)));
-
-      const [{ data: mods }, { data: profs }] = await Promise.all([
-        supabase.from("modules").select("id, number, title, trail_id").in("id", moduleIds),
-        supabase.from("profiles").select("user_id, display_name, nickname, is_test").in("user_id", userIds),
-      ]);
-
-      const trailIds = Array.from(
-        new Set((mods ?? []).map((m) => m.trail_id).filter(Boolean) as string[]),
-      );
-      const { data: trails } = trailIds.length
-        ? await supabase.from("trails").select("id, course_id, title").in("id", trailIds)
-        : { data: [] as TrailLite[] };
-
-      const trailMap = new Map<string, TrailLite>(
-        (trails ?? []).map((t) => [t.id, t as TrailLite]),
-      );
-      const modMap = new Map<string, ModuleLite>((mods ?? []).map((m) => [m.id, m as ModuleLite]));
-      const profMap = new Map<string, ProfileLite>(
-        (profs ?? []).map((p) => [p.user_id, p as ProfileLite]),
-      );
-
-      return list.map((r) => {
-        const mod = modMap.get(r.module_id) ?? null;
-        const trail = mod ? trailMap.get(mod.trail_id) ?? null : null;
-        return {
-          ...r,
-          module: mod,
-          trail,
-          course_id: trail?.course_id ?? null,
-          profile: profMap.get(r.user_id) ?? null,
-        };
-      }) as DeliverableInbox[];
+      const { data: rows, error } = await supabase.rpc("admin_inbox_deliverables");
+      if (error) {
+        logger.error("admin_inbox_deliverables falhou", error);
+        throw error;
+      }
+      const list = (rows ?? []) as RpcRow[];
+      return list.map<DeliverableInbox>((r) => ({
+        id: r.id,
+        user_id: r.user_id,
+        module_id: r.module_id,
+        status: r.status as DeliverableRow["status"],
+        submitted_at: r.submitted_at,
+        reviewed_at: r.reviewed_at,
+        reviewer_id: r.reviewer_id,
+        feedback: r.feedback,
+        score: r.score,
+        content: r.content as DeliverableRow["content"],
+        created_at: r.created_at,
+        updated_at: r.updated_at,
+        module: r.module_number !== null && r.module_title !== null && r.module_trail_id
+          ? {
+              id: r.module_id,
+              number: r.module_number,
+              title: r.module_title,
+              trail_id: r.module_trail_id,
+            }
+          : null,
+        trail: r.module_trail_id && r.trail_title !== null
+          ? {
+              id: r.module_trail_id,
+              course_id: r.course_id,
+              title: r.trail_title,
+            }
+          : null,
+        course_id: r.course_id,
+        profile: {
+          user_id: r.user_id,
+          display_name: r.profile_display_name,
+          nickname: r.profile_nickname,
+          is_test: r.profile_is_test,
+        },
+      }));
     },
   });
 
