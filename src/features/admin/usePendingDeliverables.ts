@@ -25,6 +25,7 @@ type RpcRow = {
   id: string;
   user_id: string;
   module_id: string;
+  kind: DeliverableRow["kind"];
   status: string;
   submitted_at: string | null;
   reviewed_at: string | null;
@@ -72,6 +73,7 @@ export function usePendingDeliverables(opts: {
         id: r.id,
         user_id: r.user_id,
         module_id: r.module_id,
+        kind: r.kind,
         status: r.status as DeliverableRow["status"],
         submitted_at: r.submitted_at,
         reviewed_at: r.reviewed_at,
