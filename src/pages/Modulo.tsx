@@ -118,6 +118,24 @@ const Modulo = () => {
   const isStarted = !!progress?.started_at;
   const isCompleted = !!progress?.completed_at;
 
+  // conteúdo do deliverable (rascunho) — usado pra detectar quando todas as
+  // pílulas obrigatórias já têm resposta válida, mesmo que o estudante não
+  // tenha clicado "feito" em cada uma. evita travar o "concluir módulo".
+  const { data: deliverableContent } = useQuery({
+    queryKey: ["module-deliverable-content", moduleRow?.id, user?.id],
+    enabled: !!user && !!moduleRow,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("module_deliverables")
+        .select("content")
+        .eq("user_id", user!.id)
+        .eq("module_id", moduleRow!.id)
+        .maybeSingle();
+      if (error) throw error;
+      return (data?.content ?? {}) as DeliverableContent;
+    },
+  });
+
   useEffect(() => {
     if (!user || !moduleRow || isStarted) return;
     const available =
