@@ -26,6 +26,11 @@ import { ModuloLockedHero } from "@/components/eletiva/modulo/ModuloLockedHero";
 import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
 import { TrailTransitionBanner } from "@/components/eletiva/modulo/TrailTransitionBanner";
 import { scopeModuleNavigation } from "@/lib/moduleNavigation";
+import { resolvePill } from "@/features/admin/deliverableRendering/resolvers";
+import type {
+  DeliverableContent,
+  PillKind,
+} from "@/features/admin/deliverableRendering/types";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
