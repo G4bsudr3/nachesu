@@ -29,15 +29,11 @@ export function useDeliverableAnswers(deliverable: DeliverableInbox | null) {
     queryKey: ["deliverable-pills", moduleId],
     enabled: !!moduleId,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("module_pills")
-        .select(
-          "id, module_id, order_index, kind, title, body_md, required, interaction_schema",
-        )
-        .eq("module_id", moduleId!)
-        .order("order_index");
+      const { data, error } = await supabase.rpc("admin_module_pills", {
+        p_module_id: moduleId!,
+      });
       if (error) throw error;
-      return (data ?? []) as PillRow[];
+      return (data ?? []) as unknown as PillRow[];
     },
   });
 
