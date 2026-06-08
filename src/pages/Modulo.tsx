@@ -149,7 +149,50 @@ const Modulo = () => {
       const required = (pills ?? []).filter((p) => p.required);
       const doneRequired = required.filter((p) => completedPillIds.has(p.id));
       if (!isAdmin && required.length > 0 && doneRequired.length < required.length) {
-        throw new Error("termine as pílulas obrigatórias primeiro");
+        // antes de barrar, tenta auto-marcar pílulas cujo conteúdo já está completo
+        // (autosave salvou tudo mas o estudante esqueceu de bater "feito").
+        const { data: deliv } = await supabase
+          .from("module_deliverables")
+          .select("content")
+          .eq("user_id", user.id)
+          .eq("module_id", moduleRow.id)
+          .maybeSingle();
+        const content = (deliv?.content ?? {}) as DeliverableContent;
+        const missing = required.filter((p) => !completedPillIds.has(p.id));
+        const auto: string[] = [];
+        for (const p of missing) {
+          const resolved = resolvePill(
+            {
+              id: p.id,
+              module_id: moduleRow.id,
+              order_index: p.order_index,
+              kind: p.kind as PillKind,
+              title: p.title,
+              body_md: p.body_md,
+              required: !!p.required,
+              interaction_schema: (p.interaction_schema ?? null) as Record<string, unknown> | null,
+            },
+            content,
+          );
+          if (resolved.state === "respondida" || resolved.state === "passiva") {
+            auto.push(p.id);
+          }
+        }
+        if (auto.length > 0) {
+          const nowIso = new Date().toISOString();
+          const rows = auto.map((pid) => ({
+            user_id: user.id,
+            pill_id: pid,
+            completed_at: nowIso,
+          }));
+          const { error: upErr } = await supabase
+            .from("student_pill_progress")
+            .upsert(rows, { onConflict: "user_id,pill_id" });
+          if (upErr) throw upErr;
+        }
+        if (auto.length + doneRequired.length < required.length) {
+          throw new Error("termine as pílulas obrigatórias primeiro");
+        }
       }
       const now = new Date().toISOString();
       const { error } = await supabase.from("student_module_progress").upsert(
