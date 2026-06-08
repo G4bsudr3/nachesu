@@ -84,6 +84,7 @@ const TAB_COMPONENTS: Record<AdminTab, React.ComponentType> = {
   trilha: AdminTrilha,
   tutor: AdminTutorCommand,
   feedback: AdminFeedbackInbox,
+  respostas: AdminFeedbackInbox,
   "copy-audit": AdminCopyAudit,
   autosave: AdminAutosaveAudit,
   materiais: AdminMateriais,
