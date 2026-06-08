@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Check, X, ExternalLink, FileWarning, ImageIcon, Link as LinkIcon, Paperclip } from "lucide-react";
+import { Check, X, ExternalLink, FileWarning, ImageIcon, Link as LinkIcon, Paperclip, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { DeliverableInbox } from "../usePendingDeliverables";
 import { useDeliverableAnswers } from "./useDeliverableAnswers";
+import { useExplicitPillProgress } from "./useExplicitPillProgress";
 import { getSignedUrl } from "./signedUrl";
 import type { AnswerBlock, ResolvedAnswer } from "./types";
 
