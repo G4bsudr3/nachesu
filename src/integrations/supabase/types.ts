@@ -2800,6 +2800,30 @@ export type Database = {
         Args: { _status: string; _user_id: string }
         Returns: undefined
       }
+      admin_submit_deliverable: {
+        Args: { p_id: string }
+        Returns: {
+          content: Json
+          created_at: string
+          feedback: string | null
+          id: string
+          kind: Database["public"]["Enums"]["deliverable_kind"]
+          module_id: string
+          reviewed_at: string | null
+          reviewer_id: string | null
+          score: number | null
+          status: Database["public"]["Enums"]["deliverable_status"]
+          submitted_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "module_deliverables"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       assert_module_in_scope: {
         Args: { _module_id: string }
         Returns: undefined
