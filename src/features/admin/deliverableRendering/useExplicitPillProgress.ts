@@ -10,21 +10,21 @@ import type { DeliverableInbox } from "../usePendingDeliverables";
  * pelo autosave".
  *
  * admin tem acesso via RLS (has_role admin) à tabela student_pill_progress.
+ * filtra apenas pelo user_id e cabe ao chamador interseccionar com os pill_ids
+ * do módulo que está renderizando.
  */
 export function useExplicitPillProgress(deliverable: DeliverableInbox | null) {
   const userId = deliverable?.user_id ?? null;
-  const moduleId = deliverable?.module_id ?? null;
 
   const query = useQuery({
-    queryKey: ["explicit-pill-progress", userId, moduleId],
-    enabled: !!userId && !!moduleId,
+    queryKey: ["explicit-pill-progress", userId],
+    enabled: !!userId,
     staleTime: 30_000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("student_pill_progress")
-        .select("pill_id, module_pills!inner(module_id)")
-        .eq("user_id", userId!)
-        .eq("module_pills.module_id", moduleId!);
+        .select("pill_id")
+        .eq("user_id", userId!);
       if (error) throw error;
       return ((data ?? []) as Array<{ pill_id: string }>).map((r) => r.pill_id);
     },
