@@ -20,6 +20,7 @@ interface Props {
  */
 export const DeliverableAnswersList = ({ deliverable }: Props) => {
   const { answers, isLoading, isError } = useDeliverableAnswers(deliverable);
+  const { markedIds } = useExplicitPillProgress(deliverable);
 
   if (!deliverable) return null;
 
@@ -47,6 +48,7 @@ export const DeliverableAnswersList = ({ deliverable }: Props) => {
     );
   }
 
+  const isDraft = deliverable.submitted_at === null && deliverable.status === "rascunho";
 
   // só esconde pílulas 100% passivas sem nenhum bloco; pílulas com qualquer
   // dado (mesmo via fallback raw) precisam aparecer pro educador.
@@ -63,9 +65,18 @@ export const DeliverableAnswersList = ({ deliverable }: Props) => {
 
   return (
     <div className="space-y-4">
-      {visible.map((a) => (
-        <PillAnswerCard key={a.pillId} answer={a} index={a.order} />
-      ))}
+      {visible.map((a) => {
+        const isAutoCompleted =
+          isDraft && a.state === "respondida" && !markedIds.has(a.pillId);
+        return (
+          <PillAnswerCard
+            key={a.pillId}
+            answer={a}
+            index={a.order}
+            autoCompleted={isAutoCompleted}
+          />
+        );
+      })}
     </div>
   );
 };
