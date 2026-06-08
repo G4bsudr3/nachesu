@@ -123,7 +123,12 @@ const Modulo = () => {
   // tenha clicado "feito" em cada uma. evita travar o "concluir módulo".
   const { data: deliverableContent } = useQuery({
     queryKey: ["module-deliverable-content", moduleRow?.id, user?.id],
-    enabled: !!user && !!moduleRow,
+    enabled: !!user && !!moduleRow && !isCompleted,
+    // o autosave grava direto sem invalidar essa query, então repolingamos a
+    // cada 6s pra liberar "concluir módulo" assim que o conteúdo ficar
+    // completo, mesmo sem o estudante clicar "feito" em cada pílula.
+    refetchInterval: 6_000,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("module_deliverables")
