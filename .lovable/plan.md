@@ -1,53 +1,39 @@
-## diagnóstico
+## plano
 
-`student_engagement_risk` calcula `last_activity_at = GREATEST(MAX(started_at), MAX(completed_at), enrolled_at)`. Matriculados que nunca abriram nada herdam `enrolled_at` e, se a matrícula é antiga, viram `lost` automaticamente. Os 2 "críticos" no banner são você mesmo (mateusfrattezi, matriculado em 4-mai nos 2 cursos, zero progresso). Vários "medium" são alunos que ainda nem entraram (TiagoXXX, BernardoXXX, HeitorXXX, prog=0).
+### 1. liberar só os 3 primeiros módulos de cada eletiva
+Data change (não migration):
+- `DELETE FROM module_releases WHERE module_id IN (módulos com number >= 4 das duas eletivas)`.
+- Resultado: estudante vê só módulos 1, 2 e 3 de **ia-na-pratica** e 1, 2 e 3 de **economia-circular**. Os outros 34 continuam `published=true` no banco, mas escondidos do estudante pelo gate de `module_releases`.
+- Quando quiser liberar mais, é só inserir linha em `module_releases` (ou usar o botão que já existe em `/admin/aula/:n`).
 
-## o que muda
+### 2. respostas (renomear "feedback")
+- Sidebar: `feedback` → `respostas` (rota `/admin/respostas`).
+- `/admin/feedback` vira redirect pra `/admin/respostas` (não quebra notificações e bookmarks).
+- `AdminFbi`: `VALID_TABS` e `TAB_TITLES` ganham `respostas` (title: "respostas dos estudantes"); `feedback` continua como alias redirecionando.
+- Componente `AdminFeedbackInbox`: H1 vira "respostas dos estudantes", subcopy mostra breakdown total.
 
-### 1. migração: flag de teste + view que ignora "nunca começou"
+### 3. inbox mostrar todas as respostas
+- Default do filtro de status passa de `pendentes` pra `todos`.
+- Ordenação: pendente → ajuste → rascunho → revisado (dentro de cada grupo, mais recente primeiro).
+- Subcopy do header passa a mostrar contagem completa: `N respostas · X pendentes · Y em ajuste · Z em rascunho · W revisadas`.
 
-- adiciona `profiles.is_test boolean not null default false`
-- recria `student_engagement_risk` excluindo:
-  - perfis com `is_test = true`
-  - matrículas sem nenhum `student_module_progress.started_at` AND sem nenhum `module_deliverables` com conteúdo (= nunca tocou nada)
-- expõe view nova `student_activation_pending` listando matriculados ativos não-teste que ainda não começaram, com `days_since_enroll`. serve pra cards informativos, nunca alerta de risco.
-- grants pra `authenticated` (admin lê via has_role nas tabelas-base, view fica security_invoker).
+### 4. ocultar contas de teste por padrão
+- `usePendingDeliverables` passa a buscar `is_test` no select de `profiles` e expõe no `DeliverableInbox`.
+- Toggle "incluir contas de teste" no rodapé da página (off por padrão), igual `AdminRisco` e `AdminUsers`.
+- Contagens do header respeitam o toggle.
 
-### 2. backend: hook + edge function
+---
 
-- `useAdminMetrics`: adiciona `nunca_comecaram` por curso (contagem da `student_activation_pending`) e remove esses ids dos buckets de risco. `em_risco` e `em_risco_critico` passam a representar apenas quem começou e parou. resto é automático porque a view já filtra.
-- `check-student-evasion` (edge function): nenhuma mudança de código necessária; ao consumir a view filtrada deixa de cutucar quem nunca entrou.
+### arquivos
+- supabase data op: `DELETE FROM module_releases ...`
+- `src/features/admin/usePendingDeliverables.ts` (incluir `is_test`, ordenar)
+- `src/features/admin/AdminFeedbackInbox.tsx` (default `todos`, toggle teste, copy "respostas")
+- `src/components/admin/layout/AdminSidebar.tsx` (label + rota)
+- `src/pages/AdminFbi.tsx` (nova tab `respostas` + alias `feedback`)
+- `src/App.tsx` se necessário (redirect explícito)
+- `.lovable/plan.md` (atualizar fonte de verdade)
 
-### 3. ui admin
-
-- `AdminHome`:
-  - banner vermelho topo só renderiza quando `em_risco_critico > 0` (e agora isso significa "começou e sumiu 21+ dias", de verdade)
-  - card "hoje" ganha uma terceira linha neutra: `X matriculados ainda não começaram` (sem cor de alerta, copy convidando ativação), clicando vai pra `/admin/risco?tab=ativacao`
-- `AdminRisco`:
-  - duas abas: `evasão` (atual, agora limpa) e `ativação pendente` (lista da nova view, com botão "convidar de novo" reaproveitando email de boas-vindas)
-  - toggle no rodapé: "incluir contas de teste" (off por padrão; só pra QA local)
-- `AdminUsers` (lista de usuários):
-  - coluna nova com toggle `is_test`, escrita direta na tabela `profiles` (admin via has_role)
-  - filtro "ocultar contas de teste" ligado por padrão
-
-### 4. seed inicial e fonte de verdade
-
-- migração marca `is_test = true` pra `mateusfrattezi`, `frattz`, `Mateus Frattz`, `duduobregon` (4 ids já identificados na auditoria) pra zerar o banner imediatamente
-- atualiza `.lovable/plan.md` com a nova definição de risco
-
-## arquivos tocados
-
-```
-supabase/migrations/<nova>.sql              novo
-src/hooks/useAdminMetrics.ts                add nunca_comecaram
-src/pages/AdminHome.tsx                     banner condicional + card neutro
-src/pages/AdminRisco.tsx                    abas + toggle teste
-src/pages/AdminUsers.tsx                    coluna is_test (se já existir lista; senão, atalho mínimo)
-.lovable/plan.md                            registrar nova regra
-```
-
-## o que não muda
-
-- copy do banner em si (continua "21+ dias sem aparecer") só passa a aparecer quando faz sentido
-- definição de `caught_up` / thresholds de medium/high/lost (7/14/21) seguem iguais
-- nenhuma alteração em rotas públicas ou jornada do estudante
+### fora do escopo (confirmado)
+- Cadência semanal automática.
+- Renomear "feedback do educador" dentro do módulo (esse conceito segue como está).
+- Pesquisas legadas Chŏra (`feedback-d1`, `feedback-final`).
