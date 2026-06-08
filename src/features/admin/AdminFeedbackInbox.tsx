@@ -275,6 +275,24 @@ export const AdminFeedbackInbox = () => {
           </label>
           <button
             type="button"
+            onClick={() => setBulkConfirmOpen(true)}
+            disabled={bulkCandidates.length === 0 || bulkSubmitMutation.isPending}
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-azul text-white px-4 py-2 text-xs uppercase tracking-wide hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+            title={
+              bulkCandidates.length === 0
+                ? "nenhum rascunho completo no escopo atual"
+                : `marca como enviado os ${bulkCandidates.length} rascunhos completos`
+            }
+          >
+            {bulkSubmitMutation.isPending ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Send className="w-3.5 h-3.5" />
+            )}
+            enviar {bulkCandidates.length > 0 ? `(${bulkCandidates.length})` : ""}
+          </button>
+          <button
+            type="button"
             onClick={() => exportCsv(filteredData)}
             disabled={filteredData.length === 0}
             className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-40 disabled:cursor-not-allowed"
