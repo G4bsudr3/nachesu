@@ -34,7 +34,7 @@ const AdminAutosaveAudit = lazy(() => import("@/features/admin/AdminAutosaveAudi
 const AdminUsers = lazy(() => import("./AdminUsers"));
 const AdminFbiResponses = lazy(() => import("@/features/admin/AdminFbiResponses"));
 
-const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "autosave", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "respostas", "feedback", "autosave", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
@@ -44,7 +44,8 @@ const TAB_LABELS: Record<AdminTab, string> = {
   eletiva: "eletiva · settings",
   trilha: "eletiva · trilha",
   tutor: "eletiva · tutor IA",
-  feedback: "feedback · inbox",
+  respostas: "respostas dos estudantes",
+  feedback: "respostas dos estudantes",
   "copy-audit": "auditoria · copy",
   autosave: "auditoria · autosave",
   fbi: "fbi · respostas",
