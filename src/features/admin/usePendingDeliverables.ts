@@ -3,6 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { logger } from "@/lib/logger";
+import {
+  computeCompleteness,
+  type Completeness,
+} from "./deliverableRendering/completeness";
+import type {
+  DeliverableContent,
+  PillForResolve,
+  PillKind,
+} from "./deliverableRendering/types";
 
 type DeliverableRow = Database["public"]["Tables"]["module_deliverables"]["Row"];
 type ModuleLite = { id: string; number: number; title: string; trail_id: string };
@@ -14,9 +23,17 @@ export type DeliverableInbox = DeliverableRow & {
   trail: TrailLite | null;
   course_id: string | null;
   profile: ProfileLite | null;
+  /** quanto do conteúdo está preenchido (mesmo em rascunho) */
+  completeness: Completeness;
 };
 
-export type InboxFilter = "pendentes" | "ajuste" | "revisados" | "rascunho" | "todos";
+export type InboxFilter =
+  | "pendentes"
+  | "ajuste"
+  | "revisados"
+  | "rascunho"
+  | "rascunho-completo"
+  | "todos";
 
 const isDraftRow = (d: { submitted_at: string | null; status: string | null }) =>
   d.submitted_at === null && d.status === "rascunho";
@@ -45,11 +62,26 @@ type RpcRow = {
   profile_is_test: boolean | null;
 };
 
+type PillRpcRow = {
+  id: string;
+  module_id: string;
+  order_index: number;
+  kind: string;
+  title: string;
+  body_md: string | null;
+  required: boolean | null;
+  interaction_schema: Record<string, unknown> | null;
+};
+
 /**
  * fila de entregas pra revisão do educador.
  * usa RPC security-definer admin_inbox_deliverables() que devolve tudo
  * já joinado (módulo, trilha, perfil) — não dependemos da RLS de aluno
  * pra ler dados nesse caminho.
+ *
+ * em paralelo, busca as pílulas (admin_module_pills) dos módulos visíveis e
+ * calcula a "completude" de cada deliverable. isso permite destacar rascunhos
+ * completos (estudante já preencheu tudo, só falta enviar).
  */
 export function usePendingDeliverables(opts: {
   courseId?: string | null;
@@ -59,7 +91,7 @@ export function usePendingDeliverables(opts: {
 }) {
   const { courseId = null, moduleId = null, status = "todos", includeTest = false } = opts;
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data: rawRows, isLoading: rowsLoading, refetch } = useQuery({
     queryKey: ["admin-deliverables-inbox"],
     staleTime: 30_000,
     queryFn: async () => {
@@ -68,8 +100,58 @@ export function usePendingDeliverables(opts: {
         logger.error("admin_inbox_deliverables falhou", error);
         throw error;
       }
-      const list = (rows ?? []) as RpcRow[];
-      return list.map<DeliverableInbox>((r) => ({
+      return (rows ?? []) as RpcRow[];
+    },
+  });
+
+  const moduleIds = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rawRows ?? []) if (r.module_id) set.add(r.module_id);
+    return Array.from(set).sort();
+  }, [rawRows]);
+
+  const { data: pillsByModule } = useQuery({
+    queryKey: ["admin-deliverables-inbox-pills", moduleIds.join(",")],
+    enabled: moduleIds.length > 0,
+    staleTime: 60_000,
+    queryFn: async () => {
+      const results = await Promise.all(
+        moduleIds.map(async (mid) => {
+          const { data, error } = await supabase.rpc("admin_module_pills", {
+            p_module_id: mid,
+          });
+          if (error) {
+            logger.error("admin_module_pills falhou", { moduleId: mid, error });
+            return [mid, [] as PillForResolve[]] as const;
+          }
+          const pills = ((data ?? []) as PillRpcRow[]).map<PillForResolve>((p) => ({
+            id: p.id,
+            module_id: p.module_id,
+            order_index: p.order_index,
+            kind: p.kind as PillKind,
+            title: p.title,
+            body_md: p.body_md,
+            required: !!p.required,
+            interaction_schema: p.interaction_schema,
+          }));
+          return [mid, pills] as const;
+        }),
+      );
+      const map: Record<string, PillForResolve[]> = {};
+      for (const [mid, pills] of results) map[mid] = pills;
+      return map;
+    },
+  });
+
+  const data = useMemo<DeliverableInbox[] | undefined>(() => {
+    if (!rawRows) return undefined;
+    return rawRows.map<DeliverableInbox>((r) => {
+      const pills = pillsByModule?.[r.module_id] ?? [];
+      const completeness = computeCompleteness(
+        pills,
+        r.content as DeliverableContent | null,
+      );
+      return {
         id: r.id,
         user_id: r.user_id,
         module_id: r.module_id,
@@ -105,9 +187,12 @@ export function usePendingDeliverables(opts: {
           nickname: r.profile_nickname,
           is_test: r.profile_is_test,
         },
-      }));
-    },
-  });
+        completeness,
+      };
+    });
+  }, [rawRows, pillsByModule]);
+
+  const isLoading = rowsLoading;
 
   const visibleByTest = useMemo(
     () => (data ?? []).filter((d) => includeTest || !d.profile?.is_test),
@@ -117,8 +202,9 @@ export function usePendingDeliverables(opts: {
   const statusRank = (d: DeliverableInbox) => {
     if (!isDraftRow(d) && d.reviewed_at === null && d.status !== "ajuste") return 0; // pendente
     if (d.status === "ajuste") return 1;
-    if (isDraftRow(d)) return 2;
-    return 3; // revisado
+    if (isDraftRow(d) && d.completeness.isComplete) return 2; // rascunho completo (próximo a virar entrega)
+    if (isDraftRow(d)) return 3;
+    return 4; // revisado
   };
 
   const filtered = useMemo(() => {
@@ -130,6 +216,7 @@ export function usePendingDeliverables(opts: {
         return false;
       if (status === "ajuste" && d.status !== "ajuste") return false;
       if (status === "rascunho" && !draft) return false;
+      if (status === "rascunho-completo" && !(draft && d.completeness.isComplete)) return false;
       if (courseId && d.course_id !== courseId) return false;
       if (moduleId && d.module_id !== moduleId) return false;
       return true;
@@ -157,6 +244,10 @@ export function usePendingDeliverables(opts: {
   );
 
   const rascunhoCount = useMemo(() => visibleByTest.filter(isDraftRow).length, [visibleByTest]);
+  const rascunhoCompleteCount = useMemo(
+    () => visibleByTest.filter((d) => isDraftRow(d) && d.completeness.isComplete).length,
+    [visibleByTest],
+  );
 
   const revisadosCount = useMemo(
     () => visibleByTest.filter((d) => d.reviewed_at !== null && d.status !== "ajuste").length,
@@ -175,6 +266,7 @@ export function usePendingDeliverables(opts: {
     pendingCount,
     ajusteCount,
     rascunhoCount,
+    rascunhoCompleteCount,
     revisadosCount,
     totalCount,
     testCount,

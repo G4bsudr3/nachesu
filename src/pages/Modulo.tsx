@@ -26,6 +26,11 @@ import { ModuloLockedHero } from "@/components/eletiva/modulo/ModuloLockedHero";
 import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
 import { TrailTransitionBanner } from "@/components/eletiva/modulo/TrailTransitionBanner";
 import { scopeModuleNavigation } from "@/lib/moduleNavigation";
+import { resolvePill } from "@/features/admin/deliverableRendering/resolvers";
+import type {
+  DeliverableContent,
+  PillKind,
+} from "@/features/admin/deliverableRendering/types";
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
@@ -113,6 +118,29 @@ const Modulo = () => {
   const isStarted = !!progress?.started_at;
   const isCompleted = !!progress?.completed_at;
 
+  // conteúdo do deliverable (rascunho) — usado pra detectar quando todas as
+  // pílulas obrigatórias já têm resposta válida, mesmo que o estudante não
+  // tenha clicado "feito" em cada uma. evita travar o "concluir módulo".
+  const { data: deliverableContent } = useQuery({
+    queryKey: ["module-deliverable-content", moduleRow?.id, user?.id],
+    enabled: !!user && !!moduleRow && !isCompleted,
+    // o autosave grava direto sem invalidar essa query, então repolingamos a
+    // cada 6s pra liberar "concluir módulo" assim que o conteúdo ficar
+    // completo, mesmo sem o estudante clicar "feito" em cada pílula.
+    refetchInterval: 6_000,
+    refetchOnWindowFocus: true,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("module_deliverables")
+        .select("content")
+        .eq("user_id", user!.id)
+        .eq("module_id", moduleRow!.id)
+        .maybeSingle();
+      if (error) throw error;
+      return (data?.content ?? {}) as DeliverableContent;
+    },
+  });
+
   useEffect(() => {
     if (!user || !moduleRow || isStarted) return;
     const available =
@@ -149,7 +177,50 @@ const Modulo = () => {
       const required = (pills ?? []).filter((p) => p.required);
       const doneRequired = required.filter((p) => completedPillIds.has(p.id));
       if (!isAdmin && required.length > 0 && doneRequired.length < required.length) {
-        throw new Error("termine as pílulas obrigatórias primeiro");
+        // antes de barrar, tenta auto-marcar pílulas cujo conteúdo já está completo
+        // (autosave salvou tudo mas o estudante esqueceu de bater "feito").
+        const { data: deliv } = await supabase
+          .from("module_deliverables")
+          .select("content")
+          .eq("user_id", user.id)
+          .eq("module_id", moduleRow.id)
+          .maybeSingle();
+        const content = (deliv?.content ?? {}) as DeliverableContent;
+        const missing = required.filter((p) => !completedPillIds.has(p.id));
+        const auto: string[] = [];
+        for (const p of missing) {
+          const resolved = resolvePill(
+            {
+              id: p.id,
+              module_id: moduleRow.id,
+              order_index: p.order_index,
+              kind: p.kind as PillKind,
+              title: p.title,
+              body_md: p.body_md,
+              required: !!p.required,
+              interaction_schema: (p.interaction_schema ?? null) as Record<string, unknown> | null,
+            },
+            content,
+          );
+          if (resolved.state === "respondida" || resolved.state === "passiva") {
+            auto.push(p.id);
+          }
+        }
+        if (auto.length > 0) {
+          const nowIso = new Date().toISOString();
+          const rows = auto.map((pid) => ({
+            user_id: user.id,
+            pill_id: pid,
+            completed_at: nowIso,
+          }));
+          const { error: upErr } = await supabase
+            .from("student_pill_progress")
+            .upsert(rows, { onConflict: "user_id,pill_id" });
+          if (upErr) throw upErr;
+        }
+        if (auto.length + doneRequired.length < required.length) {
+          throw new Error("termine as pílulas obrigatórias primeiro");
+        }
       }
       const now = new Date().toISOString();
       const { error } = await supabase.from("student_module_progress").upsert(
@@ -349,7 +420,27 @@ const Modulo = () => {
   const donePills = pills?.filter((p) => completedPillIds.has(p.id)).length ?? 0;
   const requiredPills = pills?.filter((p) => p.required) ?? [];
   const doneRequired = requiredPills.filter((p) => completedPillIds.has(p.id)).length;
-  const pillsRemaining = Math.max(0, requiredPills.length - doneRequired);
+  // pílulas obrigatórias com conteúdo aceito pelos resolvers, mesmo sem
+  // o clique manual em "feito". serve pra desbloquear "concluir módulo".
+  const contentAutoComplete = requiredPills.filter((p) => {
+    if (completedPillIds.has(p.id)) return false;
+    const resolved = resolvePill(
+      {
+        id: p.id,
+        module_id: moduleRow.id,
+        order_index: p.order_index,
+        kind: p.kind as PillKind,
+        title: p.title,
+        body_md: p.body_md,
+        required: !!p.required,
+        interaction_schema: (p.interaction_schema ?? null) as Record<string, unknown> | null,
+      },
+      deliverableContent ?? {},
+    );
+    return resolved.state === "respondida" || resolved.state === "passiva";
+  }).length;
+  const effectiveDoneRequired = doneRequired + contentAutoComplete;
+  const pillsRemaining = Math.max(0, requiredPills.length - effectiveDoneRequired);
   const canCompleteModule = requiredPills.length > 0 && pillsRemaining === 0;
 
   return (

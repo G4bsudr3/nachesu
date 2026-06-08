@@ -143,6 +143,7 @@ export const AdminFeedbackInbox = () => {
     pendingCount,
     ajusteCount,
     rascunhoCount,
+    rascunhoCompleteCount,
     revisadosCount,
     totalCount,
     testCount,
@@ -198,7 +199,7 @@ export const AdminFeedbackInbox = () => {
             <Inbox className="w-4 h-4" />
             {isLoading
               ? "carregando…"
-              : `${totalCount} respostas · ${pendingCount} pendentes · ${ajusteCount} em ajuste · ${rascunhoCount} em rascunho · ${revisadosCount} revisadas`}
+              : `${totalCount} respostas · ${pendingCount} pendentes · ${ajusteCount} em ajuste · ${rascunhoCompleteCount} rascunhos completos · ${rascunhoCount} em rascunho · ${revisadosCount} revisadas`}
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -278,6 +279,7 @@ export const AdminFeedbackInbox = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="pendentes">pendentes</SelectItem>
+            <SelectItem value="rascunho-completo">rascunho completo</SelectItem>
             <SelectItem value="rascunho">em rascunho</SelectItem>
             <SelectItem value="ajuste">em ajuste</SelectItem>
             <SelectItem value="revisados">revisados</SelectItem>
@@ -380,9 +382,27 @@ export const AdminFeedbackInbox = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      {isDraft ? (
-                        <Badge variant="outline" className="uppercase text-[10px] border-perestroika-preto/30 text-perestroika-preto/60">
+                      {isDraft && d.completeness.isComplete ? (
+                        <Badge
+                          className="bg-perestroika-azul text-white uppercase text-[10px]"
+                          title="estudante preencheu tudo, só falta apertar enviar"
+                        >
+                          rascunho completo
+                        </Badge>
+                      ) : isDraft ? (
+                        <Badge
+                          variant="outline"
+                          className="uppercase text-[10px] border-perestroika-preto/30 text-perestroika-preto/60"
+                          title={
+                            d.completeness.requiredTotal > 0
+                              ? `${d.completeness.requiredAnswered}/${d.completeness.requiredTotal} respondidas`
+                              : undefined
+                          }
+                        >
                           rascunho
+                          {d.completeness.requiredTotal > 0
+                            ? ` ${d.completeness.requiredAnswered}/${d.completeness.requiredTotal}`
+                            : ""}
                         </Badge>
                       ) : d.status === "ajuste" ? (
                         <Badge className="bg-[#fd4644] text-white uppercase text-[10px]">

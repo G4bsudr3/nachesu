@@ -220,6 +220,21 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const submitDraftMutation = useMutation({
+    mutationFn: async () => {
+      if (!deliverable) throw new Error("sem contexto");
+      const { error } = await supabase.rpc("admin_submit_deliverable", {
+        p_id: deliverable.id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("rascunho marcado como enviado, agora dá pra revisar");
+      qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
+    },
+    onError: (e: Error) => toast.error(e.message ?? "falha ao marcar como enviado"),
+  });
+
   const toggleTag = (tag: string) => {
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
   };
@@ -328,15 +343,45 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
         </SheetHeader>
 
         {isDraft && (
-          <div className="mt-5 rounded-2xl border-2 border-perestroika-preto/20 bg-perestroika-preto/[0.04] px-4 py-3">
+          <div className="mt-5 rounded-2xl border-2 border-perestroika-preto/20 bg-perestroika-preto/[0.04] px-4 py-3 space-y-3">
             <p className="font-body text-sm text-perestroika-preto">
               <span className="font-medium uppercase tracking-wide text-[11px] block mb-1 text-perestroika-preto/65">
                 rascunho do estudante
               </span>
-              ainda não foi enviado pro educador. você está vendo o que foi salvo
-              automaticamente. não dá pra revisar ou mandar feedback enquanto não
-              entregar — use isso só pra acompanhar.
+              {deliverable.completeness.isComplete ? (
+                <>
+                  conteúdo completo ({deliverable.completeness.requiredAnswered}/
+                  {deliverable.completeness.requiredTotal} obrigatórias). só falta
+                  o estudante apertar enviar. você pode marcar como enviado em
+                  nome dele.
+                </>
+              ) : (
+                <>
+                  ainda não foi enviado pro educador. você está vendo o que foi
+                  salvo automaticamente. faltam responder:{" "}
+                  <span className="text-perestroika-preto/65">
+                    {deliverable.completeness.missing.length > 0
+                      ? deliverable.completeness.missing.join(" · ")
+                      : "—"}
+                  </span>
+                </>
+              )}
             </p>
+            {deliverable.completeness.isComplete && (
+              <button
+                type="button"
+                disabled={submitDraftMutation.isPending}
+                onClick={() => submitDraftMutation.mutate()}
+                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-4 py-2 text-xs uppercase tracking-wide hover:opacity-90 disabled:opacity-50"
+              >
+                {submitDraftMutation.isPending ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Send className="w-3.5 h-3.5" />
+                )}
+                marcar como enviado
+              </button>
+            )}
           </div>
         )}
 
