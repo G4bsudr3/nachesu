@@ -238,6 +238,28 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     onError: (e: Error) => toast.error(e.message ?? "falha ao marcar como enviado"),
   });
 
+  const [unsubmitConfirmOpen, setUnsubmitConfirmOpen] = useState(false);
+  const [unsubmitReason, setUnsubmitReason] = useState("");
+  const unsubmitDraftMutation = useMutation({
+    mutationFn: async () => {
+      if (!deliverable) throw new Error("sem contexto");
+      const { error } = await supabase.rpc("admin_unsubmit_deliverable", {
+        p_id: deliverable.id,
+        p_reason: unsubmitReason.trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("envio desfeito, entrega voltou pra rascunho");
+      setUnsubmitConfirmOpen(false);
+      setUnsubmitReason("");
+      qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
+      onOpenChange(false);
+    },
+    onError: (e: Error) => toast.error(e.message ?? "falha ao desfazer envio"),
+  });
+
+
   const toggleTag = (tag: string) => {
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
   };
