@@ -150,6 +150,7 @@ export const AdminFeedbackInbox = () => {
 
   const {
     data,
+    all,
     pendingCount,
     ajusteCount,
     rascunhoCount,
@@ -164,6 +165,56 @@ export const AdminFeedbackInbox = () => {
     moduleId,
     status: statusFilter,
     includeTest,
+  });
+
+  const qc = useQueryClient();
+  const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
+
+  // candidatas a auto-envio: rascunhos completos respeitando filtros de curso/módulo
+  // (não respeita o filtro de status — o admin quer agir em todas as elegíveis)
+  const bulkCandidates = useMemo(
+    () =>
+      all.filter((d) => {
+        const isDraft = d.submitted_at === null && d.status === "rascunho";
+        if (!isDraft || !d.completeness.isComplete) return false;
+        if (courseId && d.course_id !== courseId) return false;
+        if (moduleId && d.module_id !== moduleId) return false;
+        return true;
+      }),
+    [all, courseId, moduleId],
+  );
+
+  const bulkSubmitMutation = useMutation({
+    mutationFn: async (rows: DeliverableInbox[]) => {
+      let ok = 0;
+      const errors: string[] = [];
+      for (const d of rows) {
+        const { error } = await supabase.rpc("admin_submit_deliverable", { p_id: d.id });
+        if (error) {
+          errors.push(
+            `${d.profile?.display_name ?? d.user_id.slice(0, 8)} · ${error.message}`,
+          );
+        } else {
+          ok += 1;
+        }
+      }
+      return { ok, errors };
+    },
+    onSuccess: ({ ok, errors }) => {
+      qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
+      if (ok > 0) {
+        toast.success(
+          `${ok} rascunho${ok === 1 ? "" : "s"} marcado${ok === 1 ? "" : "s"} como enviado${ok === 1 ? "" : "s"}`,
+        );
+      }
+      if (errors.length > 0) {
+        toast.error(`${errors.length} falharam. ex: ${errors[0]}`);
+      }
+      setBulkConfirmOpen(false);
+    },
+    onError: (e: Error) => {
+      toast.error(e.message ?? "falha ao processar lote");
+    },
   });
 
   // realtime: refetch quando entrega muda
