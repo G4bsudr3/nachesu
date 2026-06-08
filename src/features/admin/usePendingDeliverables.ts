@@ -70,7 +70,7 @@ export function usePendingDeliverables(opts: {
 
       const [{ data: mods }, { data: profs }] = await Promise.all([
         supabase.from("modules").select("id, number, title, trail_id").in("id", moduleIds),
-        supabase.from("profiles").select("user_id, display_name, nickname").in("user_id", userIds),
+        supabase.from("profiles").select("user_id, display_name, nickname, is_test").in("user_id", userIds),
       ]);
 
       const trailIds = Array.from(
