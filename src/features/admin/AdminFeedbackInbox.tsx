@@ -143,6 +143,7 @@ export const AdminFeedbackInbox = () => {
     pendingCount,
     ajusteCount,
     rascunhoCount,
+    rascunhoCompleteCount,
     revisadosCount,
     totalCount,
     testCount,
