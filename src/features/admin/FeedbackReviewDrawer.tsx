@@ -650,3 +650,151 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     </Sheet>
   );
 };
+
+/**
+ * painel visual de "rascunho do estudante": mostra barra de progresso,
+ * chips de pílulas obrigatórias respondidas / faltando, e quantas foram
+ * auto-concluídas pelo autosave (estudante preencheu mas não marcou).
+ * quando 100% completo, libera o CTA "marcar como enviado".
+ */
+function DraftCompletenessPanel({
+  deliverable,
+  onSubmit,
+  submitting,
+}: {
+  deliverable: DeliverableInbox;
+  onSubmit: () => void;
+  submitting: boolean;
+}) {
+  const { markedIds } = useExplicitPillProgress(deliverable);
+  const c = deliverable.completeness;
+  const total = c.requiredTotal;
+  const answered = c.requiredAnswered;
+  const pct = total === 0 ? 100 : Math.round((answered / total) * 100);
+
+  const answeredPills = c.required.filter((p) => p.isAnswered);
+  const missingPills = c.required.filter((p) => !p.isAnswered);
+  const autoCount = answeredPills.filter((p) => !markedIds.has(p.id)).length;
+
+  const headlineTone = c.isComplete
+    ? "border-perestroika-azul/50 bg-perestroika-azul/10"
+    : "border-perestroika-laranja/40 bg-perestroika-laranja/[0.08]";
+
+  const barColor = c.isComplete ? "bg-perestroika-azul" : "bg-perestroika-laranja";
+
+  return (
+    <div className={`mt-5 rounded-2xl border-2 px-4 py-4 space-y-4 ${headlineTone}`}>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="min-w-0">
+          <p className="font-medium uppercase tracking-wide text-[11px] text-perestroika-preto/70">
+            rascunho do estudante
+          </p>
+          <p className="font-display uppercase text-2xl leading-tight mt-0.5">
+            {c.isComplete
+              ? "rascunho completo, só falta enviar"
+              : `faltam ${missingPills.length} pílula${missingPills.length === 1 ? "" : "s"} obrigatória${missingPills.length === 1 ? "" : "s"}`}
+          </p>
+          <p className="text-xs text-perestroika-preto/65 mt-1">
+            {answered} de {total} obrigatórias respondidas
+            {autoCount > 0 && (
+              <>
+                {" · "}
+                <span className="text-perestroika-azul">
+                  {autoCount} auto-concluída{autoCount === 1 ? "" : "s"} pelo autosave
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+        {c.isComplete && (
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onSubmit}
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-4 py-2 text-xs uppercase tracking-wide hover:opacity-90 disabled:opacity-50 shrink-0"
+          >
+            {submitting ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Send className="w-3.5 h-3.5" />
+            )}
+            marcar como enviado
+          </button>
+        )}
+      </div>
+
+      {/* barra de progresso */}
+      <div>
+        <div className="h-2 w-full rounded-full bg-perestroika-preto/10 overflow-hidden">
+          <div
+            className={`h-full ${barColor} transition-all`}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 mt-1 tabular-nums">
+          {pct}% preenchido
+        </p>
+      </div>
+
+      {/* chips: faltando primeiro pra dar destaque */}
+      {missingPills.length > 0 && (
+        <div>
+          <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-1.5">
+            faltam responder
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {missingPills.map((p) => (
+              <span
+                key={p.id}
+                className="inline-flex items-center gap-1 rounded-full bg-rose-100 text-rose-800 border border-rose-300 px-2.5 py-1 text-[11px]"
+              >
+                <X className="w-3 h-3" />
+                {p.title}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {answeredPills.length > 0 && (
+        <div>
+          <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-1.5">
+            já respondidas
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {answeredPills.map((p) => {
+              const auto = !markedIds.has(p.id);
+              return (
+                <span
+                  key={p.id}
+                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] ${
+                    auto
+                      ? "bg-perestroika-azul/10 text-perestroika-azul border-perestroika-azul/40"
+                      : "bg-emerald-100 text-emerald-800 border-emerald-300"
+                  }`}
+                  title={
+                    auto
+                      ? "preenchida pelo estudante mas não marcada como feita; o autosave reconheceu como completa"
+                      : "marcada explicitamente pelo estudante"
+                  }
+                >
+                  {auto ? <Sparkles className="w-3 h-3" /> : <Check className="w-3 h-3" />}
+                  {p.title}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {!c.isComplete && (
+        <p className="text-[11px] text-perestroika-preto/55 italic">
+          esse conteúdo é o que está salvo automaticamente. o estudante ainda
+          não enviou pro educador — espera ele finalizar ou converse pra ajudar
+          a destravar.
+        </p>
+      )}
+    </div>
+  );
+}
+
