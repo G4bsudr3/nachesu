@@ -99,11 +99,12 @@ const useNow = () => {
 
 export const AdminFeedbackInbox = () => {
   useNow();
-  const [statusFilter, setStatusFilter] = useState<InboxFilter>("pendentes");
+  const [statusFilter, setStatusFilter] = useState<InboxFilter>("todos");
   const [courseId, setCourseId] = useState<string | null>(null);
   const [moduleId, setModuleId] = useState<string | null>(null);
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
   const [search, setSearch] = useState("");
+  const [includeTest, setIncludeTest] = useState(false);
 
   const { data: courses } = useQuery({
     queryKey: ["admin-feedback-courses"],
@@ -137,10 +138,21 @@ export const AdminFeedbackInbox = () => {
     },
   });
 
-  const { data, all, pendingCount, ajusteCount, rascunhoCount, isLoading, refetch } = usePendingDeliverables({
+  const {
+    data,
+    pendingCount,
+    ajusteCount,
+    rascunhoCount,
+    revisadosCount,
+    totalCount,
+    testCount,
+    isLoading,
+    refetch,
+  } = usePendingDeliverables({
     courseId,
     moduleId,
     status: statusFilter,
+    includeTest,
   });
 
   // realtime: refetch quando entrega muda
@@ -157,11 +169,6 @@ export const AdminFeedbackInbox = () => {
       supabase.removeChannel(channel);
     };
   }, [refetch]);
-
-  const revisadosCount = useMemo(
-    () => all.filter((d) => d.reviewed_at !== null && d.status !== "ajuste").length,
-    [all],
-  );
 
   const searchTerm = search.trim().toLowerCase();
   const filteredData = useMemo(() => {
