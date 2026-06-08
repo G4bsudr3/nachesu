@@ -2732,6 +2732,31 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_inbox_deliverables: {
+        Args: never
+        Returns: {
+          content: Json
+          course_id: string
+          created_at: string
+          feedback: string
+          id: string
+          module_id: string
+          module_number: number
+          module_title: string
+          module_trail_id: string
+          profile_display_name: string
+          profile_is_test: boolean
+          profile_nickname: string
+          reviewed_at: string
+          reviewer_id: string
+          score: number
+          status: string
+          submitted_at: string
+          trail_title: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
       admin_list_pending_profiles: {
         Args: never
         Returns: {
@@ -2755,6 +2780,19 @@ export type Database = {
           roles: string[]
           status: string
           user_id: string
+        }[]
+      }
+      admin_module_pills: {
+        Args: { p_module_id: string }
+        Returns: {
+          body_md: string
+          id: string
+          interaction_schema: Json
+          kind: string
+          module_id: string
+          order_index: number
+          required: boolean
+          title: string
         }[]
       }
       admin_set_profile_status: {
