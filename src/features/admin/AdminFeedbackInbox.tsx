@@ -382,9 +382,27 @@ export const AdminFeedbackInbox = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      {isDraft ? (
-                        <Badge variant="outline" className="uppercase text-[10px] border-perestroika-preto/30 text-perestroika-preto/60">
+                      {isDraft && d.completeness.isComplete ? (
+                        <Badge
+                          className="bg-perestroika-azul text-white uppercase text-[10px]"
+                          title="estudante preencheu tudo, só falta apertar enviar"
+                        >
+                          rascunho completo
+                        </Badge>
+                      ) : isDraft ? (
+                        <Badge
+                          variant="outline"
+                          className="uppercase text-[10px] border-perestroika-preto/30 text-perestroika-preto/60"
+                          title={
+                            d.completeness.requiredTotal > 0
+                              ? `${d.completeness.requiredAnswered}/${d.completeness.requiredTotal} respondidas`
+                              : undefined
+                          }
+                        >
                           rascunho
+                          {d.completeness.requiredTotal > 0
+                            ? ` ${d.completeness.requiredAnswered}/${d.completeness.requiredTotal}`
+                            : ""}
                         </Badge>
                       ) : d.status === "ajuste" ? (
                         <Badge className="bg-[#fd4644] text-white uppercase text-[10px]">
