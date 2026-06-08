@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Download, Inbox, RefreshCcw, Search } from "lucide-react";
+import { Download, Inbox, Loader2, RefreshCcw, Search, Send } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   usePendingDeliverables,
   type DeliverableInbox,
@@ -140,6 +150,7 @@ export const AdminFeedbackInbox = () => {
 
   const {
     data,
+    all,
     pendingCount,
     ajusteCount,
     rascunhoCount,
@@ -154,6 +165,56 @@ export const AdminFeedbackInbox = () => {
     moduleId,
     status: statusFilter,
     includeTest,
+  });
+
+  const qc = useQueryClient();
+  const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
+
+  // candidatas a auto-envio: rascunhos completos respeitando filtros de curso/módulo
+  // (não respeita o filtro de status — o admin quer agir em todas as elegíveis)
+  const bulkCandidates = useMemo(
+    () =>
+      all.filter((d) => {
+        const isDraft = d.submitted_at === null && d.status === "rascunho";
+        if (!isDraft || !d.completeness.isComplete) return false;
+        if (courseId && d.course_id !== courseId) return false;
+        if (moduleId && d.module_id !== moduleId) return false;
+        return true;
+      }),
+    [all, courseId, moduleId],
+  );
+
+  const bulkSubmitMutation = useMutation({
+    mutationFn: async (rows: DeliverableInbox[]) => {
+      let ok = 0;
+      const errors: string[] = [];
+      for (const d of rows) {
+        const { error } = await supabase.rpc("admin_submit_deliverable", { p_id: d.id });
+        if (error) {
+          errors.push(
+            `${d.profile?.display_name ?? d.user_id.slice(0, 8)} · ${error.message}`,
+          );
+        } else {
+          ok += 1;
+        }
+      }
+      return { ok, errors };
+    },
+    onSuccess: ({ ok, errors }) => {
+      qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
+      if (ok > 0) {
+        toast.success(
+          `${ok} rascunho${ok === 1 ? "" : "s"} marcado${ok === 1 ? "" : "s"} como enviado${ok === 1 ? "" : "s"}`,
+        );
+      }
+      if (errors.length > 0) {
+        toast.error(`${errors.length} falharam. ex: ${errors[0]}`);
+      }
+      setBulkConfirmOpen(false);
+    },
+    onError: (e: Error) => {
+      toast.error(e.message ?? "falha ao processar lote");
+    },
   });
 
   // realtime: refetch quando entrega muda
@@ -212,6 +273,24 @@ export const AdminFeedbackInbox = () => {
             />
             incluir teste{testCount > 0 ? ` (${testCount})` : ""}
           </label>
+          <button
+            type="button"
+            onClick={() => setBulkConfirmOpen(true)}
+            disabled={bulkCandidates.length === 0 || bulkSubmitMutation.isPending}
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-azul text-white px-4 py-2 text-xs uppercase tracking-wide hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+            title={
+              bulkCandidates.length === 0
+                ? "nenhum rascunho completo no escopo atual"
+                : `marca como enviado os ${bulkCandidates.length} rascunhos completos`
+            }
+          >
+            {bulkSubmitMutation.isPending ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Send className="w-3.5 h-3.5" />
+            )}
+            enviar {bulkCandidates.length > 0 ? `(${bulkCandidates.length})` : ""}
+          </button>
           <button
             type="button"
             onClick={() => exportCsv(filteredData)}
@@ -484,6 +563,74 @@ export const AdminFeedbackInbox = () => {
           return () => setSelected(filteredData[i + 1]);
         })()}
       />
+
+      <AlertDialog open={bulkConfirmOpen} onOpenChange={setBulkConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              marcar {bulkCandidates.length} rascunho{bulkCandidates.length === 1 ? "" : "s"} como enviado{bulkCandidates.length === 1 ? "" : "s"}?
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-3">
+                <p>
+                  isso muda o status dessas entregas pra <strong>enviado</strong>{" "}
+                  em nome dos estudantes. cada uma vai pra fila de revisão e o
+                  estudante recebe a mensagem automática "rascunho marcado como
+                  enviado pelo educador". não dá pra desfazer em lote — só
+                  reabrindo uma a uma.
+                </p>
+                {(courseId || moduleId) && (
+                  <p className="text-xs text-perestroika-preto/60">
+                    aplica só ao escopo selecionado (curso/módulo nos filtros).
+                  </p>
+                )}
+                {bulkCandidates.length > 0 && (
+                  <div className="max-h-48 overflow-y-auto rounded-lg border border-perestroika-preto/15 bg-perestroika-preto/[0.03] p-2">
+                    <ul className="text-xs space-y-1">
+                      {bulkCandidates.slice(0, 20).map((d) => (
+                        <li key={d.id} className="flex justify-between gap-3">
+                          <span className="truncate">
+                            {d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8)}
+                          </span>
+                          <span className="text-perestroika-preto/55 shrink-0">
+                            mód {d.module ? String(d.module.number).padStart(2, "0") : "–"}
+                          </span>
+                        </li>
+                      ))}
+                      {bulkCandidates.length > 20 && (
+                        <li className="text-perestroika-preto/55 italic">
+                          e mais {bulkCandidates.length - 20}…
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkSubmitMutation.isPending}>
+              cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={bulkSubmitMutation.isPending || bulkCandidates.length === 0}
+              onClick={(e) => {
+                e.preventDefault();
+                bulkSubmitMutation.mutate(bulkCandidates);
+              }}
+            >
+              {bulkSubmitMutation.isPending ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />
+                  processando…
+                </>
+              ) : (
+                `sim, marcar ${bulkCandidates.length} como enviado${bulkCandidates.length === 1 ? "" : "s"}`
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
