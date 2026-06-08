@@ -2740,6 +2740,7 @@ export type Database = {
           created_at: string
           feedback: string
           id: string
+          kind: string
           module_id: string
           module_number: number
           module_title: string
