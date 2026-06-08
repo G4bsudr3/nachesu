@@ -128,6 +128,13 @@ const AdminFbi = () => {
     }
   }, [tabFromPath, searchParams, currentTab, navigate, routePrefix]);
 
+  // alias: /admin/feedback → /admin/respostas
+  useEffect(() => {
+    if (currentTab === "feedback" && !inLegado) {
+      navigate(`${routePrefix}/respostas`, { replace: true });
+    }
+  }, [currentTab, inLegado, navigate, routePrefix]);
+
   const handleTabChange = (v: string) => {
     const params = new URLSearchParams(searchParams);
     params.delete("tab");
