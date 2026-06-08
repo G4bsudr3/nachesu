@@ -220,6 +220,21 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const submitDraftMutation = useMutation({
+    mutationFn: async () => {
+      if (!deliverable) throw new Error("sem contexto");
+      const { error } = await supabase.rpc("admin_submit_deliverable", {
+        p_id: deliverable.id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("rascunho marcado como enviado, agora dá pra revisar");
+      qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
+    },
+    onError: (e: Error) => toast.error(e.message ?? "falha ao marcar como enviado"),
+  });
+
   const toggleTag = (tag: string) => {
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
   };
