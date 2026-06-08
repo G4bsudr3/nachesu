@@ -415,7 +415,27 @@ const Modulo = () => {
   const donePills = pills?.filter((p) => completedPillIds.has(p.id)).length ?? 0;
   const requiredPills = pills?.filter((p) => p.required) ?? [];
   const doneRequired = requiredPills.filter((p) => completedPillIds.has(p.id)).length;
-  const pillsRemaining = Math.max(0, requiredPills.length - doneRequired);
+  // pílulas obrigatórias com conteúdo aceito pelos resolvers, mesmo sem
+  // o clique manual em "feito". serve pra desbloquear "concluir módulo".
+  const contentAutoComplete = requiredPills.filter((p) => {
+    if (completedPillIds.has(p.id)) return false;
+    const resolved = resolvePill(
+      {
+        id: p.id,
+        module_id: moduleRow.id,
+        order_index: p.order_index,
+        kind: p.kind as PillKind,
+        title: p.title,
+        body_md: p.body_md,
+        required: !!p.required,
+        interaction_schema: (p.interaction_schema ?? null) as Record<string, unknown> | null,
+      },
+      deliverableContent ?? {},
+    );
+    return resolved.state === "respondida" || resolved.state === "passiva";
+  }).length;
+  const effectiveDoneRequired = doneRequired + contentAutoComplete;
+  const pillsRemaining = Math.max(0, requiredPills.length - effectiveDoneRequired);
   const canCompleteModule = requiredPills.length > 0 && pillsRemaining === 0;
 
   return (
