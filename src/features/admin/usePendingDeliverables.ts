@@ -29,8 +29,9 @@ export function usePendingDeliverables(opts: {
   courseId?: string | null;
   moduleId?: string | null;
   status?: InboxFilter;
+  includeTest?: boolean;
 }) {
-  const { courseId = null, moduleId = null, status = "pendentes" } = opts;
+  const { courseId = null, moduleId = null, status = "todos", includeTest = false } = opts;
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["admin-deliverables-inbox"],
