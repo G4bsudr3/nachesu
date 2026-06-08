@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { DeliverableInbox } from "./usePendingDeliverables";
 import { DeliverableAnswersList } from "./deliverableRendering/DeliverableAnswersList";
+import { useExplicitPillProgress } from "./deliverableRendering/useExplicitPillProgress";
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
 import { useDeliverableThread } from "@/features/hub/useDeliverableThread";
 import { useRubricForModule } from "./useRubrics";
