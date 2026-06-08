@@ -18,7 +18,7 @@ interface Props {
  * - prints/uploads viram link assinado com thumb (1h)
  */
 export const DeliverableAnswersList = ({ deliverable }: Props) => {
-  const { answers, isLoading } = useDeliverableAnswers(deliverable);
+  const { answers, isLoading, isError } = useDeliverableAnswers(deliverable);
 
   if (!deliverable) return null;
 
@@ -30,13 +30,22 @@ export const DeliverableAnswersList = ({ deliverable }: Props) => {
     );
   }
 
-  if (answers.length === 0) {
+  if (isError) {
     return (
-      <p className="text-sm text-perestroika-preto/50 italic">
-        este módulo ainda não tem pílulas cadastradas.
+      <p className="text-sm text-rose-700">
+        falha ao carregar as pílulas deste módulo. tenta recarregar a página.
       </p>
     );
   }
+
+  if (answers.length === 0) {
+    return (
+      <p className="text-sm text-perestroika-preto/50 italic">
+        não encontramos pílulas cadastradas pra este módulo. confirma em /admin/aula.
+      </p>
+    );
+  }
+
 
   // só esconde pílulas 100% passivas sem nenhum bloco; pílulas com qualquer
   // dado (mesmo via fallback raw) precisam aparecer pro educador.
