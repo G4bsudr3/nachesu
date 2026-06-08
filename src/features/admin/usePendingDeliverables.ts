@@ -6,7 +6,7 @@ import type { Database } from "@/integrations/supabase/types";
 type DeliverableRow = Database["public"]["Tables"]["module_deliverables"]["Row"];
 type ModuleLite = { id: string; number: number; title: string; trail_id: string };
 type TrailLite = { id: string; course_id: string | null; title: string };
-type ProfileLite = { user_id: string; display_name: string | null; nickname: string | null };
+type ProfileLite = { user_id: string; display_name: string | null; nickname: string | null; is_test: boolean | null };
 
 export type DeliverableInbox = DeliverableRow & {
   module: ModuleLite | null;
