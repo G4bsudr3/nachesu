@@ -279,6 +279,7 @@ export const AdminFeedbackInbox = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="pendentes">pendentes</SelectItem>
+            <SelectItem value="rascunho-completo">rascunho completo</SelectItem>
             <SelectItem value="rascunho">em rascunho</SelectItem>
             <SelectItem value="ajuste">em ajuste</SelectItem>
             <SelectItem value="revisados">revisados</SelectItem>
