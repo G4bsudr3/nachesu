@@ -33,7 +33,7 @@ export const OPERACAO: Item[] = [
   { to: "/admin/review", label: "revisão", icon: ClipboardCheck },
   { to: "/admin/trilha", label: "trilha", icon: Compass },
   { to: "/admin/tutor", label: "tutor IA", icon: Brain },
-  { to: "/admin/feedback", label: "feedback", icon: Inbox },
+  { to: "/admin/respostas", label: "respostas", icon: Inbox },
   { to: "/admin/pending", label: "pendentes", icon: Hourglass },
   { to: "/admin/materiais", label: "materiais", icon: Package },
   { to: "/admin/risco", label: "risco", icon: AlertTriangle },

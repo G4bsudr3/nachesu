@@ -99,11 +99,12 @@ const useNow = () => {
 
 export const AdminFeedbackInbox = () => {
   useNow();
-  const [statusFilter, setStatusFilter] = useState<InboxFilter>("pendentes");
+  const [statusFilter, setStatusFilter] = useState<InboxFilter>("todos");
   const [courseId, setCourseId] = useState<string | null>(null);
   const [moduleId, setModuleId] = useState<string | null>(null);
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
   const [search, setSearch] = useState("");
+  const [includeTest, setIncludeTest] = useState(false);
 
   const { data: courses } = useQuery({
     queryKey: ["admin-feedback-courses"],
@@ -137,10 +138,21 @@ export const AdminFeedbackInbox = () => {
     },
   });
 
-  const { data, all, pendingCount, ajusteCount, rascunhoCount, isLoading, refetch } = usePendingDeliverables({
+  const {
+    data,
+    pendingCount,
+    ajusteCount,
+    rascunhoCount,
+    revisadosCount,
+    totalCount,
+    testCount,
+    isLoading,
+    refetch,
+  } = usePendingDeliverables({
     courseId,
     moduleId,
     status: statusFilter,
+    includeTest,
   });
 
   // realtime: refetch quando entrega muda
@@ -157,11 +169,6 @@ export const AdminFeedbackInbox = () => {
       supabase.removeChannel(channel);
     };
   }, [refetch]);
-
-  const revisadosCount = useMemo(
-    () => all.filter((d) => d.reviewed_at !== null && d.status !== "ajuste").length,
-    [all],
-  );
 
   const searchTerm = search.trim().toLowerCase();
   const filteredData = useMemo(() => {
@@ -185,16 +192,25 @@ export const AdminFeedbackInbox = () => {
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none">
-            feedback · inbox
+            respostas dos estudantes
           </h1>
           <p className="mt-3 text-perestroika-preto/70 inline-flex items-center gap-3 flex-wrap">
             <Inbox className="w-4 h-4" />
             {isLoading
               ? "carregando…"
-              : `${pendingCount} pendentes · ${rascunhoCount} em rascunho · ${ajusteCount} em ajuste · ${revisadosCount} revisados`}
+              : `${totalCount} respostas · ${pendingCount} pendentes · ${ajusteCount} em ajuste · ${rascunhoCount} em rascunho · ${revisadosCount} revisadas`}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <label className="inline-flex items-center gap-2 text-[11px] uppercase tracking-wide text-perestroika-preto/60 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={includeTest}
+              onChange={(e) => setIncludeTest(e.target.checked)}
+              className="accent-perestroika-preto"
+            />
+            incluir teste{testCount > 0 ? ` (${testCount})` : ""}
+          </label>
           <button
             type="button"
             onClick={() => exportCsv(filteredData)}
@@ -209,7 +225,7 @@ export const AdminFeedbackInbox = () => {
             type="button"
             onClick={async () => {
               await refetch();
-              toast.success("inbox atualizado");
+              toast.success("respostas atualizadas");
             }}
             className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/10"
           >
@@ -218,6 +234,7 @@ export const AdminFeedbackInbox = () => {
           </button>
         </div>
       </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <Select

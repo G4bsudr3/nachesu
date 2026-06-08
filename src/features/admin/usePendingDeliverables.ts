@@ -6,7 +6,7 @@ import type { Database } from "@/integrations/supabase/types";
 type DeliverableRow = Database["public"]["Tables"]["module_deliverables"]["Row"];
 type ModuleLite = { id: string; number: number; title: string; trail_id: string };
 type TrailLite = { id: string; course_id: string | null; title: string };
-type ProfileLite = { user_id: string; display_name: string | null; nickname: string | null };
+type ProfileLite = { user_id: string; display_name: string | null; nickname: string | null; is_test: boolean | null };
 
 export type DeliverableInbox = DeliverableRow & {
   module: ModuleLite | null;
@@ -29,8 +29,9 @@ export function usePendingDeliverables(opts: {
   courseId?: string | null;
   moduleId?: string | null;
   status?: InboxFilter;
+  includeTest?: boolean;
 }) {
-  const { courseId = null, moduleId = null, status = "pendentes" } = opts;
+  const { courseId = null, moduleId = null, status = "todos", includeTest = false } = opts;
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["admin-deliverables-inbox"],
@@ -69,7 +70,7 @@ export function usePendingDeliverables(opts: {
 
       const [{ data: mods }, { data: profs }] = await Promise.all([
         supabase.from("modules").select("id, number, title, trail_id").in("id", moduleIds),
-        supabase.from("profiles").select("user_id, display_name, nickname").in("user_id", userIds),
+        supabase.from("profiles").select("user_id, display_name, nickname, is_test").in("user_id", userIds),
       ]);
 
       const trailIds = Array.from(
@@ -101,9 +102,20 @@ export function usePendingDeliverables(opts: {
     },
   });
 
+  const visibleByTest = useMemo(
+    () => (data ?? []).filter((d) => includeTest || !d.profile?.is_test),
+    [data, includeTest],
+  );
+
+  const statusRank = (d: DeliverableInbox) => {
+    if (!isDraftRow(d) && d.reviewed_at === null && d.status !== "ajuste") return 0; // pendente
+    if (d.status === "ajuste") return 1;
+    if (isDraftRow(d)) return 2;
+    return 3; // revisado
+  };
+
   const filtered = useMemo(() => {
-    if (!data) return [];
-    return data.filter((d) => {
+    const rows = visibleByTest.filter((d) => {
       const draft = isDraftRow(d);
       if (status === "pendentes" && (draft || d.reviewed_at !== null || d.status === "ajuste"))
         return false;
@@ -115,29 +127,50 @@ export function usePendingDeliverables(opts: {
       if (moduleId && d.module_id !== moduleId) return false;
       return true;
     });
-  }, [data, status, courseId, moduleId]);
+    return [...rows].sort((a, b) => {
+      const r = statusRank(a) - statusRank(b);
+      if (r !== 0) return r;
+      const at = a.submitted_at ?? a.updated_at ?? "";
+      const bt = b.submitted_at ?? b.updated_at ?? "";
+      return bt.localeCompare(at);
+    });
+  }, [visibleByTest, status, courseId, moduleId]);
 
   const pendingCount = useMemo(
     () =>
-      (data ?? []).filter(
+      visibleByTest.filter(
         (d) => !isDraftRow(d) && d.reviewed_at === null && d.status !== "ajuste",
       ).length,
-    [data],
+    [visibleByTest],
   );
 
   const ajusteCount = useMemo(
-    () => (data ?? []).filter((d) => d.status === "ajuste").length,
+    () => visibleByTest.filter((d) => d.status === "ajuste").length,
+    [visibleByTest],
+  );
+
+  const rascunhoCount = useMemo(() => visibleByTest.filter(isDraftRow).length, [visibleByTest]);
+
+  const revisadosCount = useMemo(
+    () => visibleByTest.filter((d) => d.reviewed_at !== null && d.status !== "ajuste").length,
+    [visibleByTest],
+  );
+
+  const totalCount = visibleByTest.length;
+  const testCount = useMemo(
+    () => (data ?? []).filter((d) => d.profile?.is_test).length,
     [data],
   );
 
-  const rascunhoCount = useMemo(() => (data ?? []).filter(isDraftRow).length, [data]);
-
   return {
     data: filtered,
-    all: data ?? [],
+    all: visibleByTest,
     pendingCount,
     ajusteCount,
     rascunhoCount,
+    revisadosCount,
+    totalCount,
+    testCount,
     isLoading,
     refetch,
   };

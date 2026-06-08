@@ -34,7 +34,7 @@ const AdminAutosaveAudit = lazy(() => import("@/features/admin/AdminAutosaveAudi
 const AdminUsers = lazy(() => import("./AdminUsers"));
 const AdminFbiResponses = lazy(() => import("@/features/admin/AdminFbiResponses"));
 
-const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "feedback", "autosave", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "respostas", "feedback", "autosave", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
@@ -44,7 +44,8 @@ const TAB_LABELS: Record<AdminTab, string> = {
   eletiva: "eletiva · settings",
   trilha: "eletiva · trilha",
   tutor: "eletiva · tutor IA",
-  feedback: "feedback · inbox",
+  respostas: "respostas dos estudantes",
+  feedback: "respostas dos estudantes",
   "copy-audit": "auditoria · copy",
   autosave: "auditoria · autosave",
   fbi: "fbi · respostas",
@@ -83,6 +84,7 @@ const TAB_COMPONENTS: Record<AdminTab, React.ComponentType> = {
   trilha: AdminTrilha,
   tutor: AdminTutorCommand,
   feedback: AdminFeedbackInbox,
+  respostas: AdminFeedbackInbox,
   "copy-audit": AdminCopyAudit,
   autosave: AdminAutosaveAudit,
   materiais: AdminMateriais,
@@ -125,6 +127,13 @@ const AdminFbi = () => {
       navigate(`${routePrefix}/${currentTab}${qs ? `?${qs}` : ""}`, { replace: true });
     }
   }, [tabFromPath, searchParams, currentTab, navigate, routePrefix]);
+
+  // alias: /admin/feedback → /admin/respostas
+  useEffect(() => {
+    if (currentTab === "feedback" && !inLegado) {
+      navigate(`${routePrefix}/respostas`, { replace: true });
+    }
+  }, [currentTab, inLegado, navigate, routePrefix]);
 
   const handleTabChange = (v: string) => {
     const params = new URLSearchParams(searchParams);
@@ -195,7 +204,7 @@ const AdminFbi = () => {
               <TabsTrigger value="review" className="uppercase tracking-wide text-xs">revisão</TabsTrigger>
               <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
               <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
-              <TabsTrigger value="feedback" className="uppercase tracking-wide text-xs">feedback</TabsTrigger>
+              <TabsTrigger value="respostas" className="uppercase tracking-wide text-xs">respostas</TabsTrigger>
               <TabsTrigger value="materiais" className="uppercase tracking-wide text-xs">materiais</TabsTrigger>
               <TabsTrigger value="pending" className="uppercase tracking-wide text-xs">pendentes</TabsTrigger>
               <TabsTrigger value="usuarios" className="uppercase tracking-wide text-xs">usuários</TabsTrigger>
