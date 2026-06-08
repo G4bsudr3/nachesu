@@ -375,6 +375,31 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
           />
         )}
 
+        {!isDraft && (
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-perestroika-preto/15 bg-white/40 px-3 py-2">
+            <p className="text-[11px] text-perestroika-preto/65">
+              <span className="uppercase tracking-wide text-perestroika-preto/55">status:</span>{" "}
+              {statusLabel}
+              {deliverable.submitted_at && (
+                <span className="text-perestroika-preto/45">
+                  {" "}· enviado em{" "}
+                  {new Date(deliverable.submitted_at).toLocaleDateString("pt-BR")}
+                </span>
+              )}
+            </p>
+            <button
+              type="button"
+              onClick={() => setUnsubmitConfirmOpen(true)}
+              disabled={unsubmitDraftMutation.isPending}
+              className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-1 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50 shrink-0"
+              title="volta essa entrega pra rascunho; registra no histórico quem desfez e quando"
+            >
+              <RotateCcw className="w-3 h-3" />
+              desfazer envio
+            </button>
+          </div>
+        )}
+
         <div className="mt-6">
           <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3">
             {isDraft ? "conteúdo do rascunho" : "entrega do estudante"}
