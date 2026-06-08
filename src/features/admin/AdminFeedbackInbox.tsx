@@ -199,7 +199,7 @@ export const AdminFeedbackInbox = () => {
             <Inbox className="w-4 h-4" />
             {isLoading
               ? "carregando…"
-              : `${totalCount} respostas · ${pendingCount} pendentes · ${ajusteCount} em ajuste · ${rascunhoCount} em rascunho · ${revisadosCount} revisadas`}
+              : `${totalCount} respostas · ${pendingCount} pendentes · ${ajusteCount} em ajuste · ${rascunhoCompleteCount} rascunhos completos · ${rascunhoCount} em rascunho · ${revisadosCount} revisadas`}
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
