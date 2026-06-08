@@ -1,74 +1,89 @@
-## diagnóstico
+## o que eu entendi
 
-abri todas as entregas (`module_deliverables`) no banco. existem **11 registros**, todos do módulo 1:
+- tirar o esquema de liberação semanal automática
+- deixar exatamente 3 módulos visíveis pro estudante: os módulos 1, 2 e 3 da **trilha 1** de cada eletiva (Fundamentos & IA em IA na Prática, Enxergar em Economia Circular)
+- o resto fica oculto até você decidir publicar
 
-| estudante | status | enviou? | conteúdo |
-|---|---|---|---|
-| Joao11522 | enviado | sim | completo |
-| frattz | revisado | sim | completo |
-| Gabriela11681 | **rascunho** | não | **completo** (quiz, 5 evidências, guided, bônus) |
-| Victor11771 | rascunho | não | precisa conferir |
-| Leticia11573 | rascunho | não | precisa conferir |
-| Lara11507 | rascunho | não | precisa conferir |
-| Henrique11843 | rascunho | não | precisa conferir |
-| Maria11633 | rascunho | não | precisa conferir |
-| Victor11671 | rascunho | não | precisa conferir |
-| Mateus Frattz | rascunho | não | precisa conferir |
-| duduobregon | rascunho | não | precisa conferir |
+## causa do bug atual
 
-ou seja: **só duas pessoas no mundo entregaram de fato**. nove estão paradas em rascunho.
+A migration de hoje (`20260608095201_…`) adicionou na policy de `modules` um `EXISTS (SELECT 1 FROM module_releases ...)`. A policy de `module_releases` já fazia o caminho inverso (`EXISTS FROM modules JOIN trails JOIN enrollments`). Isso criou dependência circular entre as duas RLS e o resultado pro estudante é vazio. Admin (que entra pelo ramo `has_role admin`) continua vendo tudo, por isso passou batido.
 
-## por que a Gabriela aparece como rascunho
+Somado a isso, `available_from` tem datas futuras em quase tudo, então mesmo se a RLS funcionasse a maior parte ficaria escondida.
 
-o `module_deliverables.content` dela tem tudo: quiz_answers (p1, p2, p3), 5 itens com evidência (`items`), guided_answers (q1, q2, q3) e bônus (dado + porque). respondida em todos os campos.
+## plano
 
-mas o status só vira `enviado` quando a estudante clica **"concluir módulo"** no fim da página (`completeMutation` em `Modulo.tsx:144`). ela preencheu, o autosave salvou rascunho, e ela saiu sem fechar o módulo. nenhum registro em `student_pill_progress` confirma que ela tenha clicado "marcar pílula como feita" — então o gate "termine as obrigatórias primeiro" travaria o botão se ela tentasse.
+### 1. migration — tirar o gate de liberação semanal da RLS
 
-a tag verde **"respondida"** que aparece na sua tela é por pílula (significa "tem texto salvo"), não por módulo. nada a ver com `enviado`.
+Reverter a policy de `modules` pra versão simples: estudante vê módulo se está matriculado no curso da trilha **e** o módulo está `published = true`. Sem `module_releases`, sem janela `available_from`. Mesma simplificação na policy de `module_pills` (depende só de `modules.published`).
 
-## o que vou fazer
+A tabela `module_releases` continua existindo (histórico/audit), só deixa de ser gate. O trigger `log_module_publish` que insere em `module_releases` quando alguém publica módulo pode continuar — não atrapalha.
 
-### 1. classificar "rascunho completo" no admin (essencial)
+```sql
+DROP POLICY IF EXISTS "aluno vê módulos liberados se matriculado" ON public.modules;
+CREATE POLICY "aluno vê módulos publicados se matriculado"
+ON public.modules FOR SELECT TO authenticated
+USING (
+  has_role(auth.uid(), 'admin'::app_role)
+  OR (
+    published = true
+    AND EXISTS (
+      SELECT 1 FROM public.trails t
+      JOIN public.enrollments e ON e.course_id = t.course_id
+      WHERE t.id = modules.trail_id
+        AND e.user_id = auth.uid()
+        AND e.status = 'active'
+    )
+  )
+);
 
-no `AdminFeedbackInbox` e no drawer de revisão:
+DROP POLICY IF EXISTS "aluno vê pílulas de módulos liberados" ON public.module_pills;
+CREATE POLICY "aluno vê pílulas publicadas de módulos visíveis"
+ON public.module_pills FOR SELECT TO authenticated
+USING (
+  has_role(auth.uid(), 'admin'::app_role)
+  OR (
+    published = true
+    AND EXISTS (
+      SELECT 1 FROM public.modules m
+      WHERE m.id = module_pills.module_id AND m.published = true
+    )
+  )
+);
+```
 
-- adicionar um cálculo de **completude do conteúdo** (não do progresso de pílula): pra cada pílula `required`, verifico se as chaves esperadas estão preenchidas no `content` (`quiz_answers.p1/p2/p3`, `items` com >= mínimo, `guided_answers.qX`, etc.). reaproveito os `resolvers` que já existem em `deliverableRendering/resolvers.ts` — eles já sabem ler cada tipo de pílula.
-- nova badge **"rascunho completo"** (cinza-verde) ao lado de **"rascunho"** quando todas as obrigatórias têm resposta substantiva.
-- novo filtro no `<Select>` de status: `pendentes`, `rascunho completo`, `rascunho parcial`, `ajuste`, `revisados`, `todos`. quem está em "rascunho completo" virou candidato a cutucar.
+### 2. data update — deixar só 3 módulos publicados por curso
 
-### 2. ação admin "marcar como enviado" pra rascunhos completos
+Pra cada curso, manter `published = true` apenas nos 3 primeiros módulos da trilha de `order_index = 1`; despublicar (`published = false`) o resto e zerar `available_from` em todos (não precisa mais dessa janela).
 
-no drawer de revisão, quando o deliverable estiver em rascunho completo:
+```sql
+-- zera janela em tudo
+UPDATE public.modules SET available_from = NULL;
 
-- botão **"marcar como enviado em nome do estudante"** que chama um novo RPC `admin_submit_deliverable(deliverable_id)` (`SECURITY DEFINER`) setando `status='enviado'` + `submitted_at=now()` + log no `deliverable_messages` ("enviado manualmente pelo educador porque o rascunho estava completo").
-- isso resgata as 8 pessoas que já fizeram o trabalho e estavam invisíveis.
+-- despublica geral
+UPDATE public.modules SET published = false;
 
-### 3. corrigir o gate no lado do estudante (causa raiz)
+-- republica só os 3 primeiros da trilha 1 de cada curso
+UPDATE public.modules m
+   SET published = true
+  FROM public.trails t
+ WHERE m.trail_id = t.id
+   AND t.order_index = 1
+   AND m.number <= 3;
+```
 
-hoje, mesmo com tudo preenchido, o botão "concluir módulo" pede que cada pílula tenha sido **marcada como feita** (`student_pill_progress`). isso é fricção desnecessária pra esse tipo de pílula sem ação explícita de "concluir". duas opções pequenas:
+> O trigger `trg_module_publish_scope_check` roda no UPDATE pra checar escopo das pílulas. Os 6 módulos publicados (3+3) já estavam publicados antes e passaram, então o re-publish passa também. Se travar, eu reporto e a gente decide pílula a pílula.
 
-- **(preferida)** detectar autocomplete: quando o autosave salva e o conteúdo da pílula passa no `resolvers` como "respondido", inserir automaticamente em `student_pill_progress` (`completed_at=now()`). assim "preencheu = concluiu".
-- alternativa: no botão "concluir módulo", se faltar marcar pílula mas o conteúdo dela estiver completo, marcar na hora antes de submeter.
+### 3. validação pós-migration
 
-vou pela primeira: marcação implícita no `useDeliverable` quando o save bem-sucedido cobrir todos os campos obrigatórios daquela pílula.
-
-### 4. nudge visível pro estudante
-
-no `DeliverableStatusPill` / topo do módulo: se `status='rascunho'` e todas as obrigatórias estão respondidas, badge laranja **"falta só apertar concluir"** + scroll para o CTA. evita que o próximo estudante caia no mesmo buraco.
-
-## detalhes técnicos
-
-- **frontend**:
-  - novo helper `src/features/admin/deliverableRendering/completeness.ts` reusando `resolvePill` → retorna `{ requiredTotal, requiredAnswered, isComplete }`.
-  - `usePendingDeliverables.ts`: ao mapear `RpcRow`, juntar com `admin_module_pills` pra cada `module_id` único (em batch) e calcular completude por linha; expor `completeness` no `DeliverableInbox`.
-  - `AdminFeedbackInbox.tsx`: nova badge "rascunho completo", novo filtro, atualizar contadores no header (`X rascunhos completos`).
-  - `FeedbackReviewDrawer`: botão "marcar como enviado" condicional.
-  - `Modulo.tsx` + `useDeliverable.ts`: marcar pílula como concluída automaticamente quando o conteúdo passa no resolver.
-- **db** (migration nova):
-  - `admin_submit_deliverable(p_id uuid)` `SECURITY DEFINER`, valida `has_role(auth.uid(), 'admin')`, set `status='enviado'`, `submitted_at=now()` (se for null), insere mensagem no `deliverable_messages`.
-- **sem mudança de schema** em tabelas.
+Rodar como leitura (`read_query`) simulando contagem geral: esperado **3 módulos publicados por curso**, todos na trilha 1, `available_from IS NULL` em todos. E confirmar visualmente no preview que o mapa mostra "0/3" na trilha 1 e "módulos chegando em breve" nas demais trilhas.
 
 ## fora de escopo
 
-- não vou rodar a "marcação como enviado" em lote agora: prefiro você revisar caso a caso no admin com a nova badge. me confirma depois se quer um botão "marcar todos os rascunhos completos como enviados".
-- não mexo na RLS atual: as RPCs criadas anteriormente continuam servindo o inbox.
+- não vou apagar dados de `module_releases` nem do trigger `log_module_publish` — fica como histórico interno
+- não vou mexer em código (`useEletivaProgress`, `TrilhaColumn`, etc.). O hook já trata `published=false` como "trilha vazia" sem regredir nada
+- não vou criar UI nova de "publicar manualmente": o admin já controla via `published` (e quando quiser liberar o módulo 4, basta marcar publicado)
+
+## confirmações antes de implementar
+
+1. Os 3 módulos liberados são, pra cada curso, **os módulos 1, 2 e 3 da trilha 1**, certo? (em vez de, por exemplo, os 3 primeiros de cada trilha)
+2. Posso tirar `available_from` de tudo (zerar)? Você não vai querer ressuscitar a janela depois.
