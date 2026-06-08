@@ -383,27 +383,52 @@ export const AdminFeedbackInbox = () => {
                     </TableCell>
                     <TableCell>
                       {isDraft && d.completeness.isComplete ? (
-                        <Badge
-                          className="bg-perestroika-azul text-white uppercase text-[10px]"
-                          title="estudante preencheu tudo, só falta apertar enviar"
-                        >
-                          rascunho completo
-                        </Badge>
+                        <div className="flex flex-col gap-1">
+                          <Badge
+                            className="bg-perestroika-azul text-white uppercase text-[10px] w-fit"
+                            title="estudante preencheu tudo, só falta apertar enviar"
+                          >
+                            rascunho completo
+                          </Badge>
+                          <span className="text-[10px] text-perestroika-azul/80 tabular-nums">
+                            {d.completeness.requiredAnswered}/
+                            {d.completeness.requiredTotal} obrigatórias
+                          </span>
+                        </div>
                       ) : isDraft ? (
-                        <Badge
-                          variant="outline"
-                          className="uppercase text-[10px] border-perestroika-preto/30 text-perestroika-preto/60"
-                          title={
-                            d.completeness.requiredTotal > 0
-                              ? `${d.completeness.requiredAnswered}/${d.completeness.requiredTotal} respondidas`
-                              : undefined
-                          }
-                        >
-                          rascunho
-                          {d.completeness.requiredTotal > 0
-                            ? ` ${d.completeness.requiredAnswered}/${d.completeness.requiredTotal}`
-                            : ""}
-                        </Badge>
+                        <div className="flex flex-col gap-1 min-w-[120px]">
+                          <Badge
+                            variant="outline"
+                            className="uppercase text-[10px] border-perestroika-preto/30 text-perestroika-preto/60 w-fit"
+                            title={
+                              d.completeness.requiredTotal > 0
+                                ? `${d.completeness.requiredAnswered}/${d.completeness.requiredTotal} obrigatórias respondidas; faltam ${d.completeness.missing.length}`
+                                : "rascunho sem pílulas obrigatórias mapeadas"
+                            }
+                          >
+                            rascunho
+                          </Badge>
+                          {d.completeness.requiredTotal > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              <div className="h-1 flex-1 rounded-full bg-perestroika-preto/10 overflow-hidden">
+                                <div
+                                  className="h-full bg-perestroika-laranja"
+                                  style={{
+                                    width: `${Math.round(
+                                      (d.completeness.requiredAnswered /
+                                        d.completeness.requiredTotal) *
+                                        100,
+                                    )}%`,
+                                  }}
+                                />
+                              </div>
+                              <span className="text-[10px] text-perestroika-preto/55 tabular-nums shrink-0">
+                                {d.completeness.requiredAnswered}/
+                                {d.completeness.requiredTotal}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       ) : d.status === "ajuste" ? (
                         <Badge className="bg-[#fd4644] text-white uppercase text-[10px]">
                           ajuste

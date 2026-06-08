@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Check, X, ExternalLink, FileWarning, ImageIcon, Link as LinkIcon, Paperclip } from "lucide-react";
+import { Check, X, ExternalLink, FileWarning, ImageIcon, Link as LinkIcon, Paperclip, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { DeliverableInbox } from "../usePendingDeliverables";
 import { useDeliverableAnswers } from "./useDeliverableAnswers";
+import { useExplicitPillProgress } from "./useExplicitPillProgress";
 import { getSignedUrl } from "./signedUrl";
 import type { AnswerBlock, ResolvedAnswer } from "./types";
 
@@ -19,6 +20,7 @@ interface Props {
  */
 export const DeliverableAnswersList = ({ deliverable }: Props) => {
   const { answers, isLoading, isError } = useDeliverableAnswers(deliverable);
+  const { markedIds } = useExplicitPillProgress(deliverable);
 
   if (!deliverable) return null;
 
@@ -46,6 +48,7 @@ export const DeliverableAnswersList = ({ deliverable }: Props) => {
     );
   }
 
+  const isDraft = deliverable.submitted_at === null && deliverable.status === "rascunho";
 
   // só esconde pílulas 100% passivas sem nenhum bloco; pílulas com qualquer
   // dado (mesmo via fallback raw) precisam aparecer pro educador.
@@ -62,9 +65,18 @@ export const DeliverableAnswersList = ({ deliverable }: Props) => {
 
   return (
     <div className="space-y-4">
-      {visible.map((a) => (
-        <PillAnswerCard key={a.pillId} answer={a} index={a.order} />
-      ))}
+      {visible.map((a) => {
+        const isAutoCompleted =
+          isDraft && a.state === "respondida" && !markedIds.has(a.pillId);
+        return (
+          <PillAnswerCard
+            key={a.pillId}
+            answer={a}
+            index={a.order}
+            autoCompleted={isAutoCompleted}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -85,14 +97,24 @@ const stateBadge: Record<ResolvedAnswer["state"], { label: string; cls: string }
   passiva: { label: "passiva", cls: "bg-zinc-100 text-zinc-700 border-zinc-300" },
 };
 
-function PillAnswerCard({ answer, index }: { answer: ResolvedAnswer; index: number }) {
+function PillAnswerCard({
+  answer,
+  index,
+  autoCompleted = false,
+}: {
+  answer: ResolvedAnswer;
+  index: number;
+  autoCompleted?: boolean;
+}) {
   const sb = stateBadge[answer.state];
   return (
     <div
       className={`rounded-xl border bg-white/60 p-4 ${
         answer.state === "nao-respondida" && answer.required
           ? "border-rose-300"
-          : "border-perestroika-preto/15"
+          : autoCompleted
+            ? "border-perestroika-azul/40"
+            : "border-perestroika-preto/15"
       }`}
     >
       {/* cabeçalho da pílula */}
@@ -115,12 +137,23 @@ function PillAnswerCard({ answer, index }: { answer: ResolvedAnswer; index: numb
             >
               {sb.label}
             </span>
+            {autoCompleted && (
+              <span
+                className="inline-flex items-center gap-1 rounded-full border border-perestroika-azul/50 bg-perestroika-azul/10 text-perestroika-azul px-2 py-0.5 text-[10px] uppercase tracking-wide"
+                title="o estudante preencheu o conteúdo mas não clicou em 'marcar como feita'. o autosave reconheceu como completa."
+              >
+                <Sparkles className="w-2.5 h-2.5" />
+                auto-concluída
+              </span>
+            )}
           </div>
           <p className="font-display uppercase text-base leading-tight">
             {answer.title}
           </p>
         </div>
       </div>
+
+
 
       {/* blocos */}
       {answer.blocks.length === 0 ? (
