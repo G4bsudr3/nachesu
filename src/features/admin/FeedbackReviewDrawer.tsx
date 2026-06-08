@@ -238,6 +238,28 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     onError: (e: Error) => toast.error(e.message ?? "falha ao marcar como enviado"),
   });
 
+  const [unsubmitConfirmOpen, setUnsubmitConfirmOpen] = useState(false);
+  const [unsubmitReason, setUnsubmitReason] = useState("");
+  const unsubmitDraftMutation = useMutation({
+    mutationFn: async () => {
+      if (!deliverable) throw new Error("sem contexto");
+      const { error } = await supabase.rpc("admin_unsubmit_deliverable", {
+        p_id: deliverable.id,
+        p_reason: unsubmitReason.trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("envio desfeito, entrega voltou pra rascunho");
+      setUnsubmitConfirmOpen(false);
+      setUnsubmitReason("");
+      qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
+      onOpenChange(false);
+    },
+    onError: (e: Error) => toast.error(e.message ?? "falha ao desfazer envio"),
+  });
+
+
   const toggleTag = (tag: string) => {
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
   };
@@ -351,6 +373,31 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             onSubmit={() => submitDraftMutation.mutate()}
             submitting={submitDraftMutation.isPending}
           />
+        )}
+
+        {!isDraft && (
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-perestroika-preto/15 bg-white/40 px-3 py-2">
+            <p className="text-[11px] text-perestroika-preto/65">
+              <span className="uppercase tracking-wide text-perestroika-preto/55">status:</span>{" "}
+              {statusLabel}
+              {deliverable.submitted_at && (
+                <span className="text-perestroika-preto/45">
+                  {" "}· enviado em{" "}
+                  {new Date(deliverable.submitted_at).toLocaleDateString("pt-BR")}
+                </span>
+              )}
+            </p>
+            <button
+              type="button"
+              onClick={() => setUnsubmitConfirmOpen(true)}
+              disabled={unsubmitDraftMutation.isPending}
+              className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-1 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50 shrink-0"
+              title="volta essa entrega pra rascunho; registra no histórico quem desfez e quando"
+            >
+              <RotateCcw className="w-3 h-3" />
+              desfazer envio
+            </button>
+          </div>
         )}
 
         <div className="mt-6">
@@ -645,6 +692,71 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               <AlertDialogCancel>cancelar</AlertDialogCancel>
               <AlertDialogAction onClick={() => void handleDraftWithAI()}>
                 sim, substituir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={unsubmitConfirmOpen} onOpenChange={(o) => {
+          setUnsubmitConfirmOpen(o);
+          if (!o) setUnsubmitReason("");
+        }}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>desfazer envio dessa entrega?</AlertDialogTitle>
+              <AlertDialogDescription asChild>
+                <div className="space-y-3">
+                  <p>
+                    a entrega volta pra <strong>rascunho</strong> e o estudante
+                    consegue editar e reenviar.
+                    {alreadyReviewed && (
+                      <>
+                        {" "}
+                        <span className="text-perestroika-vermelho">
+                          atenção: ela já foi revisada. a marca de revisão também
+                          será removida (o texto do feedback fica salvo).
+                        </span>
+                      </>
+                    )}
+                  </p>
+                  <p className="text-xs text-perestroika-preto/60">
+                    fica registrado no histórico da conversa quem desfez, quando,
+                    e o status anterior. não dá pra apagar essa nota.
+                  </p>
+                  <div>
+                    <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/60 block mb-1">
+                      motivo (opcional, vai no histórico)
+                    </label>
+                    <Textarea
+                      value={unsubmitReason}
+                      onChange={(e) => setUnsubmitReason(e.target.value)}
+                      placeholder="ex: marquei sem querer, ou estudante pediu mais tempo"
+                      rows={2}
+                      maxLength={300}
+                    />
+                  </div>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={unsubmitDraftMutation.isPending}>
+                cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                disabled={unsubmitDraftMutation.isPending}
+                onClick={(e) => {
+                  e.preventDefault();
+                  unsubmitDraftMutation.mutate();
+                }}
+              >
+                {unsubmitDraftMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />
+                    desfazendo…
+                  </>
+                ) : (
+                  "sim, voltar pra rascunho"
+                )}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
