@@ -563,6 +563,74 @@ export const AdminFeedbackInbox = () => {
           return () => setSelected(filteredData[i + 1]);
         })()}
       />
+
+      <AlertDialog open={bulkConfirmOpen} onOpenChange={setBulkConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              marcar {bulkCandidates.length} rascunho{bulkCandidates.length === 1 ? "" : "s"} como enviado{bulkCandidates.length === 1 ? "" : "s"}?
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-3">
+                <p>
+                  isso muda o status dessas entregas pra <strong>enviado</strong>{" "}
+                  em nome dos estudantes. cada uma vai pra fila de revisão e o
+                  estudante recebe a mensagem automática "rascunho marcado como
+                  enviado pelo educador". não dá pra desfazer em lote — só
+                  reabrindo uma a uma.
+                </p>
+                {(courseId || moduleId) && (
+                  <p className="text-xs text-perestroika-preto/60">
+                    aplica só ao escopo selecionado (curso/módulo nos filtros).
+                  </p>
+                )}
+                {bulkCandidates.length > 0 && (
+                  <div className="max-h-48 overflow-y-auto rounded-lg border border-perestroika-preto/15 bg-perestroika-preto/[0.03] p-2">
+                    <ul className="text-xs space-y-1">
+                      {bulkCandidates.slice(0, 20).map((d) => (
+                        <li key={d.id} className="flex justify-between gap-3">
+                          <span className="truncate">
+                            {d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8)}
+                          </span>
+                          <span className="text-perestroika-preto/55 shrink-0">
+                            mód {d.module ? String(d.module.number).padStart(2, "0") : "–"}
+                          </span>
+                        </li>
+                      ))}
+                      {bulkCandidates.length > 20 && (
+                        <li className="text-perestroika-preto/55 italic">
+                          e mais {bulkCandidates.length - 20}…
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkSubmitMutation.isPending}>
+              cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={bulkSubmitMutation.isPending || bulkCandidates.length === 0}
+              onClick={(e) => {
+                e.preventDefault();
+                bulkSubmitMutation.mutate(bulkCandidates);
+              }}
+            >
+              {bulkSubmitMutation.isPending ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />
+                  processando…
+                </>
+              ) : (
+                `sim, marcar ${bulkCandidates.length} como enviado${bulkCandidates.length === 1 ? "" : "s"}`
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
