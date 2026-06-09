@@ -18,6 +18,8 @@ import {
   Archive,
   ChevronDown,
   LogOut,
+  Eye,
+  History,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
