@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          id: string
+          metadata: Json
+          target_id: string | null
+          target_kind: string | null
+          target_label: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_kind?: string | null
+          target_label?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_kind?: string | null
+          target_label?: string | null
+        }
+        Relationships: []
+      }
       admin_insights: {
         Row: {
           created_at: string
@@ -2639,6 +2675,67 @@ export type Database = {
         }
         Relationships: []
       }
+      user_module_overrides: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          module_id: string | null
+          scope: string
+          trail_id: string | null
+          updated_at: string
+          user_id: string
+          visible: boolean
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          module_id?: string | null
+          scope: string
+          trail_id?: string | null
+          updated_at?: string
+          user_id: string
+          visible: boolean
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          module_id?: string | null
+          scope?: string
+          trail_id?: string | null
+          updated_at?: string
+          user_id?: string
+          visible?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_module_overrides_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_module_overrides_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_module_overrides_trail_id_fkey"
+            columns: ["trail_id"]
+            isOneToOne: false
+            referencedRelation: "trails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -3018,6 +3115,10 @@ export type Database = {
         Returns: boolean
       }
       is_sebrae_edu_email: { Args: { _email: string }; Returns: boolean }
+      log_admin_module_view: {
+        Args: { _module_id: string }
+        Returns: undefined
+      }
       lookup_invited_canonical: {
         Args: { _email: string }
         Returns: {
@@ -3100,6 +3201,16 @@ export type Database = {
           group_id: string
           submitted_at: string
         }[]
+      }
+      write_audit_log: {
+        Args: {
+          _action: string
+          _metadata: Json
+          _target_id: string
+          _target_kind: string
+          _target_label: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
