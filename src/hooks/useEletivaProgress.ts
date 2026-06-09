@@ -51,6 +51,11 @@ const isAvailable = (m: { published: boolean; available_from: string | null }) =
   return new Date(m.available_from).getTime() <= Date.now();
 };
 
+const ADMIN_BYPASS_EMAILS = new Set([
+  "hey@frattz.com",
+  "duduobregon@gmail.com",
+]);
+
 /**
  * snapshot de progresso de uma eletiva.
  * passa courseId pra escopar por matrícula. sem courseId, agrega tudo
@@ -127,7 +132,11 @@ export const useEletivaProgress = (courseId?: string | null) => {
 
 
       // sequencial: default true. setting "false" → modo livre.
+      const emailBypass = ADMIN_BYPASS_EMAILS.has(
+        (user?.email ?? "").trim().toLowerCase(),
+      );
       const sequentialUnlock =
+        !emailBypass &&
         (sequentialRes.data?.value ?? "true").toLowerCase() !== "false";
 
       // calcula desbloqueios. ordenação por number garante "anterior".
