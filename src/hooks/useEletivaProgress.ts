@@ -51,6 +51,11 @@ const isAvailable = (m: { published: boolean; available_from: string | null }) =
   return new Date(m.available_from).getTime() <= Date.now();
 };
 
+const ADMIN_BYPASS_EMAILS = new Set([
+  "hey@frattz.com",
+  "duduobregon@gmail.com",
+]);
+
 /**
  * snapshot de progresso de uma eletiva.
  * passa courseId pra escopar por matrícula. sem courseId, agrega tudo
