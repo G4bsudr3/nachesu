@@ -18,6 +18,8 @@ import {
   Archive,
   ChevronDown,
   LogOut,
+  Eye,
+  History,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -28,6 +30,8 @@ type Item = { to: string; label: string; icon: LucideIcon; exact?: boolean };
 
 export const OPERACAO: Item[] = [
   { to: "/admin", label: "início", icon: Home, exact: true },
+  { to: "/admin/publicacao", label: "publicação", icon: Eye },
+  { to: "/admin/auditoria", label: "auditoria", icon: History },
   { to: "/admin/eletivas", label: "eletivas", icon: BookOpen },
   { to: "/admin/convites", label: "convites · email", icon: Mail },
   { to: "/admin/review", label: "revisão", icon: ClipboardCheck },

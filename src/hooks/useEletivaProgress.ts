@@ -80,6 +80,7 @@ export const useEletivaProgress = (courseId?: string | null) => {
         progressRes,
         pillProgressRes,
         sequentialRes,
+        overridesRes,
       ] = await Promise.all([
 
         trailsQuery,
@@ -100,6 +101,12 @@ export const useEletivaProgress = (courseId?: string | null) => {
           .select("value")
           .eq("key", "eletiva_sequential_unlock")
           .maybeSingle(),
+        user
+          ? supabase
+              .from("user_module_overrides")
+              .select("scope, module_id, trail_id, course_id, visible")
+              .eq("user_id", user.id)
+          : Promise.resolve({ data: [] as any[] }),
       ]);
 
       const trailIds = (trails ?? []).map((t: any) => t.id);
@@ -122,9 +129,36 @@ export const useEletivaProgress = (courseId?: string | null) => {
       );
 
       const allModules = (modules ?? []) as (EletivaModule & { id: string })[];
-      // módulo disponível pro aluno = published + dentro da janela (RLS já filtra o resto)
-      const isReleased = (m: { id: string; published: boolean; available_from: string | null }) =>
-        isAvailable(m);
+
+      // overrides: módulo > trilha > eletiva. true força ver, false força esconder, ausente = padrão.
+      const overrides = (overridesRes.data ?? []) as Array<{
+        scope: "module" | "trail" | "course";
+        module_id: string | null;
+        trail_id: string | null;
+        course_id: string | null;
+        visible: boolean;
+      }>;
+      const trailById = new Map((trails ?? []).map((t: any) => [t.id, t]));
+      const resolveOverride = (m: { id: string; trail_id: string }): boolean | null => {
+        const moduleOv = overrides.find((o) => o.scope === "module" && o.module_id === m.id);
+        if (moduleOv) return moduleOv.visible;
+        const trailOv = overrides.find((o) => o.scope === "trail" && o.trail_id === m.trail_id);
+        if (trailOv) return trailOv.visible;
+        const trail: any = trailById.get(m.trail_id);
+        if (trail?.course_id) {
+          const courseOv = overrides.find((o) => o.scope === "course" && o.course_id === trail.course_id);
+          if (courseOv) return courseOv.visible;
+        }
+        return null;
+      };
+
+      // módulo disponível pro aluno = published + dentro da janela, com override sobrepondo
+      const isReleased = (m: { id: string; trail_id: string; published: boolean; available_from: string | null }) => {
+        const ov = resolveOverride(m);
+        if (ov === true) return true;
+        if (ov === false) return false;
+        return isAvailable(m);
+      };
       const publishedModules = allModules.filter(isReleased);
       const totalCompleted = publishedModules.filter(
         (m) => progressByModuleId[m.id]?.completed_at,

@@ -33,11 +33,15 @@ const AdminCopyAudit = lazy(() => import("@/features/admin/AdminCopyAudit").then
 const AdminAutosaveAudit = lazy(() => import("@/features/admin/AdminAutosaveAudit").then((m) => ({ default: m.AdminAutosaveAudit })));
 const AdminUsers = lazy(() => import("./AdminUsers"));
 const AdminFbiResponses = lazy(() => import("@/features/admin/AdminFbiResponses"));
+const AdminPublicacao = lazy(() => import("@/features/admin/AdminPublicacao").then((m) => ({ default: m.AdminPublicacao })));
+const AdminAuditoria = lazy(() => import("@/features/admin/AdminAuditoria").then((m) => ({ default: m.AdminAuditoria })));
 
-const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "respostas", "feedback", "autosave", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
+const VALID_TABS = ["publicacao", "auditoria", "eletivas", "convites", "review", "eletiva", "trilha", "tutor", "respostas", "feedback", "autosave", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
+  publicacao: "publicação & visibilidade",
+  auditoria: "auditoria",
   eletivas: "eletivas · cursos",
   convites: "convites · email",
   review: "eletivas · revisão",
@@ -77,6 +81,8 @@ const TabFallback = () => (
 
 // Map estático aba → componente. Só o componente da aba ativa é renderizado/baixado.
 const TAB_COMPONENTS: Record<AdminTab, React.ComponentType> = {
+  publicacao: AdminPublicacao,
+  auditoria: AdminAuditoria,
   eletivas: AdminEletivas,
   convites: AdminConvites,
   review: AdminEletivaReview,
