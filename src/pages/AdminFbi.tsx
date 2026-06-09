@@ -81,6 +81,8 @@ const TabFallback = () => (
 
 // Map estático aba → componente. Só o componente da aba ativa é renderizado/baixado.
 const TAB_COMPONENTS: Record<AdminTab, React.ComponentType> = {
+  publicacao: AdminPublicacao,
+  auditoria: AdminAuditoria,
   eletivas: AdminEletivas,
   convites: AdminConvites,
   review: AdminEletivaReview,
