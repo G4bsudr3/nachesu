@@ -40,6 +40,8 @@ const VALID_TABS = ["publicacao", "auditoria", "eletivas", "convites", "review",
 type AdminTab = (typeof VALID_TABS)[number];
 
 const TAB_LABELS: Record<AdminTab, string> = {
+  publicacao: "publicação & visibilidade",
+  auditoria: "auditoria",
   eletivas: "eletivas · cursos",
   convites: "convites · email",
   review: "eletivas · revisão",
