@@ -73,6 +73,13 @@ const Modulo = () => {
     () => snapshot?.trails.find((t) => t.id === moduleRow?.trail_id) ?? null,
     [snapshot, moduleRow],
   );
+
+  // log de auditoria: admin abriu este módulo (throttle de 2min server-side)
+  useEffect(() => {
+    if (isAdmin && moduleRow?.id) {
+      logAdminModuleView(moduleRow.id);
+    }
+  }, [isAdmin, moduleRow?.id]);
   const trailColor = trailColorByOrder[trail?.order_index ?? 1] ?? trail?.color ?? "#fe7b02";
 
   // slug do curso (pra navegar pro marco entre trilhas + CTAs escopadas)
