@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
+import { logAdminModuleView } from "@/hooks/useAdminAuditLog";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { PageHeader } from "@/components/layout/PageHeader";
