@@ -132,7 +132,11 @@ export const useEletivaProgress = (courseId?: string | null) => {
 
 
       // sequencial: default true. setting "false" → modo livre.
+      const emailBypass = ADMIN_BYPASS_EMAILS.has(
+        (user?.email ?? "").trim().toLowerCase(),
+      );
       const sequentialUnlock =
+        !emailBypass &&
         (sequentialRes.data?.value ?? "true").toLowerCase() !== "false";
 
       // calcula desbloqueios. ordenação por number garante "anterior".
