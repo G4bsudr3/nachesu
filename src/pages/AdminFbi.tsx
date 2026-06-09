@@ -33,6 +33,8 @@ const AdminCopyAudit = lazy(() => import("@/features/admin/AdminCopyAudit").then
 const AdminAutosaveAudit = lazy(() => import("@/features/admin/AdminAutosaveAudit").then((m) => ({ default: m.AdminAutosaveAudit })));
 const AdminUsers = lazy(() => import("./AdminUsers"));
 const AdminFbiResponses = lazy(() => import("@/features/admin/AdminFbiResponses"));
+const AdminPublicacao = lazy(() => import("@/features/admin/AdminPublicacao").then((m) => ({ default: m.AdminPublicacao })));
+const AdminAuditoria = lazy(() => import("@/features/admin/AdminAuditoria").then((m) => ({ default: m.AdminAuditoria })));
 
 const VALID_TABS = ["eletivas", "convites", "review", "eletiva", "trilha", "tutor", "respostas", "feedback", "autosave", "copy-audit", "fbi", "prework", "missoes", "cartas", "artworks", "materiais", "pending", "usuarios", "nudges", "rubricas", "convidados", "emails", "feedback-d1", "feedback-final", "carta-futuro", "votacao-projetos", "chora-bot"] as const;
 type AdminTab = (typeof VALID_TABS)[number];
