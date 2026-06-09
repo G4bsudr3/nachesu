@@ -80,6 +80,7 @@ export const useEletivaProgress = (courseId?: string | null) => {
         progressRes,
         pillProgressRes,
         sequentialRes,
+        overridesRes,
       ] = await Promise.all([
 
         trailsQuery,
@@ -100,6 +101,12 @@ export const useEletivaProgress = (courseId?: string | null) => {
           .select("value")
           .eq("key", "eletiva_sequential_unlock")
           .maybeSingle(),
+        user
+          ? supabase
+              .from("user_module_overrides")
+              .select("scope, module_id, trail_id, course_id, visible")
+              .eq("user_id", user.id)
+          : Promise.resolve({ data: [] as any[] }),
       ]);
 
       const trailIds = (trails ?? []).map((t: any) => t.id);
