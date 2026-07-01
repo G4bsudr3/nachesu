@@ -64,6 +64,16 @@ type ScopeIssue = {
   term: string;
 };
 
+type QualityIssue = {
+  module_id: string;
+  module_number: number;
+  module_title: string;
+  pill_id: string;
+  pill_title: string;
+  pill_kind: string;
+  issue: string;
+};
+
 export function AdminEletivaReview() {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
 
