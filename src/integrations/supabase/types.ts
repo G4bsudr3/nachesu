@@ -2949,6 +2949,10 @@ export type Database = {
         Args: { _module_id: string }
         Returns: undefined
       }
+      assert_module_quality: {
+        Args: { _module_id: string }
+        Returns: undefined
+      }
       can_submit_public_fbi: { Args: { _email: string }; Returns: boolean }
       cleanup_admin_insights: { Args: never; Returns: undefined }
       cleanup_tutor_events: { Args: never; Returns: undefined }
@@ -3149,6 +3153,27 @@ export type Database = {
           similarity: number
         }[]
       }
+      module_quality_check: {
+        Args: { _module_id: string }
+        Returns: {
+          issue: string
+          pill_id: string
+          pill_kind: string
+          pill_title: string
+        }[]
+      }
+      module_quality_check_course: {
+        Args: { _course_id: string }
+        Returns: {
+          issue: string
+          module_id: string
+          module_number: number
+          module_title: string
+          pill_id: string
+          pill_kind: string
+          pill_title: string
+        }[]
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -3157,6 +3182,10 @@ export type Database = {
           source_queue: string
         }
         Returns: number
+      }
+      pill_quality_issues: {
+        Args: { mp: Database["public"]["Tables"]["module_pills"]["Row"] }
+        Returns: string[]
       }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
