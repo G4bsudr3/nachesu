@@ -180,6 +180,21 @@ function CourseReview({ course }: { course: Course }) {
     },
   });
 
+  const qualityQuery = useQuery({
+    queryKey: ["admin-review-quality", course.id],
+    queryFn: async () => {
+      const { data, error } = await (supabase.rpc as unknown as (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => Promise<{ data: QualityIssue[] | null; error: unknown }>)(
+        "module_quality_check_course",
+        { _course_id: course.id },
+      );
+      if (error) throw error as Error;
+      return (data ?? []) as QualityIssue[];
+    },
+  });
+
   const issuesByModule = useMemo(() => {
     const map = new Map<string, ScopeIssue[]>();
     for (const i of scopeQuery.data ?? []) {
@@ -190,7 +205,18 @@ function CourseReview({ course }: { course: Course }) {
     return map;
   }, [scopeQuery.data]);
 
+  const qualityByModule = useMemo(() => {
+    const map = new Map<string, QualityIssue[]>();
+    for (const i of qualityQuery.data ?? []) {
+      const arr = map.get(i.module_id) ?? [];
+      arr.push(i);
+      map.set(i.module_id, arr);
+    }
+    return map;
+  }, [qualityQuery.data]);
+
   const totalIssues = scopeQuery.data?.length ?? 0;
+  const totalQualityIssues = qualityQuery.data?.length ?? 0;
 
   return (
     <div className="space-y-6">
