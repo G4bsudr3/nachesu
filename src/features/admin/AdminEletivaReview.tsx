@@ -349,6 +349,8 @@ function CourseReview({ course }: { course: Course }) {
           <Accordion type="multiple" className="w-full">
             {(modulesQuery.data ?? []).map((m) => {
               const moduleIssues = issuesByModule.get(m.id) ?? [];
+              const moduleQuality = qualityByModule.get(m.id) ?? [];
+              const incompletePillIds = new Set(moduleQuality.map((q) => q.pill_id));
               return (
                 <AccordionItem key={m.id} value={m.id}>
                   <AccordionTrigger className="px-3 hover:no-underline">
@@ -363,6 +365,11 @@ function CourseReview({ course }: { course: Course }) {
                         {moduleIssues.length > 0 && (
                           <Badge variant="destructive" className="text-[10px]">
                             {moduleIssues.length} fora
+                          </Badge>
+                        )}
+                        {incompletePillIds.size > 0 && (
+                          <Badge variant="destructive" className="text-[10px]">
+                            {incompletePillIds.size} incompleta{incompletePillIds.size > 1 ? "s" : ""}
                           </Badge>
                         )}
                         <Badge
@@ -381,11 +388,13 @@ function CourseReview({ course }: { course: Course }) {
                     ) : (
                       m.pills.map((p) => {
                         const pillIssues = moduleIssues.filter((i) => i.pill_id === p.id);
+                        const pillQuality = moduleQuality.filter((i) => i.pill_id === p.id);
+                        const hasProblem = pillIssues.length > 0 || pillQuality.length > 0;
                         return (
                           <div
                             key={p.id}
                             className={`rounded-lg border p-3 ${
-                              pillIssues.length > 0 ? "border-destructive" : ""
+                              hasProblem ? "border-destructive" : ""
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2 mb-1">
@@ -402,6 +411,11 @@ function CourseReview({ course }: { course: Course }) {
                             {pillIssues.length > 0 && (
                               <div className="text-xs text-destructive mb-1">
                                 termos fora do escopo: {pillIssues.map((i) => `"${i.term}"`).join(", ")}
+                              </div>
+                            )}
+                            {pillQuality.length > 0 && (
+                              <div className="text-xs text-destructive mb-1">
+                                incompleta: {pillQuality.map((i) => i.issue).join(" · ")}
                               </div>
                             )}
                             <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-body line-clamp-6">
