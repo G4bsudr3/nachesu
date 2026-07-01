@@ -301,6 +301,44 @@ function CourseReview({ course }: { course: Course }) {
         )}
       </div>
 
+      {/* Verificação de qualidade */}
+      <div className="rounded-2xl border p-5 space-y-2">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            {totalQualityIssues === 0 ? (
+              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+            ) : (
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+            )}
+            <div>
+              <div className="font-medium">
+                {qualityQuery.isLoading
+                  ? "verificando qualidade…"
+                  : totalQualityIssues === 0
+                    ? "todas as pílulas estão completas"
+                    : `${totalQualityIssues} pílula(s) incompleta(s)`}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                bloqueia publicação: título vazio, corpo raso, pílula editorial sem aprofundamento/vídeo/gancho, exercício sem passos/campos/prompts, registro sem estrutura.
+              </div>
+            </div>
+          </div>
+          <Button variant="ghost" size="sm" onClick={() => qualityQuery.refetch()}>
+            <RefreshCw className="h-4 w-4 mr-1" /> rever
+          </Button>
+        </div>
+        {totalQualityIssues > 0 && (
+          <ul className="text-sm space-y-1 mt-2">
+            {(qualityQuery.data ?? []).map((i, idx) => (
+              <li key={`${i.pill_id}-${i.issue}-${idx}`} className="text-destructive">
+                · m{String(i.module_number).padStart(2, "0")} <span className="opacity-70">›</span>{" "}
+                {i.pill_kind} "{i.pill_title}" – {i.issue}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
       {/* Módulos + pílulas */}
       <div className="rounded-2xl border p-2">
         {modulesQuery.isLoading ? (
