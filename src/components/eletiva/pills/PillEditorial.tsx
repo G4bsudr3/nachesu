@@ -15,6 +15,10 @@ type Schema = {
     md?: string;
     destaque_numero?: string;
     destaque_legenda?: string;
+    destaque_source?: {
+      label?: string;
+      url?: string;
+    };
   };
   signature_corf?: {
     caption?: string;
