@@ -1,94 +1,84 @@
-## tela admin de publicação + visibilidade + audit log
+# plano: validação de qualidade + costura editorial m1-m2-m3
 
-### 1. novas tabelas (migration)
+## 1. validação de qualidade ao publicar (backend + UI admin)
 
-**`user_module_overrides`** — visibilidade granular por estudante
-```
-user_id uuid (auth.users)
-module_id uuid (modules)
-visible boolean      -- true: força mostrar; false: força esconder
-trail_id uuid null   -- opcional, override no nível trilha
-course_id uuid null  -- opcional, override no nível curso
-created_by, created_at, updated_at
-```
-Regra de avaliação na leitura:
-1. se houver override por módulo → vale
-2. senão override por trilha → vale pra todos módulos da trilha
-3. senão override por curso → vale pra todos
-4. senão regra padrão (enrollment + module_releases + published)
+**objetivo:** bloquear (e sinalizar) publicação de módulo com pílulas vazias ou rasas, no mesmo padrão do `assert_module_in_scope` que já existe.
 
-**`admin_audit_log`** — auditoria
-```
-id uuid, actor_id uuid (admin), actor_email text
-action text  -- 'module_view','module_publish','module_unpublish',
-             -- 'trail_publish','course_publish','visibility_grant',
-             -- 'visibility_revoke','override_create','override_delete'
-target_kind text   -- 'module' | 'trail' | 'course' | 'user_module' | 'user_trail' | 'user_course'
-target_id uuid
-target_label text  -- snapshot (ex: "IA na prática · trilha 1 · módulo 3")
-metadata jsonb     -- diff antes/depois, contexto extra
-created_at timestamptz
-```
-RLS: só admin lê/insere. GRANTs explícitos. Índices em (actor_id, created_at) e (target_kind, target_id).
+### regras de qualidade por pílula
+uma pílula é considerada "incompleta" se satisfaz qualquer:
+- `title` vazio ou nulo
+- `body_md` vazio E `interaction_schema` nulo
+- `body_md` < 30 chars E `interaction_schema` nulo (corpo raso sem estrutura)
+- para kinds `pilula_a`/`pilula_b`/`pilula_c`: `interaction_schema` presente mas sem `aprofundamento.md` nem `video.url` (esqueleto vazio)
+- para kind `exercicio_pbl`: `interaction_schema` presente mas sem `passos`, `campos` nem `prompts`
+- para kind `registro`: `interaction_schema` presente mas sem `templates`, `commitments`, `campos` nem `reflexao`
 
-Triggers automáticos:
-- `modules.published` mudou → insere log `module_publish`/`module_unpublish`
-- `trails` mudança (se adicionar coluna `published`, opcional) → log
-- `courses.published` mudou → log
-- `user_module_overrides` insert/delete → log
+adicionalmente, o próprio módulo é sinalizado se tem < 4 pílulas.
 
-### 2. registro de "module_view"
-Edge function `log-module-access` (verify_jwt em código). Cliente chama uma vez ao montar página de módulo se `isAdmin`. Função insere `admin_audit_log` com action `module_view`, target_kind `module`. Throttle simples: só registra se último view do mesmo admin no mesmo módulo foi há >2min (evita ruído de reload).
+### migration (nova)
+- `public.pill_quality_issues(mp module_pills) → text[]` — retorna lista de problemas de 1 pílula (função stable, pura)
+- `public.module_quality_check(_module_id uuid) → table(pill_id, pill_title, pill_kind, issue text)` — security definer, admin only, usado pela UI
+- `public.module_quality_check_course(_course_id uuid) → table(module_id, module_number, module_title, pill_id, pill_title, pill_kind, issue text)` — security definer, admin only
+- `public.assert_module_quality(_module_id uuid)` — raise exception se houver problemas, mensagem clara: "Publicação bloqueada: módulo tem pílulas incompletas: …"
+- novo trigger `trg_module_publish_quality_check` em `modules` (BEFORE UPDATE OF published), roda quando `NEW.published=true AND OLD.published IS DISTINCT FROM true`
+- também roda em `module_releases` via extensão de `trg_release_scope_check` (ou trigger paralelo `trg_release_quality_check`)
 
-`useEletivaProgress` ou `Modulo.tsx` dispara a chamada quando admin abre — não bloqueia render.
+### UI admin
+- estender `src/features/admin/AdminEletivaReview.tsx`:
+  - adicionar bloco "verificação de qualidade" abaixo do bloco de escopo, seguindo o mesmo padrão visual (ícone check verde / alert vermelho, botão rever, lista de issues agrupada por módulo)
+  - usar novo hook interno com `supabase.rpc('module_quality_check_course', { _course_id })`
+  - badge "N pílulas incompletas" no header de cada `AccordionItem` do módulo (paralelo ao "N fora" que já existe)
+  - dentro de cada pílula, se estiver na lista, mostrar linha vermelha "incompleta: {issue}"
 
-### 3. ajuste de visibilidade no app
-Adicionar helper `applyVisibilityOverrides(modules, overrides)` em `useEletivaProgress.ts` que combina overrides antes de calcular `publishedModules`. Admin bypass existente (`ADMIN_BYPASS_EMAILS`) continua intocado.
+## 2. fonte verificável da estat stanford HAI no módulo 3
 
-### 4. nova tela admin consolidada `/admin/publicacao`
-Item novo na sidebar (`OPERACAO`). Layout:
+**estado atual:** `gancho.destaque_numero: "27%"` + `destaque_legenda: "das respostas de ias generativas contêm pelo menos uma informação falsa (stanford hai, 2024)"` — sem link.
 
-```text
-publicação & visibilidade
-├─ [tab] módulos (árvore)
-│   curso ▸ trilha ▸ módulo
-│   cada nó: switch published, contador "X publicados / Y total"
-│   bulk: publicar/despublicar trilha inteira
-│   linha do módulo: link "ver overrides" → drawer com lista de users
-└─ [tab] por estudante
-    busca por nome/email → painel direito
-    três seções: cursos / trilhas / módulos
-    cada item: switch tri-estado (padrão · forçar visível · forçar invisível)
-    botão "limpar overrides do estudante"
-```
+**mudança:** update no `interaction_schema` da pílula `pilula_a` do módulo 3, adicionar:
+- `gancho.destaque_source: { label: "AI Index Report 2024, capítulo 3", url: "https://aiindex.stanford.edu/report/" }`
 
-Reaproveita `admin_list_users` rpc + queries diretas em `courses/trails/modules`.
+e no renderer (componente que renderiza `gancho`), incluir o link abaixo da legenda quando `destaque_source` existir. verifico primeiro se já existe suporte no componente atual (`src/components/eletiva/pills/`) — se não, adiciono renderização condicional simples de `<a>` com o label, `target=_blank`, `rel=noreferrer`, seguindo o tom (lowercase, underline sutil).
 
-### 5. tela admin de auditoria `/admin/auditoria`
-Tabela paginada com filtros:
-- admin (select)
-- ação (multi-select)
-- target (busca por módulo/trilha/curso)
-- período (date range, default 7d)
-- export CSV
+## 3. ponte explícita m1 → m2 antes de introduzir o corf
 
-Colunas: quando · quem · ação · alvo · metadata (expand).
+**estado atual:** m1 pílula c já usou informalmente "contexto, objetivo, formato" no exemplo do trabalho de história ("trabalho de história sobre revolução industrial pra apresentar pro 9º ano em 10 minutos com foco em consequências sociais"), mas o m2 pílula_b apresenta corf sem citar essa continuidade.
 
-### 6. aba "acessos" dentro do módulo no admin
-Em `/admin/eletivas/.../modulo/:id` (ou onde for o editor existente), adicionar aba mostrando últimos 50 `module_view` daquele módulo (quem · quando).
+**mudança:** update no `interaction_schema.gancho.md` da pílula `pilula_b` do módulo 2 (título "a estrutura que muda tudo: corf"). prepend do parágrafo de ponte:
 
-### 7. sidebar admin
-Adicionar 2 items em `OPERACAO`:
-- `publicação` → `/admin/publicacao` (ícone Eye)
-- `auditoria` → `/admin/auditoria` (ícone History)
+> lembra do exemplo do módulo 1? "me ajuda a fazer um trabalho de história sobre revolução industrial pra apresentar pro 9º ano em 10 minutos com foco em consequências sociais". sem perceber, você já usou 3 dos 4 elementos que fazem um prompt funcionar: contexto, objetivo, formato. agora a gente dá nome pra estrutura completa (com o 4º elemento) e transforma isso em habilidade.
 
-### detalhes técnicos
-- arquivos novos: `supabase/migrations/<ts>_audit_visibility.sql`, `supabase/functions/log-module-access/index.ts`, `src/features/admin/AdminPublicacao.tsx`, `src/features/admin/AdminAuditoria.tsx`, `src/features/admin/ModuleAccessLog.tsx` (aba), `src/hooks/useAdminAuditLog.ts`, `src/hooks/useUserOverrides.ts`
-- arquivos editados: `useEletivaProgress.ts` (aplicar overrides), `AdminSidebar.tsx` (2 itens), `App.tsx` (2 rotas), página do módulo (chamada log-module-access se admin), página existente de módulo admin (aba acessos)
-- RLS: todas tabelas novas — só admin via `has_role(auth.uid(),'admin')`. GRANTs: `authenticated` select/insert/update/delete em overrides (policies filtram), `service_role` all, audit_log só admin select + edge function insere via service role
-- não regredir: regra "1 por semana auto" continua removida (já tirada antes); ADMIN_BYPASS_EMAILS intocado; flags Chŏra intocadas
+o resto do gancho (analogia do pedido pro amigo) segue igual.
 
-### fora de escopo
-- agendamento futuro de publicação (não pedido)
-- log de acesso de não-admins
-- notificações de auditoria por email
+## 4. preencher body_md vazios dos módulos 2 e 3
+
+**estado atual:** m1 tem `body_md` com sumário curto (1 linha) em cada pílula. m2 e m3 estão com `body_md = ''` — inconsistência técnica que aparece em `admin_module_pills`, no `AdminEletivaReview` (`pre` com "(corpo vazio)") e em qualquer fallback.
+
+**mudança:** update via insert tool com sumários curtos (1 linha, tom frattz) baseados em título/objetivo já existentes:
+
+| módulo | pílula | body_md |
+|---|---|---|
+| 2 | pilula_a | prompt engineering não é técnico, é saber conversar. |
+| 2 | pilula_b | 4 letras que separam pedido aleatório de pedido que funciona: corf. |
+| 2 | pilula_c | mesmo objetivo, 3 níveis de prompt: veja a diferença na prática. |
+| 2 | exercicio_pbl | reescreva 3 prompts ruins usando corf e compare o antes/depois na ia. |
+| 2 | registro | monte seu arsenal: 3 templates de prompt prontos pra reusar. |
+| 3 | pilula_a | por que ia responde com tanta confiança mesmo quando tá inventando. |
+| 3 | pilula_b | método de 2 minutos pra checar qualquer resposta antes de confiar. |
+| 3 | pilula_c | a ia herda os vieses dos dados. saber onde olhar é seu trabalho. |
+| 3 | exercicio_pbl | caça à alucinação: encontre o erro em uma resposta que parece impecável. |
+| 3 | registro | assine seu pacto pessoal com checagem crítica pra levar pro resto do curso. |
+
+## ordem de execução
+
+1. migration (funções + trigger de qualidade)
+2. insert (updates de `body_md` + patch dos `interaction_schema` do m2/pb e m3/pa)
+3. edit UI (`AdminEletivaReview.tsx` com bloco de qualidade)
+4. edit UI (renderer de `gancho` pra mostrar `destaque_source` se presente) — só se o componente atual não suportar
+5. verificar: rodar `module_quality_check_course` pelas duas eletivas, conferir que m1/m2/m3 saem limpos e m4/m5 aparecem sinalizados
+
+## fora de escopo
+
+- reescrita de m4 e m5 (é o outro caminho, não incluído aqui)
+- análise da eletiva de economia circular
+- mudanças no fluxo de estudante (nada visível pro aluno muda, exceto o link da fonte no m3 e a linha de ponte no gancho do m2)
+- alterações no design system ou tokens

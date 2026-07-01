@@ -64,6 +64,16 @@ type ScopeIssue = {
   term: string;
 };
 
+type QualityIssue = {
+  module_id: string;
+  module_number: number;
+  module_title: string;
+  pill_id: string;
+  pill_title: string;
+  pill_kind: string;
+  issue: string;
+};
+
 export function AdminEletivaReview() {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
 
@@ -170,6 +180,21 @@ function CourseReview({ course }: { course: Course }) {
     },
   });
 
+  const qualityQuery = useQuery({
+    queryKey: ["admin-review-quality", course.id],
+    queryFn: async () => {
+      const { data, error } = await (supabase.rpc as unknown as (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => Promise<{ data: QualityIssue[] | null; error: unknown }>)(
+        "module_quality_check_course",
+        { _course_id: course.id },
+      );
+      if (error) throw error as Error;
+      return (data ?? []) as QualityIssue[];
+    },
+  });
+
   const issuesByModule = useMemo(() => {
     const map = new Map<string, ScopeIssue[]>();
     for (const i of scopeQuery.data ?? []) {
@@ -180,7 +205,18 @@ function CourseReview({ course }: { course: Course }) {
     return map;
   }, [scopeQuery.data]);
 
+  const qualityByModule = useMemo(() => {
+    const map = new Map<string, QualityIssue[]>();
+    for (const i of qualityQuery.data ?? []) {
+      const arr = map.get(i.module_id) ?? [];
+      arr.push(i);
+      map.set(i.module_id, arr);
+    }
+    return map;
+  }, [qualityQuery.data]);
+
   const totalIssues = scopeQuery.data?.length ?? 0;
+  const totalQualityIssues = qualityQuery.data?.length ?? 0;
 
   return (
     <div className="space-y-6">
@@ -265,6 +301,44 @@ function CourseReview({ course }: { course: Course }) {
         )}
       </div>
 
+      {/* Verificação de qualidade */}
+      <div className="rounded-2xl border p-5 space-y-2">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            {totalQualityIssues === 0 ? (
+              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+            ) : (
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+            )}
+            <div>
+              <div className="font-medium">
+                {qualityQuery.isLoading
+                  ? "verificando qualidade…"
+                  : totalQualityIssues === 0
+                    ? "todas as pílulas estão completas"
+                    : `${totalQualityIssues} pílula(s) incompleta(s)`}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                bloqueia publicação: título vazio, corpo raso, pílula editorial sem aprofundamento/vídeo/gancho, exercício sem passos/campos/prompts, registro sem estrutura.
+              </div>
+            </div>
+          </div>
+          <Button variant="ghost" size="sm" onClick={() => qualityQuery.refetch()}>
+            <RefreshCw className="h-4 w-4 mr-1" /> rever
+          </Button>
+        </div>
+        {totalQualityIssues > 0 && (
+          <ul className="text-sm space-y-1 mt-2">
+            {(qualityQuery.data ?? []).map((i, idx) => (
+              <li key={`${i.pill_id}-${i.issue}-${idx}`} className="text-destructive">
+                · m{String(i.module_number).padStart(2, "0")} <span className="opacity-70">›</span>{" "}
+                {i.pill_kind} "{i.pill_title}" – {i.issue}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
       {/* Módulos + pílulas */}
       <div className="rounded-2xl border p-2">
         {modulesQuery.isLoading ? (
@@ -275,6 +349,8 @@ function CourseReview({ course }: { course: Course }) {
           <Accordion type="multiple" className="w-full">
             {(modulesQuery.data ?? []).map((m) => {
               const moduleIssues = issuesByModule.get(m.id) ?? [];
+              const moduleQuality = qualityByModule.get(m.id) ?? [];
+              const incompletePillIds = new Set(moduleQuality.map((q) => q.pill_id));
               return (
                 <AccordionItem key={m.id} value={m.id}>
                   <AccordionTrigger className="px-3 hover:no-underline">
@@ -289,6 +365,11 @@ function CourseReview({ course }: { course: Course }) {
                         {moduleIssues.length > 0 && (
                           <Badge variant="destructive" className="text-[10px]">
                             {moduleIssues.length} fora
+                          </Badge>
+                        )}
+                        {incompletePillIds.size > 0 && (
+                          <Badge variant="destructive" className="text-[10px]">
+                            {incompletePillIds.size} incompleta{incompletePillIds.size > 1 ? "s" : ""}
                           </Badge>
                         )}
                         <Badge
@@ -307,11 +388,13 @@ function CourseReview({ course }: { course: Course }) {
                     ) : (
                       m.pills.map((p) => {
                         const pillIssues = moduleIssues.filter((i) => i.pill_id === p.id);
+                        const pillQuality = moduleQuality.filter((i) => i.pill_id === p.id);
+                        const hasProblem = pillIssues.length > 0 || pillQuality.length > 0;
                         return (
                           <div
                             key={p.id}
                             className={`rounded-lg border p-3 ${
-                              pillIssues.length > 0 ? "border-destructive" : ""
+                              hasProblem ? "border-destructive" : ""
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2 mb-1">
@@ -328,6 +411,11 @@ function CourseReview({ course }: { course: Course }) {
                             {pillIssues.length > 0 && (
                               <div className="text-xs text-destructive mb-1">
                                 termos fora do escopo: {pillIssues.map((i) => `"${i.term}"`).join(", ")}
+                              </div>
+                            )}
+                            {pillQuality.length > 0 && (
+                              <div className="text-xs text-destructive mb-1">
+                                incompleta: {pillQuality.map((i) => i.issue).join(" · ")}
                               </div>
                             )}
                             <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-body line-clamp-6">

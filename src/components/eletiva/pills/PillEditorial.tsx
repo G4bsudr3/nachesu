@@ -15,6 +15,10 @@ type Schema = {
     md?: string;
     destaque_numero?: string;
     destaque_legenda?: string;
+    destaque_source?: {
+      label?: string;
+      url?: string;
+    };
   };
   signature_corf?: {
     caption?: string;
@@ -130,6 +134,16 @@ export function PillEditorial({
                 <p className="font-body text-xs sm:text-sm text-perestroika-preto/65 mt-2">
                   {schema.gancho.destaque_legenda}
                 </p>
+              )}
+              {schema.gancho.destaque_source?.url && (
+                <a
+                  href={schema.gancho.destaque_source.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-body text-[11px] sm:text-xs text-perestroika-preto/60 mt-2 underline decoration-perestroika-preto/30 underline-offset-2 hover:text-perestroika-preto hover:decoration-perestroika-preto transition-colors"
+                >
+                  fonte: {schema.gancho.destaque_source.label ?? "abrir"}
+                </a>
               )}
             </div>
           )}
