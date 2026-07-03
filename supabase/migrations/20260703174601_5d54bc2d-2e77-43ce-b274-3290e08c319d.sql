@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.assert_module_in_scope(uuid) TO authenticated;

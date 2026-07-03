@@ -1,31 +1,33 @@
-## contexto
+## diagnóstico
 
-Rodei os checks do banco pros módulos 4–10 da eletiva IA:
+O erro do print agora é específico:
 
-- `assert_module_quality` → passa (5 pílulas, `pill_quality_issues = {}` em todas)
-- `assert_module_in_scope` → passa (nenhum termo bloqueado)
-- RLS: hey@frattz.com é admin, política `admin gerencia módulos` cobre update
+`permission denied for function assert_module_in_scope`
 
-Ou seja, do lado do banco, publicar m4–m10 deveria funcionar. Mesmo assim a UI mostra "erro ao publicar módulo" / "erro no bulk". Esses toasts são genéricos e engolem o `error.message` que o Supabase retorna — sem ele, é chute.
+Isso significa que o clique de publicar chega no backend, mas o usuário autenticado não tem permissão para executar a função que valida se o módulo está dentro do escopo da eletiva antes de publicar. A função em si já existe e está correta, o problema é a permissão de execução.
 
-## etapa 1 — expor a mensagem real (imediato)
+## plano de correção
 
-Editar `src/features/admin/AdminPublicacao.tsx` nas 3 funções (`toggleModule`, `toggleCourse`, `bulkTrail`) pra mostrar `error.message` no toast, e logar `error` no console. Nada mais muda.
+1. **Ajustar permissão no backend**
+   - Liberar execução da função `assert_module_in_scope(uuid)` para usuários autenticados.
+   - Não liberar para visitantes anônimos, porque publicação é ação administrativa.
+   - Manter as regras existentes de admin e RLS, sem abrir acesso indevido aos dados.
 
-Efeito: no próximo clique em "publicar tudo" ou no switch de m4, o toast mostra a mensagem exata (ex.: "Publicação bloqueada: …", "permission denied for table x", "duplicate key", etc.).
+2. **Preservar as validações de qualidade e escopo**
+   - Não remover o bloqueio de segurança pedagógica.
+   - A publicação ainda deve falhar se algum módulo tiver conteúdo fora do escopo ou problema de qualidade.
+   - A diferença é que agora o admin conseguirá acionar a validação corretamente.
 
-## etapa 2 — corrigir com base na mensagem
+3. **Testar publicação dos módulos 4 a 10 da trilha de IA**
+   - Depois da migration aprovada, tentar publicar novamente pelo painel.
+   - Se aparecer outro erro, ele será o próximo gargalo real, mas este erro específico será resolvido.
 
-Depois que você me mandar o print do toast (ou o erro do console), aplico a correção certa:
+## detalhe técnico
 
-- se for `Publicação bloqueada: …` de qualidade ou escopo → ajusto a pílula específica que o trigger apontar
-- se for permissão/RLS → grant faltando ou policy pra ajustar
-- se for conflito em `module_releases` ou `notifications` → limpar/relaxar o trigger
+Aplicar uma migration curta com:
 
-Sem plano B chutado agora: a etapa 1 é curta e revela a causa exata em vez de eu adivinhar.
+```sql
+GRANT EXECUTE ON FUNCTION public.assert_module_in_scope(uuid) TO authenticated;
+```
 
-## alternativa (se preferir pular a diagnose)
-
-Rodo direto um `UPDATE modules SET published=true WHERE id IN (m4..m10)` via migration, com um `SAVEPOINT` por módulo pra ver qual falha. Mesmo resultado, mas gasta uma migration em vez de um edit de UI.
-
-**me diz qual caminho:** ajustar os toasts e você tenta de novo, ou vou direto de migration?
+Não precisa mexer na interface agora, porque o toast já revelou a causa exata.
