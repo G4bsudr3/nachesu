@@ -14,6 +14,7 @@ import { template as evasionNudge } from './evasion-nudge.tsx'
 import { template as adminDirectMessage } from './admin-direct-message.tsx'
 import { template as tutorSafetyAlert } from './tutor-safety-alert.tsx'
 import { template as courseInvite } from './course-invite.tsx'
+import { template as testEmail } from './test-email.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'future-letter-delivery': futureLetterDelivery,
@@ -21,4 +22,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'admin-direct-message': adminDirectMessage,
   'tutor-safety-alert': tutorSafetyAlert,
   'course-invite': courseInvite,
+  'test-email': testEmail,
 }
