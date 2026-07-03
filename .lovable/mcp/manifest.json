@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://jrzahsjrzaaktuelnsaw.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "nachesu-mcp",
+      "version": "0.1.0",
+      "title": "NachesU"
+    },
+    "tools": [
+      {
+        "name": "get_my_progress",
+        "title": "Meu progresso na NachesU",
+        "description": "Lista as eletivas em que o estudante está matriculado, módulos concluídos, próximo módulo e progresso por trilha.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_modules",
+        "title": "Listar módulos liberados",
+        "description": "Lista módulos + pílulas de uma eletiva. Respeita `module_releases`: só retorna módulos que já foram liberados pela turma.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "course_slug": {
+              "type": "string",
+              "minLength": 1,
+              "description": "slug da eletiva, ex: 'ia-na-pratica' ou 'economia-circular'"
+            },
+            "include_pills": {
+              "default": false,
+              "description": "se true, inclui as pílulas de cada módulo",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "course_slug"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "submit_evidence",
+        "title": "Registrar evidência de módulo",
+        "description": "Envia o registro/síntese do PBL de um módulo em nome do estudante. Grava em `module_deliverables` respeitando RLS.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "module_id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "description": "uuid do módulo (use list_modules pra descobrir)"
+            },
+            "content": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 4000,
+              "description": "texto da síntese/registro da entrega, 10 a 4000 caracteres"
+            },
+            "link": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "link opcional do projeto/artefato. passe null se não tiver"
+            }
+          },
+          "required": [
+            "module_id",
+            "content",
+            "link"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "admin_list_at_risk",
+        "title": "Admin: estudantes em risco",
+        "description": "Só admin. Lista alertas ativos de evasão / ativação pendente. Usa `student_alerts` respeitando has_role(admin).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

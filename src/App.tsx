@@ -64,6 +64,7 @@ const AdminTurma = lazy(() => import("./pages/AdminTurma.tsx"));
 const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx"));
 const Marco = lazy(() => import("./pages/Marco.tsx"));
 const Comecar = lazy(() => import("./pages/Comecar.tsx"));
+const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
 const GlobalVotingBanner = lazy(() =>
   import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
 );
@@ -120,6 +121,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/comecar" element={<Comecar />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/forms" element={<PublicForm />} />
               <Route path="/carta/:token" element={<CartaPublica />} />
               <Route path="/c/:token" element={<CartaPublica />} />
