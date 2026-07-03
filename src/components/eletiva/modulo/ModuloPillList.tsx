@@ -42,6 +42,7 @@ export type ModuloPill = {
         type?: string;
         tutor_prompt?: string;
         prompt?: string;
+        reflexao?: { md?: string } | string;
       })
     | null;
 };
@@ -454,6 +455,9 @@ export const ModuloPillList = ({
 
         // ---- 2. registro sem schema → reflexão escrita ----
         if (pill.kind === "registro") {
+          const reflexao = pill.interaction_schema?.reflexao;
+          const reflexaoPrompt =
+            typeof reflexao === "string" ? reflexao : reflexao?.md;
           return (
             <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <h3
@@ -467,7 +471,11 @@ export const ModuloPillList = ({
                 pillId={pill.id}
                 title={pill.title}
                 bodyMd={pill.body_md}
-                prompt={(pill.interaction_schema?.prompt as string | undefined) ?? null}
+                prompt={
+                  (pill.interaction_schema?.prompt as string | undefined) ??
+                  reflexaoPrompt ??
+                  null
+                }
                 trailColor={trailColor}
                 initial={reflections[pill.id] ?? ""}
                 save={safeSave}
