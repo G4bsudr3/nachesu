@@ -8,36 +8,59 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
+
+import {
+  main,
+  container,
+  wordmark,
+  h1,
+  text,
+  button,
+  accentBar,
+  footer,
+  fontImport,
+  FOOTER_LINE_1,
+  FOOTER_LINE_2,
+} from './_chora-styles.ts'
 
 interface RecoveryEmailProps {
   siteName: string
   confirmationUrl: string
 }
 
-export const RecoveryEmail = ({
-  siteName,
-  confirmationUrl,
-}: RecoveryEmailProps) => (
-  <Html lang="en" dir="ltr">
-    <Head />
-    <Preview>Reset your password for {siteName}</Preview>
+export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
+  <Html lang="pt-BR" dir="ltr">
+    <Head>
+      <style>{fontImport}</style>
+    </Head>
+    <Preview>nova senha nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Reset your password</Heading>
+        <Text style={wordmark}>NachesU</Text>
+        <Heading style={h1}>
+          nova
+          <br />
+          senha
+        </Heading>
         <Text style={text}>
-          We received a request to reset your password for {siteName}. Click
-          the button below to choose a new password.
+          recebemos um pedido pra redefinir sua senha. clica no botão pra escolher uma nova.
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Reset Password
+          redefinir senha
         </Button>
+        <Text style={text}>
+          se não foi você que pediu, ignora esse email. sua senha continua a mesma.
+        </Text>
+        <Hr style={accentBar} />
         <Text style={footer}>
-          If you didn't request a password reset, you can safely ignore this
-          email. Your password will not be changed.
+          {FOOTER_LINE_1}
+          <br />
+          {FOOTER_LINE_2}
         </Text>
       </Container>
     </Body>
@@ -45,27 +68,3 @@ export const RecoveryEmail = ({
 )
 
 export default RecoveryEmail
-
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
-}
-const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
-}
-const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
-  textDecoration: 'none',
-}
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
