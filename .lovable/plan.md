@@ -1,84 +1,38 @@
-# plano: validação de qualidade + costura editorial m1-m2-m3
+# Módulo 4 (ia-na-pratica) — upgrade editorial
 
-## 1. validação de qualidade ao publicar (backend + UI admin)
+Só o módulo 4 da trilha 1, curso `ia-na-pratica`. UPDATE nas 5 pílulas existentes (IDs preservados, `kind` e `order_index` intactos). Zero mudança em `published`, `module_releases` ou progresso de estudante.
 
-**objetivo:** bloquear (e sinalizar) publicação de módulo com pílulas vazias ou rasas, no mesmo padrão do `assert_module_in_scope` que já existe.
+## Pílulas afetadas
 
-### regras de qualidade por pílula
-uma pílula é considerada "incompleta" se satisfaz qualquer:
-- `title` vazio ou nulo
-- `body_md` vazio E `interaction_schema` nulo
-- `body_md` < 30 chars E `interaction_schema` nulo (corpo raso sem estrutura)
-- para kinds `pilula_a`/`pilula_b`/`pilula_c`: `interaction_schema` presente mas sem `aprofundamento.md` nem `video.url` (esqueleto vazio)
-- para kind `exercicio_pbl`: `interaction_schema` presente mas sem `passos`, `campos` nem `prompts`
-- para kind `registro`: `interaction_schema` presente mas sem `templates`, `commitments`, `campos` nem `reflexao`
+| ord | kind | id (curto) | título novo | schema |
+|---|---|---|---|---|
+| 1 | pilula_a | bb6e7eb7 | construir sem programar: a barreira caiu | `pilula_editorial` com vídeo |
+| 2 | pilula_b | fe1a538c | o mapa das ferramentas: cada uma serve pra uma coisa | `pilula_editorial` sem vídeo |
+| 3 | pilula_c | 2c38146c | o que o no-code NÃO resolve | `pilula_editorial` sem vídeo |
+| 4 | exercicio_pbl | 55c942d5 | expedição: 2 ferramentas, 1 olhar crítico | `pbl_estruturado` |
+| 5 | registro | aa9a9602 | meu radar de ferramentas | `checklist_pacto` |
 
-adicionalmente, o próprio módulo é sinalizado se tem < 4 pílulas.
+## Conteúdo por pílula
 
-### migration (nova)
-- `public.pill_quality_issues(mp module_pills) → text[]` — retorna lista de problemas de 1 pílula (função stable, pura)
-- `public.module_quality_check(_module_id uuid) → table(pill_id, pill_title, pill_kind, issue text)` — security definer, admin only, usado pela UI
-- `public.module_quality_check_course(_course_id uuid) → table(module_id, module_number, module_title, pill_id, pill_title, pill_kind, issue text)` — security definer, admin only
-- `public.assert_module_quality(_module_id uuid)` — raise exception se houver problemas, mensagem clara: "Publicação bloqueada: módulo tem pílulas incompletas: …"
-- novo trigger `trg_module_publish_quality_check` em `modules` (BEFORE UPDATE OF published), roda quando `NEW.published=true AND OLD.published IS DISTINCT FROM true`
-- também roda em `module_releases` via extensão de `trg_release_scope_check` (ou trigger paralelo `trg_release_quality_check`)
+Copio literal o brief que você mandou. Sem parafrasear. Cada `body_md` fica com o resumo de 1-2 linhas no mesmo padrão dos módulos 1-3.
 
-### UI admin
-- estender `src/features/admin/AdminEletivaReview.tsx`:
-  - adicionar bloco "verificação de qualidade" abaixo do bloco de escopo, seguindo o mesmo padrão visual (ícone check verde / alert vermelho, botão rever, lista de issues agrupada por módulo)
-  - usar novo hook interno com `supabase.rpc('module_quality_check_course', { _course_id })`
-  - badge "N pílulas incompletas" no header de cada `AccordionItem` do módulo (paralelo ao "N fora" que já existe)
-  - dentro de cada pílula, se estiver na lista, mostrar linha vermelha "incompleta: {issue}"
+**Pílula A** — 7-9 min, com vídeo (youtube 6gn8yFcMnU4). Gancho com destaque `13% a.a.` (fonte mordor intelligence). Aprofundamento com no-code vs low-code + o que a ia mudou + destaque "a barreira técnica caiu…". Síntese "no-code não é atalho pra não pensar…". Reflexão sobre 1 coisa da rotina.
 
-## 2. fonte verificável da estat stanford HAI no módulo 3
+**Pílula B** — 6-8 min, sem vídeo (estrutura pronta pra receber depois: campo `video` fica ausente, `PillEditorial` só omite o bloco). Gancho com destaque `5` categorias. Aprofundamento com as 5 categorias (apps web, sites, planilha, automações, protótipos) + fechamento sobre lovable + destaque "ferramenta boa é a que resolve o SEU problema…". Síntese "conhecer categorias vale mais…". Reflexão amarrando com a pílula A.
 
-**estado atual:** `gancho.destaque_numero: "27%"` + `destaque_legenda: "das respostas de ias generativas contêm pelo menos uma informação falsa (stanford hai, 2024)"` — sem link.
+**Pílula C** — 5-7 min, sem vídeo. Gancho com destaque `3` limites. Aprofundamento com escala extrema, controle fino, pensamento + destaque "a ferramenta amplia quem você é". Síntese "quem pensa bem constrói bem…". Reflexão sobre animação vs pé atrás.
 
-**mudança:** update no `interaction_schema` da pílula `pilula_a` do módulo 3, adicionar:
-- `gancho.destaque_source: { label: "AI Index Report 2024, capítulo 3", url: "https://aiindex.stanford.edu/report/" }`
+**Exercício PBL** — 20-28 min, `pbl_estruturado` com `contexto`, `passos` (4 items), 5 `campos` (ferramenta_1, achados_1, ferramenta_2, achados_2, veredicto — tipos text/textarea conforme brief) e `dica`.
 
-e no renderer (componente que renderiza `gancho`), incluir o link abaixo da legenda quando `destaque_source` existir. verifico primeiro se já existe suporte no componente atual (`src/components/eletiva/pills/`) — se não, adiciono renderização condicional simples de `<a>` com o label, `target=_blank`, `rel=noreferrer`, seguindo o tom (lowercase, underline sutil).
+**Registro** — 4-6 min, `checklist_pacto` com `contexto`, 3 `compromissos`, `reflexao` (top 5 pessoal) e `completion.label = "concluir módulo 4"`.
 
-## 3. ponte explícita m1 → m2 antes de introduzir o corf
+## Como aplico
 
-**estado atual:** m1 pílula c já usou informalmente "contexto, objetivo, formato" no exemplo do trabalho de história ("trabalho de história sobre revolução industrial pra apresentar pro 9º ano em 10 minutos com foco em consequências sociais"), mas o m2 pílula_b apresenta corf sem citar essa continuidade.
+Um único bloco `supabase--insert` com 5 UPDATEs `WHERE id = '<uuid>'` setando `title`, `body_md`, `duration_min_low`, `duration_min_high` e `interaction_schema` (jsonb). Os schemas seguem o formato exato validado nos módulos 1-3 (`type`, `gancho.md`, `gancho.destaque_numero`, `gancho.destaque_legenda`, `video?`, `aprofundamento.md`, `aprofundamento.destaque`, `sintese.frase`, `reflexao.prompt`, `reflexao.placeholder`, `completion.label`) — dispatcher em `ModuloPillList.tsx` roteia sem mudança de código.
 
-**mudança:** update no `interaction_schema.gancho.md` da pílula `pilula_b` do módulo 2 (título "a estrutura que muda tudo: corf"). prepend do parágrafo de ponte:
+## Fora do escopo
 
-> lembra do exemplo do módulo 1? "me ajuda a fazer um trabalho de história sobre revolução industrial pra apresentar pro 9º ano em 10 minutos com foco em consequências sociais". sem perceber, você já usou 3 dos 4 elementos que fazem um prompt funcionar: contexto, objetivo, formato. agora a gente dá nome pra estrutura completa (com o 4º elemento) e transforma isso em habilidade.
-
-o resto do gancho (analogia do pedido pro amigo) segue igual.
-
-## 4. preencher body_md vazios dos módulos 2 e 3
-
-**estado atual:** m1 tem `body_md` com sumário curto (1 linha) em cada pílula. m2 e m3 estão com `body_md = ''` — inconsistência técnica que aparece em `admin_module_pills`, no `AdminEletivaReview` (`pre` com "(corpo vazio)") e em qualquer fallback.
-
-**mudança:** update via insert tool com sumários curtos (1 linha, tom frattz) baseados em título/objetivo já existentes:
-
-| módulo | pílula | body_md |
-|---|---|---|
-| 2 | pilula_a | prompt engineering não é técnico, é saber conversar. |
-| 2 | pilula_b | 4 letras que separam pedido aleatório de pedido que funciona: corf. |
-| 2 | pilula_c | mesmo objetivo, 3 níveis de prompt: veja a diferença na prática. |
-| 2 | exercicio_pbl | reescreva 3 prompts ruins usando corf e compare o antes/depois na ia. |
-| 2 | registro | monte seu arsenal: 3 templates de prompt prontos pra reusar. |
-| 3 | pilula_a | por que ia responde com tanta confiança mesmo quando tá inventando. |
-| 3 | pilula_b | método de 2 minutos pra checar qualquer resposta antes de confiar. |
-| 3 | pilula_c | a ia herda os vieses dos dados. saber onde olhar é seu trabalho. |
-| 3 | exercicio_pbl | caça à alucinação: encontre o erro em uma resposta que parece impecável. |
-| 3 | registro | assine seu pacto pessoal com checagem crítica pra levar pro resto do curso. |
-
-## ordem de execução
-
-1. migration (funções + trigger de qualidade)
-2. insert (updates de `body_md` + patch dos `interaction_schema` do m2/pb e m3/pa)
-3. edit UI (`AdminEletivaReview.tsx` com bloco de qualidade)
-4. edit UI (renderer de `gancho` pra mostrar `destaque_source` se presente) — só se o componente atual não suportar
-5. verificar: rodar `module_quality_check_course` pelas duas eletivas, conferir que m1/m2/m3 saem limpos e m4/m5 aparecem sinalizados
-
-## fora de escopo
-
-- reescrita de m4 e m5 (é o outro caminho, não incluído aqui)
-- análise da eletiva de economia circular
-- mudanças no fluxo de estudante (nada visível pro aluno muda, exceto o link da fonte no m3 e a linha de ponte no gancho do m2)
-- alterações no design system ou tokens
+- Módulos 5-10 (ficam pra próximas iterações)
+- Módulo 4 da eletiva de economia circular
+- Publicar ou liberar via `module_releases`
+- Qualquer alteração em componentes React
