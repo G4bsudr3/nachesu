@@ -105,7 +105,10 @@ const TreeTab = () => {
     setSavingId(id);
     const { error } = await supabase.from("modules").update({ published: next }).eq("id", id);
     setSavingId(null);
-    if (error) return toast.error("erro ao publicar módulo");
+    if (error) {
+      console.error("[publicacao] toggleModule falhou", error);
+      return toast.error(`erro ao publicar módulo: ${error.message}`, { duration: 12000 });
+    }
     qc.invalidateQueries({ queryKey: ["publicacao_tree"] });
     qc.invalidateQueries({ queryKey: ["eletiva-progress"] });
     toast.success(next ? "módulo publicado" : "módulo despublicado");
@@ -115,21 +118,35 @@ const TreeTab = () => {
     setSavingId(id);
     const { error } = await supabase.from("courses").update({ published: next }).eq("id", id);
     setSavingId(null);
-    if (error) return toast.error("erro ao publicar eletiva");
+    if (error) {
+      console.error("[publicacao] toggleCourse falhou", error);
+      return toast.error(`erro ao publicar eletiva: ${error.message}`, { duration: 12000 });
+    }
     qc.invalidateQueries({ queryKey: ["publicacao_tree"] });
     toast.success(next ? "eletiva publicada" : "eletiva despublicada");
   };
 
   const bulkTrail = async (trailId: string, moduleIds: string[], next: boolean) => {
     setSavingId(trailId);
-    const { error } = await supabase
-      .from("modules")
-      .update({ published: next })
-      .in("id", moduleIds);
+    // itera 1-a-1 pra saber qual módulo falhou (o bulk .in() aborta tudo no primeiro erro)
+    const failures: Array<{ id: string; message: string }> = [];
+    for (const id of moduleIds) {
+      const { error } = await supabase.from("modules").update({ published: next }).eq("id", id);
+      if (error) {
+        console.error("[publicacao] bulkTrail falhou em", id, error);
+        failures.push({ id, message: error.message });
+      }
+    }
     setSavingId(null);
-    if (error) return toast.error("erro no bulk");
     qc.invalidateQueries({ queryKey: ["publicacao_tree"] });
     qc.invalidateQueries({ queryKey: ["eletiva-progress"] });
+    if (failures.length > 0) {
+      const first = failures[0];
+      return toast.error(
+        `${failures.length}/${moduleIds.length} módulos falharam. primeiro: ${first.message}`,
+        { duration: 15000 },
+      );
+    }
     toast.success(next ? "trilha publicada" : "trilha despublicada");
   };
 
