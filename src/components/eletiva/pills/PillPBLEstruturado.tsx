@@ -211,6 +211,25 @@ export function PillPBLEstruturado({
           />
         )}
 
+        {c.pedido_c && (
+          <FieldText
+            label={c.pedido_c.label}
+            placeholder={c.pedido_c.placeholder}
+            value={value.pedido_c ?? ""}
+            onChange={(v) => update({ pedido_c: v })}
+          />
+        )}
+        {c.print_c && (
+          <FieldEvidence
+            label={c.print_c.label}
+            itemId={`${pillId}-print-c`}
+            value={value.print_c ?? emptyEvidence}
+            onChange={(ev) => update({ print_c: ev })}
+            accent={accent}
+          />
+        )}
+
+
         {c.melhor && (
           <fieldset className="space-y-2">
             <legend className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
