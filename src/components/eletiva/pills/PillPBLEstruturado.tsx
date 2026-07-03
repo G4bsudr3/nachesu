@@ -96,6 +96,8 @@ export function PillPBLEstruturado({
   if (c.print_a) checks.push(hasEvidence(value.print_a));
   if (c.pedido_b) checks.push(minText(value.pedido_b));
   if (c.print_b) checks.push(hasEvidence(value.print_b));
+  if (c.pedido_c) checks.push(minText(value.pedido_c));
+  if (c.print_c) checks.push(hasEvidence(value.print_c));
   if (c.melhor) checks.push(!!value.melhor);
   if (c.por_que) checks.push(minText(value.por_que));
   if (c.aprendi) checks.push(minText(value.aprendi));
