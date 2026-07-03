@@ -20,6 +20,7 @@ type Schema = {
     melhor?: { label: string; options: string[] };
     por_que?: { label: string; placeholder?: string };
     aprendi?: { label: string; placeholder?: string };
+    veredicto?: { label: string; placeholder?: string };
   };
   dica_md?: string;
   completion?: { label?: string };
@@ -33,6 +34,7 @@ type PblValue = {
   melhor?: string;
   por_que?: string;
   aprendi?: string;
+  veredicto?: string;
 };
 
 interface Props {
@@ -93,6 +95,7 @@ export function PillPBLEstruturado({
   if (c.melhor) checks.push(!!value.melhor);
   if (c.por_que) checks.push(minText(value.por_que));
   if (c.aprendi) checks.push(minText(value.aprendi));
+  if (c.veredicto) checks.push(minText(value.veredicto));
   const ready = checks.length === 0 || checks.every(Boolean);
   const missing = checks.filter((ok) => !ok).length;
 
@@ -240,13 +243,24 @@ export function PillPBLEstruturado({
           onChange={(v) => update({ por_que: v })}
           rows={3}
         />
-        <FieldTextarea
-          label={c.aprendi?.label ?? "o que aprendi"}
-          placeholder={c.aprendi?.placeholder}
-          value={value.aprendi ?? ""}
-          onChange={(v) => update({ aprendi: v })}
-          rows={3}
-        />
+        {c.aprendi && (
+          <FieldTextarea
+            label={c.aprendi.label}
+            placeholder={c.aprendi.placeholder}
+            value={value.aprendi ?? ""}
+            onChange={(v) => update({ aprendi: v })}
+            rows={3}
+          />
+        )}
+        {c.veredicto && (
+          <FieldTextarea
+            label={c.veredicto.label}
+            placeholder={c.veredicto.placeholder}
+            value={value.veredicto ?? ""}
+            onChange={(v) => update({ veredicto: v })}
+            rows={3}
+          />
+        )}
       </section>
 
       {schema.dica_md && (
