@@ -17,6 +17,8 @@ type Schema = {
     print_a?: { label: string };
     pedido_b?: { label: string; placeholder?: string };
     print_b?: { label: string };
+    pedido_c?: { label: string; placeholder?: string };
+    print_c?: { label: string };
     melhor?: { label: string; options: string[] };
     por_que?: { label: string; placeholder?: string };
     aprendi?: { label: string; placeholder?: string };
