@@ -1,10 +1,14 @@
+import * as React from 'npm:react@18.3.1'
+import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { parseEmailWebhookPayload } from 'npm:@lovable.dev/email-js'
 import { WebhookError, verifyWebhookRequest } from 'npm:@lovable.dev/webhooks-js'
 import { createClient } from 'npm:@supabase/supabase-js@2'
-
-// nota: os templates React/JSX foram movidos pro process-email-queue
-// pra tirar o renderAsync do caminho crítico do webhook (5s timeout do supabase auth).
-// aqui só validamos a assinatura e enfileiramos os dados brutos.
+import { SignupEmail } from '../_shared/email-templates/signup.tsx'
+import { InviteEmail } from '../_shared/email-templates/invite.tsx'
+import { MagicLinkEmail } from '../_shared/email-templates/magic-link.tsx'
+import { RecoveryEmail } from '../_shared/email-templates/recovery.tsx'
+import { EmailChangeEmail } from '../_shared/email-templates/email-change.tsx'
+import { ReauthenticationEmail } from '../_shared/email-templates/reauthentication.tsx'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,31 +17,35 @@ const corsHeaders = {
 }
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'confirme seu email pra entrar na nachesu',
-  invite: 'você foi convidado pra nachesu',
-  magiclink: 'seu link de acesso nachesu',
-  recovery: 'nova senha nachesu',
-  email_change: 'confirme seu novo email',
-  reauthentication: 'seu código de verificação nachesu',
+  signup: 'Confirm your email',
+  invite: "You've been invited",
+  magiclink: 'Your login link',
+  recovery: 'Reset your password',
+  email_change: 'Confirm your new email',
+  reauthentication: 'Your verification code',
 }
 
-// email types suportados (validação no webhook sem precisar importar jsx).
-const SUPPORTED_EMAIL_TYPES = new Set([
-  'signup',
-  'invite',
-  'magiclink',
-  'recovery',
-  'email_change',
-  'reauthentication',
-])
+// Template mapping
+const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
+  signup: SignupEmail,
+  invite: InviteEmail,
+  magiclink: MagicLinkEmail,
+  recovery: RecoveryEmail,
+  email_change: EmailChangeEmail,
+  reauthentication: ReauthenticationEmail,
+}
 
 // Configuration
-const SITE_NAME = "NachesU"
+const SITE_NAME = "nachesu"
 const SENDER_DOMAIN = "notify.frattz.com"
 const ROOT_DOMAIN = "frattz.com"
 const FROM_DOMAIN = "notify.frattz.com" // Domain shown in From address (may be root or sender subdomain)
 
 // Sample data for preview mode ONLY (not used in actual email sending).
+// URLs are baked in at scaffold time from the project's real data.
+// The sample email uses a fixed placeholder (RFC 6761 .test TLD) so the Go backend
+// can always find-and-replace it with the actual recipient when sending test emails,
+// even if the project's domain has changed since the template was scaffolded.
 const SAMPLE_PROJECT_URL = "https://nachesu.lovable.app"
 const SAMPLE_EMAIL = "user@example.test"
 const SAMPLE_DATA: Record<string, object> = {
@@ -62,6 +70,7 @@ const SAMPLE_DATA: Record<string, object> = {
   },
   email_change: {
     siteName: SITE_NAME,
+    oldEmail: SAMPLE_EMAIL,
     email: SAMPLE_EMAIL,
     newEmail: SAMPLE_EMAIL,
     confirmationUrl: SAMPLE_PROJECT_URL,
@@ -103,41 +112,22 @@ async function handlePreview(req: Request): Promise<Response> {
     })
   }
 
-  if (!SUPPORTED_EMAIL_TYPES.has(type)) {
+  const EmailTemplate = EMAIL_TEMPLATES[type]
+
+  if (!EmailTemplate) {
     return new Response(JSON.stringify({ error: `Unknown email type: ${type}` }), {
       status: 400,
       headers: { ...previewCorsHeaders, 'Content-Type': 'application/json' },
     })
   }
 
-// dynamic import só no preview pra não pesar o cold start do webhook.
-  const html = await renderEmailHtml(type, SAMPLE_DATA[type] || {})
+  const sampleData = SAMPLE_DATA[type] || {}
+  const html = await renderAsync(React.createElement(EmailTemplate, sampleData))
 
   return new Response(html, {
     status: 200,
     headers: { ...previewCorsHeaders, 'Content-Type': 'text/html; charset=utf-8' },
   })
-}
-
-const FILE_MAP: Record<string, string> = {
-  signup: 'signup',
-  invite: 'invite',
-  magiclink: 'magic-link',
-  recovery: 'recovery',
-  email_change: 'email-change',
-  reauthentication: 'reauthentication',
-}
-
-async function renderEmailHtml(type: string, props: Record<string, unknown>): Promise<string> {
-  const [{ default: React }, { renderAsync }, templateModule] = await Promise.all([
-    import('npm:react@18.3.1'),
-    import('npm:@react-email/components@0.0.22'),
-    import(`../_shared/email-templates/${FILE_MAP[type]}.tsx`),
-  ])
-  const exportName = Object.keys(templateModule).find((k) => k.endsWith('Email'))
-  if (!exportName) throw new Error(`No *Email export found for type ${type}`)
-  const EmailTemplate = templateModule[exportName]
-  return await renderAsync(React.createElement(EmailTemplate, props))
 }
 
 // Webhook handler - verifies signature and sends email
@@ -219,7 +209,8 @@ async function handleWebhook(req: Request): Promise<Response> {
   const emailType = payload.data.action_type
   console.log('Received auth event', { emailType, email: payload.data.email, run_id })
 
-  if (!SUPPORTED_EMAIL_TYPES.has(emailType)) {
+  const EmailTemplate = EMAIL_TEMPLATES[emailType]
+  if (!EmailTemplate) {
     console.error('Unknown email type', { emailType, run_id })
     return new Response(
       JSON.stringify({ error: `Unknown email type: ${emailType}` }),
@@ -227,8 +218,7 @@ async function handleWebhook(req: Request): Promise<Response> {
     )
   }
 
-  // Build template props from payload.data (HookData structure).
-  // Renderização do JSX acontece no process-email-queue (background).
+  // Build template props from payload.data (HookData structure)
   const templateProps = {
     siteName: SITE_NAME,
     siteUrl: `https://${ROOT_DOMAIN}`,
@@ -236,67 +226,65 @@ async function handleWebhook(req: Request): Promise<Response> {
     confirmationUrl: payload.data.url,
     token: payload.data.token,
     email: payload.data.email,
+    oldEmail: payload.data.old_email,
     newEmail: payload.data.new_email,
   }
 
-  const supabase = createClient<any>(
+  // Render React Email to HTML and plain text
+  const html = await renderAsync(React.createElement(EmailTemplate, templateProps))
+  const text = await renderAsync(React.createElement(EmailTemplate, templateProps), {
+    plainText: true,
+  })
+
+  // Enqueue email for async processing by the dispatcher (process-email-queue).
+  const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   )
 
   const messageId = crypto.randomUUID()
-  const recipientEmail = payload.data.email
 
-  // Trabalho assíncrono: renderiza JSX → log pending + enqueue. Roda em background via waitUntil
-  // pra responder 200 imediato pro Supabase Auth (5s timeout).
-  const backgroundWork = (async () => {
-    try {
-      const html = await renderEmailHtml(emailType, templateProps)
-      await Promise.all([
-        supabase.from('email_send_log').insert({
-          message_id: messageId,
-          template_name: emailType,
-          recipient_email: recipientEmail,
-          status: 'pending',
-        }),
-        supabase.rpc('enqueue_email', {
-          queue_name: 'auth_emails',
-          payload: {
-            run_id,
-            message_id: messageId,
-            to: recipientEmail,
-            from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-            sender_domain: SENDER_DOMAIN,
-            subject: EMAIL_SUBJECTS[emailType] || 'Notification',
-            html,
-            purpose: 'transactional',
-            label: emailType,
-            queued_at: new Date().toISOString(),
-          },
-        }),
-      ])
-      console.log('Auth email enqueued', { emailType, email: recipientEmail, run_id })
-    } catch (err) {
-      console.error('Background enqueue failed', { error: err, run_id, emailType })
-      try {
-        await supabase.from('email_send_log').insert({
-          message_id: messageId,
-          template_name: emailType,
-          recipient_email: recipientEmail,
-          status: 'failed',
-          error_message: err instanceof Error ? err.message : 'Failed to enqueue email',
-        })
-      } catch {}
-    }
-  })()
+  // Log pending BEFORE enqueue so we have a record even if enqueue crashes
+  await supabase.from('email_send_log').insert({
+    message_id: messageId,
+    template_name: emailType,
+    recipient_email: payload.data.email,
+    status: 'pending',
+  })
 
-  // EdgeRuntime.waitUntil mantém o isolate vivo até a promise resolver,
-  // sem bloquear a resposta. Fallback: fire-and-forget.
-  // @ts-ignore EdgeRuntime é global no Supabase Edge Functions
-  if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
-    // @ts-ignore
-    EdgeRuntime.waitUntil(backgroundWork)
+  const { error: enqueueError } = await supabase.rpc('enqueue_email', {
+    queue_name: 'auth_emails',
+    payload: {
+      run_id,
+      message_id: messageId,
+      to: payload.data.email,
+      from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+      sender_domain: SENDER_DOMAIN,
+      subject: EMAIL_SUBJECTS[emailType] || 'Notification',
+      html,
+      text,
+      purpose: 'transactional',
+      label: emailType,
+      queued_at: new Date().toISOString(),
+    },
+  })
+
+  if (enqueueError) {
+    console.error('Failed to enqueue auth email', { error: enqueueError, run_id, emailType })
+    await supabase.from('email_send_log').insert({
+      message_id: messageId,
+      template_name: emailType,
+      recipient_email: payload.data.email,
+      status: 'failed',
+      error_message: 'Failed to enqueue email',
+    })
+    return new Response(JSON.stringify({ error: 'Failed to enqueue email' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
   }
+
+  console.log('Auth email enqueued', { emailType, email: payload.data.email, run_id })
 
   return new Response(
     JSON.stringify({ success: true, queued: true }),
