@@ -1,38 +1,56 @@
-# Módulo 4 (ia-na-pratica) — upgrade editorial
+# Módulo 5 (ia-na-pratica) — upgrade editorial
 
-Só o módulo 4 da trilha 1, curso `ia-na-pratica`. UPDATE nas 5 pílulas existentes (IDs preservados, `kind` e `order_index` intactos). Zero mudança em `published`, `module_releases` ou progresso de estudante.
+Mesmo padrão do módulo 4. UPDATE nas 5 pílulas existentes da trilha 1, módulo 5. IDs preservados, `kind` e `order_index` intactos. Zero mudança em publicação, releases ou progresso.
 
 ## Pílulas afetadas
 
 | ord | kind | id (curto) | título novo | schema |
 |---|---|---|---|---|
-| 1 | pilula_a | bb6e7eb7 | construir sem programar: a barreira caiu | `pilula_editorial` com vídeo |
-| 2 | pilula_b | fe1a538c | o mapa das ferramentas: cada uma serve pra uma coisa | `pilula_editorial` sem vídeo |
-| 3 | pilula_c | 2c38146c | o que o no-code NÃO resolve | `pilula_editorial` sem vídeo |
-| 4 | exercicio_pbl | 55c942d5 | expedição: 2 ferramentas, 1 olhar crítico | `pbl_estruturado` |
-| 5 | registro | aa9a9602 | meu radar de ferramentas | `checklist_pacto` |
+| 1 | pilula_a | c6328c5b | o que é o lovable (e por que ele existe) | `pilula_editorial` com vídeo |
+| 2 | pilula_b | fd4457ed | o ciclo: prompt, preview, teste, refino | `pilula_editorial` com vídeo |
+| 3 | pilula_c | a49a4ff2 | os superpoderes: cloud, ai e publicação | `pilula_editorial` com vídeo |
+| 4 | exercicio_pbl | bb3f1e65 | sua primeira construção publicada | `pbl_estruturado` (4 campos + upload) |
+| 5 | registro | cb76d98d | publiquei minha primeira coisa na internet | `checklist_pacto` |
 
-## Conteúdo por pílula
+## Ajustes por conta das suas observações
 
-Copio literal o brief que você mandou. Sem parafrasear. Cada `body_md` fica com o resumo de 1-2 linhas no mesmo padrão dos módulos 1-3.
+- Todo link que aponta pro lovable vai usar o **link de indicação** `https://lovable.dev/invite/3PLAIFF` (10 créditos extras pra quem cria conta). Aparece na pílula A ("acessa o lovable"), pílula C (menção rápida) e no passo 1 do exercício.
+- Vou incluir um **case real** na pílula A logo depois do bloco "curiosidade de casa": a **juterenzi doces**, site feito por uma aluna da Escola Sebrae e publicado no lovable (`https://juterenzidoces.lovable.app/`). Serve como prova de que "não é hype, colega sua já fez". Fica como link clicável dentro do aprofundamento.
 
-**Pílula A** — 7-9 min, com vídeo (youtube 6gn8yFcMnU4). Gancho com destaque `13% a.a.` (fonte mordor intelligence). Aprofundamento com no-code vs low-code + o que a ia mudou + destaque "a barreira técnica caiu…". Síntese "no-code não é atalho pra não pensar…". Reflexão sobre 1 coisa da rotina.
+## Mapeamento do exercício PBL
 
-**Pílula B** — 6-8 min, sem vídeo (estrutura pronta pra receber depois: campo `video` fica ausente, `PillEditorial` só omite o bloco). Gancho com destaque `5` categorias. Aprofundamento com as 5 categorias (apps web, sites, planilha, automações, protótipos) + fechamento sobre lovable + destaque "ferramenta boa é a que resolve o SEU problema…". Síntese "conhecer categorias vale mais…". Reflexão amarrando com a pílula A.
+O componente `PillPBLEstruturado` usa chaves fixas. Mapeio os campos do brief pras chaves existentes (sem precisar de extensão de código):
 
-**Pílula C** — 5-7 min, sem vídeo. Gancho com destaque `3` limites. Aprofundamento com escala extrema, controle fino, pensamento + destaque "a ferramenta amplia quem você é". Síntese "quem pensa bem constrói bem…". Reflexão sobre animação vs pé atrás.
+- `link_publicado` → `pedido_a` (text, label = "link público do seu projeto")
+- `prompt_inicial` → `por_que` (textarea, label = "o prompt corf que você usou")
+- `ajustes` → `aprendi` (textarea, label = "os 2 refinos que você pediu e o que mudou")
+- `print` → `print_a` (evidence upload, label = "print da página aberta no seu celular")
 
-**Exercício PBL** — 20-28 min, `pbl_estruturado` com `contexto`, `passos` (4 items), 5 `campos` (ferramenta_1, achados_1, ferramenta_2, achados_2, veredicto — tipos text/textarea conforme brief) e `dica`.
+Passo 2 usa link `https://lovable.dev/invite/3PLAIFF`. Duração 25-35 min.
 
-**Registro** — 4-6 min, `checklist_pacto` com `contexto`, 3 `compromissos`, `reflexao` (top 5 pessoal) e `completion.label = "concluir módulo 4"`.
+## Conteúdo
+
+Copio literal o brief. Cada `body_md` fica com resumo de 1-2 linhas no padrão dos módulos 1-4. Vídeos:
+
+- Pílula A: youtube `zKLowGFQqTw`, instrução "primeiros 10 minutos"
+- Pílula B: youtube `_aeeMNmcH6w`, instrução ciclo prompt→preview→teste→refino
+- Pílula C: youtube `wXf3CRZbq8o`, canal "sem codar", foco em banco + login
+
+Destaques dos ganchos: A=`meses`, B=`4`, C=`3`. Reflexões amarram com módulos 2, 4 e 9 conforme brief.
+
+## Memórias que vou salvar em paralelo
+
+Pra não precisar repetir esses combinados a cada módulo:
+
+- **Link de indicação lovable**: sempre que citar/lincar o lovable no conteúdo, usar `https://lovable.dev/invite/3PLAIFF`.
+- **Case juterenzi doces**: usar como exemplo real de aluna da Escola Sebrae que publicou site no lovable (`https://juterenzidoces.lovable.app/`).
 
 ## Como aplico
 
-Um único bloco `supabase--insert` com 5 UPDATEs `WHERE id = '<uuid>'` setando `title`, `body_md`, `duration_min_low`, `duration_min_high` e `interaction_schema` (jsonb). Os schemas seguem o formato exato validado nos módulos 1-3 (`type`, `gancho.md`, `gancho.destaque_numero`, `gancho.destaque_legenda`, `video?`, `aprofundamento.md`, `aprofundamento.destaque`, `sintese.frase`, `reflexao.prompt`, `reflexao.placeholder`, `completion.label`) — dispatcher em `ModuloPillList.tsx` roteia sem mudança de código.
+Um `supabase--insert` com 5 UPDATEs `WHERE id = '<uuid>'` setando `title`, `body_md`, `duration_min_low`, `duration_min_high` e `interaction_schema` (jsonb). Nenhum arquivo React tocado.
 
 ## Fora do escopo
 
-- Módulos 5-10 (ficam pra próximas iterações)
-- Módulo 4 da eletiva de economia circular
+- Módulos 6-10
+- Módulo 5 da eletiva de economia circular
 - Publicar ou liberar via `module_releases`
-- Qualquer alteração em componentes React
