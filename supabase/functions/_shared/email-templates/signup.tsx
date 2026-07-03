@@ -8,25 +8,11 @@ import {
   Container,
   Head,
   Heading,
-  Hr,
   Html,
+  Link,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
-
-import {
-  main,
-  container,
-  wordmark,
-  h1,
-  text,
-  button,
-  accentBar,
-  footer,
-  fontImport,
-  FOOTER_LINE_1,
-  FOOTER_LINE_2,
-} from './_chora-styles.ts'
 
 interface SignupEmailProps {
   siteName: string
@@ -35,34 +21,37 @@ interface SignupEmailProps {
   confirmationUrl: string
 }
 
-export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
-  <Html lang="pt-BR" dir="ltr">
-    <Head>
-      <style>{fontImport}</style>
-    </Head>
-    <Preview>confirma seu email pra entrar na nachesu</Preview>
+export const SignupEmail = ({
+  siteName,
+  siteUrl,
+  recipient,
+  confirmationUrl,
+}: SignupEmailProps) => (
+  <Html lang="en" dir="ltr">
+    <Head />
+    <Preview>Confirm your email for {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={wordmark}>NachesU</Text>
-        <Heading style={h1}>
-          bem-vinda
-          <br />
-          à nachesu
-        </Heading>
+        <Heading style={h1}>Confirm your email</Heading>
         <Text style={text}>
-          você tá quase dentro. clica no botão pra confirmar seu email e começar suas eletivas.
+          Thanks for signing up for{' '}
+          <Link href={siteUrl} style={link}>
+            <strong>{siteName}</strong>
+          </Link>
+          !
+        </Text>
+        <Text style={text}>
+          Please confirm your email address (
+          <Link href={`mailto:${recipient}`} style={link}>
+            {recipient}
+          </Link>
+          ) by clicking the button below:
         </Text>
         <Button style={button} href={confirmationUrl}>
-          confirmar email
+          Verify Email
         </Button>
-        <Text style={text}>
-          se não foi você que se cadastrou, ignora esse email tranquilo.
-        </Text>
-        <Hr style={accentBar} />
         <Text style={footer}>
-          {FOOTER_LINE_1}
-          <br />
-          {FOOTER_LINE_2}
+          If you didn't create an account, you can safely ignore this email.
         </Text>
       </Container>
     </Body>
@@ -70,3 +59,28 @@ export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
 )
 
 export default SignupEmail
+
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
+}
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
+const link = { color: 'inherit', textDecoration: 'underline' }
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

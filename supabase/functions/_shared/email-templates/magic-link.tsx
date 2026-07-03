@@ -8,64 +8,35 @@ import {
   Container,
   Head,
   Heading,
-  Hr,
   Html,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
-
-import {
-  main,
-  container,
-  wordmark,
-  h1,
-  text,
-  button,
-  accentBar,
-  footer,
-  fontImport,
-  FOOTER_LINE_1,
-  FOOTER_LINE_2,
-} from './_chora-styles.ts'
 
 interface MagicLinkEmailProps {
   siteName: string
   confirmationUrl: string
 }
 
-export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
-  <Html lang="pt-BR" dir="ltr">
-    <Head>
-      {/* evita pre-fetch de scanners (Outlook Safe Links etc) consumirem o token single-use */}
-      <meta name="referrer" content="no-referrer" />
-      <meta name="x-apple-disable-message-reformatting" />
-      <meta httpEquiv="x-dns-prefetch-control" content="off" />
-      <style>{fontImport}</style>
-    </Head>
-    <Preview>seu link de acesso nachesu</Preview>
+export const MagicLinkEmail = ({
+  siteName,
+  confirmationUrl,
+}: MagicLinkEmailProps) => (
+  <Html lang="en" dir="ltr">
+    <Head />
+    <Preview>Your login link for {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={wordmark}>NachesU</Text>
-        <Heading style={h1}>
-          entra
-          <br />
-          direto
-        </Heading>
+        <Heading style={h1}>Your login link</Heading>
         <Text style={text}>
-          clica no botão pra entrar na nachesu sem senha. o link vale por 1 hora e só funciona uma vez.
+          Click the button below to log in to {siteName}. This link will expire
+          shortly.
         </Text>
         <Button style={button} href={confirmationUrl}>
-          entrar na nachesu
+          Log In
         </Button>
-        <Text style={text}>
-          dica: abre o link no <strong>mesmo dispositivo</strong> onde pediu. se não funcionar, pede um novo lá no app.
-        </Text>
-        <Text style={text}>se não foi você, ignora esse email.</Text>
-        <Hr style={accentBar} />
         <Text style={footer}>
-          {FOOTER_LINE_1}
-          <br />
-          {FOOTER_LINE_2}
+          If you didn't request this link, you can safely ignore this email.
         </Text>
       </Container>
     </Body>
@@ -73,3 +44,27 @@ export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
 )
 
 export default MagicLinkEmail
+
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
+}
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

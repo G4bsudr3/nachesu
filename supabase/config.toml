@@ -4,3 +4,6 @@ verify_jwt = true
 
 [functions.process-email-queue]
 verify_jwt = true
+
+[functions.auth-email-hook]
+verify_jwt = false
