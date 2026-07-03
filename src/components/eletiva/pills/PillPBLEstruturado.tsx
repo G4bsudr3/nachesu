@@ -169,33 +169,41 @@ export function PillPBLEstruturado({
           sua entrega
         </p>
 
-        <FieldText
-          label={c.pedido_a?.label ?? "pedido a"}
-          placeholder={c.pedido_a?.placeholder}
-          value={value.pedido_a ?? ""}
-          onChange={(v) => update({ pedido_a: v })}
-        />
-        <FieldEvidence
-          label={c.print_a?.label ?? "print a"}
-          itemId={`${pillId}-print-a`}
-          value={value.print_a ?? emptyEvidence}
-          onChange={(ev) => update({ print_a: ev })}
-          accent={accent}
-        />
+        {c.pedido_a && (
+          <FieldText
+            label={c.pedido_a.label}
+            placeholder={c.pedido_a.placeholder}
+            value={value.pedido_a ?? ""}
+            onChange={(v) => update({ pedido_a: v })}
+          />
+        )}
+        {c.print_a && (
+          <FieldEvidence
+            label={c.print_a.label}
+            itemId={`${pillId}-print-a`}
+            value={value.print_a ?? emptyEvidence}
+            onChange={(ev) => update({ print_a: ev })}
+            accent={accent}
+          />
+        )}
 
-        <FieldText
-          label={c.pedido_b?.label ?? "pedido b"}
-          placeholder={c.pedido_b?.placeholder}
-          value={value.pedido_b ?? ""}
-          onChange={(v) => update({ pedido_b: v })}
-        />
-        <FieldEvidence
-          label={c.print_b?.label ?? "print b"}
-          itemId={`${pillId}-print-b`}
-          value={value.print_b ?? emptyEvidence}
-          onChange={(ev) => update({ print_b: ev })}
-          accent={accent}
-        />
+        {c.pedido_b && (
+          <FieldText
+            label={c.pedido_b.label}
+            placeholder={c.pedido_b.placeholder}
+            value={value.pedido_b ?? ""}
+            onChange={(v) => update({ pedido_b: v })}
+          />
+        )}
+        {c.print_b && (
+          <FieldEvidence
+            label={c.print_b.label}
+            itemId={`${pillId}-print-b`}
+            value={value.print_b ?? emptyEvidence}
+            onChange={(ev) => update({ print_b: ev })}
+            accent={accent}
+          />
+        )}
 
         {c.melhor && (
           <fieldset className="space-y-2">
@@ -236,13 +244,15 @@ export function PillPBLEstruturado({
           </fieldset>
         )}
 
-        <FieldTextarea
-          label={c.por_que?.label ?? "por quê"}
-          placeholder={c.por_que?.placeholder}
-          value={value.por_que ?? ""}
-          onChange={(v) => update({ por_que: v })}
-          rows={3}
-        />
+        {c.por_que && (
+          <FieldTextarea
+            label={c.por_que.label}
+            placeholder={c.por_que.placeholder}
+            value={value.por_que ?? ""}
+            onChange={(v) => update({ por_que: v })}
+            rows={3}
+          />
+        )}
         {c.aprendi && (
           <FieldTextarea
             label={c.aprendi.label}
