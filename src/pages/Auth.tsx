@@ -143,10 +143,16 @@ const Auth = () => {
   }
 
   const sendMagicLink = async (targetEmail: string, courseSlug?: string | null) => {
+    // preserva o `next` (ex: /.lovable/oauth/consent?authorization_id=...) pra
+    // que o clique no email retorne pra rota original em vez de cair em /app.
+    const nextParam = searchParams.get("next");
+    const safeNext =
+      nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/app";
+    const redirect = `${window.location.origin}${safeNext}`;
     const { error } = await supabase.auth.signInWithOtp({
       email: targetEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/app`,
+        emailRedirectTo: redirect,
         data: courseSlug ? { chosen_course_slug: courseSlug } : undefined,
       },
     });
