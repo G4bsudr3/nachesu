@@ -1,71 +1,95 @@
-## resumo executivo
 
-o email de teste chegou pra você porque ele passa pelo caminho de **email transacional** (`send-transactional-email` → `process-email-queue` → SMTP autenticado em `notify.frattz.com`). esse caminho está 100% saudável (58 admin-direct-message + 1 test-email, todos com status `sent`).
+## contexto
 
-os emails de **autenticação** (recovery/signup/magic link) usam um caminho totalmente diferente e esse caminho **nunca foi acionado com sucesso**. essa é a raiz do problema da diretora.
+os módulos 4 e 5 da eletiva `economia-circular` já existem no banco (unpublished, com placeholder de 5 pílulas cada e títulos antigos). o pedido é substituir esse conteúdo pelos dois planos operacionais do Dudu:
 
-## os 3 sintomas destrinchados
+- **encontro 4 — prova de realidade: evidências do problema em BH** (fecha a caça a evidências)
+- **encontro 5 — escolha do problema e fluxo** (fechamento da trilha 1)
 
-### 1. "senha dá errado no login"
+toda a infra necessária já existe: `PillAbertura` (vídeo + transcript), `PillConteudoCurado`, `PillPBLEstruturado` (com `EvidenceUploader` embutido), registro reflexivo. o dispatcher em `ModuloPillList.tsx` já entende os `interaction_schema.type` que vamos usar. não precisa componente novo.
 
-o backend confirma: **78 de 78 profiles têm `has_password = true**`. ou seja, nenhum usuário está "sem senha cadastrada". o erro é de credencial mesmo (senha diferente da que a pessoa acha que cadastrou, ou nunca definiu senha e só entrou por magic link). isso é comportamento esperado do Supabase Auth, não bug. o remédio real é o fluxo de reset funcionar.
+premissa a confirmar quando eu implementar: `IMG_4515.MOV` = abertura do módulo 4, `IMG_4516.MOV` = abertura do módulo 5 (posso trocar em 10 segundos se for o contrário).
 
-### 2. "email de reset demora e vai pro spam"
+## fase 1 — hospedar os dois vídeos de abertura
 
-audit do banco:
+usar `lovable-assets` a partir de `/mnt/user-uploads/` pra publicar os dois `.MOV` como assets CDN, sem entrar no repo:
 
 ```
-template_name        | status | count
----------------------+--------+-------
-admin-direct-message | sent   | 58
-test-email           | sent   |  1
+mkdir -p src/assets/dudu
+lovable-assets create --file /mnt/user-uploads/IMG_4515.MOV --filename dudu-modulo-04-abertura.mov > src/assets/dudu/modulo-04-abertura.mov.asset.json
+lovable-assets create --file /mnt/user-uploads/IMG_4516.MOV --filename dudu-modulo-05-abertura.mov > src/assets/dudu/modulo-05-abertura.mov.asset.json
 ```
 
-**zero emails de recovery/signup/magiclink no `email_send_log**`. isso significa que o `auth-email-hook` (a função que renderiza e enfileira os emails de auth com branding NachesU via `notify.frattz.com`) **nunca foi invocado com um evento real de auth**. logs da função só mostram chamadas do endpoint `/preview` do painel Cloud → Emails, nenhum evento webhook do Supabase Auth.
+as urls públicas resultantes vão pro `video_url` de cada pílula A.
 
-conclusão: o Supabase Auth está caindo no **SMTP default do Supabase** (rate limit de ~3-4 emails por hora, remetente genérico não autenticado no domínio `notify.frattz.com`). daí:
+## fase 2 — migration reescrevendo módulos 4 e 5 e suas pílulas
 
-- **demora** = fila do SMTP default do Supabase estourando rate limit quando várias pessoas pedem junto
-- **spam** = SPF/DKIM/DMARC de `notify.frattz.com` não batem com o remetente real (SMTP do Supabase envia por outro domínio)
+uma única migration que:
 
-### 3. "mesmo chegando, não conseguem trocar a senha"
+1. atualiza `modules` (número 4 e 5 do curso `c0a00000-...002`):
+   - módulo 4:
+     - title: `encontro 4 · prova de realidade`
+     - objective: `sair do achismo e trazer 3 evidências reais do problema escolhido em BH.`
+     - deliverable_description: `3 evidências (foto, áudio de entrevista curta ou registro documental) + 1 parágrafo de síntese conectando elas.`
+     - total_minutes: 50
+   - módulo 5:
+     - title: `encontro 5 · escolha do problema e fluxo`
+     - objective: `fechar a trilha enxergar decidindo o problema definitivo e o fluxo circular associado.`
+     - deliverable_description: `briefing do projeto em 1 página: how might we + fluxo escolhido + evidências resumidas + trade-off + justificativa pessoal.`
+     - total_minutes: 50
 
-duas causas prováveis, combinadas com a demora:
+2. faz `UPDATE` nas 5 pílulas já existentes de cada módulo (mantém os `id` pra não invalidar progresso). estrutura repetida (A / B / C / PBL / registro):
 
-**a) link expirado.** token de recovery do Supabase dura 1h por padrão. se o email demora 30-60min pra chegar (rate limit), o aluno abre e o token está prestes a expirar ou já expirou. daí a página `/reset-password` mostra "link inválido" (tem essa branch no código: `!hasRecoverySession → t("reset_link_invalid_title")`).
+### módulo 4 (encontro · prova de realidade)
 
-**b) token consumido pelo scanner do Gmail.** o Gmail (e Outlook, e antivírus corporativo do Sebrae) pré-visita links de email pra escanear phishing. como o link default do Supabase é uso único (`?type=recovery&token=...`), o scanner "clica" primeiro, invalida o token, e quando o aluno clica de verdade dá tela de "link inválido". o link customizado do template NachesU já tem mitigação por Site URL correto, mas como o auth-email-hook não está rodando, esse link customizado nunca é usado.
+| ordem | kind | schema.type | conteúdo |
+| --- | --- | --- | --- |
+| 1 | pilula_a | `video_with_transcript` | abertura do Dudu: por que hoje é a divisora de águas, o que é evidência (quantitativa, qualitativa-vivida, documental), `video_url` = asset dudu-04. duração 5 min |
+| 2 | pilula_b | `curated_content_with_questions` | "como fazer uma boa entrevista de descoberta" (design kit / IDEO), com 2 perguntas nível 8 de checagem. duração 6-8 min |
+| 3 | pilula_c | `curated_content_with_questions` | guia rápido de observação de campo (texto autoral curto, já que material Sebrae é substituível), 1 pergunta nível 8. duração 5-7 min |
+| 4 | exercicio_pbl | `pbl_estruturado` | "caça às 3 evidências". schema com 3 blocos: evidência 1, evidência 2, evidência 3. cada bloco pede método (observação / entrevista / documental), local, o que revela, + `EvidenceUploader` (foto / áudio / print / vídeo curto). duração 22-28 min |
+| 5 | registro | (sem schema, `prompt`) | prompt: "das 3 evidências, o que mais te surpreendeu? sua hipótese inicial se confirma ou muda?" duração 3-6 min |
 
-**c) hipótese menor:** Site URL do projeto = `https://nachesu.lovable.app`, mas os alunos acessam por `https://sebrae.frattz.com`. o allow list já cobre os dois, então isso **não** quebra o reset, mas contribui pra confusão (link do email default aponta pro `nachesu.lovable.app`, não pro domínio bonito).
+### módulo 5 (encontro · escolha do problema e fluxo)
 
-## o problema técnico exato
+| ordem | kind | schema.type | conteúdo |
+| --- | --- | --- | --- |
+| 1 | pilula_a | `video_with_transcript` | abertura do Dudu: hoje é encruzilhada, briefing ancora tudo daqui pra frente, `video_url` = asset dudu-05. duração 5 min |
+| 2 | pilula_b | `curated_content_with_questions` | "os 6 fluxos de uma cidade circular" (materiais, alimentação, energia, água, mobilidade, tecnologia), 2 perguntas nível 8. duração 6-8 min |
+| 3 | pilula_c | `curated_content_with_questions` | "how might we bem construído: específico, provocador, acionável" (IDEO), 1 pergunta nível 8 pedindo pra classificar 2 exemplos como bem/mal formulados. duração 5-7 min |
+| 4 | exercicio_pbl | `pbl_estruturado` | "briefing do projeto". schema com campos: título do projeto, problema em how might we, fluxo principal (select entre os 6), fluxo secundário (opcional), 3 evidências resumidas (1 frase cada), quem ganha vs. quem perde, justificativa pessoal. duração 22-30 min |
+| 5 | registro | (sem schema, `prompt`) | prompt: "você trocou de problema depois das evidências? o que mudou na sua leitura? por que esse fluxo e não outro?" duração 3-6 min |
 
-o `auth-email-hook` está deployed mas **não conectado ao Supabase Auth** como hook ativo. o setup do email prod (`email_config.prod_infra_setup`) provavelmente rodou parcial ou o webhook do Auth não foi ativado. sintomas confirmam:
+3. mantém `published = false` pra revisão antes de liberar.
 
-- `email_send_log` sem NENHUMA linha de auth em 14 dias
-- logs da função só mostram calls do painel de preview, zero eventos reais
-- template preview no painel deu "Template build failed" (indicador secundário de que o setup de prod ficou incompleto)
+todos os `body_md` vão em lowercase, tom Naches, sem em-dash, sem emoji em UI, com microcopy tutorial embutido nos passos com fricção (uploader, entrevista, briefing).
 
-quando o Auth precisa mandar email e o hook não responde, ele silenciosamente usa o SMTP default → daí toda a cadeia de problemas.
+## fase 3 — publicar e liberar pros estudantes
 
-**problemas adjacentes menores** encontrados durante a auditoria:
+migration separada (ou passo manual via admin), quando o Dudu aprovar o conteúdo:
 
-- logs antigos do `auth-email-hook` mostravam `Module not found: _shared/email-templates/signup.tsx` no endpoint de preview (não afeta envio real, mas explica o "Template build failed" no painel)
-- o link `redirectTo` no `Auth.tsx` usa `window.location.origin/reset-password` (correto), mas o email default do Supabase ignora isso e usa Site URL (`nachesu.lovable.app`)
+- `UPDATE modules SET published = true WHERE ...` pros módulos 4 e 5
+- `INSERT INTO module_releases (module_id, released_at)` pra ambos, respeitando o calendário semanal (deixa `released_at` vazio se for liberar manual pelo admin)
 
-## o que **não** é o problema
+isso já usa o pipeline de trigger que dispara notificação `notify_module_released` que existe.
 
-- não é DNS de `notify.frattz.com` (verificado, e transacionais chegam limpo)
-- não é a página `/reset-password` (código correto, listener OK, updateUser OK)
-- não é senha não cadastrada (todos os 78 profiles têm `has_password`)
-- não é bug de código do frontend
+## fase 4 — refinamentos opcionais (v2, fora do escopo agora)
 
-## próximo passo - Posso aplicar, foi aprovado!
+três coisas do plano do Dudu que ficam pra depois pra não travar o essencial:
 
-o fix é forçar o Supabase Auth a rotear os emails de auth pelo `auth-email-hook` (que já está deployed e sabe usar `notify.frattz.com`). caminhos possíveis:
+- **geração automática de PDF do briefing (encontro 5).** exige edge function com puppeteer/pdfkit. no MVP, o entregável fica em `module_deliverables` como texto estruturado (dá pra exportar depois).
+- **dashboard "distribuição de fluxos da turma em tempo real" + nudge suave.** exige tela nova pro admin + notificação parametrizada. proponho abrir como card separado depois que a turma real começar.
+- **componente "critério dos 4 filtros" mostrando respostas anteriores do encontro 1, 3 e 4.** dá pra puxar de `module_deliverables` das aulas prévias, mas é ui nova. no MVP, os 3 filtros ficam explicitados como texto na pílula B do módulo 5.
 
-1. **re-scaffold do auth email templates** com `confirm_overwrite: true` + redeploy — reconecta o webhook do Auth
-2. se o problema for `prod_infra_setup` incompleto: **publicar o projeto** re-provisiona o cron/hook de prod
-3. no meio tempo, o Site URL poderia mudar pra `https://sebrae.frattz.com` pra os links ficarem no domínio certo
+## como valido
 
-me confirma se quer que eu execute o passo 1 (recomendado, resolve em 1 ação e mantém tudo customizado NachesU) — ou se prefere que eu investigue mais antes.
+- abrir `/app/modulo/4` e `/app/modulo/5` logado como frattz (admin, matriculado): as 5 pílulas renderizam com o schema correto, vídeo do Dudu toca, uploader aceita foto/áudio/print, briefing salva, registro final grava reflexão em `module_deliverables`
+- rodar `SELECT * FROM module_pills WHERE module_id IN (...)` conferindo que o `interaction_schema` bate com o dispatcher
+- `npm run typecheck` limpo (nenhuma alteração de código, só dados)
+
+## detalhes técnicos (referência interna)
+
+- schemas usados já estão registrados em `src/components/eletiva/modulo/ModuloPillList.tsx` (`video_with_transcript`, `curated_content_with_questions`, `pbl_estruturado`)
+- `PillPBLEstruturado` aceita `EvidenceUploader` embutido em qualquer campo do schema (via `evidence_kind`), então o "caça às 3 evidências" fica num único pbl estruturado com 3 blocos, sem componente novo
+- ids das pílulas preservados via `UPDATE`, não `DELETE`+`INSERT`, pra não zerar `student_pill_progress` de quem já tocou (nenhum estudante real ainda, mas garante consistência)
+- todos os grants e rls existentes já cobrem: `module_pills` tem policy que libera pra estudante quando módulo publicado

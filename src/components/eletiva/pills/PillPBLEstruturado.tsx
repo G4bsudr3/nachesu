@@ -17,6 +17,8 @@ type Schema = {
     print_a?: { label: string };
     pedido_b?: { label: string; placeholder?: string };
     print_b?: { label: string };
+    pedido_c?: { label: string; placeholder?: string };
+    print_c?: { label: string };
     melhor?: { label: string; options: string[] };
     por_que?: { label: string; placeholder?: string };
     aprendi?: { label: string; placeholder?: string };
@@ -31,6 +33,8 @@ type PblValue = {
   print_a?: EvidenceValue;
   pedido_b?: string;
   print_b?: EvidenceValue;
+  pedido_c?: string;
+  print_c?: EvidenceValue;
   melhor?: string;
   por_que?: string;
   aprendi?: string;
@@ -92,6 +96,8 @@ export function PillPBLEstruturado({
   if (c.print_a) checks.push(hasEvidence(value.print_a));
   if (c.pedido_b) checks.push(minText(value.pedido_b));
   if (c.print_b) checks.push(hasEvidence(value.print_b));
+  if (c.pedido_c) checks.push(minText(value.pedido_c));
+  if (c.print_c) checks.push(hasEvidence(value.print_c));
   if (c.melhor) checks.push(!!value.melhor);
   if (c.por_que) checks.push(minText(value.por_que));
   if (c.aprendi) checks.push(minText(value.aprendi));
@@ -204,6 +210,25 @@ export function PillPBLEstruturado({
             accent={accent}
           />
         )}
+
+        {c.pedido_c && (
+          <FieldText
+            label={c.pedido_c.label}
+            placeholder={c.pedido_c.placeholder}
+            value={value.pedido_c ?? ""}
+            onChange={(v) => update({ pedido_c: v })}
+          />
+        )}
+        {c.print_c && (
+          <FieldEvidence
+            label={c.print_c.label}
+            itemId={`${pillId}-print-c`}
+            value={value.print_c ?? emptyEvidence}
+            onChange={(ev) => update({ print_c: ev })}
+            accent={accent}
+          />
+        )}
+
 
         {c.melhor && (
           <fieldset className="space-y-2">
