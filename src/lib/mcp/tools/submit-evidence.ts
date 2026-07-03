@@ -26,7 +26,6 @@ export default defineTool({
     idempotentHint: false,
     openWorldHint: false,
   },
-  needsApproval: true,
   handler: async ({ module_id, content, link }, ctx) => {
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "não autenticado" }], isError: true };
