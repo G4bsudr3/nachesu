@@ -33,6 +33,8 @@ type PblValue = {
   print_a?: EvidenceValue;
   pedido_b?: string;
   print_b?: EvidenceValue;
+  pedido_c?: string;
+  print_c?: EvidenceValue;
   melhor?: string;
   por_que?: string;
   aprendi?: string;
