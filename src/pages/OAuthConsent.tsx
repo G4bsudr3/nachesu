@@ -161,6 +161,10 @@ const OAuthConsent = () => {
           )}
         </div>
       </main>
+
+      <footer className="container py-8">
+        <EletivaFooter />
+      </footer>
     </div>
   );
 };
