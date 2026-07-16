@@ -16,8 +16,6 @@ interface PageHeaderProps {
   logoLink?: string;
   /** classes extras pro <header>. */
   className?: string;
-  /** oculta o sino de notificações (default: false). */
-  hideBell?: boolean;
 }
 
 /**
