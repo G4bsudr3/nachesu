@@ -146,8 +146,39 @@ export const footer = {
   letterSpacing: '0.2px',
 }
 
-export const fontImport = `@import url('https://fonts.googleapis.com/css2?family=League+Gothic&family=Urbanist:wght@400;600;700&display=swap');
-.${bodyClassName} { font-family: ${BODY_STACK}; font-size: 16px; font-weight: 400; line-height: 1.6; color: ${INK}; }`
+// @font-face explícito (Gmail ignora @import; alguns clientes suportam @font-face).
+// urls apontam direto pros woff2 hospedados pelo google fonts (estáveis).
+export const fontImport = `
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/urbanist/v15/L0xjDF02iFML4hGCyMqrbOwreOw.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/urbanist/v15/L0xjDF02iFML4hGCyOKobOwreOw.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/urbanist/v15/L0xjDF02iFML4hGCyN6nbOwreOw.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'League Gothic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/leaguegothic/v11/qFdR35CBi4tvBz81xy7WG7ep-BQAY7Krj7feObpH_-amidQ.woff2') format('woff2');
+}
+.${bodyClassName} { font-family: ${BODY_STACK} !important; font-size: 16px; font-weight: 400; line-height: 1.6; color: ${INK}; }
+.${bodyClassName} * { font-family: ${BODY_STACK} !important; }`
 
 // footer padrão reutilizável como string
 export const FOOTER_LINE_1 = 'vai lá e cria.'
