@@ -73,9 +73,6 @@ const Pending = () => {
             </button>
           </div>
 
-          <p className="mt-12 text-xs uppercase tracking-[0.2em] text-perestroika-preto/40">
-            logado como {user.email}
-          </p>
         </motion.div>
       </main>
 
