@@ -73,12 +73,27 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!invited) {
-      // acesso aberto: qualquer email pode entrar (cria conta via magic link se não existir)
+      // gate de acesso: só entra quem é sebrae edu, tem convite de curso,
+      // ou já tem conta ativa (evita trancar quem foi liberado antes)
+      const isSebrae = normalizedEmail.endsWith("@edu.sebrae.com.br");
+
+      let hasCourseInvite = false;
+      if (!isSebrae) {
+        const { data: invite } = await admin
+          .from("course_invites")
+          .select("id")
+          .eq("email_normalized", normalizedEmail)
+          .maybeSingle();
+        hasCourseInvite = !!invite;
+      }
+
+      const canEnter = isSebrae || hasCourseInvite || accountExists;
+
       return new Response(
         JSON.stringify({
           valid: false,
           prefill: null,
-          can_enter: true,
+          can_enter: canEnter,
           already_submitted: fbiSubmitted,
           has_user: !!existing?.user_id || accountExists,
           account_exists: accountExists,
