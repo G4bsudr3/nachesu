@@ -97,17 +97,27 @@ export const text = {
   fontWeight: 400 as const,
 }
 
+// linhas secundárias (dicas, avisos, "se não foi você…")
+export const textMuted = {
+  ...text,
+  color: INK_MUTED,
+  fontSize: '14px',
+}
+
 export const link = {
-  color: INK,
+  color: SEBRAE_AZUL,
   textDecoration: 'underline',
   fontWeight: 600 as const,
 }
 
-// botão com gradiente perestroika; fallback sólido laranja pra clientes legados
+// gradiente assinatura perestroika (laranja → vermelho → rosa → azul)
+const GRADIENT_PRIMARY =
+  `linear-gradient(90deg, ${LARANJA} 0%, ${VERMELHO} 35%, ${ROSA} 70%, ${AZUL_PERE} 100%)`
+
+// botão: gradiente perestroika + fallback rosa (primary do sistema) pra clientes legados
 export const button = {
-  backgroundColor: '#fe7b02',
-  backgroundImage:
-    'linear-gradient(90deg, #fe7b02 0%, #fd4644 35%, #f756a6 70%, #6f77fc 100%)',
+  backgroundColor: ROSA,
+  backgroundImage: GRADIENT_PRIMARY,
   color: '#ffffff',
   fontFamily: BODY_STACK,
   fontSize: '14px',
@@ -126,35 +136,36 @@ export const codeStyle = {
   fontSize: '56px',
   lineHeight: '1',
   fontWeight: 400 as const,
-  color: '#fd4644',
+  color: VERMELHO,
   letterSpacing: '10px',
   margin: '16px 0 32px',
   textAlign: 'center' as const,
   backgroundColor: '#ffffff',
-  borderRadius: '16px',
+  borderRadius: RADIUS,
   padding: '24px 16px',
 }
 
-// barra de gradiente decorativa (substitui a lagrima)
+// barra decorativa: gradiente assinatura
 export const accentBar = {
   height: '3px',
   width: '56px',
-  backgroundImage:
-    'linear-gradient(90deg, #fe7b02 0%, #fd4644 35%, #f756a6 70%, #6f77fc 100%)',
+  backgroundImage: GRADIENT_PRIMARY,
   borderRadius: '4px',
   margin: '32px 0 20px',
   border: 'none',
 }
 
+// footer institucional: azul sebrae (--accent) assinando "em parceria com escola sebrae"
 export const footer = {
   fontFamily: BODY_STACK,
   fontSize: '12px',
-  color: INK,
-  opacity: 0.65,
+  color: SEBRAE_AZUL,
   margin: '0',
   lineHeight: '1.6',
   letterSpacing: '0.2px',
+  fontWeight: 500 as const,
 }
+
 
 // @font-face explícito (Gmail ignora @import; alguns clientes suportam @font-face).
 // urls apontam direto pros woff2 hospedados pelo google fonts (estáveis).
