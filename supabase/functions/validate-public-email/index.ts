@@ -1,20 +1,17 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+import { corsHeaders } from "../_shared/cors.ts";
+import { checkRateLimit, clientIp, tooManyRequests } from "../_shared/rate-limit.ts";
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const cors = corsHeaders(req);
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
   try {
     const { email } = await req.json();
     if (!email || typeof email !== "string") {
       return new Response(JSON.stringify({ valid: false, error: "email obrigatório" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -24,6 +21,11 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
+
+    // rate limit por IP (fail-open) — trava enumeração/coleta em massa de PII
+    if (!(await checkRateLimit(admin, `vpe:${clientIp(req)}`, 30, 60))) {
+      return tooManyRequests(cors);
+    }
 
     const { data: invited, error } = await admin
       .from("invited_participants")
@@ -35,7 +37,7 @@ Deno.serve(async (req: Request) => {
       console.error("[validate-public-email] db error:", error);
       return new Response(JSON.stringify({ valid: false, error: "erro interno" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -49,8 +51,9 @@ Deno.serve(async (req: Request) => {
     const fbiSubmitted = existing?.submitted === true;
 
     // checa se já existe conta auth via RPC (lookup direto por email, sem paginação)
+    // NOTA (SEC-01): não expomos mais `account_has_password` — revelar quais contas
+    // têm senha facilitava ataque direcionado e não é consumido pelo frontend.
     let accountExists = false;
-    let accountHasPassword = false;
     try {
       const { data: lookup, error: lookupErr } = await admin.rpc("lookup_user_by_email", {
         _email: normalizedEmail,
@@ -59,7 +62,6 @@ Deno.serve(async (req: Request) => {
         console.warn("[validate-public-email] lookup rpc error:", lookupErr);
       } else if (Array.isArray(lookup) && lookup.length > 0) {
         accountExists = true;
-        accountHasPassword = !!lookup[0].has_password;
       }
     } catch (e) {
       console.warn("[validate-public-email] lookup failed:", e);
@@ -75,11 +77,10 @@ Deno.serve(async (req: Request) => {
           already_submitted: fbiSubmitted,
           has_user: !!existing?.user_id || accountExists,
           account_exists: accountExists,
-          account_has_password: accountHasPassword,
         }),
         {
           status: 200,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...cors, "Content-Type": "application/json" },
         },
       );
     }
@@ -119,20 +120,19 @@ Deno.serve(async (req: Request) => {
         already_submitted: fbiSubmitted,
         has_user: !!existing?.user_id || accountExists,
         account_exists: accountExists,
-        account_has_password: accountHasPassword,
         // invited sempre pode entrar; fbi submitted também
         can_enter: true,
       }),
       {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       },
     );
   } catch (e) {
     console.error("[validate-public-email] fatal:", e);
     return new Response(JSON.stringify({ valid: false, error: "erro interno" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });

@@ -21,6 +21,19 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
+    // SEC-08: segredo compartilhado OPT-IN. Só passa a exigir quando a env
+    // SAFETY_NOTIFY_SECRET está definida (o trigger envia via x-safety-secret,
+    // ver migration 20260716090200). Sem env definida → comportamento legado.
+    const secret = Deno.env.get('SAFETY_NOTIFY_SECRET')
+    if (secret) {
+      const provided =
+        req.headers.get('x-safety-secret') ??
+        (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '')
+      if (provided !== secret) {
+        return json({ error: 'unauthorized' }, 401)
+      }
+    }
+
     const body = (await req.json()) as Payload
     if (!body?.safety_event_id) {
       return json({ error: 'safety_event_id required' }, 400)
@@ -40,6 +53,18 @@ Deno.serve(async (req) => {
     if (evErr || !ev) {
       return json({ error: 'event not found' }, 404)
     }
+
+    // idempotência (SEC-08): se já existe escalação pra esse evento, não recria
+    // nem reenvia e-mails — neutraliza replay/abuso mesmo sem o segredo acima.
+    const { data: existingEsc } = await supabase
+      .from('tutor_safety_escalations')
+      .select('id')
+      .eq('safety_event_id', ev.id)
+      .maybeSingle()
+    if (existingEsc) {
+      return json({ ok: true, escalation_id: existingEsc.id, skipped: 'already_escalated' }, 200)
+    }
+
     const category = ev.risk_level as string
     const severity = (ev.risk_score ?? 0) >= 0.8 ? 'high' : (ev.risk_score ?? 0) >= 0.5 ? 'medium' : 'low'
     const redacted = (ev.message_redacted && ev.message_redacted.trim().length > 0)

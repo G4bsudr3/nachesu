@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Env — nunca versionar segredos (SEC/QUA-03). Use .env.example como template.
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
