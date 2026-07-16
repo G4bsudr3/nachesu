@@ -24,6 +24,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  bodyClassName,
   button,
   accentBar,
   footer,
@@ -56,16 +57,16 @@ export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
           <br />
           direto
         </Heading>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           clica no botão pra entrar na nachesu sem senha. o link vale por 1 hora e só funciona uma vez.
         </Text>
         <Button style={button} href={confirmationUrl}>
           entrar na nachesu
         </Button>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           dica: abre o link no <strong>mesmo dispositivo</strong> onde pediu. se não funcionar, pede um novo lá no app.
         </Text>
-        <Text style={text}>se não foi você, ignora esse email.</Text>
+        <Text style={text} className={bodyClassName}>se não foi você, ignora esse email.</Text>
         <Hr style={accentBar} />
         <Text style={footer}>
           {FOOTER_LINE_1}

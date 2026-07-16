@@ -24,6 +24,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  bodyClassName,
   button,
   accentBar,
   footer,
@@ -53,13 +54,13 @@ export const InviteEmail = ({ confirmationUrl }: InviteEmailProps) => (
           <br />
           convidado
         </Heading>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           a equipe da nachesu te convidou pras eletivas online. clica no botão pra criar sua conta e começar.
         </Text>
         <Button style={button} href={confirmationUrl}>
           aceitar convite
         </Button>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           o convite é válido só pro seu email institucional. se chegou por engano, pode ignorar.
         </Text>
         <Hr style={accentBar} />

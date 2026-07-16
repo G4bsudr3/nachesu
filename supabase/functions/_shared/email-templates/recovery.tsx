@@ -24,6 +24,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  bodyClassName,
   button,
   accentBar,
   footer,
@@ -52,13 +53,13 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
           <br />
           senha
         </Heading>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           recebemos um pedido pra redefinir sua senha. clica no botão pra escolher uma nova.
         </Text>
         <Button style={button} href={confirmationUrl}>
           redefinir senha
         </Button>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           se não foi você que pediu, ignora esse email. sua senha continua a mesma.
         </Text>
         <Hr style={accentBar} />

@@ -7,7 +7,7 @@
 // display grande em League Gothic, body em Urbanist 16/1.6, ritmo 8/16/24/32.
 
 const DISPLAY_STACK = "'League Gothic', Impact, sans-serif"
-const BODY_STACK = "'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
+const BODY_STACK = "'Urbanist', system-ui, sans-serif"
 const INK = '#090909'
 const BEGE = '#f2e4d8'
 const CANVAS = '#ede0d3'
@@ -65,6 +65,9 @@ export const h1 = {
 
 // classe usada no <Heading> dos templates pra ativar o tamanho desktop via media query
 export const h1ClassName = 'nachesu-email-h1'
+
+// classe usada no corpo de texto dos emails (Urbanist 400 / 16px)
+export const bodyClassName = 'font-body'
 
 // escala responsiva: text-5xl no mobile (48px), sm:text-6xl no desktop (60px)
 export const responsiveH1Style = `
@@ -143,7 +146,8 @@ export const footer = {
   letterSpacing: '0.2px',
 }
 
-export const fontImport = `@import url('https://fonts.googleapis.com/css2?family=League+Gothic&family=Urbanist:wght@400;600;700&display=swap');`
+export const fontImport = `@import url('https://fonts.googleapis.com/css2?family=League+Gothic&family=Urbanist:wght@400;600;700&display=swap');
+.${bodyClassName} { font-family: ${BODY_STACK}; font-size: 16px; font-weight: 400; line-height: 1.6; color: ${INK}; }`
 
 // footer padrão reutilizável como string
 export const FOOTER_LINE_1 = 'vai lá e cria.'

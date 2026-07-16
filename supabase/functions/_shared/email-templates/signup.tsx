@@ -24,6 +24,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  bodyClassName,
   button,
   accentBar,
   footer,
@@ -52,15 +53,15 @@ export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
         <Heading style={h1} className={h1ClassName}>
           bem-vinda
           <br />
-          à nachesu
+          à naches.achesu
         </Heading>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           você tá quase dentro. clica no botão pra confirmar seu email e começar suas eletivas.
         </Text>
         <Button style={button} href={confirmationUrl}>
           confirmar email
         </Button>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           se não foi você que se cadastrou, ignora esse email tranquilo.
         </Text>
         <Hr style={accentBar} />
