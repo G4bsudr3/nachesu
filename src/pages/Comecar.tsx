@@ -37,7 +37,7 @@ const Comecar = () => {
             <NachesULogo variant="dark" />
           </Link>
           <Link
-            to="/"
+            to="/auth"
             className="inline-flex items-center gap-1.5 font-body text-xs sm:text-sm uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
           >
             entrar
