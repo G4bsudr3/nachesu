@@ -2,7 +2,16 @@
 // um evento de safety severo é registrado. cria a linha em
 // tutor_safety_escalations pra fila do admin acompanhar.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+
+// CORS local. O import anterior ('npm:@supabase/supabase-js@2/cors') NÃO existe
+// como subpath do pacote e impedia o módulo inteiro de carregar — quebrando a
+// notificação de eventos de safety (self_harm/abuse). Objeto inline, sem
+// dependência de subpath inválido.
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-safety-secret',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
 
 interface Payload {
   safety_event_id: string
