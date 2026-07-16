@@ -24,6 +24,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  textMuted,
   bodyClassName,
   button,
   accentBar,
@@ -61,7 +62,7 @@ export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
         <Button style={button} className={bodyClassName} href={confirmationUrl}>
           confirmar email
         </Button>
-        <Text style={text} className={bodyClassName}>
+        <Text style={textMuted} className={bodyClassName}>
           se não foi você que se cadastrou, ignora esse email tranquilo.
         </Text>
         <Hr style={accentBar} />

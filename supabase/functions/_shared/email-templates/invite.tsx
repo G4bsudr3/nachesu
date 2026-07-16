@@ -24,6 +24,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  textMuted,
   bodyClassName,
   button,
   accentBar,
@@ -60,7 +61,7 @@ export const InviteEmail = ({ confirmationUrl }: InviteEmailProps) => (
         <Button style={button} className={bodyClassName} href={confirmationUrl}>
           aceitar convite
         </Button>
-        <Text style={text} className={bodyClassName}>
+        <Text style={textMuted} className={bodyClassName}>
           o convite é válido só pro seu email institucional. se chegou por engano, pode ignorar.
         </Text>
         <Hr style={accentBar} />

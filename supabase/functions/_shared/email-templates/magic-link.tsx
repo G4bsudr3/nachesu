@@ -24,6 +24,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  textMuted,
   bodyClassName,
   button,
   accentBar,
@@ -63,10 +64,10 @@ export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
         <Button style={button} className={bodyClassName} href={confirmationUrl}>
           entrar na nachesu
         </Button>
-        <Text style={text} className={bodyClassName}>
+        <Text style={textMuted} className={bodyClassName}>
           dica: abre o link no <strong>mesmo dispositivo</strong> onde pediu. se não funcionar, pede um novo lá no app.
         </Text>
-        <Text style={text} className={bodyClassName}>se não foi você, ignora esse email.</Text>
+        <Text style={textMuted} className={bodyClassName}>se não foi você, ignora esse email.</Text>
         <Hr style={accentBar} />
         <Text style={footer}>
           {FOOTER_LINE_1}
