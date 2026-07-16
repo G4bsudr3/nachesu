@@ -42,7 +42,7 @@ Deno.serve(async (req: Request) => {
     if (!invited) {
       return new Response(JSON.stringify({ error: "email não está na lista de convidados" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -84,7 +84,7 @@ Deno.serve(async (req: Request) => {
       console.error("[submit-public-fbi] save error:", saveErr);
       return new Response(JSON.stringify({ error: "erro ao salvar" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -116,13 +116,13 @@ Deno.serve(async (req: Request) => {
 
     return new Response(JSON.stringify({ ok: true, submitted: doSubmit, id: saved?.id }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("[submit-public-fbi] fatal:", e);
     return new Response(JSON.stringify({ error: "erro interno" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });
