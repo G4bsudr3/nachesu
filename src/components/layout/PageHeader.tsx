@@ -38,40 +38,44 @@ export const PageHeader = ({
     <ChoraLogo variant="dark" />
   );
 
+  const backLabel = back?.label ?? "voltar";
   const backLink = back ? (
     <Link
       to={back.to}
-      className="inline-flex items-center gap-1.5 sm:gap-2 min-h-11 font-body text-sm uppercase tracking-wide hover:gap-2 sm:hover:gap-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
+      aria-label={backLabel}
+      className="inline-flex items-center gap-1.5 sm:gap-2 min-h-11 px-1 font-body text-sm uppercase tracking-wide hover:gap-2 sm:hover:gap-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
     >
       <ArrowLeft className="h-4 w-4 shrink-0" />
-      <span className="truncate">{back.label ?? "voltar"}</span>
+      <span className="hidden sm:inline truncate">{backLabel}</span>
     </Link>
   ) : null;
 
   return (
     <header
       className={cn(
-        "container max-w-5xl flex items-center justify-between gap-2 sm:gap-3 pt-8 pb-4 relative z-10",
+        "container max-w-5xl flex items-center justify-between gap-2 sm:gap-3 pt-8 pb-4 relative z-10 flex-nowrap",
         className,
       )}
     >
-      {/* esquerda: logo sempre */}
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink-0">
+      {/* esquerda: logo sempre, encolhe se faltar espaço */}
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-shrink">
         {showLogo &&
           (logoLink ? (
             <Link
               to={logoLink}
-              className="inline-flex min-h-11 items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
+              className="inline-flex min-h-11 items-center min-w-0 max-w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded [&_svg]:max-w-full [&_svg]:h-auto"
             >
               {logo}
             </Link>
           ) : (
-            logo
+            <span className="inline-flex min-w-0 max-w-full [&_svg]:max-w-full [&_svg]:h-auto">
+              {logo}
+            </span>
           ))}
       </div>
 
-      {/* direita: back + ações */}
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+      {/* direita: back + ações, nunca quebra */}
+      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 flex-nowrap">
         {backLink}
         {!hideBell && <NotificationBell />}
         {actions}
