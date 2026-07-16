@@ -253,18 +253,18 @@ const Index = () => {
       </motion.header>
 
       {/* hero */}
-      <section className="container relative pt-16 pb-20 sm:pt-20 sm:pb-28">
+      <section className="container relative pt-20 pb-20 sm:pt-24 sm:pb-28">
         <motion.div
-          className="absolute right-2 -top-2 sm:right-12 sm:top-6 pointer-events-none z-0 opacity-90"
-          animate={prefersReducedMotion ? undefined : { rotate: [10, 16, 10] }}
+          className="absolute right-4 top-3 sm:right-12 sm:top-6 pointer-events-none z-0 opacity-90"
+          animate={prefersReducedMotion ? undefined : { rotate: [6, 12, 6] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           aria-hidden="true"
         >
           <span className="block sm:hidden">
-            <EletivaSymbol size={72} rotate={6} pose="celebrating" />
+            <EletivaSymbol size={64} rotate={0} pose="celebrating" />
           </span>
           <span className="hidden sm:block md:hidden">
-            <EletivaSymbol size={120} rotate={6} pose="celebrating" />
+            <EletivaSymbol size={112} rotate={6} pose="celebrating" />
           </span>
           <span className="hidden md:block">
             <EletivaSymbol size={160} rotate={6} pose="celebrating" />
