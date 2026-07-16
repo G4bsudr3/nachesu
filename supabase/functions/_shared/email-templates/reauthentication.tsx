@@ -23,6 +23,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  bodyClassName,
   codeStyle,
   accentBar,
   footer,
@@ -50,9 +51,9 @@ export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => 
           <br />
           código
         </Heading>
-        <Text style={text}>usa o código abaixo pra confirmar sua identidade:</Text>
+        <Text style={text} className={bodyClassName}>usa o código abaixo pra confirmar sua identidade:</Text>
         <Text style={codeStyle}>{token}</Text>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           válido por 10 minutos. nunca compartilha com ninguém, nem com gente que diz ser da nachesu.
         </Text>
         <Hr style={accentBar} />
