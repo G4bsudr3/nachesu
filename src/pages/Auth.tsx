@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { FirstTimeChecklist } from "@/components/auth/FirstTimeChecklist";
 
@@ -507,9 +508,7 @@ const Auth = () => {
       </main>
 
       <footer className="container py-8">
-        <p className="font-body text-xs text-perestroika-preto/60 text-center">
-          eletiva sebrae · escola sebrae · 1º ano EM
-        </p>
+        <EletivaFooter />
       </footer>
     </div>
   );

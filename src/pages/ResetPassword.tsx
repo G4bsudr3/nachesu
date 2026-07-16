@@ -5,6 +5,7 @@ import { Lock, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { PasswordStrength, evaluatePasswordStrength } from "@/components/PasswordStrength";
 import { t } from "@/lib/authErrors";
@@ -185,9 +186,7 @@ const ResetPassword = () => {
       </main>
 
       <footer className="container py-8">
-        <p className="font-body text-xs text-perestroika-preto/60 text-center">
-          eletiva sebrae · escola sebrae · 1º ano EM
-        </p>
+        <EletivaFooter />
       </footer>
     </div>
   );

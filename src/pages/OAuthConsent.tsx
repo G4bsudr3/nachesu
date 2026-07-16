@@ -3,6 +3,7 @@ import { useSearchParams, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 // wrapper tipado pro namespace beta `auth.oauth`
@@ -160,6 +161,10 @@ const OAuthConsent = () => {
           )}
         </div>
       </main>
+
+      <footer className="container py-8">
+        <EletivaFooter />
+      </footer>
     </div>
   );
 };
