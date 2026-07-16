@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowLeft, Mail, ShieldCheck, Clock } from "lucide-react";
+import { ArrowRight, Mail, ShieldCheck, Clock } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
@@ -40,7 +40,7 @@ const Comecar = () => {
             to="/"
             className="inline-flex items-center gap-1.5 font-body text-xs sm:text-sm uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> voltar
+            entrar <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </header>
