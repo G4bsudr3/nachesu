@@ -207,7 +207,7 @@ const Auth = () => {
 
         validation = await validateEmail(cleanEmail);
         if (!validation.can_enter) {
-          toast.info(SOON_MESSAGE, { duration: 7000 });
+          toast.info(NOT_ALLOWED_MESSAGE, { duration: 7000 });
           return;
         }
       }
@@ -275,7 +275,7 @@ const Auth = () => {
       if (!isAllowed) {
         validation = await validateEmail(cleanEmail);
         if (!validation.can_enter) {
-          toast.info(SOON_MESSAGE, { duration: 7000 });
+          toast.info(NOT_ALLOWED_MESSAGE, { duration: 7000 });
           return;
         }
       }
