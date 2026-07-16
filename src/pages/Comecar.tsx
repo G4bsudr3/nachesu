@@ -168,6 +168,7 @@ const Comecar = () => {
       {/* cta final */}
       <section className="relative bg-gradient-screen py-20 sm:py-28">
         <hr className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xs sm:max-w-sm border-perestroika-preto/10" />
+        <hr className="absolute top-1 left-1/2 -translate-x-1/2 w-full max-w-xs sm:max-w-sm border-perestroika-preto/5" />
         <div className="container flex flex-col items-center text-center gap-7">
           <h2 className="font-display uppercase display-clamp-section leading-[0.95] max-w-2xl">
             bora colocar<br />o primeiro tijolo?
