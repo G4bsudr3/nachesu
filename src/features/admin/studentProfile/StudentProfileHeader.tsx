@@ -3,6 +3,7 @@ import { KeyRound, UserRound, Mail, Calendar, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { fnErrorInfo, refSuffix } from "@/lib/fnError";
 import { Badge } from "@/components/ui/badge";
 import type { StudentProfile } from "./useStudentProfile";
 import { logger } from "@/lib/logger";
@@ -53,8 +54,9 @@ export const StudentProfileHeader = ({ userId, profile }: Props) => {
       body: { target_user_id: userId, new_password: newPassword },
     });
     if (error || (data as { error?: string })?.error) {
+      const info = await fnErrorInfo(error, data);
       logger.error("[admin/student] reset:", error ?? data);
-      toast.error("não rolou redefinir a senha");
+      toast.error(info.message ?? "não rolou redefinir a senha", { description: refSuffix(info) });
     } else {
       try {
         await navigator.clipboard.writeText(newPassword);

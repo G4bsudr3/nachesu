@@ -1,6 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 import { checkRateLimit, clientIp, tooManyRequests } from "../_shared/rate-limit.ts";
+import { fail } from "../_shared/errors.ts";
+
+const FN = "validate-public-email";
 
 Deno.serve(async (req: Request) => {
   const cors = corsHeaders(req);
@@ -34,10 +37,12 @@ Deno.serve(async (req: Request) => {
       .maybeSingle();
 
     if (error) {
-      console.error("[validate-public-email] db error:", error);
-      return new Response(JSON.stringify({ valid: false, error: "erro interno" }), {
+      return fail(cors, {
         status: 500,
-        headers: { ...cors, "Content-Type": "application/json" },
+        code: "db_lookup_failed",
+        message: "não consegui validar o email agora, tenta de novo em instantes",
+        cause: error,
+        fn: FN,
       });
     }
 
@@ -129,10 +134,12 @@ Deno.serve(async (req: Request) => {
       },
     );
   } catch (e) {
-    console.error("[validate-public-email] fatal:", e);
-    return new Response(JSON.stringify({ valid: false, error: "erro interno" }), {
+    return fail(cors, {
       status: 500,
-      headers: { ...cors, "Content-Type": "application/json" },
+      code: "unexpected",
+      message: "erro inesperado ao validar o email",
+      cause: e,
+      fn: FN,
     });
   }
 });

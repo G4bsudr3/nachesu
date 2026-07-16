@@ -1,4 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { fail } from "../_shared/errors.ts";
+
+const FN = "admin-reset-password";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,10 +18,7 @@ Deno.serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: "missing auth" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 401, code: "missing_auth", message: "faltou o cabeçalho de autenticação", fn: FN });
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -31,10 +31,7 @@ Deno.serve(async (req) => {
     });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) {
-      return new Response(JSON.stringify({ error: "invalid token" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 401, code: "invalid_token", message: "sessão inválida ou expirada, entra de novo", cause: userErr, fn: FN });
     }
 
     const admin = createClient(supabaseUrl, serviceKey);
@@ -46,10 +43,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (roleErr || !roleData) {
-      return new Response(JSON.stringify({ error: "forbidden" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 403, code: "forbidden_not_admin", message: "só admin pode redefinir senha", cause: roleErr, fn: FN });
     }
 
     const body = await req.json().catch(() => ({}));
@@ -59,17 +53,11 @@ Deno.serve(async (req) => {
     const newPassword = body?.new_password as string | undefined;
 
     if (!targetUserId) {
-      return new Response(JSON.stringify({ error: "target_user_id required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 400, code: "missing_target", message: "target_user_id é obrigatório", fn: FN });
     }
 
     if (!newPassword || newPassword.length < 8) {
-      return new Response(JSON.stringify({ error: "new_password required (min 8 chars)" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 400, code: "weak_password", message: "new_password é obrigatório (mínimo 8 caracteres)", fn: FN });
     }
 
     const { error: updErr } = await admin.auth.admin.updateUserById(targetUserId, {
@@ -77,11 +65,7 @@ Deno.serve(async (req) => {
     });
 
     if (updErr) {
-      console.error("[admin-reset-password] erro:", updErr);
-      return new Response(JSON.stringify({ error: updErr.message }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 500, code: "reset_failed", message: "não consegui redefinir a senha", cause: updErr, fn: FN });
     }
 
     const { error: profileErr } = await admin
@@ -98,10 +82,6 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
-    console.error("[admin-reset-password] exception:", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return fail(corsHeaders, { status: 500, code: "unexpected", message: "erro inesperado ao redefinir a senha", cause: err, fn: FN });
   }
 });

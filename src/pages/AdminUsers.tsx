@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { KeyRound, Search, Shield, ShieldCheck, ShieldMinus, UserRound, ExternalLink, BookOpen, FlaskConical } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { fnErrorInfo, refSuffix } from "@/lib/fnError";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -237,8 +238,9 @@ const AdminUsers = () => {
     });
 
     if (error || (data as { error?: string })?.error) {
+      const info = await fnErrorInfo(error, data);
       logger.error("[admin/users] reset senha:", error ?? data);
-      toast.error("não rolou redefinir a senha");
+      toast.error(info.message ?? "não rolou redefinir a senha", { description: refSuffix(info) });
     } else {
       try {
         await navigator.clipboard.writeText(newPassword);

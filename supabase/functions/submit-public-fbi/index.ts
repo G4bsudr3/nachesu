@@ -1,6 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 import { checkRateLimit, clientIp, tooManyRequests } from "../_shared/rate-limit.ts";
+import { fail } from "../_shared/errors.ts";
+
+const FN = "submit-public-fbi";
 
 Deno.serve(async (req: Request) => {
   const cors = corsHeaders(req);
@@ -40,9 +43,11 @@ Deno.serve(async (req: Request) => {
       .maybeSingle();
 
     if (!invited) {
-      return new Response(JSON.stringify({ error: "email não está na lista de convidados" }), {
+      return fail(cors, {
         status: 403,
-        headers: { ...cors, "Content-Type": "application/json" },
+        code: "not_invited",
+        message: "esse email não está na lista de convidados",
+        fn: FN,
       });
     }
 
@@ -81,10 +86,12 @@ Deno.serve(async (req: Request) => {
       .single();
 
     if (saveErr) {
-      console.error("[submit-public-fbi] save error:", saveErr);
-      return new Response(JSON.stringify({ error: "erro ao salvar" }), {
+      return fail(cors, {
         status: 500,
-        headers: { ...cors, "Content-Type": "application/json" },
+        code: "save_failed",
+        message: "não consegui salvar sua resposta agora, tenta de novo",
+        cause: saveErr,
+        fn: FN,
       });
     }
 
@@ -119,10 +126,12 @@ Deno.serve(async (req: Request) => {
       headers: { ...cors, "Content-Type": "application/json" },
     });
   } catch (e) {
-    console.error("[submit-public-fbi] fatal:", e);
-    return new Response(JSON.stringify({ error: "erro interno" }), {
+    return fail(cors, {
       status: 500,
-      headers: { ...cors, "Content-Type": "application/json" },
+      code: "unexpected",
+      message: "erro inesperado ao salvar sua resposta",
+      cause: e,
+      fn: FN,
     });
   }
 });

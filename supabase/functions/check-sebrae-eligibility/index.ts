@@ -4,6 +4,9 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
 import { checkRateLimit, clientIp, tooManyRequests } from '../_shared/rate-limit.ts'
+import { fail } from '../_shared/errors.ts'
+
+const FN = 'check-sebrae-eligibility'
 
 Deno.serve(async (req) => {
   const cors = corsHeaders(req)
@@ -68,8 +71,12 @@ Deno.serve(async (req) => {
       status: 200, headers: { ...cors, 'Content-Type': 'application/json' },
     })
   } catch (e) {
-    return new Response(JSON.stringify({ error: (e as Error).message }), {
-      status: 500, headers: { ...cors, 'Content-Type': 'application/json' },
+    return fail(cors, {
+      status: 500,
+      code: 'unexpected',
+      message: 'não consegui checar a elegibilidade agora, tenta de novo',
+      cause: e,
+      fn: FN,
     })
   }
 })

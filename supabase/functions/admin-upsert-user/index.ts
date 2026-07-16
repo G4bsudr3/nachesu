@@ -1,4 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { fail } from "../_shared/errors.ts";
+
+const FN = "admin-upsert-user";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,9 +15,7 @@ Deno.serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: "missing auth" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 401, code: "missing_auth", message: "faltou o cabeçalho de autenticação", fn: FN });
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -26,9 +27,7 @@ Deno.serve(async (req) => {
     });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) {
-      return new Response(JSON.stringify({ error: "invalid token" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 401, code: "invalid_token", message: "sessão inválida ou expirada, entra de novo", cause: userErr, fn: FN });
     }
 
     const admin = createClient(supabaseUrl, serviceKey);
@@ -40,9 +39,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (!roleData) {
-      return new Response(JSON.stringify({ error: "forbidden" }), {
-        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 403, code: "forbidden_not_admin", message: "só admin pode criar/atualizar usuários", fn: FN });
     }
 
     const body = await req.json().catch(() => ({}));
@@ -53,9 +50,7 @@ Deno.serve(async (req) => {
     const makeAdmin = body?.make_admin === true;
 
     if (!email || !password || password.length < 6) {
-      return new Response(JSON.stringify({ error: "email and password (>=6) required" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return fail(corsHeaders, { status: 400, code: "invalid_input", message: "email e password (mínimo 6 caracteres) são obrigatórios", fn: FN });
     }
 
     // procura user existente
@@ -71,9 +66,7 @@ Deno.serve(async (req) => {
         email_confirm: true,
       });
       if (createErr || !created.user) {
-        return new Response(JSON.stringify({ error: createErr?.message ?? "create failed" }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return fail(corsHeaders, { status: 500, code: "create_failed", message: "não consegui criar o usuário", cause: createErr, fn: FN });
       }
       targetId = created.user.id;
     } else {
@@ -82,9 +75,7 @@ Deno.serve(async (req) => {
         email_confirm: true,
       });
       if (updErr) {
-        return new Response(JSON.stringify({ error: updErr.message }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return fail(corsHeaders, { status: 500, code: "update_failed", message: "não consegui atualizar o usuário", cause: updErr, fn: FN });
       }
     }
 
@@ -105,9 +96,6 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
-    console.error("[admin-upsert-user] exception:", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return fail(corsHeaders, { status: 500, code: "unexpected", message: "erro inesperado ao criar/atualizar o usuário", cause: err, fn: FN });
   }
 });
