@@ -38,6 +38,16 @@ export const PageHeader = ({
     <ChoraLogo variant="dark" />
   );
 
+  const backLink = back ? (
+    <Link
+      to={back.to}
+      className="inline-flex items-center gap-1.5 sm:gap-2 min-h-11 font-body text-sm uppercase tracking-wide hover:gap-2 sm:hover:gap-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
+    >
+      <ArrowLeft className="h-4 w-4 shrink-0" />
+      <span className="truncate">{back.label ?? "voltar"}</span>
+    </Link>
+  ) : null;
+
   return (
     <header
       className={cn(
@@ -45,18 +55,9 @@ export const PageHeader = ({
         className,
       )}
     >
-      {/* esquerda: back ou logo */}
+      {/* esquerda: logo sempre */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink-0">
-        {back ? (
-          <Link
-            to={back.to}
-            className="inline-flex items-center gap-1.5 sm:gap-2 min-h-11 font-body text-sm uppercase tracking-wide hover:gap-2 sm:hover:gap-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
-          >
-            <ArrowLeft className="h-4 w-4 shrink-0" />
-            <span className="truncate">{back.label ?? "voltar"}</span>
-          </Link>
-        ) : (
-          showLogo &&
+        {showLogo &&
           (logoLink ? (
             <Link
               to={logoLink}
@@ -66,15 +67,12 @@ export const PageHeader = ({
             </Link>
           ) : (
             logo
-          ))
-        )}
+          ))}
       </div>
 
-      {/* direita: logo (se back ativo) + ações */}
+      {/* direita: back + ações */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        {back && showLogo && (
-          <span className="hidden sm:inline-flex items-center">{logo}</span>
-        )}
+        {backLink}
         {!hideBell && <NotificationBell />}
         {actions}
       </div>
