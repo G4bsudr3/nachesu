@@ -35,6 +35,7 @@ export const PageHeader = ({
   className,
   hideBell = false,
 }: PageHeaderProps) => {
+  const { user } = useAuth();
   const logo = (
     <ChoraLogo variant="dark" />
   );
