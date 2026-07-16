@@ -30,7 +30,6 @@ export const PageHeader = ({
   showLogo = true,
   logoLink,
   className,
-  hideBell = false,
 }: PageHeaderProps) => {
   const { user } = useAuth();
   const logo = (
