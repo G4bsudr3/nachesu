@@ -135,6 +135,7 @@ const Index = () => {
     e.preventDefault();
     el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
     history.replaceState(null, "", `#${id}`);
+    setMenuOpen(false);
   };
 
   const navItems: { id: string; label: string }[] = [
