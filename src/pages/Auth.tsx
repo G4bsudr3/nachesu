@@ -304,18 +304,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
-      <PageHeader
-        showLogo
-        logoLink="/"
-        actions={
-          <Link
-            to="/"
-            className="inline-flex items-center min-h-11 px-2 font-body text-sm uppercase tracking-wide hover:opacity-60 transition-opacity"
-          >
-            voltar
-          </Link>
-        }
-      />
+      <PageHeader back={{ to: "/" }} />
 
       <main className="flex-1 container flex items-center justify-center py-16">
         <div className="w-full max-w-md relative">
