@@ -8,6 +8,7 @@ import { useProfileStatus } from "@/hooks/useProfileStatus";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 
 const WHATSAPP_URL = "https://wa.me/5531995384834";
 
