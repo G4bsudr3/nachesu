@@ -152,7 +152,7 @@ const Comecar = () => {
         </ol>
 
         {/* selos rápidos */}
-        <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-xs sm:text-sm text-perestroika-preto/65">
+        <div className="mt-10 flex flex-col items-start sm:flex-row sm:flex-wrap gap-x-6 gap-y-3 text-xs sm:text-sm text-perestroika-preto/65">
           <span className="inline-flex items-center gap-2">
             <Clock className="w-3.5 h-3.5" /> leva 1 minuto
           </span>
