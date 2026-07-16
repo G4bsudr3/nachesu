@@ -195,9 +195,6 @@ const Eletivas = () => {
           })}
         </div>
 
-        <p className="mt-12 text-center font-body text-sm text-perestroika-preto/60">
-          ainda não tem matrícula? fala com o time da escola sebrae pra liberar seu acesso.
-        </p>
       </section>
     </div>
   );
