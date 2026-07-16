@@ -47,7 +47,7 @@ export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
     <Preview>seu link de acesso nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={WORDMARK_URL} alt="NachesU" width="140" height="39" style={wordmarkImg} />
+        <Img src={WORDMARK_URL} alt="NachesU" width="132" height="37" style={wordmarkImg} />
         <Heading style={h1}>
           entra
           <br />
