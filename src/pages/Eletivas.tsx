@@ -75,7 +75,7 @@ const Eletivas = () => {
         <nav className="flex items-center gap-5 sm:gap-7">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+            className="hidden sm:inline-flex items-center gap-1.5 font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
           >
             <ArrowLeft className="h-4 w-4" /> início
           </Link>
