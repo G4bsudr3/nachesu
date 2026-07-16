@@ -474,12 +474,6 @@ const Index = () => {
                   >
                     ver trilhas <ArrowRight className="h-3.5 w-3.5" />
                   </a>
-                  <Link
-                    to="/auth"
-                    className="inline-flex items-center justify-center min-h-11 px-3 font-body text-xs sm:text-sm uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
-                  >
-                    entrar
-                  </Link>
                 </div>
               </motion.div>
             );
