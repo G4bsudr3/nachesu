@@ -7,8 +7,6 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const DEFAULT_PASSWORD = "chora2026";
-
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -56,7 +54,9 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const targetUserId = body?.target_user_id as string | undefined;
-    const newPassword = (body?.new_password as string | undefined) ?? DEFAULT_PASSWORD;
+    // SEC-05: sem senha padrão previsível. O chamador (admin) DEVE enviar uma
+    // senha — o frontend gera uma aleatória forte e a exibe uma única vez.
+    const newPassword = body?.new_password as string | undefined;
 
     if (!targetUserId) {
       return new Response(JSON.stringify({ error: "target_user_id required" }), {
@@ -65,8 +65,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (newPassword.length < 6) {
-      return new Response(JSON.stringify({ error: "password too short" }), {
+    if (!newPassword || newPassword.length < 8) {
+      return new Response(JSON.stringify({ error: "new_password required (min 8 chars)" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

@@ -35,16 +35,36 @@ export const StudentProfileHeader = ({ userId, profile }: Props) => {
     .join("");
 
   const resetPassword = async () => {
-    if (!confirm(`redefinir a senha de ${profile.email ?? name} para "chora2026"?`)) return;
+    if (
+      !confirm(
+        `gerar uma senha nova pra ${profile.email ?? name}? ela aparece uma vez só, copie e mande pra pessoa.`,
+      )
+    )
+      return;
+
+    // senha aleatória de 12 chars (sem ambíguos 0/O/1/l) — SEC-05: nada de senha padrão
+    const alphabet = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const bytes = new Uint8Array(12);
+    crypto.getRandomValues(bytes);
+    const newPassword = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+
     setBusy(true);
     const { data, error } = await supabase.functions.invoke("admin-reset-password", {
-      body: { target_user_id: userId, new_password: "chora2026" },
+      body: { target_user_id: userId, new_password: newPassword },
     });
     if (error || (data as { error?: string })?.error) {
       logger.error("[admin/student] reset:", error ?? data);
       toast.error("não rolou redefinir a senha");
     } else {
-      toast.success("senha redefinida para chora2026");
+      try {
+        await navigator.clipboard.writeText(newPassword);
+      } catch {
+        // sem clipboard: tudo bem, a senha já aparece no toast
+      }
+      toast.success(`senha nova de ${profile.email ?? name}`, {
+        description: `${newPassword} (copiada pra área de transferência)`,
+        duration: 20000,
+      });
     }
     setBusy(false);
   };

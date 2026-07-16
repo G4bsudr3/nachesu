@@ -22,7 +22,6 @@ const SOON_MESSAGE =
 interface EmailValidationResult {
   can_enter: boolean;
   account_exists: boolean;
-  account_has_password: boolean;
 }
 
 /** Consulta edge function pra ver se email pode entrar e qual o status da conta */
@@ -31,22 +30,20 @@ const validateEmail = async (email: string): Promise<EmailValidationResult> => {
     const { data, error } = await supabase.functions.invoke("validate-public-email", {
       body: { email },
     });
-    if (error) return { can_enter: false, account_exists: false, account_has_password: false };
+    if (error) return { can_enter: false, account_exists: false };
     const d = data as Partial<EmailValidationResult>;
     return {
       can_enter: Boolean(d?.can_enter),
       account_exists: Boolean(d?.account_exists),
-      account_has_password: Boolean(d?.account_has_password),
     };
   } catch {
-    return { can_enter: false, account_exists: false, account_has_password: false };
+    return { can_enter: false, account_exists: false };
   }
 };
 
 interface SebraeEligibility {
   is_sebrae: boolean;
   has_pre_invite: boolean;
-  account_exists: boolean;
   needs_course_choice: boolean;
   courses: Array<{ id: string; slug: string; title: string }>;
 }
@@ -188,7 +185,6 @@ const Auth = () => {
       let validation: EmailValidationResult = {
         can_enter: true,
         account_exists: true,
-        account_has_password: true,
       };
       if (!isAllowed) {
         // antes de validar conta, checa se digitou um alias de outro email oficial
@@ -274,7 +270,6 @@ const Auth = () => {
       let validation: EmailValidationResult = {
         can_enter: true,
         account_exists: true,
-        account_has_password: true,
       };
       if (!isAllowed) {
         validation = await validateEmail(cleanEmail);

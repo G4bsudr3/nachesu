@@ -2,20 +2,18 @@
 // usado pelo Auth.tsx pra decidir se pergunta qual eletiva no signup.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { corsHeaders } from '../_shared/cors.ts'
+import { checkRateLimit, clientIp, tooManyRequests } from '../_shared/rate-limit.ts'
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
+  const cors = corsHeaders(req)
+  if (req.method === 'OPTIONS') return new Response(null, { headers: cors })
 
   try {
     const { email } = await req.json()
     if (!email || typeof email !== 'string') {
       return new Response(JSON.stringify({ error: 'email obrigatório' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400, headers: { ...cors, 'Content-Type': 'application/json' },
       })
     }
 
@@ -26,6 +24,11 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
+
+    // rate limit por IP (fail-open) — trava enumeração de contas
+    if (!(await checkRateLimit(admin, `cse:${clientIp(req)}`, 30, 60))) {
+      return tooManyRequests(cors)
+    }
 
     // tem convite prévio?
     const { data: invite } = await admin
@@ -52,20 +55,21 @@ Deno.serve(async (req) => {
       .eq('published', true)
       .order('order_index')
 
+    // SEC-06: não expomos mais `account_exists` cru (era um oráculo de enumeração).
+    // `needs_course_choice` já carrega a decisão de UX que o frontend consome.
     return new Response(JSON.stringify({
       is_sebrae: isSebrae,
       allowed: isSebrae || hasPreInvite,
       has_pre_invite: hasPreInvite,
       pre_course: preCourse ?? null,
-      account_exists: accountExists,
       needs_course_choice: isSebrae && !hasPreInvite && !accountExists,
       courses: courses ?? [],
     }), {
-      status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200, headers: { ...cors, 'Content-Type': 'application/json' },
     })
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500, headers: { ...cors, 'Content-Type': 'application/json' },
     })
   }
 })

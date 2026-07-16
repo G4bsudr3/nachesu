@@ -1,13 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+import { corsHeaders } from "../_shared/cors.ts";
+import { checkRateLimit, clientIp, tooManyRequests } from "../_shared/rate-limit.ts";
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const cors = corsHeaders(req);
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
   try {
     const body = await req.json();
@@ -19,7 +16,7 @@ Deno.serve(async (req: Request) => {
     if (!email) {
       return new Response(JSON.stringify({ error: "email obrigatório" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -27,6 +24,13 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
+
+    // rate limit por email+IP (fail-open). Limite alto o suficiente para o
+    // autosave (debounce 1200ms → ~50/min quando digitando); 90/min mantém a
+    // UX intacta e ainda corta escrita/sobrescrita abusiva em massa (SEC-07).
+    if (!(await checkRateLimit(admin, `spf:${email}:${clientIp(req)}`, 90, 60))) {
+      return tooManyRequests(cors);
+    }
 
     // verify email is invited
     const { data: invited } = await admin

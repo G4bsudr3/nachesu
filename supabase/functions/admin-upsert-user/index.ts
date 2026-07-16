@@ -48,7 +48,9 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const email = (body?.email as string | undefined)?.trim().toLowerCase();
     const password = body?.password as string | undefined;
-    const makeAdmin = body?.make_admin !== false;
+    // SEC-04: admin agora é OPT-IN explícito (antes era admin-por-default).
+    // Para criar/atualizar um admin, envie `make_admin: true` no corpo.
+    const makeAdmin = body?.make_admin === true;
 
     if (!email || !password || password.length < 6) {
       return new Response(JSON.stringify({ error: "email and password (>=6) required" }), {
