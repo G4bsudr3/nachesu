@@ -22,6 +22,8 @@ import {
   WORDMARK_URL,
   wordmarkImg,
   h1,
+  h1ClassName,
+  responsiveH1Style,
   text,
   link,
   button,
