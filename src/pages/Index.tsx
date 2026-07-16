@@ -105,6 +105,14 @@ const Index = () => {
   }, [activeTab]);
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [menuOpen]);
   useEffect(() => {
     const ids = ["como-funciona", "eletivas", "tutor", "trilhas", "faq"];
     const sections = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
