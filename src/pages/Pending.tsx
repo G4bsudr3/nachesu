@@ -89,6 +89,10 @@ const Pending = () => {
           </p>
         </motion.div>
       </main>
+
+      <footer className="container py-8 relative z-10">
+        <EletivaFooter />
+      </footer>
     </div>
   );
 };
