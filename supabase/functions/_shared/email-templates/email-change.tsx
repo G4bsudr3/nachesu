@@ -25,6 +25,7 @@ import {
   h1ClassName,
   responsiveH1Style,
   text,
+  bodyClassName,
   link,
   button,
   accentBar,
@@ -60,7 +61,7 @@ export const EmailChangeEmail = ({
           <br />
           novo email
         </Heading>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           você pediu pra trocar seu email de{' '}
           <Link href={`mailto:${email}`} style={link}>
             {email}
@@ -74,7 +75,7 @@ export const EmailChangeEmail = ({
         <Button style={button} href={confirmationUrl}>
           confirmar troca
         </Button>
-        <Text style={text}>
+        <Text style={text} className={bodyClassName}>
           se não foi você que pediu, protege sua conta agora trocando a senha.
         </Text>
         <Hr style={accentBar} />
