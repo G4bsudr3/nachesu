@@ -5,6 +5,7 @@ import { Lock, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { PasswordStrength, evaluatePasswordStrength } from "@/components/PasswordStrength";
 import { t } from "@/lib/authErrors";
