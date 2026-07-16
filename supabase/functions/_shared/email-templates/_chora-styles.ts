@@ -6,7 +6,7 @@
 // escala tipográfica e de espaçamento — inspirada no design system:
 // display grande em League Gothic, body em Urbanist 16/1.6, ritmo 8/16/24/32.
 
-const DISPLAY_STACK = "'League Gothic', 'Arial Narrow', 'Arial Black', Arial, sans-serif"
+const DISPLAY_STACK = "'League Gothic', Impact, sans-serif"
 const BODY_STACK = "'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
 const INK = '#090909'
 const BEGE = '#f2e4d8'
