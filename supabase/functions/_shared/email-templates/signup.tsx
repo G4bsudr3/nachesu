@@ -21,6 +21,8 @@ import {
   WORDMARK_URL,
   wordmarkImg,
   h1,
+  h1ClassName,
+  responsiveH1Style,
   text,
   button,
   accentBar,
@@ -41,12 +43,13 @@ export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
   <Html lang="pt-BR" dir="ltr">
     <Head>
       <style>{fontImport}</style>
+      <style>{responsiveH1Style}</style>
     </Head>
     <Preview>confirma seu email pra entrar na nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img src={WORDMARK_URL} alt="NachesU" width="132" height="37" style={wordmarkImg} />
-        <Heading style={h1}>
+        <Heading style={h1} className={h1ClassName}>
           bem-vinda
           <br />
           à nachesu

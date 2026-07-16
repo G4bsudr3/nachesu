@@ -6,7 +6,7 @@
 // escala tipográfica e de espaçamento — inspirada no design system:
 // display grande em League Gothic, body em Urbanist 16/1.6, ritmo 8/16/24/32.
 
-const DISPLAY_STACK = "'League Gothic', 'Arial Narrow', 'Arial Black', Arial, sans-serif"
+const DISPLAY_STACK = "'League Gothic', Impact, sans-serif"
 const BODY_STACK = "'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
 const INK = '#090909'
 const BEGE = '#f2e4d8'
@@ -54,14 +54,26 @@ export const wordmark = {
 
 export const h1 = {
   fontFamily: DISPLAY_STACK,
-  fontSize: '64px',
-  lineHeight: '0.9',
+  fontSize: '48px',
+  lineHeight: '1',
   fontWeight: 400 as const,
   color: INK,
-  textTransform: 'lowercase' as const,
+  textTransform: 'uppercase' as const,
   margin: '0 0 24px',
-  letterSpacing: '-0.5px',
+  letterSpacing: 'normal' as const,
 }
+
+// classe usada no <Heading> dos templates pra ativar o tamanho desktop via media query
+export const h1ClassName = 'nachesu-email-h1'
+
+// escala responsiva: text-5xl no mobile (48px), sm:text-6xl no desktop (60px)
+export const responsiveH1Style = `
+  @media (min-width: 640px) {
+    .${h1ClassName} {
+      font-size: 60px !important;
+    }
+  }
+`
 
 export const text = {
   fontFamily: BODY_STACK,
