@@ -49,12 +49,13 @@ export const EmailChangeEmail = ({
   <Html lang="pt-BR" dir="ltr">
     <Head>
       <style>{fontImport}</style>
+      <style>{responsiveH1Style}</style>
     </Head>
     <Preview>confirma seu novo email</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img src={WORDMARK_URL} alt="NachesU" width="132" height="37" style={wordmarkImg} />
-        <Heading style={h1}>
+        <Heading style={h1} className={h1ClassName}>
           confirma o
           <br />
           novo email

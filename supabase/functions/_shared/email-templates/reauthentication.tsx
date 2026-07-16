@@ -39,12 +39,13 @@ export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => 
   <Html lang="pt-BR" dir="ltr">
     <Head>
       <style>{fontImport}</style>
+      <style>{responsiveH1Style}</style>
     </Head>
     <Preview>seu código de verificação nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
         <Img src={WORDMARK_URL} alt="NachesU" width="132" height="37" style={wordmarkImg} />
-        <Heading style={h1}>
+        <Heading style={h1} className={h1ClassName}>
           seu
           <br />
           código
