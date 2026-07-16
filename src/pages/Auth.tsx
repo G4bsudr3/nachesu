@@ -508,9 +508,7 @@ const Auth = () => {
       </main>
 
       <footer className="container py-8">
-        <p className="font-body text-xs text-perestroika-preto/60 text-center">
-          eletiva sebrae · escola sebrae · 1º ano EM
-        </p>
+        <EletivaFooter />
       </footer>
     </div>
   );
