@@ -75,7 +75,6 @@ export const PageHeader = ({
       {/* direita: back + ações, nunca quebra */}
       <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 flex-nowrap">
         {backLink}
-        {user && !hideBell && <NotificationBell />}
         {actions}
       </div>
     </header>
