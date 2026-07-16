@@ -56,7 +56,7 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
         <Text style={text} className={bodyClassName}>
           recebemos um pedido pra redefinir sua senha. clica no botão pra escolher uma nova.
         </Text>
-        <Button style={button} href={confirmationUrl}>
+        <Button style={button} className={bodyClassName} href={confirmationUrl}>
           redefinir senha
         </Button>
         <Text style={text} className={bodyClassName}>
