@@ -2101,6 +2101,24 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limit_counters: {
+        Row: {
+          bucket_key: string
+          hits: number
+          window_start: string
+        }
+        Insert: {
+          bucket_key: string
+          hits?: number
+          window_start: string
+        }
+        Update: {
+          bucket_key?: string
+          hits?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       rubrics: {
         Row: {
           created_at: string
@@ -2954,6 +2972,10 @@ export type Database = {
         Returns: undefined
       }
       can_submit_public_fbi: { Args: { _email: string }; Returns: boolean }
+      check_rate_limit: {
+        Args: { _key: string; _limit: number; _window_seconds: number }
+        Returns: boolean
+      }
       cleanup_admin_insights: { Args: never; Returns: undefined }
       cleanup_tutor_events: { Args: never; Returns: undefined }
       compute_module_metrics: { Args: { _module_id: string }; Returns: Json }
