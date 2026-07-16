@@ -57,7 +57,7 @@ export const InviteEmail = ({ confirmationUrl }: InviteEmailProps) => (
         <Text style={text} className={bodyClassName}>
           a equipe da nachesu te convidou pras eletivas online. clica no botão pra criar sua conta e começar.
         </Text>
-        <Button style={button} href={confirmationUrl}>
+        <Button style={button} className={bodyClassName} href={confirmationUrl}>
           aceitar convite
         </Button>
         <Text style={text} className={bodyClassName}>

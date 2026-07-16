@@ -58,7 +58,7 @@ export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
         <Text style={text} className={bodyClassName}>
           você tá quase dentro. clica no botão pra confirmar seu email e começar suas eletivas.
         </Text>
-        <Button style={button} href={confirmationUrl}>
+        <Button style={button} className={bodyClassName} href={confirmationUrl}>
           confirmar email
         </Button>
         <Text style={text} className={bodyClassName}>

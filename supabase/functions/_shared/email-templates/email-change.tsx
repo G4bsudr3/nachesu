@@ -72,7 +72,7 @@ export const EmailChangeEmail = ({
           </Link>
           . clica no botão pra confirmar a troca.
         </Text>
-        <Button style={button} href={confirmationUrl}>
+        <Button style={button} className={bodyClassName} href={confirmationUrl}>
           confirmar troca
         </Button>
         <Text style={text} className={bodyClassName}>

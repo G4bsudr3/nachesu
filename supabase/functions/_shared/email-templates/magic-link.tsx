@@ -60,7 +60,7 @@ export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
         <Text style={text} className={bodyClassName}>
           clica no botão pra entrar na nachesu sem senha. o link vale por 1 hora e só funciona uma vez.
         </Text>
-        <Button style={button} href={confirmationUrl}>
+        <Button style={button} className={bodyClassName} href={confirmationUrl}>
           entrar na nachesu
         </Button>
         <Text style={text} className={bodyClassName}>
