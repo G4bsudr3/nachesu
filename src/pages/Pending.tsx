@@ -34,18 +34,7 @@ const Pending = () => {
         </div>
       </div>
 
-      <PageHeader
-        showLogo
-        actions={
-          <button
-            onClick={signOut}
-            className="inline-flex items-center gap-1 min-h-11 px-2 text-sm uppercase tracking-wide hover:opacity-60 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
-          >
-            sair
-            <LogOut className="w-4 h-4" />
-          </button>
-        }
-      />
+      <PageHeader back={{ to: "/" }} />
 
       <main className="container max-w-2xl pt-12 pb-20 relative z-10">
         <motion.div
