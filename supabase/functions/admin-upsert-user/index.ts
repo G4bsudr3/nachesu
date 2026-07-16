@@ -45,10 +45,11 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const email = (body?.email as string | undefined)?.trim().toLowerCase();
     const password = body?.password as string | undefined;
-    // SEC-04: admin agora é OPT-IN explícito (antes era admin-por-default).
-    // Para criar/atualizar um admin, envie `make_admin: true` no corpo.
-    const makeAdmin = body?.make_admin === true;
-
+    // M2/SEC: esta função NÃO concede admin. O caminho make_admin foi removido —
+    // ele nunca funcionou (o guard validate_admin_role_mutation bloqueia inserts
+    // de role via service role, com auth.uid() nulo) e uma edge function capaz de
+    // conceder admin é superfície de ataque. Concessão de admin = migration
+    // deliberada. Esta função só cria/atualiza a senha e confirma o e-mail.
     if (!email || !password || password.length < 6) {
       return fail(corsHeaders, { status: 400, code: "invalid_input", message: "email e password (mínimo 6 caracteres) são obrigatórios", fn: FN });
     }
@@ -81,15 +82,6 @@ Deno.serve(async (req) => {
 
     // marca has_password no profile (best-effort; profile pode ainda não existir se trigger não disparou)
     await admin.from("profiles").update({ has_password: true }).eq("user_id", targetId);
-
-    if (makeAdmin) {
-      const { error: roleErr } = await admin
-        .from("user_roles")
-        .insert({ user_id: targetId, role: "admin" });
-      if (roleErr && !String(roleErr.message).includes("duplicate")) {
-        console.warn("[admin-upsert-user] role insert:", roleErr);
-      }
-    }
 
     return new Response(
       JSON.stringify({ ok: true, user_id: targetId, email, created: !found }),
