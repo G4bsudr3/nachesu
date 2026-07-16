@@ -29,7 +29,7 @@ const Pending = () => {
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body relative">
       {/* lágrima decorativa contida em wrapper local */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -bottom-20 -right-20 opacity-40">
+        <div className="absolute -bottom-20 -right-20 opacity-20">
           <EletivaSymbol size={420} rotate={-20} pose="peeking" />
         </div>
       </div>
