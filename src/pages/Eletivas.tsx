@@ -189,12 +189,6 @@ const Eletivas = () => {
                   >
                     entrar nas trilhas <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link
-                    to="/auth"
-                    className="inline-flex items-center justify-center min-h-11 px-4 font-body text-sm uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
-                  >
-                    fazer login
-                  </Link>
                 </div>
               </motion.article>
             );
