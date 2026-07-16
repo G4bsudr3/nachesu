@@ -17,8 +17,8 @@ import { resolveAuthError, readAuthErrorFromUrl, t } from "@/lib/authErrors";
 const EMAIL_LS_KEY = "nachesu.lastEmail";
 const LEGACY_EMAIL_LS_KEY = "chora.lastEmail";
 
-const SOON_MESSAGE =
-  "não consegui validar esse email agora. confere se digitou certo ou tenta de novo em alguns segundos.";
+const NOT_ALLOWED_MESSAGE =
+  "esse email ainda não está na lista liberada da escola. fala com o suporte pra liberar seu acesso.";
 
 interface EmailValidationResult {
   can_enter: boolean;
