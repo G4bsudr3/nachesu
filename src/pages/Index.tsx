@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowRight, Clock, Linkedin, Calendar, Sparkles, Rocket } from "lucide-react";
+import { ArrowRight, Clock, Linkedin, Calendar, Sparkles, Rocket, Menu, X } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import {
@@ -105,6 +105,14 @@ const Index = () => {
   }, [activeTab]);
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [menuOpen]);
   useEffect(() => {
     const ids = ["como-funciona", "eletivas", "tutor", "trilhas", "faq"];
     const sections = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
@@ -127,6 +135,7 @@ const Index = () => {
     e.preventDefault();
     el.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
     history.replaceState(null, "", `#${id}`);
+    setMenuOpen(false);
   };
 
   const navItems: { id: string; label: string }[] = [
@@ -150,7 +159,7 @@ const Index = () => {
         <div className="container flex items-center justify-between gap-4 py-4">
           <NachesULogo variant="dark" />
 
-          <nav className="flex items-center gap-5 sm:gap-6" aria-label="seções da página">
+          <nav className="flex items-center gap-5 lg:gap-6" aria-label="seções da página">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
@@ -159,7 +168,7 @@ const Index = () => {
                   href={`#${item.id}`}
                   onClick={(e) => handleAnchorClick(e, item.id)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`hidden md:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
+                  className={`hidden lg:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
                     isActive ? "opacity-100 text-perestroika-preto" : "opacity-70 hover:opacity-100"
                   }`}
                 >
@@ -176,56 +185,92 @@ const Index = () => {
             })}
             <Link
               to="/auth"
-              className="inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+              className="hidden sm:inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
             >
               entrar
             </Link>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              aria-label={menuOpen ? "fechar menu" : "abrir menu"}
+              className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border border-perestroika-preto/20 text-perestroika-preto hover:bg-perestroika-preto/5 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </nav>
         </div>
 
-        {/* sub-nav mobile (scroll horizontal) */}
-        <nav
-          aria-label="seções da página"
-          className="md:hidden border-t border-perestroika-preto/10"
-        >
-          <div className="container flex gap-1 py-2 overflow-x-auto -mx-1 px-1">
-            {navItems.map((item) => {
-              const isActive = activeSection === item.id;
-              return (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  onClick={(e) => handleAnchorClick(e, item.id)}
-                  aria-current={isActive ? "true" : undefined}
-                  className={`shrink-0 rounded-full px-3.5 py-1.5 font-body text-[11px] uppercase tracking-wide border transition-colors ${
-                    isActive
-                      ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                      : "border-perestroika-preto/20 text-perestroika-preto/70"
-                  }`}
+        {/* menu hamburguer mobile/tablet */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              id="mobile-menu"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="lg:hidden border-t border-perestroika-preto/10 bg-perestroika-bege/95 backdrop-blur-md"
+            >
+              <nav aria-label="menu" className="container py-4 flex flex-col gap-1">
+                {navItems.map((item) => {
+                  const isActive = activeSection === item.id;
+                  return (
+                    <a
+                      key={item.id}
+                      href={`#${item.id}`}
+                      onClick={(e) => handleAnchorClick(e, item.id)}
+                      aria-current={isActive ? "true" : undefined}
+                      className={`flex items-center justify-between min-h-12 px-3 rounded-xl font-display uppercase text-2xl tracking-wide transition-colors ${
+                        isActive
+                          ? "bg-perestroika-preto/5 text-perestroika-preto"
+                          : "text-perestroika-preto/75 hover:bg-perestroika-preto/5 hover:text-perestroika-preto"
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {isActive && (
+                        <span
+                          aria-hidden="true"
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: activeEletiva.accent }}
+                        />
+                      )}
+                    </a>
+                  );
+                })}
+                <Link
+                  to="/auth"
+                  onClick={() => setMenuOpen(false)}
+                  className="sm:hidden mt-3 inline-flex items-center justify-center min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-5 font-body text-sm uppercase tracking-wide"
                 >
-                  {item.label}
-                </a>
-              );
-            })}
-          </div>
-        </nav>
+                  entrar
+                </Link>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.header>
 
       {/* hero */}
-      <section className="container relative pt-12 pb-20 sm:pt-20 sm:pb-28">
+      <section className="container relative pt-16 pb-20 sm:pt-20 sm:pb-28">
         <motion.div
-          className="absolute right-2 top-0 sm:right-12 sm:top-6 pointer-events-none z-0"
+          className="absolute right-2 -top-2 sm:right-12 sm:top-6 pointer-events-none z-0 opacity-90"
           animate={prefersReducedMotion ? undefined : { rotate: [10, 16, 10] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           aria-hidden="true"
         >
           <span className="block sm:hidden">
-            <EletivaSymbol size={96} rotate={6} pose="celebrating" />
+            <EletivaSymbol size={72} rotate={6} pose="celebrating" />
           </span>
-          <span className="hidden sm:block">
+          <span className="hidden sm:block md:hidden">
+            <EletivaSymbol size={120} rotate={6} pose="celebrating" />
+          </span>
+          <span className="hidden md:block">
             <EletivaSymbol size={160} rotate={6} pose="celebrating" />
           </span>
         </motion.div>
+
 
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
           <motion.p variants={heroItem} className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
