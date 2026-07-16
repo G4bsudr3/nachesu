@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, ShieldCheck, Clock } from "lucide-react";
+import { ArrowRight, Mail, ShieldCheck, Clock } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
