@@ -69,7 +69,7 @@ const Pending = () => {
               onClick={signOut}
               className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full border-2 border-perestroika-preto/20 px-7 py-4 text-sm uppercase tracking-wide hover:border-perestroika-preto/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
-              sair
+              VOLTAR
             </button>
           </div>
 
