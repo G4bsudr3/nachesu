@@ -177,8 +177,7 @@ export const fontImport = `
   font-display: swap;
   src: url('https://fonts.gstatic.com/s/leaguegothic/v11/qFdR35CBi4tvBz81xy7WG7ep-BQAY7Krj7feObpH_-amidQ.woff2') format('woff2');
 }
-.${bodyClassName} { font-family: ${BODY_STACK} !important; font-size: 16px; font-weight: 400; line-height: 1.6; color: ${INK}; }
-.${bodyClassName} * { font-family: ${BODY_STACK} !important; }`
+.${bodyClassName} { font-family: ${BODY_STACK} !important; font-size: 16px; font-weight: 400; line-height: 1.6; color: ${INK}; }`
 
 // footer padrão reutilizável como string
 export const FOOTER_LINE_1 = 'vai lá e cria.'
