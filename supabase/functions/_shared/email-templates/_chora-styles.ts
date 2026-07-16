@@ -18,7 +18,19 @@ export const container = {
   margin: '0 auto',
 }
 
-// wordmark tipográfico (substitui o logo png)
+// wordmark: logo oficial NachesU hospedado no bucket email-assets
+export const WORDMARK_URL =
+  'https://jrzahsjrzaaktuelnsaw.supabase.co/storage/v1/object/public/email-assets/nachesu-wordmark.png'
+
+export const wordmarkImg = {
+  width: '140',
+  height: '39',
+  display: 'block',
+  margin: '0 0 32px',
+  border: '0',
+} as const
+
+// mantido pra compat com imports antigos (não usado nos templates novos)
 export const wordmark = {
   fontFamily: "'League Gothic', 'Arial Black', Arial, sans-serif",
   fontSize: '32px',

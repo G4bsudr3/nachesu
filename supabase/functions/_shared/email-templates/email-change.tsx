@@ -10,6 +10,7 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Text,
@@ -18,7 +19,8 @@ import {
 import {
   main,
   container,
-  wordmark,
+  WORDMARK_URL,
+  wordmarkImg,
   h1,
   text,
   link,
@@ -49,7 +51,7 @@ export const EmailChangeEmail = ({
     <Preview>confirma seu novo email</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={wordmark}>NachesU</Text>
+        <Img src={WORDMARK_URL} alt="NachesU" width="140" height="39" style={wordmarkImg} />
         <Heading style={h1}>
           confirma o
           <br />

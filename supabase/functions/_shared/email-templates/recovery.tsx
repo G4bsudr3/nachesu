@@ -10,6 +10,7 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Preview,
   Text,
 } from 'npm:@react-email/components@0.0.22'
@@ -17,7 +18,8 @@ import {
 import {
   main,
   container,
-  wordmark,
+  WORDMARK_URL,
+  wordmarkImg,
   h1,
   text,
   button,
@@ -41,7 +43,7 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
     <Preview>nova senha nachesu</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={wordmark}>NachesU</Text>
+        <Img src={WORDMARK_URL} alt="NachesU" width="140" height="39" style={wordmarkImg} />
         <Heading style={h1}>
           nova
           <br />
