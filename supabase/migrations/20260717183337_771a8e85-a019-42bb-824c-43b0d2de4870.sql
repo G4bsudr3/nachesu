@@ -1,0 +1,1 @@
+update public.profiles set status='active', approved_at=coalesce(approved_at, now()), updated_at=now() where user_id='401e3d19-4a20-479e-8c30-378f0ba84005';
