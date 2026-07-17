@@ -23,6 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { logger } from "@/lib/logger";
+import { AdminInviteUserForm } from "@/components/admin/AdminInviteUserForm";
 
 type AdminUser = {
   user_id: string;
@@ -270,7 +271,10 @@ const AdminUsers = () => {
             {loading ? "carregando…" : `${filtered.length} de ${users.length} contas no hub`}
           </p>
         </div>
+        <AdminInviteUserForm onDone={loadUsers} />
       </div>
+
+
 
       <div className="flex flex-col md:flex-row md:items-center gap-3">
         <div className="relative flex-1 max-w-xl">
