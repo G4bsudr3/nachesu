@@ -181,7 +181,7 @@ export const AdminEmails = () => {
       {/* filtros */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <Select value={range} onValueChange={setRange}>
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -193,7 +193,7 @@ export const AdminEmails = () => {
           </SelectContent>
         </Select>
         <Select value={templateFilter} onValueChange={setTemplateFilter}>
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="template" />
           </SelectTrigger>
           <SelectContent>
@@ -206,7 +206,7 @@ export const AdminEmails = () => {
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="status" />
           </SelectTrigger>
           <SelectContent>
@@ -223,7 +223,7 @@ export const AdminEmails = () => {
       </div>
 
       {/* tabela */}
-      <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -346,7 +346,7 @@ const StatCard = ({
           ? "text-perestroika-vermelho"
           : "text-perestroika-preto";
   return (
-    <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 p-4">
+    <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 p-4">
       <div className="text-xs uppercase tracking-wide text-perestroika-preto/60">
         {label}
       </div>

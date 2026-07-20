@@ -130,7 +130,7 @@ export const AdminVotacaoProjetos = () => {
       </div>
 
       {creating && (
-        <div className="space-y-3 rounded-2xl border border-perestroika-preto/15 bg-white/60 p-5">
+        <div className="space-y-3 rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-5">
           <div>
             <label className="mb-1 block font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60">
               título
@@ -178,7 +178,7 @@ export const AdminVotacaoProjetos = () => {
           ))}
         </div>
       ) : sessions.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-white/40 px-6 py-10 text-center font-body text-sm text-perestroika-preto/60">
+        <p className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 px-6 py-10 text-center font-body text-sm text-perestroika-preto/60">
           nenhuma sessão ainda. cria a primeira aí em cima.
         </p>
       ) : (
@@ -277,7 +277,7 @@ const SessionCard = ({
   };
 
   return (
-    <div className="rounded-2xl border border-perestroika-preto/15 bg-white/60 p-4">
+    <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="mb-1 flex flex-wrap items-center gap-2">

@@ -133,7 +133,7 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
             <div
               role="tablist"
               aria-label="dispositivo"
-              className="inline-flex rounded-full border border-perestroika-preto/20 bg-white/70 p-1 text-xs"
+              className="inline-flex rounded-full border border-perestroika-preto/20 bg-perestroika-bege/70 p-1 text-xs"
             >
               <button
                 type="button"

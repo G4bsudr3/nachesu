@@ -376,7 +376,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
         )}
 
         {!isDraft && (
-          <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-perestroika-preto/15 bg-white/40 px-3 py-2">
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 px-3 py-2">
             <p className="text-[11px] text-perestroika-preto/65">
               <span className="uppercase tracking-wide text-perestroika-preto/55">status:</span>{" "}
               {statusLabel}
@@ -410,7 +410,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
         {history.length > 0 && (
           <details
             open
-            className="mt-5 rounded-xl border border-perestroika-preto/15 bg-white/40 p-3"
+            className="mt-5 rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-3"
           >
             <summary className="cursor-pointer text-[11px] uppercase tracking-wide text-perestroika-preto/60 flex items-center gap-2">
               <span>histórico de rodadas</span>
@@ -502,7 +502,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             </button>
           </div>
           {showPreview ? (
-            <div className="min-h-[12rem] rounded-md border border-perestroika-preto/20 bg-white/60 p-3">
+            <div className="min-h-[12rem] rounded-md border border-perestroika-preto/20 bg-perestroika-bege/60 p-3">
               {feedback.trim() ? (
                 <FeedbackMarkdown>{feedback}</FeedbackMarkdown>
               ) : (
@@ -515,7 +515,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               onChange={(e) => setFeedback(e.target.value.slice(0, 2000))}
               placeholder="o que ficou forte, o que pode ajustar, o próximo passo... aceita **negrito**, *itálico*, listas, [link](url)"
               rows={8}
-              className="bg-white/60 border-perestroika-preto/20 font-body text-sm"
+              className="bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
             />
           )}
           <p className="mt-1 text-[10px] text-perestroika-preto/40 text-right">
@@ -536,7 +536,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               max={scoreMax}
               value={score}
               onChange={(e) => setScore(e.target.value)}
-              className="w-32 bg-white/60 border-perestroika-preto/20 font-body text-sm"
+              className="w-32 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
               placeholder={`até ${scoreMax}`}
             />
             {scoreInvalid && (
@@ -626,7 +626,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
                   key={m.id}
                   className={`rounded-xl p-3 ${
                     m.author_role === "student"
-                      ? "bg-white/70 border border-perestroika-preto/10"
+                      ? "bg-perestroika-bege/70 border border-perestroika-preto/10"
                       : "bg-perestroika-preto/5 border border-perestroika-preto/20"
                   }`}
                 >
@@ -653,7 +653,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             onChange={(e) => setReply(e.target.value.slice(0, 4000))}
             placeholder="responder ao estudante..."
             rows={3}
-            className="bg-white/60 border-perestroika-preto/20 font-body text-sm"
+            className="bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
           />
           <div className="mt-2 flex items-center justify-between">
             <span className="text-[10px] text-perestroika-preto/40">{reply.length}/4000</span>

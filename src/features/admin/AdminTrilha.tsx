@@ -225,19 +225,19 @@ export const AdminTrilha = () => {
 
       {/* stats */}
       <div className="grid grid-cols-3 gap-3 max-w-xl">
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-white/60 p-4">
+        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             total
           </p>
           <p className="font-display text-3xl">{stats.total}</p>
         </div>
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-white/60 p-4">
+        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             publicados
           </p>
           <p className="font-display text-3xl">{stats.published}</p>
         </div>
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-white/60 p-4">
+        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             visíveis agora
           </p>
@@ -249,7 +249,7 @@ export const AdminTrilha = () => {
       <div className="flex flex-wrap items-center gap-3">
         <Label className="text-xs uppercase tracking-wide">filtrar por trilha</Label>
         <Select value={trailFilter} onValueChange={setTrailFilter}>
-          <SelectTrigger className="w-64 bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-64 bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="todas as trilhas" />
           </SelectTrigger>
           <SelectContent>
@@ -264,7 +264,7 @@ export const AdminTrilha = () => {
       </div>
 
       {/* tabela */}
-      <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -689,7 +689,7 @@ const TrailPblEditor = ({ trails }: TrailPblEditorProps) => {
         return (
           <div
             key={t.id}
-            className="rounded-xl border border-perestroika-preto/15 bg-white/40 p-4 space-y-2"
+            className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-4 space-y-2"
           >
             <div className="flex items-center justify-between gap-2">
               <Label className="text-xs uppercase tracking-wide">
@@ -719,7 +719,7 @@ const TrailPblEditor = ({ trails }: TrailPblEditorProps) => {
               rows={3}
               maxLength={1000}
               placeholder="ex: como você usaria IA pra resolver o gargalo de atendimento da sua loja física?"
-              className="bg-white/60"
+              className="bg-perestroika-bege/60"
             />
           </div>
         );

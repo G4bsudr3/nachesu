@@ -192,11 +192,11 @@ export const AdminFbiResponses = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="buscar por nome, apelido, trabalho, cidade…"
-            className="pl-9 bg-white/60 border-perestroika-preto/20"
+            className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
           />
         </div>
         <Select value={cidadeFilter} onValueChange={setCidadeFilter}>
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="cidade" />
           </SelectTrigger>
           <SelectContent>
@@ -207,7 +207,7 @@ export const AdminFbiResponses = () => {
           </SelectContent>
         </Select>
         <Select value={expFilter} onValueChange={setExpFilter}>
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="experiência lovable" />
           </SelectTrigger>
           <SelectContent>
@@ -219,7 +219,7 @@ export const AdminFbiResponses = () => {
         </Select>
       </div>
 
-      <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">

@@ -390,7 +390,7 @@ const TutorPage = () => {
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-white/60 px-3 py-1.5 font-body text-xs text-perestroika-preto/80 hover:border-perestroika-preto/40 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-perestroika-bege/60 px-3 py-1.5 font-body text-xs text-perestroika-preto/80 hover:border-perestroika-preto/40 transition-colors"
               >
                 <span className="opacity-60">trilha</span>
                 <span className="font-semibold lowercase">{activeTrail.title}</span>

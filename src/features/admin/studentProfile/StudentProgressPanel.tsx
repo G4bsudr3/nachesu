@@ -46,7 +46,7 @@ export const StudentProgressPanel = ({ userId }: Props) => {
         return (
           <article
             key={c.courseId}
-            className="rounded-2xl border border-perestroika-preto/10 bg-white/60 p-4"
+            className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4"
           >
             <header className="flex items-start justify-between gap-2 mb-3">
               <h3 className="font-display text-xl uppercase leading-tight">{c.courseTitle}</h3>

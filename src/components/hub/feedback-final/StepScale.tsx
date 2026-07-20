@@ -25,7 +25,7 @@ export const StepScale = ({ step, value, onChange }: Props) => {
       <div className="grid grid-cols-5 gap-2 sm:gap-3">
         {options.map((opt, idx) => {
           const selected = value === opt;
-          const colorClass = selected ? COLORS[idx] ?? "bg-perestroika-preto" : "bg-white/60";
+          const colorClass = selected ? COLORS[idx] ?? "bg-perestroika-preto" : "bg-perestroika-bege/60";
           return (
             <button
               key={opt}
@@ -35,7 +35,7 @@ export const StepScale = ({ step, value, onChange }: Props) => {
               className={`aspect-square rounded-2xl border transition-all duration-200 flex items-center justify-center font-display text-3xl sm:text-5xl ${
                 selected
                   ? `${colorClass} text-perestroika-bege border-transparent scale-105 shadow-lg`
-                  : "bg-white/60 border-perestroika-preto/15 text-perestroika-preto/60 hover:bg-white hover:border-perestroika-preto/30 hover:scale-[1.02]"
+                  : "bg-perestroika-bege/60 border-perestroika-preto/15 text-perestroika-preto/60 hover:bg-perestroika-bege hover:border-perestroika-preto/30 hover:scale-[1.02]"
               }`}
             >
               {opt}

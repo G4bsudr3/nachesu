@@ -109,7 +109,7 @@ function PillAnswerCard({
   const sb = stateBadge[answer.state];
   return (
     <div
-      className={`rounded-xl border bg-white/60 p-4 ${
+      className={`rounded-xl border bg-perestroika-bege/60 p-4 ${
         answer.state === "nao-respondida" && answer.required
           ? "border-rose-300"
           : autoCompleted

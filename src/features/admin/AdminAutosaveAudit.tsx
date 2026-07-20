@@ -202,7 +202,7 @@ export function AdminAutosaveAudit() {
         <h3 className="font-body text-xs uppercase tracking-wider text-perestroika-preto/55">
           panorama por curso
         </h3>
-        <div className="overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-white">
+        <div className="overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege">
           <Table>
             <TableHeader>
               <TableRow>
@@ -242,7 +242,7 @@ export function AdminAutosaveAudit() {
         <h3 className="font-body text-xs uppercase tracking-wider text-perestroika-preto/55">
           status por estudante ({studentRows.length})
         </h3>
-        <div className="overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-white">
+        <div className="overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege">
           <Table>
             <TableHeader>
               <TableRow>

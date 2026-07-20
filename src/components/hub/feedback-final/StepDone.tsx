@@ -156,7 +156,7 @@ export const StepDone = ({ fullName, archetype, userId, variantOverride, persist
         <button
           onClick={handleShare}
           disabled={downloading}
-          className="inline-flex items-center gap-2 rounded-full bg-white border border-perestroika-preto/15 text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+          className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege border border-perestroika-preto/15 text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:hover:scale-100"
         >
           <Share2 className="w-4 h-4" />
           compartilhar

@@ -29,7 +29,7 @@ export const StudentTutorTranscripts = ({ userId }: Props) => {
         const open = openId === c.id;
         const firstUser = c.messages.find((m) => m.role === "user");
         return (
-          <li key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-white/60">
+          <li key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60">
             <button
               type="button"
               onClick={() => setOpenId(open ? null : c.id)}
@@ -64,7 +64,7 @@ export const StudentTutorTranscripts = ({ userId }: Props) => {
                         key={i}
                         className={`rounded-lg p-2.5 text-xs ${
                           m.role === "user"
-                            ? "bg-white/70 border border-perestroika-preto/10"
+                            ? "bg-perestroika-bege/70 border border-perestroika-preto/10"
                             : "bg-perestroika-preto/5 border border-perestroika-preto/15"
                         }`}
                       >

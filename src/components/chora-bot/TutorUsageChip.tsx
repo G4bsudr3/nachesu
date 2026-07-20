@@ -14,7 +14,7 @@ export const TutorUsageChip = () => {
       className={`text-[11px] font-body tabular-nums px-2 py-0.5 rounded-full border ${
         danger
           ? "border-destructive/40 bg-destructive/10 text-destructive"
-          : "border-perestroika-preto/15 bg-white/40 text-perestroika-preto/70"
+          : "border-perestroika-preto/15 bg-perestroika-bege/40 text-perestroika-preto/70"
       }`}
       title="perguntas feitas hoje"
     >

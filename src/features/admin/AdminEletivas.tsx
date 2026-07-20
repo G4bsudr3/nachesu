@@ -63,7 +63,7 @@ export function AdminEletivas() {
           {courses.map((c) => (
             <div
               key={c.id}
-              className="p-5 rounded-lg border border-perestroika-preto/10 bg-white cursor-pointer hover:bg-perestroika-bege/40 transition"
+              className="p-5 rounded-lg border border-perestroika-preto/10 bg-perestroika-bege cursor-pointer hover:bg-perestroika-bege/40 transition"
               onClick={() => setSelected(c)}
             >
               <div className="flex items-start justify-between gap-3">
@@ -237,7 +237,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
   });
 
   return (
-    <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-white space-y-4">
+    <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-perestroika-bege space-y-4">
       <div className="flex items-center gap-2">
         <Mail className="h-4 w-4" />
         <h3 className="font-display text-lg uppercase">convites por email</h3>
@@ -345,7 +345,7 @@ function ModulesPanel({ courseId }: { courseId: string }) {
   });
 
   return (
-    <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-white space-y-4">
+    <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-perestroika-bege space-y-4">
       <div className="flex items-center gap-2">
         <Unlock className="h-4 w-4" />
         <h3 className="font-display text-lg uppercase">publicação de módulos</h3>

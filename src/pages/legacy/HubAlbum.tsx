@@ -95,7 +95,7 @@ const HubAlbum = () => {
                 href={officialUrl}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 bg-white/40 px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-preto hover:border-perestroika-preto hover:bg-white/70"
+                className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/30 bg-perestroika-bege/40 px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-preto hover:border-perestroika-preto hover:bg-perestroika-bege/70"
               >
                 <Sparkles className="h-4 w-4" /> fotos oficiais do evento
                 <ExternalLink className="h-3 w-3" />
@@ -138,7 +138,7 @@ const HubAlbum = () => {
             </div>
           </a>
         ) : (
-          <div className="mb-10 rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/30 p-5 text-center">
+          <div className="mb-10 rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/30 p-5 text-center">
             <p className="font-body text-sm text-perestroika-preto/65">
               as fotos oficiais do fotógrafo aparecem aqui assim que forem liberadas. fica de olho 👀
             </p>
@@ -247,7 +247,7 @@ const FilterChip = ({
       "inline-flex items-center gap-2 rounded-full border px-4 py-2 font-body text-sm transition-all",
       active
         ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege"
-        : "border-perestroika-preto/15 bg-white/50 text-perestroika-preto/75 hover:border-perestroika-preto/40",
+        : "border-perestroika-preto/15 bg-perestroika-bege/50 text-perestroika-preto/75 hover:border-perestroika-preto/40",
     )}
   >
     {icon}
@@ -264,7 +264,7 @@ const FilterChip = ({
 );
 
 const EmptyState = ({ mine, onUpload }: { mine: boolean; onUpload: () => void }) => (
-  <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/30 p-12 text-center">
+  <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/30 p-12 text-center">
     <div
       className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-perestroika-bege shadow-md"
       style={{ background: "linear-gradient(135deg, #fe7b02, #fd4644, #f756a6, #6f77fc)" }}

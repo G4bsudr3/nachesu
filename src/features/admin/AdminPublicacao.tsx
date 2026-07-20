@@ -162,7 +162,7 @@ const TreeTab = () => {
         );
         const courseOpen = openCourses[c.id] ?? true;
         return (
-          <div key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-white/60">
+          <div key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60">
             <div className="flex items-center gap-3 px-4 py-3 border-b border-perestroika-preto/10">
               <button
                 type="button"
@@ -357,7 +357,7 @@ const PerUserTab = () => {
             className="pl-7 h-9 text-sm"
           />
         </div>
-        <ul className="max-h-[60vh] overflow-y-auto rounded-lg border border-perestroika-preto/10 bg-white/60 divide-y divide-perestroika-preto/5">
+        <ul className="max-h-[60vh] overflow-y-auto rounded-lg border border-perestroika-preto/10 bg-perestroika-bege/60 divide-y divide-perestroika-preto/5">
           {usersLoading && <li className="p-3 text-xs text-perestroika-preto/45">carregando…</li>}
           {filtered.map((u) => (
             <li key={u.user_id}>
@@ -378,7 +378,7 @@ const PerUserTab = () => {
         </ul>
       </aside>
 
-      <section className="rounded-xl border border-perestroika-preto/10 bg-white/60 p-4 min-h-[40vh]">
+      <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4 min-h-[40vh]">
         {!selected && (
           <p className="text-sm text-perestroika-preto/55">
             escolhe um estudante na lista pra gerenciar visibilidade.

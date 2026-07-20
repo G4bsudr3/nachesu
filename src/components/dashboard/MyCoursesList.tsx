@@ -68,7 +68,7 @@ export const MyCoursesList = () => {
             <Link
               key={e.id}
               to={`/app/trilhas?eletiva=${c.slug}`}
-              className="group relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-white/60 p-6 transition hover:border-perestroika-preto hover:bg-white"
+              className="group relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-6 transition hover:border-perestroika-preto hover:bg-perestroika-bege"
             >
               <div
                 className="absolute inset-x-0 top-0 h-1.5"

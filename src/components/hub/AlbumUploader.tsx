@@ -191,7 +191,7 @@ export const AlbumUploader = ({ open, onClose, uploading, onUpload }: Props) => 
                   onChange={(e) => setCaption(e.target.value)}
                   placeholder="ex: dia 1, café da manhã antes do caos"
                   maxLength={140}
-                  className="w-full rounded-2xl border border-perestroika-preto/20 bg-white/60 px-4 py-3 font-body text-sm placeholder:text-perestroika-preto/40 focus:border-perestroika-preto focus:outline-none"
+                  className="w-full rounded-2xl border border-perestroika-preto/20 bg-perestroika-bege/60 px-4 py-3 font-body text-sm placeholder:text-perestroika-preto/40 focus:border-perestroika-preto focus:outline-none"
                 />
               </label>
             </div>

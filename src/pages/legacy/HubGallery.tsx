@@ -48,7 +48,7 @@ const GalleryCard = ({ b, onOpen, theme, level }: CardProps) => {
         type="button"
         onClick={() => onOpen(b)}
         aria-label={`abrir carta de ${displayName}`}
-        className="relative flex w-full flex-col overflow-hidden rounded-3xl border border-perestroika-preto/10 bg-white/40 text-left transition-all hover:-translate-y-1 hover:border-perestroika-preto/30 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
+        className="relative flex w-full flex-col overflow-hidden rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/40 text-left transition-all hover:-translate-y-1 hover:border-perestroika-preto/30 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
       >
         <div className="relative aspect-[3/4] overflow-hidden bg-perestroika-preto/5">
           {b.image_url ? (
@@ -126,7 +126,7 @@ const TurmaCTACard = ({ total, topThemes, cityCount, hasInsights }: TurmaCTAProp
   return (
     <Link
       to="/app/hub/turma"
-      className="group relative mb-8 block overflow-hidden rounded-3xl border border-perestroika-preto/15 bg-white/50 p-5 sm:p-6 transition-all hover:-translate-y-0.5 hover:border-perestroika-preto/40 hover:shadow-xl"
+      className="group relative mb-8 block overflow-hidden rounded-3xl border border-perestroika-preto/15 bg-perestroika-bege/50 p-5 sm:p-6 transition-all hover:-translate-y-0.5 hover:border-perestroika-preto/40 hover:shadow-xl"
     >
       {/* gradient stripe topo */}
       <div
@@ -256,7 +256,7 @@ const HubGallery = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="busca por nickname"
-              className="w-full rounded-full border border-perestroika-preto/15 bg-white/60 py-2.5 pl-10 pr-4 font-body text-sm placeholder:text-perestroika-preto/40 focus-visible:border-perestroika-preto focus-visible:outline-none"
+              className="w-full rounded-full border border-perestroika-preto/15 bg-perestroika-bege/60 py-2.5 pl-10 pr-4 font-body text-sm placeholder:text-perestroika-preto/40 focus-visible:border-perestroika-preto focus-visible:outline-none"
             />
           </div>
 
@@ -309,7 +309,7 @@ const HubGallery = () => {
             </p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-white/40 p-10 text-center">
+          <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-10 text-center">
             <p className="font-body text-base text-perestroika-preto/70">
               {builders.length === 0
                 ? "nenhuma carta publicada ainda. assim que rolar, aparece aqui."

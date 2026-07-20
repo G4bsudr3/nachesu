@@ -25,7 +25,7 @@ export const FeedbackFinalAnalysis = ({ totalRespostas }: { totalRespostas: numb
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-perestroika-preto/15 bg-white/40 p-6 mb-8">
+      <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-6 mb-8">
         <p className="text-sm text-perestroika-preto/50">carregando análise…</p>
       </div>
     );
@@ -33,7 +33,7 @@ export const FeedbackFinalAnalysis = ({ totalRespostas }: { totalRespostas: numb
 
   if (!analysis) {
     return (
-      <div className="rounded-2xl border border-dashed border-perestroika-preto/25 bg-white/30 p-8 mb-8 text-center">
+      <div className="rounded-2xl border border-dashed border-perestroika-preto/25 bg-perestroika-bege/30 p-8 mb-8 text-center">
         <Sparkles className="w-8 h-8 mx-auto mb-3 text-perestroika-laranja" />
         <h2 className="font-display uppercase text-3xl mb-2">retrospectiva coletiva · ia</h2>
         <p className="text-sm text-perestroika-preto/70 mb-5 max-w-md mx-auto">
@@ -151,7 +151,7 @@ export const FeedbackFinalAnalysis = ({ totalRespostas }: { totalRespostas: numb
             {analysis.a_repensar.map((a, i) => (
               <article
                 key={i}
-                className="rounded-xl border border-perestroika-preto/15 bg-white/55 p-5"
+                className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/55 p-5"
               >
                 <header className="flex items-start justify-between gap-3 mb-3">
                   <h4 className="font-display uppercase text-xl leading-tight">{a.titulo}</h4>
@@ -277,7 +277,7 @@ export const FeedbackFinalAnalysis = ({ totalRespostas }: { totalRespostas: numb
             <Quote className="w-5 h-5 text-perestroika-preto/60" />
             citações marcantes
           </h3>
-          <div className="rounded-xl border border-perestroika-preto/15 bg-white/40 p-5 space-y-3">
+          <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5 space-y-3">
             {analysis.citacoes_marcantes.map((c, i) => (
               <p
                 key={i}

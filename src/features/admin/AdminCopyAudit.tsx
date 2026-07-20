@@ -273,7 +273,7 @@ export const AdminCopyAudit = () => {
       {pillsLoading ? (
         <p className="text-sm text-perestroika-preto/55">carregando pílulas…</p>
       ) : audit.length === 0 ? (
-        <div className="rounded-lg border border-perestroika-preto/15 bg-white/50 p-8 text-center">
+        <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/50 p-8 text-center">
           <CheckCircle2 className="w-8 h-8 mx-auto text-perestroika-preto/40 mb-3" />
           <p className="text-perestroika-preto/70">
             nenhuma violação detectada. tom consistente em tudo.
@@ -282,7 +282,7 @@ export const AdminCopyAudit = () => {
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-            <div className="rounded-lg border border-perestroika-preto/15 bg-white/50 p-4">
+            <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/50 p-4">
               <div className="text-[10px] uppercase tracking-wide text-perestroika-preto/50">
                 pílulas com avisos
               </div>
@@ -300,7 +300,7 @@ export const AdminCopyAudit = () => {
               </div>
               <div className="font-display text-3xl mt-1">{totals.medio}</div>
             </div>
-            <div className="rounded-lg border border-perestroika-preto/15 bg-white/50 p-4">
+            <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/50 p-4">
               <div className="text-[10px] uppercase tracking-wide text-perestroika-preto/50">
                 baixo
               </div>
@@ -311,7 +311,7 @@ export const AdminCopyAudit = () => {
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <Filter className="w-4 h-4 text-perestroika-preto/50" />
             <Select value={courseFilter} onValueChange={setCourseFilter}>
-              <SelectTrigger className="bg-white/60 border-perestroika-preto/20 w-56">
+              <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20 w-56">
                 <SelectValue placeholder="curso" />
               </SelectTrigger>
               <SelectContent>
@@ -325,7 +325,7 @@ export const AdminCopyAudit = () => {
               value={severityFilter}
               onValueChange={(v) => setSeverityFilter(v as typeof severityFilter)}
             >
-              <SelectTrigger className="bg-white/60 border-perestroika-preto/20 w-44">
+              <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20 w-44">
                 <SelectValue placeholder="severidade" />
               </SelectTrigger>
               <SelectContent>
@@ -347,7 +347,7 @@ export const AdminCopyAudit = () => {
               return (
               <div
                 key={pill.id}
-                className="rounded-lg border border-perestroika-preto/15 bg-white/60 p-4"
+                className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/60 p-4"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="min-w-0">
@@ -394,7 +394,7 @@ export const AdminCopyAudit = () => {
                       <Input
                         value={draftTitle}
                         onChange={(e) => setDraftTitle(e.target.value)}
-                        className="bg-white/80 border-perestroika-preto/20 mt-1"
+                        className="bg-perestroika-bege/80 border-perestroika-preto/20 mt-1"
                       />
                     </div>
                     <div>
@@ -405,7 +405,7 @@ export const AdminCopyAudit = () => {
                         value={draftBody}
                         onChange={(e) => setDraftBody(e.target.value)}
                         rows={6}
-                        className="bg-white/80 border-perestroika-preto/20 mt-1 font-mono text-xs"
+                        className="bg-perestroika-bege/80 border-perestroika-preto/20 mt-1 font-mono text-xs"
                       />
                     </div>
                     <div className="flex items-center gap-2 pt-1">

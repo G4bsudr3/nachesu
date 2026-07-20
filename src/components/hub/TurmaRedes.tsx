@@ -33,7 +33,7 @@ function PersonCard({ p, isMe }: { p: TurmaPessoa; isMe: boolean }) {
   const hasAny = hasIg || hasLi;
 
   return (
-    <article className="flex flex-col gap-3 rounded-2xl border border-perestroika-preto/12 bg-white/55 p-4 transition-colors hover:border-perestroika-preto/30">
+    <article className="flex flex-col gap-3 rounded-2xl border border-perestroika-preto/12 bg-perestroika-bege/55 p-4 transition-colors hover:border-perestroika-preto/30">
       <header className="flex items-center gap-3 min-w-0">
         {p.avatar_url ? (
           <img
@@ -179,8 +179,8 @@ export function TurmaRedes() {
       </div>
 
       {/* search + filtro */}
-      <div className="space-y-3 rounded-2xl border border-perestroika-preto/10 bg-white/40 p-3">
-        <label className="flex items-center gap-2 rounded-xl border border-perestroika-preto/15 bg-white px-3 focus-within:border-perestroika-preto">
+      <div className="space-y-3 rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/40 p-3">
+        <label className="flex items-center gap-2 rounded-xl border border-perestroika-preto/15 bg-perestroika-bege px-3 focus-within:border-perestroika-preto">
           <Search className="h-4 w-4 shrink-0 text-perestroika-preto/50" aria-hidden />
           <input
             type="text"
@@ -231,7 +231,7 @@ export function TurmaRedes() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-white/40 p-8 text-center">
+        <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-8 text-center">
           <p className="font-body text-sm text-perestroika-preto/65">
             ninguém aqui com esse nome. tenta o nickname ou o handle.
           </p>

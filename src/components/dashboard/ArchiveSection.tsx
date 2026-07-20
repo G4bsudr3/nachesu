@@ -37,7 +37,7 @@ const items: ArchiveLink[] = [
 
 export const ArchiveSection = () => {
   return (
-    <details className="group rounded-2xl border border-perestroika-preto/10 bg-white/40 open:bg-white/55">
+    <details className="group rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/40 open:bg-perestroika-bege/55">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-body text-sm text-perestroika-preto/75 hover:text-perestroika-preto">
         <span className="inline-flex items-center gap-2 uppercase tracking-wide">
           <ListChecks className="h-4 w-4" />

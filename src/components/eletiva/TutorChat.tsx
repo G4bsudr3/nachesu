@@ -511,7 +511,7 @@ export const TutorChat = ({
                         className={`max-w-[85%] rounded-2xl px-4 py-3 font-body text-sm ${
                           m.role === "user"
                             ? "bg-perestroika-preto text-perestroika-bege whitespace-pre-wrap"
-                            : "bg-white/70 border border-perestroika-preto/15"
+                            : "bg-perestroika-bege/70 border border-perestroika-preto/15"
                         }`}
                       >
                         {m.content ? (
@@ -594,14 +594,14 @@ export const TutorChat = ({
                   type="button"
                   onClick={() => void runSend(chip)}
                   disabled={streaming}
-                  className="shrink-0 rounded-full border border-perestroika-preto/25 bg-white/60 px-3 py-1.5 font-body text-[11px] text-perestroika-preto/85 hover:bg-perestroika-preto hover:text-perestroika-bege hover:border-perestroika-preto transition-colors disabled:opacity-50"
+                  className="shrink-0 rounded-full border border-perestroika-preto/25 bg-perestroika-bege/60 px-3 py-1.5 font-body text-[11px] text-perestroika-preto/85 hover:bg-perestroika-preto hover:text-perestroika-bege hover:border-perestroika-preto transition-colors disabled:opacity-50"
                 >
                   {chip}
                 </button>
               ))}
             </div>
           )}
-          <div className="flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto bg-white/70 p-2">
+          <div className="flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto bg-perestroika-bege/70 p-2">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}

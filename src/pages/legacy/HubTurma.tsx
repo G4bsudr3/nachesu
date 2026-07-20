@@ -106,7 +106,7 @@ const HubTurma = () => {
             <TurmaRedes />
 
             {!hasInsights ? (
-              <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/40 p-10 text-center">
+              <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-10 text-center">
                 <Users className="mx-auto mb-4 h-10 w-10 text-perestroika-preto/30" />
                 {isAdmin ? (
                   <p className="mx-auto max-w-md font-body text-base text-perestroika-preto/70">
@@ -158,7 +158,7 @@ const HubTurma = () => {
                     </div>
 
                     {myMatches.length === 0 ? (
-                      <p className="rounded-2xl border border-dashed border-perestroika-preto/15 bg-white/40 p-6 font-body text-sm text-perestroika-preto/60">
+                      <p className="rounded-2xl border border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-6 font-body text-sm text-perestroika-preto/60">
                         nenhuma sugestão de match pra ti ainda. assim que mais gente publicar carta, isso aparece.
                       </p>
                     ) : (

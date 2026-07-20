@@ -18,7 +18,7 @@ export const StepText = ({ step, value, onChange }: Props) => {
         maxLength={max}
         rows={step.id === "coracao_aberto" ? 8 : 5}
         autoFocus
-        className="bg-white/70 border-perestroika-preto/15 focus-visible:ring-perestroika-laranja text-base sm:text-lg leading-relaxed resize-none rounded-2xl p-5"
+        className="bg-perestroika-bege/70 border-perestroika-preto/15 focus-visible:ring-perestroika-laranja text-base sm:text-lg leading-relaxed resize-none rounded-2xl p-5"
       />
       <div className="flex items-center justify-between text-xs text-perestroika-preto/45">
         <span>opcional · responde só se quiser</span>

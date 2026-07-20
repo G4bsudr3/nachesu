@@ -263,7 +263,7 @@ const AdminTurma = () => {
           ) : moduleAgg.length === 0 ? (
             <EmptyBlock title="ninguém começou ainda" sub="quando estudantes abrirem os módulos, o ritmo aparece aqui." />
           ) : (
-            <div className="rounded-2xl border border-perestroika-preto/10 bg-white overflow-hidden">
+            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="bg-perestroika-bege/60">
                   <tr className="text-left font-body text-[11px] uppercase tracking-wide text-perestroika-preto/65">
@@ -336,7 +336,7 @@ const AdminTurma = () => {
           ) : risks.length === 0 ? (
             <EmptyBlock title="turma respirando" sub="ninguém parado há mais de 7 dias por aqui." />
           ) : (
-            <div className="rounded-2xl border border-perestroika-preto/10 bg-white overflow-hidden">
+            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
               <table className="w-full text-sm">
                 <tbody className="divide-y divide-perestroika-preto/10">
                   {risks.slice(0, 10).map((r) => {
@@ -379,7 +379,7 @@ const AdminTurma = () => {
           ) : deliverables.length === 0 ? (
             <EmptyBlock title="fila vazia" sub="nenhuma entrega esperando feedback agora." />
           ) : (
-            <div className="rounded-2xl border border-perestroika-preto/10 bg-white overflow-hidden">
+            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
               <table className="w-full text-sm">
                 <tbody className="divide-y divide-perestroika-preto/10">
                   {deliverables.map((d) => {
@@ -451,7 +451,7 @@ const Kpi = ({
 );
 
 const EmptyBlock = ({ title, sub }: { title: string; sub: string }) => (
-  <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-white/40 p-8 text-center">
+  <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-8 text-center">
     <p className="font-display text-xl uppercase text-perestroika-preto mb-1">{title}</p>
     <p className="font-body text-sm text-perestroika-preto/65">{sub}</p>
   </div>

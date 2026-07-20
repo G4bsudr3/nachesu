@@ -33,13 +33,13 @@ const TemplateForm = ({ row, onSave, saving }: FormRowProps) => {
           value={(draft as any)[key] ?? ""}
           rows={6}
           onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
-          className="w-full bg-white/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm resize-y font-mono"
+          className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm resize-y font-mono"
         />
       ) : (
         <input
           value={(draft as any)[key] ?? ""}
           onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
-          className="w-full bg-white/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm"
+          className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm"
         />
       )}
     </div>

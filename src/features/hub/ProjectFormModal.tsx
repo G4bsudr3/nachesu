@@ -104,7 +104,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
               onChange={(e) => setTitle(e.target.value)}
               placeholder="o que tu construiu?"
               maxLength={80}
-              className="bg-white/70 border-perestroika-preto/15"
+              className="bg-perestroika-bege/70 border-perestroika-preto/15"
             />
           </div>
 
@@ -118,7 +118,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
               placeholder="conta a história em poucas linhas"
               maxLength={500}
               rows={4}
-              className="w-full rounded-md border border-perestroika-preto/15 bg-white/70 px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:ring-2 focus:ring-perestroika-preto/20"
+              className="w-full rounded-md border border-perestroika-preto/15 bg-perestroika-bege/70 px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:ring-2 focus:ring-perestroika-preto/20"
             />
             <p className="mt-1 text-right font-body text-[10px] text-perestroika-preto/40">
               {description.length}/500
@@ -134,7 +134,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
               onChange={(e) => setLink(e.target.value)}
               placeholder="https://"
               type="url"
-              className="bg-white/70 border-perestroika-preto/15"
+              className="bg-perestroika-bege/70 border-perestroika-preto/15"
             />
           </div>
 
@@ -146,7 +146,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
               value={tagsRaw}
               onChange={(e) => setTagsRaw(e.target.value)}
               placeholder="ia, mvp, jogo"
-              className="bg-white/70 border-perestroika-preto/15"
+              className="bg-perestroika-bege/70 border-perestroika-preto/15"
             />
           </div>
 
@@ -169,7 +169,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
             ) : (
               <label
                 className={cn(
-                  "flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-perestroika-preto/25 bg-white/40 px-4 py-3 font-body text-sm text-perestroika-preto/60 hover:bg-white/60",
+                  "flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-perestroika-preto/25 bg-perestroika-bege/40 px-4 py-3 font-body text-sm text-perestroika-preto/60 hover:bg-perestroika-bege/60",
                   uploading && "opacity-60",
                 )}
               >

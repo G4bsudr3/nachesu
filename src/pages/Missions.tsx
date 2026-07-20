@@ -182,7 +182,7 @@ const MissionCard = ({
               value={link}
               onChange={(e) => setLink(e.target.value)}
               placeholder="https://..."
-              className="mt-1 bg-white/60 border-perestroika-preto/20"
+              className="mt-1 bg-perestroika-bege/60 border-perestroika-preto/20"
             />
           </div>
           <div>
@@ -195,7 +195,7 @@ const MissionCard = ({
               placeholder="conta em 2-3 frases o que você construiu, o que aprendeu, o que ficou faltando."
               rows={4}
               maxLength={1000}
-              className="mt-1 bg-white/60 border-perestroika-preto/20 resize-y"
+              className="mt-1 bg-perestroika-bege/60 border-perestroika-preto/20 resize-y"
             />
             <p className="mt-1 text-right font-body text-[10px] text-perestroika-preto/40 tabular-nums">
               {descricao.length}/1000

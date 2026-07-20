@@ -27,7 +27,7 @@ export const StudentInternalNotes = ({ userId }: Props) => {
 
   return (
     <div>
-      <div className="rounded-xl border border-perestroika-preto/15 bg-white/60 p-3 mb-4">
+      <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-3 mb-4">
         <Textarea
           value={draft}
           onChange={(e) => setDraft(e.target.value.slice(0, 4000))}
@@ -56,7 +56,7 @@ export const StudentInternalNotes = ({ userId }: Props) => {
       ) : (
         <ul className="space-y-2">
           {notes.map((n) => (
-            <li key={n.id} className="rounded-xl border border-perestroika-preto/10 bg-white/60 p-3">
+            <li key={n.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-3">
               <div className="flex items-center justify-between mb-1.5 text-[10px] uppercase tracking-wide text-perestroika-preto/55">
                 <span>{n.author_name ?? "admin"} · {new Date(n.created_at).toLocaleString("pt-BR")}</span>
                 {user?.id === n.author_id && (

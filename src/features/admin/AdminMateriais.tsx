@@ -102,7 +102,7 @@ export const AdminMateriais = () => {
       </div>
 
       {/* card: link das fotos oficiais do álbum */}
-      <div className="mb-8 rounded-2xl border border-perestroika-preto/15 bg-white/40 p-5">
+      <div className="mb-8 rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
         <div className="flex items-start gap-3">
           <div
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-perestroika-bege"
@@ -121,7 +121,7 @@ export const AdminMateriais = () => {
                 value={albumDraft}
                 onChange={(e) => setAlbumDraft(e.target.value)}
                 placeholder="https://drive.google.com/..."
-                className="flex-1 rounded-full border border-perestroika-preto/20 bg-white/70 px-4 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+                className="flex-1 rounded-full border border-perestroika-preto/20 bg-perestroika-bege/70 px-4 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
               />
               <button
                 type="button"
@@ -148,7 +148,7 @@ export const AdminMateriais = () => {
       </div>
 
       {!loading && materials.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-white/30 p-12 text-center">
+        <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/30 p-12 text-center">
           <p className="font-display text-3xl uppercase text-perestroika-preto/60">nenhum material ainda</p>
           <p className="mt-2 font-body text-sm text-perestroika-preto/55">
             clica em "novo material" pra subir uma apresentação ou colar um link.
@@ -157,7 +157,7 @@ export const AdminMateriais = () => {
       )}
 
       {!loading && materials.length > 0 && (
-        <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+        <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">

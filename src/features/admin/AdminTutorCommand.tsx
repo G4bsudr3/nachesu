@@ -560,7 +560,7 @@ export const AdminTutorCommand = () => {
                   saveSettings.mutate({ per_user_daily_limit: n });
                 }
               }}
-              className="bg-white/60"
+              className="bg-perestroika-bege/60"
             />
           </div>
 
@@ -573,7 +573,7 @@ export const AdminTutorCommand = () => {
               defaultValue={s.model ?? "google/gemini-2.5-flash"}
               onValueChange={(v) => saveSettings.mutate({ model: v })}
             >
-              <SelectTrigger className="bg-white/60">
+              <SelectTrigger className="bg-perestroika-bege/60">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -593,7 +593,7 @@ export const AdminTutorCommand = () => {
               defaultValue={s.fallback_model ?? "google/gemini-2.5-flash-lite"}
               onValueChange={(v) => saveSettings.mutate({ fallback_model: v })}
             >
-              <SelectTrigger className="bg-white/60">
+              <SelectTrigger className="bg-perestroika-bege/60">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -616,7 +616,7 @@ export const AdminTutorCommand = () => {
                 const n = parseInt(e.target.value, 10);
                 if (!Number.isNaN(n) && n !== s.daily_total_cap) saveSettings.mutate({ daily_total_cap: n });
               }}
-              className="bg-white/60"
+              className="bg-perestroika-bege/60"
             />
           </div>
 
@@ -631,7 +631,7 @@ export const AdminTutorCommand = () => {
                 const n = parseInt(e.target.value, 10);
                 if (!Number.isNaN(n) && n !== s.burst_limit_per_minute) saveSettings.mutate({ burst_limit_per_minute: n });
               }}
-              className="bg-white/60"
+              className="bg-perestroika-bege/60"
             />
           </div>
 
@@ -650,7 +650,7 @@ export const AdminTutorCommand = () => {
                   if (v !== s.daily_total_alert_threshold) saveSettings.mutate({ daily_total_alert_threshold: v });
                 }
               }}
-              className="bg-white/60"
+              className="bg-perestroika-bege/60"
             />
           </div>
 
@@ -672,7 +672,7 @@ export const AdminTutorCommand = () => {
                   saveSettings.mutate({ safety_notify_emails: list });
                 }
               }}
-              className="bg-white/60 font-body text-sm"
+              className="bg-perestroika-bege/60 font-body text-sm"
               placeholder="dudu@escola.sebraebh.com.br&#10;frattz@naches.com.br"
             />
           </div>
@@ -690,7 +690,7 @@ export const AdminTutorCommand = () => {
                   saveSettings.mutate({ system_prompt_addon: e.target.value });
                 }
               }}
-              className="bg-white/60 font-body text-sm"
+              className="bg-perestroika-bege/60 font-body text-sm"
               placeholder="ex: sempre devolva 1 contraexemplo curto antes da resposta"
             />
           </div>

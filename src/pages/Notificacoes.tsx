@@ -62,7 +62,7 @@ const Notificacoes = () => {
         {loading ? (
           <p className="font-body text-sm text-perestroika-preto/55">carregando...</p>
         ) : items.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/40 p-8 sm:p-12 text-center">
+          <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-8 sm:p-12 text-center">
             <div className="flex justify-center mb-4">
               <EletivaSymbol size={72} pose="resting" />
             </div>
@@ -84,8 +84,8 @@ const Notificacoes = () => {
                   className={cn(
                     "flex gap-4 p-4 rounded-2xl border transition-colors",
                     n.read_at
-                      ? "border-perestroika-preto/10 bg-white/50"
-                      : "border-perestroika-preto/20 bg-white shadow-sm",
+                      ? "border-perestroika-preto/10 bg-perestroika-bege/50"
+                      : "border-perestroika-preto/20 bg-perestroika-bege shadow-sm",
                   )}
                 >
                   <span

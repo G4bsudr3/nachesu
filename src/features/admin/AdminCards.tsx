@@ -334,7 +334,7 @@ export const AdminCards = () => {
               value={batchDelaySec}
               onChange={(e) => setBatchDelaySec(Math.max(0, Math.min(30, Number(e.target.value) || 0)))}
               disabled={isBatching}
-              className="w-14 rounded-md bg-white/80 border border-perestroika-preto/20 px-2 py-1 text-xs text-perestroika-preto focus:outline-none focus:border-perestroika-laranja disabled:opacity-40"
+              className="w-14 rounded-md bg-perestroika-bege/80 border border-perestroika-preto/20 px-2 py-1 text-xs text-perestroika-preto focus:outline-none focus:border-perestroika-laranja disabled:opacity-40"
             />
             s
           </label>
@@ -430,7 +430,7 @@ export const AdminCards = () => {
         </div>
       </div>
 
-      <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -626,7 +626,7 @@ export const AdminCards = () => {
               {/* painel admin: edição + publicação */}
               <aside className="p-5 space-y-5 max-h-[80vh] overflow-y-auto bg-perestroika-bege/60">
                 {/* publicação */}
-                <div className="rounded-lg border border-perestroika-preto/15 bg-white/60 p-4 space-y-3">
+                <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/60 p-4 space-y-3">
                   <div className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">
                     publicação
                   </div>
@@ -696,7 +696,7 @@ export const AdminCards = () => {
                     return (
                       <div
                         key={field}
-                        className="rounded-lg border border-perestroika-preto/15 bg-white/60 p-3 space-y-2"
+                        className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/60 p-3 space-y-2"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-[10px] uppercase tracking-wider text-perestroika-preto/60 font-semibold">
@@ -743,7 +743,7 @@ export const AdminCards = () => {
                               onChange={(e) => setDrafts((d) => ({ ...d, [field]: e.target.value }))}
                               rows={config.rows}
                               autoFocus
-                              className="text-xs bg-white/80 border-perestroika-preto/20 focus-visible:ring-perestroika-laranja"
+                              className="text-xs bg-perestroika-bege/80 border-perestroika-preto/20 focus-visible:ring-perestroika-laranja"
                             />
                             <p className="text-[10px] text-perestroika-preto/40">{config.help}</p>
                           </>

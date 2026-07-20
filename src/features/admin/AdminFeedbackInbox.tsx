@@ -324,7 +324,7 @@ export const AdminFeedbackInbox = () => {
             setModuleId(null);
           }}
         >
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="curso" />
           </SelectTrigger>
           <SelectContent>
@@ -340,7 +340,7 @@ export const AdminFeedbackInbox = () => {
           value={moduleId ?? "todos"}
           onValueChange={(v) => setModuleId(v === "todos" ? null : v)}
         >
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="módulo" />
           </SelectTrigger>
           <SelectContent>
@@ -353,7 +353,7 @@ export const AdminFeedbackInbox = () => {
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as InboxFilter)}>
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="status" />
           </SelectTrigger>
           <SelectContent>
@@ -373,11 +373,11 @@ export const AdminFeedbackInbox = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="buscar por nome ou apelido do estudante…"
-          className="pl-9 bg-white/60 border-perestroika-preto/20"
+          className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
         />
       </div>
 
-      <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">

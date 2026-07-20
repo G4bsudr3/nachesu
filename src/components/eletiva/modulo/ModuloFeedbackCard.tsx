@@ -183,7 +183,7 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
       )}
 
       {isAjuste && (
-        <div className="mt-5 rounded-xl bg-white/60 border border-perestroika-preto/15 p-4">
+        <div className="mt-5 rounded-xl bg-perestroika-bege/60 border border-perestroika-preto/15 p-4">
           <p className="font-body text-sm mb-3 text-perestroika-preto/80">
             quando estiver pronto, ajuste sua entrega e reenvie pro educador conferir.
           </p>
@@ -213,7 +213,7 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
                   key={m.id}
                   className={`rounded-xl p-3 ${
                     m.author_role === "educator"
-                      ? "bg-white/70 border border-perestroika-preto/15"
+                      ? "bg-perestroika-bege/70 border border-perestroika-preto/15"
                       : "bg-perestroika-preto/5 border border-perestroika-preto/15"
                   }`}
                 >
@@ -242,7 +242,7 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
                 onChange={(e) => setReply(e.target.value.slice(0, 4000))}
                 placeholder="escreva sua resposta..."
                 rows={3}
-                className="bg-white/70 border-perestroika-preto/20 font-body text-sm"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20 font-body text-sm"
                 autoFocus
               />
               <div className="mt-2 flex items-center justify-between">

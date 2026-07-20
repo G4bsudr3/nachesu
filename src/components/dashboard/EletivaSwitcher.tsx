@@ -42,7 +42,7 @@ export const EletivaSwitcher = ({ className = "" }: { className?: string }) => {
             className={`group relative shrink-0 inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-xs sm:text-sm uppercase tracking-wide transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege ${
               isActive
                 ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege"
-                : "border-perestroika-preto/15 bg-white/60 text-perestroika-preto/75 hover:border-perestroika-preto/40 hover:text-perestroika-preto"
+                : "border-perestroika-preto/15 bg-perestroika-bege/60 text-perestroika-preto/75 hover:border-perestroika-preto/40 hover:text-perestroika-preto"
             }`}
           >
             <span

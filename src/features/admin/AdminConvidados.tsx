@@ -222,7 +222,7 @@ export const AdminConvidados = () => {
               value={form.email}
               onChange={updateField("email")}
               placeholder="amanda.marangonii@gmail.com"
-              className="bg-white/70 border-perestroika-preto/20"
+              className="bg-perestroika-bege/70 border-perestroika-preto/20"
             />
           </Field>
           <Field label="nome completo *">
@@ -231,7 +231,7 @@ export const AdminConvidados = () => {
               value={form.name}
               onChange={updateField("name")}
               placeholder="Amanda Marangoni"
-              className="bg-white/70 border-perestroika-preto/20"
+              className="bg-perestroika-bege/70 border-perestroika-preto/20"
             />
           </Field>
           <Field label="apelido (opcional)">
@@ -239,7 +239,7 @@ export const AdminConvidados = () => {
               value={form.nickname}
               onChange={updateField("nickname")}
               placeholder="amanda"
-              className="bg-white/70 border-perestroika-preto/20"
+              className="bg-perestroika-bege/70 border-perestroika-preto/20"
             />
           </Field>
         </div>
@@ -251,7 +251,7 @@ export const AdminConvidados = () => {
                 value={form.whatsapp}
                 onChange={updateField("whatsapp")}
                 placeholder="51 99999-9999"
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
             <Field label="instagram">
@@ -259,7 +259,7 @@ export const AdminConvidados = () => {
                 value={form.instagram}
                 onChange={updateField("instagram")}
                 placeholder="@amanda"
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
             <Field label="cidade">
@@ -267,7 +267,7 @@ export const AdminConvidados = () => {
                 value={form.cidade}
                 onChange={updateField("cidade")}
                 placeholder="Porto Alegre"
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
             <Field label="trabalho">
@@ -275,7 +275,7 @@ export const AdminConvidados = () => {
                 value={form.trabalho}
                 onChange={updateField("trabalho")}
                 placeholder="designer freelance"
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
           </div>
@@ -321,12 +321,12 @@ export const AdminConvidados = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="buscar por nome ou email"
-            className="pl-9 bg-white/60 border-perestroika-preto/20"
+            className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
           />
         </div>
       </div>
 
-      <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -496,42 +496,42 @@ export const AdminConvidados = () => {
               <Input
                 value={editValues.name}
                 onChange={(e) => setEditValues((p) => ({ ...p, name: e.target.value }))}
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
             <Field label="apelido">
               <Input
                 value={editValues.nickname ?? ""}
                 onChange={(e) => setEditValues((p) => ({ ...p, nickname: e.target.value }))}
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
             <Field label="whatsapp">
               <Input
                 value={editValues.whatsapp ?? ""}
                 onChange={(e) => setEditValues((p) => ({ ...p, whatsapp: e.target.value }))}
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
             <Field label="instagram">
               <Input
                 value={editValues.instagram ?? ""}
                 onChange={(e) => setEditValues((p) => ({ ...p, instagram: e.target.value }))}
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
             <Field label="cidade">
               <Input
                 value={editValues.cidade ?? ""}
                 onChange={(e) => setEditValues((p) => ({ ...p, cidade: e.target.value }))}
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
             <Field label="trabalho">
               <Input
                 value={editValues.trabalho ?? ""}
                 onChange={(e) => setEditValues((p) => ({ ...p, trabalho: e.target.value }))}
-                className="bg-white/70 border-perestroika-preto/20"
+                className="bg-perestroika-bege/70 border-perestroika-preto/20"
               />
             </Field>
           </div>

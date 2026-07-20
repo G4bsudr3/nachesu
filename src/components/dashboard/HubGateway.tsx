@@ -54,7 +54,7 @@ export const HubGateway = () => {
   return (
     <section
       aria-labelledby="hub-gateway-title"
-      className="rounded-3xl border border-perestroika-preto/15 bg-white/55 p-6 sm:p-8"
+      className="rounded-3xl border border-perestroika-preto/15 bg-perestroika-bege/55 p-6 sm:p-8"
     >
       <header className="mb-5 flex items-end justify-between gap-4">
         <div>

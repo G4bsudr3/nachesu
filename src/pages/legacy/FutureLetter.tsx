@@ -159,7 +159,7 @@ const FutureLetter = () => {
                 value={letter}
                 onChange={(e) => setLetter(e.target.value)}
                 placeholder="oi, gente do futuro. lembra quando…"
-                className="min-h-[280px] bg-white/70 border-perestroika-preto/20 text-base leading-relaxed font-body"
+                className="min-h-[280px] bg-perestroika-bege/70 border-perestroika-preto/20 text-base leading-relaxed font-body"
               />
               <p className="text-xs text-perestroika-preto/50 mt-2">
                 rascunho salva sozinho até vocês enviarem.
@@ -177,7 +177,7 @@ const FutureLetter = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="buscar por nome ou apelido…"
-                className="w-full px-4 py-2.5 mb-3 rounded-md bg-white/70 border border-perestroika-preto/20 text-sm focus:outline-none focus:ring-2 focus:ring-perestroika-laranja/40"
+                className="w-full px-4 py-2.5 mb-3 rounded-md bg-perestroika-bege/70 border border-perestroika-preto/20 text-sm focus:outline-none focus:ring-2 focus:ring-perestroika-laranja/40"
               />
               <div className="flex flex-wrap gap-2 max-h-72 overflow-y-auto p-1">
                 {filteredProfiles.map((p) => {
@@ -190,7 +190,7 @@ const FutureLetter = () => {
                       className={`px-3 py-1.5 rounded-full text-xs uppercase tracking-wide transition-all ${
                         isPicked
                           ? "bg-perestroika-preto text-perestroika-bege scale-105"
-                          : "bg-white/60 border border-perestroika-preto/15 hover:bg-white"
+                          : "bg-perestroika-bege/60 border border-perestroika-preto/15 hover:bg-perestroika-bege"
                       }`}
                     >
                       {p.nickname || p.display_name || "sem nome"}
