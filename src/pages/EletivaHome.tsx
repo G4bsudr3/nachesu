@@ -289,7 +289,9 @@ const EletivaHome = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-3xl border-2 border-perestroika-preto bg-perestroika-preto text-perestroika-bege p-6 sm:p-8 mb-6"
+            className="rounded-3xl border-2 text-perestroika-bege p-6 sm:p-8 mb-6"
+            style={{ backgroundColor: heroColor, borderColor: heroColor }}
+
           >
             <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-bege/60 mb-2 inline-flex items-center gap-2">
               <EletivaSymbol size={22} pose="building" /> próximo passo
