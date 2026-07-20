@@ -41,8 +41,9 @@ export const PageHeader = ({
   className,
 }: PageHeaderProps) => {
   const logo = (
-    <NachesULogo variant={logoVariant} height={logoHeight} showSelo={false} />
+    <NachesULogo variant={logoVariant} height={logoHeight} showSelo />
   );
+
 
   const logoNode = logoLink ? (
     <Link
@@ -77,13 +78,19 @@ export const PageHeader = ({
           className,
         )}
       >
-        <div className="container flex items-center justify-between gap-4 py-4 min-h-[64px]">
-          {showLogo && logoNode}
-          <div className="flex items-center gap-2 sm:gap-3">{actions}</div>
+        <div className="container relative flex items-center justify-between gap-4 py-4 min-h-[72px]">
+          <div className="flex-1" />
+          {showLogo && (
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
+              <span className="pointer-events-auto">{logoNode}</span>
+            </div>
+          )}
+          <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">{actions}</div>
         </div>
       </header>
     );
   }
+
 
   return (
     <header
