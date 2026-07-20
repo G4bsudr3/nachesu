@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
@@ -165,12 +165,6 @@ const EletivaJourneyCard = ({ courseId, slug, title, accent }: CardProps) => {
         <div className="flex items-center justify-between gap-3 rounded-full bg-perestroika-bege text-perestroika-preto px-5 py-3 font-body font-medium text-sm uppercase tracking-wide transition-transform group-hover:scale-[1.02]">
           <span className="inline-flex items-center gap-2 truncate">
             {ctaLabel}
-            {moduleToShow?.total_minutes ? (
-              <span className="font-body text-[10px] tracking-[0.15em] text-perestroika-preto/55 inline-flex items-center gap-1 normal-case">
-                <Clock className="h-3 w-3" />
-                {moduleToShow.total_minutes} min
-              </span>
-            ) : null}
           </span>
           <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
         </div>
