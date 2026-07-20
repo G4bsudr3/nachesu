@@ -299,14 +299,14 @@ const Index = () => {
 
 
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
-          <motion.p variants={heroItem} className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
+          <motion.p variants={heroItem} className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6">
             uma plataforma naches · em parceria com escola sebrae
           </motion.p>
           <motion.h1 variants={heroItem} className="font-display uppercase display-clamp-hero">
             <span className="block">duas eletivas.</span>
             <span className="block">uma naches u.</span>
           </motion.h1>
-          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
+          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground">
             o lugar onde você aprende construindo.&nbsp;<br />
             uma aula por semana, um tutor ia do seu lado e, no fim do ano, um projeto de verdade no ar.
           </motion.p>
@@ -321,7 +321,7 @@ const Index = () => {
             <a
               href="#como-funciona"
               onClick={(ev) => handleAnchorClick(ev, "como-funciona")}
-              className="inline-flex items-center min-h-11 px-1 font-body text-sm sm:text-base uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
+              className="inline-flex items-center min-h-11 px-1 font-body text-sm sm:text-base uppercase tracking-wide text-muted-foreground hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
             >
               como funciona ↓
             </a>
@@ -341,13 +341,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             o que é o nachesu
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
             aqui você aprende<br />fazendo.
           </h2>
-          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
+          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground">
             esqueça aula longa e prova no fim.&nbsp;<br />
             toda semana você abre um módulo, faz uma coisinha e essa coisinha&nbsp;no fim do ano, vira um projeto seu pra mostrar.
           </p>
@@ -388,7 +388,7 @@ const Index = () => {
               {/* topo: passo + mascote */}
               <div className="flex items-start justify-between mb-4 sm:mb-5">
                 <div className="flex items-center gap-3">
-                  <span className="font-display text-3xl sm:text-4xl leading-none text-perestroika-preto/30">
+                  <span className="font-display text-3xl sm:text-4xl leading-none text-muted-foreground/50">
                     {card.step}
                   </span>
                   <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-perestroika-preto text-perestroika-bege">
@@ -400,7 +400,7 @@ const Index = () => {
               <h3 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] mb-2 sm:mb-3">
                 {card.titulo}
               </h3>
-              <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed">
+              <p className="font-body font-normal text-base text-muted-foreground leading-relaxed">
                 {card.desc}
               </p>
             </motion.div>
