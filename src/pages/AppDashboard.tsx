@@ -24,7 +24,7 @@ import { DualEletivasHero } from "@/components/dashboard/DualEletivasHero";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: dashboard, isLoading: dashboardLoading } = useDashboardData();
