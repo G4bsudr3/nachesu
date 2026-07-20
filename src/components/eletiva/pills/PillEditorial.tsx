@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check, Sparkle } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, ChevronUp, Sparkle } from "lucide-react";
 import { PillVideoPlayer } from "@/components/eletiva/modulo/PillVideoPlayer";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { SaveIndicator } from "./SaveIndicator";
@@ -61,8 +61,8 @@ interface Props {
 }
 
 /**
- * pílula editorial: renderiza os 5 momentos verticalmente, scroll-driven
- * com reveal sutil em cada bloco. usado nas pílulas a, b, c do módulo 1
+ * pílula editorial: renderiza os 5 momentos verticalmente, cada um
+ * podendo ser aberto/colapsado. usado nas pílulas a, b, c do módulo 1
  * da eletiva "ia na prática".
  */
 export function PillEditorial({
@@ -105,8 +105,22 @@ export function PillEditorial({
   const requiresReflection = !!schema.reflexao?.prompt;
   const ready = !requiresReflection || reflection.trim().length >= 2;
 
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    gancho: true,
+    corf: true,
+    video: true,
+    aprofundamento: true,
+    comparacao: true,
+    reflexao: true,
+    sintese: true,
+  });
+
+  const toggleSection = (key: string) => {
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   return (
-    <div className="space-y-10 sm:space-y-12">
+    <div className="space-y-6 sm:space-y-8">
       <motion.header {...reveal}>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95] mb-2">
           {title}
@@ -115,10 +129,14 @@ export function PillEditorial({
 
       {/* momento 1 — gancho */}
       {schema.gancho?.md && (
-        <motion.section {...reveal} aria-label="gancho">
-          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-3">
-            momento 01 · gancho
-          </p>
+        <CollapsibleSection
+          pillId={pillId}
+          sectionKey="gancho"
+          label="momento 01 · gancho"
+          open={openSections.gancho}
+          onToggle={() => toggleSection("gancho")}
+          reveal={reveal}
+        >
           {schema.gancho.destaque_numero && (
             <div
               className="rounded-2xl border-2 p-5 sm:p-6 mb-4 flex flex-col items-center text-center"
@@ -148,22 +166,33 @@ export function PillEditorial({
             </div>
           )}
           <RichText md={schema.gancho.md} />
-        </motion.section>
+        </CollapsibleSection>
       )}
 
       {/* slot opcional: signature corf (módulo 2, pílula b) */}
       {schema.signature_corf && (
-        <motion.section {...reveal} aria-label="framework corf">
+        <CollapsibleSection
+          pillId={pillId}
+          sectionKey="corf"
+          label="framework corf"
+          open={openSections.corf}
+          onToggle={() => toggleSection("corf")}
+          reveal={reveal}
+        >
           <CorfSignature accent={accent} caption={schema.signature_corf.caption} />
-        </motion.section>
+        </CollapsibleSection>
       )}
 
       {/* momento 2 — vídeo */}
       {schema.video?.url && (
-        <motion.section {...reveal} aria-label="vídeo principal">
-          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-3">
-            momento 02 · vídeo · {schema.video.duration_min ?? 5} min
-          </p>
+        <CollapsibleSection
+          pillId={pillId}
+          sectionKey="video"
+          label={`momento 02 · vídeo · ${schema.video.duration_min ?? 5} min`}
+          open={openSections.video}
+          onToggle={() => toggleSection("video")}
+          reveal={reveal}
+        >
           <div className="mb-3">
             <p className="font-display uppercase text-lg sm:text-xl leading-tight mb-1">
               {schema.video.title}
@@ -178,15 +207,19 @@ export function PillEditorial({
               {schema.video.instruction}
             </p>
           )}
-        </motion.section>
+        </CollapsibleSection>
       )}
 
       {/* momento 3 — texto de aprofundamento */}
       {schema.aprofundamento?.md && (
-        <motion.section {...reveal} aria-label="aprofundamento">
-          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-3">
-            momento 03 · aprofundamento
-          </p>
+        <CollapsibleSection
+          pillId={pillId}
+          sectionKey="aprofundamento"
+          label="momento 03 · aprofundamento"
+          open={openSections.aprofundamento}
+          onToggle={() => toggleSection("aprofundamento")}
+          reveal={reveal}
+        >
           <RichText md={schema.aprofundamento.md} />
           {schema.aprofundamento.destaque && (
             <div
@@ -202,30 +235,39 @@ export function PillEditorial({
               </p>
             </div>
           )}
-        </motion.section>
+        </CollapsibleSection>
       )}
 
       {/* slot opcional: comparação de níveis de prompt (módulo 2, pílula c) */}
       {schema.comparacao_niveis && schema.comparacao_niveis.niveis.length > 0 && (
-        <motion.section {...reveal} aria-label="comparação de níveis">
+        <CollapsibleSection
+          pillId={pillId}
+          sectionKey="comparacao"
+          label="comparação de níveis"
+          open={openSections.comparacao}
+          onToggle={() => toggleSection("comparacao")}
+          reveal={reveal}
+        >
           <ComparacaoNiveis
             accent={accent}
             titulo={schema.comparacao_niveis.titulo}
             cenario={schema.comparacao_niveis.cenario}
             niveis={schema.comparacao_niveis.niveis}
           />
-        </motion.section>
+        </CollapsibleSection>
       )}
 
       {/* momento 4 — pausa reflexiva */}
       {schema.reflexao?.prompt && (
-        <motion.section {...reveal} aria-label="pausa reflexiva">
-          <div className="flex items-center justify-between gap-2 mb-3">
-            <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-              momento 04 · anota aí
-            </p>
-            <SaveIndicator status={status} />
-          </div>
+        <CollapsibleSection
+          pillId={pillId}
+          sectionKey="reflexao"
+          label="momento 04 · anota aí"
+          open={openSections.reflexao}
+          onToggle={() => toggleSection("reflexao")}
+          reveal={reveal}
+          extraHeader={<SaveIndicator status={status} />}
+        >
           <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-6">
             <p className="font-body text-sm sm:text-base text-perestroika-preto/85 mb-3 whitespace-pre-wrap">
               {schema.reflexao.prompt}
@@ -240,24 +282,29 @@ export function PillEditorial({
               voiceAriaLabel="gravar reflexão por voz"
             />
           </div>
-        </motion.section>
+        </CollapsibleSection>
       )}
 
       {/* momento 5 — síntese visual */}
       {schema.sintese?.frase && (
-        <motion.section
-          {...reveal}
-          aria-label="síntese"
-          className="py-8 sm:py-12 flex flex-col items-center text-center gap-4"
+        <CollapsibleSection
+          pillId={pillId}
+          sectionKey="sintese"
+          label="momento 05 · síntese"
+          open={openSections.sintese}
+          onToggle={() => toggleSection("sintese")}
+          reveal={reveal}
         >
-          <EletivaSymbol pose="thinking" className="h-16 w-16 sm:h-20 sm:w-20 opacity-90" />
-          <p
-            className="font-display uppercase leading-[0.95] max-w-2xl"
-            style={{ fontSize: "clamp(28px, 6vw, 56px)" }}
-          >
-            {schema.sintese.frase}
-          </p>
-        </motion.section>
+          <div className="py-4 sm:py-6 flex flex-col items-center text-center gap-4">
+            <EletivaSymbol pose="thinking" className="h-16 w-16 sm:h-20 sm:w-20 opacity-90" />
+            <p
+              className="font-display uppercase leading-[0.95] max-w-2xl"
+              style={{ fontSize: "clamp(28px, 6vw, 56px)" }}
+            >
+              {schema.sintese.frase}
+            </p>
+          </div>
+        </CollapsibleSection>
       )}
 
       <div className="flex items-center justify-end gap-3 pt-2">
@@ -291,6 +338,62 @@ export function PillEditorial({
         </button>
       </div>
     </div>
+  );
+}
+
+interface CollapsibleSectionProps {
+  pillId: string;
+  sectionKey: string;
+  label: string;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+  reveal: Record<string, unknown>;
+  extraHeader?: React.ReactNode;
+}
+
+function CollapsibleSection({
+  pillId,
+  sectionKey,
+  label,
+  open,
+  onToggle,
+  children,
+  reveal,
+  extraHeader,
+}: CollapsibleSectionProps) {
+  return (
+    <motion.section
+      {...reveal}
+      aria-label={label}
+      className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege/40 overflow-hidden"
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="w-full flex items-center justify-between gap-3 p-4 sm:p-5 text-left hover:bg-perestroika-preto/[0.02] active:bg-perestroika-preto/[0.04] transition-colors"
+      >
+        <span className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+          {label}
+        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          {extraHeader}
+          <span className="inline-flex items-center justify-center rounded-full border border-perestroika-preto/15 p-1 text-perestroika-preto/60">
+            {open ? (
+              <ChevronUp className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <ChevronDown className="h-4 w-4" aria-hidden="true" />
+            )}
+          </span>
+        </div>
+      </button>
+      {open && (
+        <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+          {children}
+        </div>
+      )}
+    </motion.section>
   );
 }
 
