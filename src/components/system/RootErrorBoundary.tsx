@@ -73,8 +73,9 @@ export class RootErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="inline-flex items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide min-h-[44px]"
             >
+              <RefreshCw size={16} strokeWidth={2} aria-hidden="true" />
               recarregar
             </button>
             <a
