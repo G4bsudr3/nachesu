@@ -31,20 +31,37 @@ export const DualEletivasHero = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-        {items.map((e) => (
-          <EletivaJourneyCard
-            key={e.id}
-            courseId={e.course_id}
-            slug={e.course!.slug}
-            title={e.course!.title}
-            accent={
-              (e.course!.theme &&
-                typeof e.course!.theme === "object" &&
-                (e.course!.theme as any).accent) ||
-              "#f756a6"
-            }
-          />
-        ))}
+        {items.map((e, idx) => {
+          const themeAccent =
+            (e.course!.theme &&
+              typeof e.course!.theme === "object" &&
+              (e.course!.theme as any).accent) ||
+            null;
+          // fallback determinístico por slug pra garantir contraste visual
+          // entre as duas trilhas quando o accent do banco coincide.
+          const slugAccent: Record<string, string> = {
+            "ia-na-pratica": "#f756a6",
+            "economia-circular": "#1E2BB8",
+          };
+          const siblingsShareColor =
+            items.length === 2 &&
+            themeAccent &&
+            ((items[0].course!.theme as any)?.accent ===
+              (items[1].course!.theme as any)?.accent);
+          const accent =
+            (siblingsShareColor ? null : themeAccent) ||
+            slugAccent[e.course!.slug] ||
+            (idx === 0 ? "#f756a6" : "#1E2BB8");
+          return (
+            <EletivaJourneyCard
+              key={e.id}
+              courseId={e.course_id}
+              slug={e.course!.slug}
+              title={e.course!.title}
+              accent={accent}
+            />
+          );
+        })}
       </div>
     </section>
   );
