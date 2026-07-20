@@ -1,7 +1,5 @@
-import { Link } from "react-router-dom";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
-import { useUserRole } from "@/hooks/useUserRole";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useMyEnrollments } from "@/hooks/useCourses";
