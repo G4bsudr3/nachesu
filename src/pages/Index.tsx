@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Clock, Linkedin, Calendar, Sparkles, Rocket, Menu, X } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
