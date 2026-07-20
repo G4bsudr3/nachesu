@@ -433,10 +433,10 @@ const Index = () => {
                   </span>
                 </div>
 
-                <h3 className="font-display uppercase text-3xl sm:text-4xl mb-4 leading-tight">
+                <h3 className="font-display uppercase text-2xl sm:text-3xl mb-4 leading-[1.05]">
                   {e.nome}
                 </h3>
-                <p className="font-body text-base sm:text-lg text-perestroika-preto/75 leading-relaxed mb-6">
+                <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed mb-6">
                   {e.pitch}
                 </p>
 
