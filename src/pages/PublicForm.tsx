@@ -183,8 +183,40 @@ const EmailScreen = ({
 
 /* ===== NOT INVITED ===== */
 
+const FormShell = ({
+  children,
+  gradient = false,
+}: {
+  children: React.ReactNode;
+  gradient?: boolean;
+}) => (
+  <div
+    className={`min-h-dvh ${gradient ? "bg-gradient-screen" : "bg-perestroika-bege"} text-perestroika-preto font-body flex flex-col`}
+  >
+    <PageHeader
+      layout="split"
+      borderless
+      logoLink="/"
+      actions={
+        <Link
+          to="/auth"
+          className="inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+        >
+          entrar
+        </Link>
+      }
+    />
+    <main className="flex-1 container max-w-3xl flex flex-col items-center justify-center py-16 text-center">
+      {children}
+    </main>
+    <footer className="container max-w-5xl py-10">
+      <EletivaFooter />
+    </footer>
+  </div>
+);
+
 const NotInvitedScreen = ({ onBack }: { onBack: () => void }) => (
-  <div className="min-h-screen bg-perestroika-bege text-perestroika-preto font-body flex flex-col items-center justify-center p-6 text-center">
+  <FormShell>
     <h1 className="font-display uppercase text-4xl sm:text-6xl leading-[0.92]">
       esse email não está
       <br />
@@ -201,13 +233,13 @@ const NotInvitedScreen = ({ onBack }: { onBack: () => void }) => (
       <ArrowLeft className="h-4 w-4" />
       tentar outro email
     </button>
-  </div>
+  </FormShell>
 );
 
 /* ===== ALREADY SUBMITTED ===== */
 
 const AlreadySubmittedScreen = () => (
-  <div className="min-h-screen bg-perestroika-bege text-perestroika-preto font-body flex flex-col items-center justify-center p-6 text-center">
+  <FormShell>
     <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs uppercase tracking-wide bg-perestroika-preto text-perestroika-bege">
       <Check className="h-3 w-3" /> enviado
     </span>
@@ -226,7 +258,7 @@ const AlreadySubmittedScreen = () => (
       ir para o login
       <ArrowRight className="h-4 w-4" />
     </a>
-  </div>
+  </FormShell>
 );
 
 /* ===== DONE ===== */
@@ -237,7 +269,7 @@ const DoneScreen = () => {
   const hubLabel = user ? "voltar pro hub" : "voltar pro início";
 
   return (
-    <div className="min-h-screen bg-gradient-screen text-perestroika-preto font-body flex flex-col items-center justify-center p-6 text-center">
+    <FormShell gradient>
       <motion.div
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -287,9 +319,10 @@ const DoneScreen = () => {
           </a>
         )}
       </motion.div>
-    </div>
+    </FormShell>
   );
 };
+
 
 /* ===== FORM FLOW ===== */
 
