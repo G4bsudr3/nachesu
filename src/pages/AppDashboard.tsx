@@ -120,7 +120,9 @@ const AppDashboard = () => {
             totalPublished={eletiva?.totalPublished ?? 0}
             daysSinceLastActivity={daysSinceLastActivity}
             loading={!!activeCourseId && eletivaLoading && !eletiva}
+            hasMultiple={hasMultiple}
           />
+
 
           {/* 2+ matrículas → hero paralelo com as duas eletivas em peso equivalente */}
           {hasMultiple && <DualEletivasHero />}
