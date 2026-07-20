@@ -44,10 +44,10 @@
     --background: var(--brand-bege);
     --foreground: var(--brand-preto);
 
-    --card: 0 0% 100%;
+    --card: var(--brand-bege);
     --card-foreground: var(--brand-preto);
 
-    --popover: 0 0% 100%;
+    --popover: var(--brand-bege);
     --popover-foreground: var(--brand-preto);
 
     /* primary = rosa perestroika (cara da marca) */
