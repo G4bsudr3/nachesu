@@ -461,6 +461,10 @@ const Index = () => {
                   <img
                     src={f.photo}
                     alt={f.nome}
+                    width={56}
+                    height={56}
+                    loading="lazy"
+                    decoding="async"
                     className="shrink-0 w-14 h-14 rounded-full object-cover"
                     style={{ boxShadow: `0 0 0 3px ${e.accent}33` }}
                   />
