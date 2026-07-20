@@ -1,39 +1,41 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
-import { useAuth } from "@/contexts/AuthContext";
+import { NachesULogo } from "@/components/brand/NachesULogo";
 import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
-  /** se passado, renderiza link de voltar à esquerda. */
+  /** se passado, renderiza link de voltar à direita. */
   back?: { to: string; label?: string };
-  /** ações no canto direito (botões de sair, settings, etc). */
+  /** ações no canto direito (menu perfil, etc). */
   actions?: ReactNode;
-  /** mostra ChoraLogo no centro (entre back e actions) ou à esquerda quando não há back. default true. */
+  /** mostra logo NachesU centralizada. default true. */
   showLogo?: boolean;
   /** envolve a logo num Link to=/ (útil em páginas públicas). default false. */
   logoLink?: string;
+  /** altura visual da logo (px). default 28 (compacto pro header). */
+  logoHeight?: number;
+  /** variante da logo. default "ink" (preta). */
+  logoVariant?: "ink" | "dark" | "light";
   /** classes extras pro <header>. */
   className?: string;
 }
 
 /**
- * header padrão de toda page do hub. centraliza o padrão container max-w-5xl,
- * pt-8 pb-4, gap responsivo (2 sm:3) e min-h-11 nos clicáveis. evita 9 cópias
- * com variações sutis. mobile-first: em ≤360px o nickname/label do back encolhe
- * mas mantém touch target.
+ * header padrão do hub: logo centralizada + back/ações à direita,
+ * com divisória sutil separando do conteúdo da página.
  */
 export const PageHeader = ({
   back,
   actions,
   showLogo = true,
   logoLink,
+  logoHeight = 28,
+  logoVariant = "ink",
   className,
 }: PageHeaderProps) => {
-  const { user } = useAuth();
   const logo = (
-    <ChoraLogo variant="dark" />
+    <NachesULogo variant={logoVariant} height={logoHeight} showSelo={false} />
   );
 
   const backLabel = back?.label ?? "voltar";
@@ -51,31 +53,36 @@ export const PageHeader = ({
   return (
     <header
       className={cn(
-        "container max-w-5xl flex items-center justify-between gap-2 sm:gap-3 pt-8 pb-4 relative z-10 flex-nowrap",
+        "relative z-10 border-b border-perestroika-preto/10",
         className,
       )}
     >
-      {/* esquerda: logo sempre, encolhe se faltar espaço */}
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-shrink">
-        {showLogo &&
-          (logoLink ? (
-            <Link
-              to={logoLink}
-              className="inline-flex min-h-11 items-center min-w-0 max-w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded [&_svg]:max-w-full [&_svg]:h-auto"
-            >
-              {logo}
-            </Link>
-          ) : (
-            <span className="inline-flex min-w-0 max-w-full [&_svg]:max-w-full [&_svg]:h-auto">
-              {logo}
-            </span>
-          ))}
-      </div>
+      <div className="container max-w-5xl relative flex items-center justify-between gap-2 sm:gap-3 pt-6 pb-4 flex-nowrap min-h-[64px]">
+        {/* spacer esquerdo pra balancear a logo centralizada */}
+        <div aria-hidden="true" className="flex-1" />
 
-      {/* direita: back + ações, nunca quebra */}
-      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 flex-nowrap">
-        {backLink}
-        {actions}
+        {/* logo absolutamente centralizada */}
+        {showLogo && (
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
+            {logoLink ? (
+              <Link
+                to={logoLink}
+                className="inline-flex items-center pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
+                aria-label="ir pra home"
+              >
+                {logo}
+              </Link>
+            ) : (
+              <span className="inline-flex items-center">{logo}</span>
+            )}
+          </div>
+        )}
+
+        {/* direita: back + ações */}
+        <div className="flex flex-1 items-center justify-end gap-1.5 sm:gap-3 shrink-0 flex-nowrap">
+          {backLink}
+          {actions}
+        </div>
       </div>
     </header>
   );
