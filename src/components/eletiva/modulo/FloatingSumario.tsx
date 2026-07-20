@@ -62,16 +62,40 @@ export const FloatingSumario = ({ pills, completedPillIds, unlockedPillIds, trai
             role="dialog"
             aria-label="sumário dos blocos"
           >
-            <div className="flex items-center justify-between px-5 py-4 border-b border-perestroika-bege/10">
-              <p className="font-display uppercase text-lg">sumário · {total} blocos</p>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="fechar sumário"
-                className="text-perestroika-bege/70 hover:text-perestroika-bege"
+            <div className="px-5 py-4 border-b border-perestroika-bege/10">
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-display uppercase text-lg">sumário · {total} blocos</p>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="fechar sumário"
+                  className="text-perestroika-bege/70 hover:text-perestroika-bege"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="flex items-baseline justify-between mb-2 gap-3">
+                <p className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-bege/60">
+                  progresso do módulo
+                </p>
+                <p className="font-body text-xs tabular-nums text-perestroika-bege/85">
+                  <span className="font-semibold text-perestroika-bege">{done}/{total}</span>
+                  <span className="text-perestroika-bege/40 mx-1.5">·</span>
+                  <span className="font-semibold text-perestroika-bege">{pct}%</span>
+                </p>
+              </div>
+              <div
+                className="h-1.5 w-full rounded-full bg-perestroika-bege/10 overflow-hidden"
+                role="progressbar"
+                aria-valuenow={pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
               >
-                <X className="h-4 w-4" />
-              </button>
+                <div
+                  className="h-full rounded-full transition-[width] duration-500"
+                  style={{ width: `${pct}%`, backgroundColor: trailColor }}
+                />
+              </div>
             </div>
             <ol className="max-h-[50vh] overflow-y-auto py-2">
               {pills.map((p, idx) => {

@@ -94,12 +94,35 @@ export const ModuloHeader = ({
             <CheckCircle2 className="h-3 w-3" /> concluído
           </span>
         )}
-        {typeof totalPills === "number" && totalPills > 0 && !isCompleted && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-bege/10 px-3 py-1.5 font-body text-xs uppercase tracking-wider tabular-nums">
-            {donePills ?? 0}/{totalPills} · {pct}%
-          </span>
-        )}
       </div>
+
+      {/* indicador de progresso consistente */}
+      {typeof totalPills === "number" && totalPills > 0 && (
+        <div className="mt-6" aria-label={`progresso: ${donePills ?? 0} de ${totalPills} blocos, ${pct}%`}>
+          <div className="flex items-baseline justify-between mb-2 gap-3">
+            <p className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-bege/60">
+              progresso do módulo
+            </p>
+            <p className="font-body text-xs tabular-nums text-perestroika-bege/85">
+              <span className="font-semibold text-perestroika-bege">{donePills ?? 0}/{totalPills}</span>
+              <span className="text-perestroika-bege/40 mx-1.5">·</span>
+              <span className="font-semibold text-perestroika-bege">{pct}%</span>
+            </p>
+          </div>
+          <div
+            className="h-1.5 w-full rounded-full bg-perestroika-bege/10 overflow-hidden"
+            role="progressbar"
+            aria-valuenow={pct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div
+              className="h-full rounded-full transition-[width] duration-500"
+              style={{ width: `${pct}%`, backgroundColor: trailColor }}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 };
