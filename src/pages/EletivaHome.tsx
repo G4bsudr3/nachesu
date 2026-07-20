@@ -289,27 +289,26 @@ const EletivaHome = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-3xl border-2 text-perestroika-bege p-6 sm:p-8 mb-6"
-            style={{ backgroundColor: heroColor, borderColor: heroColor }}
+            className="rounded-3xl border-2 border-perestroika-preto text-perestroika-preto p-6 sm:p-8 mb-6"
+            style={{ backgroundColor: heroColor }}
+
 
           >
-            <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-bege/60 mb-2 inline-flex items-center gap-2">
+            <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-preto/75 mb-2 inline-flex items-center gap-2">
               <EletivaSymbol size={22} pose="building" /> próximo passo
             </p>
             <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95] mb-3">
               módulo {String(current.number).padStart(2, "0")} · {current.title.toLowerCase()}
             </h2>
             {current.objective && (
-              <p className="font-body text-sm sm:text-base text-perestroika-bege/80 mb-5 max-w-lg">
+              <p className="font-body text-sm sm:text-base text-perestroika-preto/85 mb-5 max-w-lg">
                 {current.objective}
               </p>
             )}
             <button
               type="button"
               onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
-              className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
-              style={{ color: heroColor }}
-
+              className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
             >
               continuar de onde parou <ArrowRight className="h-4 w-4" />
             </button>
