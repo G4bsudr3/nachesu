@@ -228,54 +228,58 @@ const EletivaHome = () => {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-bege p-6 sm:p-10 mb-6"
         >
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-perestroika-preto/55 mb-3">
+          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-4">
             sua eletiva
           </p>
           <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.9] mb-4">
             {course.title.toLowerCase()}
           </h1>
           {course.subtitle && (
-            <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl mb-5">
+            <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl mb-8">
               {course.subtitle}
             </p>
           )}
-          <div className="flex items-center gap-3 mb-6">
-            {course.professor_avatar_url && (
-              <img
-                src={course.professor_avatar_url}
-                alt={course.professor_name}
-                className="h-14 w-14 rounded-full object-cover border-2 border-perestroika-preto/10"
-                loading="lazy"
-              />
-            )}
-            <div>
-              <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-                quem te guia
-              </p>
-              <p className="font-body text-sm font-medium">{course.professor_name.toLowerCase()}</p>
+
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-5 pt-6 border-t border-perestroika-preto/10">
+            <div className="flex items-center gap-3 min-w-0">
+              {course.professor_avatar_url && (
+                <img
+                  src={course.professor_avatar_url}
+                  alt={course.professor_name}
+                  className="h-12 w-12 rounded-full object-cover border border-perestroika-preto/10 shrink-0"
+                  loading="lazy"
+                />
+              )}
+              <div className="min-w-0">
+                <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55 mb-0.5">
+                  quem te guia
+                </p>
+                <p className="font-body text-sm font-medium truncate">{course.professor_name.toLowerCase()}</p>
+              </div>
             </div>
+
+            {totalPublished > 0 && (
+              <div className="flex-1 min-w-[180px]">
+                <div className="flex items-baseline justify-between mb-2 gap-3">
+                  <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+                    seu progresso
+                  </p>
+                  <p className="font-body text-xs tabular-nums text-perestroika-preto/70">
+                    {totalCompleted}/{totalPublished} · {progressPct}%
+                  </p>
+                </div>
+                <div className="h-1.5 rounded-full bg-perestroika-preto/10 overflow-hidden">
+                  <motion.div
+                    className="h-full bg-perestroika-preto"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPct}%` }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
-          {totalPublished > 0 && (
-            <div className="rounded-2xl bg-perestroika-bege p-4 sm:p-5">
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60">
-                  seu progresso
-                </p>
-                <p className="font-body text-sm tabular-nums text-perestroika-preto/75">
-                  {totalCompleted}/{totalPublished} módulos · {progressPct}%
-                </p>
-              </div>
-              <div className="h-2 rounded-full bg-perestroika-preto/10 overflow-hidden">
-                <motion.div
-                  className="h-full bg-perestroika-preto"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPct}%` }}
-                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                />
-              </div>
-            </div>
-          )}
         </motion.section>
 
         {/* próximo passo único + estado da entrega */}
