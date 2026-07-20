@@ -17,15 +17,10 @@ export const DualEletivasHero = () => {
   if (items.length < 2) return null;
 
   return (
-    <section aria-label="suas duas eletivas" className="space-y-4 sm:space-y-5">
-      <div className="flex items-center gap-3">
-        <span className="h-px flex-1 bg-perestroika-preto/30 min-w-6" aria-hidden="true" />
-        <span className="font-body font-bold text-[11px] tracking-[0.3em] uppercase text-perestroika-preto whitespace-nowrap">
-          escolha sua trilha
-        </span>
-        <span className="h-px flex-1 bg-perestroika-preto/30 min-w-6" aria-hidden="true" />
-      </div>
-
+    <section aria-label="suas duas eletivas" className="space-y-5 sm:space-y-6">
+      <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+        escolha sua trilha
+      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
         {items.map((e, idx) => {
@@ -34,8 +29,6 @@ export const DualEletivasHero = () => {
               typeof e.course!.theme === "object" &&
               (e.course!.theme as any).accent) ||
             null;
-          // fallback determinístico por slug pra garantir contraste visual
-          // entre as duas trilhas quando o accent do banco coincide.
           const slugAccent: Record<string, string> = {
             "ia-na-pratica": "#f756a6",
             "economia-circular": "#8A85BF",
@@ -63,6 +56,7 @@ export const DualEletivasHero = () => {
     </section>
   );
 };
+
 
 interface CardProps {
   courseId: string;
@@ -102,13 +96,10 @@ const EletivaJourneyCard = ({ courseId, slug, title, accent }: CardProps) => {
       to={ctaHref}
       onClick={() => setSlug(slug)}
       aria-label={`abrir eletiva ${title.toLowerCase()}`}
-      className="group relative overflow-hidden rounded-3xl p-7 sm:p-8 flex flex-col justify-between min-h-[380px] text-perestroika-bege transition-all duration-300 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-      style={{
-        backgroundColor: accent,
-        boxShadow: `6px 6px 0 0 rgba(9,9,9,0.9)`,
-      }}
+      className="group relative overflow-hidden rounded-3xl border-2 border-perestroika-preto p-7 sm:p-8 flex flex-col justify-between min-h-[380px] text-perestroika-bege transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      style={{ backgroundColor: accent }}
     >
-      {/* elementos bauhaus de fundo */}
+      {/* decoração bauhaus, alinhada ao padrão dos hero cards do projeto */}
       <div
         aria-hidden="true"
         className="absolute -right-16 -top-16 w-40 h-40 rounded-full bg-perestroika-bege/10 transition-transform duration-500 group-hover:scale-110"
@@ -119,14 +110,9 @@ const EletivaJourneyCard = ({ courseId, slug, title, accent }: CardProps) => {
       />
 
       <div className="relative z-10">
-        <div className="flex justify-between items-start mb-5 gap-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-perestroika-preto text-perestroika-bege font-body text-[11px] font-bold uppercase tracking-widest">
-            {status}
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-perestroika-bege/20 backdrop-blur-sm px-3 py-1 font-body text-xs font-bold text-perestroika-bege">
-            {pct}%
-          </span>
-        </div>
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-bege/80 mb-4">
+          {status}
+        </p>
 
         <h3 className="font-display uppercase text-5xl sm:text-6xl leading-[0.85] mb-4 text-balance">
           {title.toLowerCase()}
@@ -151,18 +137,18 @@ const EletivaJourneyCard = ({ courseId, slug, title, accent }: CardProps) => {
         )}
       </div>
 
-      <div className="relative z-10 mt-8 space-y-4">
+      <div className="relative z-10 mt-8 space-y-5 pt-5 border-t border-perestroika-bege/25">
         <div>
-          <div className="flex items-baseline justify-between mb-1.5 gap-3">
-            <span className="font-body text-[10px] uppercase tracking-[0.22em] font-bold text-perestroika-bege/80">
+          <div className="flex items-baseline justify-between mb-2 gap-3">
+            <span className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-bege/80">
               progresso
             </span>
-            <span className="font-body text-xs font-bold tabular-nums text-perestroika-bege">
-              {pct}%
+            <span className="font-body text-xs tabular-nums text-perestroika-bege">
+              {totalCompleted}/{totalPublished} · {pct}%
             </span>
           </div>
           <div
-            className="w-full bg-perestroika-preto/25 h-2 rounded-full overflow-hidden"
+            className="w-full bg-perestroika-preto/25 h-1.5 rounded-full overflow-hidden"
             role="progressbar"
             aria-valuenow={pct}
             aria-valuemin={0}
@@ -176,18 +162,20 @@ const EletivaJourneyCard = ({ courseId, slug, title, accent }: CardProps) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3 rounded-2xl bg-perestroika-bege text-perestroika-preto px-4 sm:px-5 py-3 sm:py-3.5 font-body font-extrabold text-sm sm:text-base uppercase tracking-tight transition-all group-hover:bg-perestroika-preto group-hover:text-perestroika-bege">
-          <span className="truncate">{ctaLabel}</span>
+        <div className="flex items-center justify-between gap-3 rounded-full bg-perestroika-bege text-perestroika-preto px-5 py-3 font-body font-medium text-sm uppercase tracking-wide transition-transform group-hover:scale-[1.02]">
+          <span className="inline-flex items-center gap-2 truncate">
+            {ctaLabel}
+            {moduleToShow?.total_minutes ? (
+              <span className="font-body text-[10px] tracking-[0.15em] text-perestroika-preto/55 inline-flex items-center gap-1 normal-case">
+                <Clock className="h-3 w-3" />
+                {moduleToShow.total_minutes} min
+              </span>
+            ) : null}
+          </span>
           <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
         </div>
-
-        {moduleToShow?.total_minutes ? (
-          <p className="font-body text-[11px] uppercase tracking-widest text-perestroika-bege/70 inline-flex items-center gap-1.5">
-            <Clock className="h-3 w-3" />
-            {moduleToShow.total_minutes} min
-          </p>
-        ) : null}
       </div>
     </Link>
   );
 };
+
