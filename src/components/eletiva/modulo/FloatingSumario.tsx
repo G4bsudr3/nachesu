@@ -149,7 +149,7 @@ export const FloatingSumario = ({ pills, completedPillIds, unlockedPillIds, trai
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="w-full bg-perestroika-preto text-perestroika-bege rounded-full p-2 pl-4 flex items-center justify-between shadow-2xl hover:scale-[1.01] active:scale-[0.99] transition-transform"
+          className="w-full bg-perestroika-bege text-perestroika-preto border-2 border-perestroika-preto/15 rounded-full p-2 pl-4 flex items-center justify-between shadow-2xl hover:border-perestroika-preto/40 hover:scale-[1.01] active:scale-[0.99] transition-all"
           aria-expanded={open}
           aria-label={`sumário do módulo, ${done} de ${total} blocos concluídos`}
         >
@@ -157,16 +157,16 @@ export const FloatingSumario = ({ pills, completedPillIds, unlockedPillIds, trai
             <div
               className="relative h-9 w-9 rounded-full flex items-center justify-center font-body text-[10px] font-semibold tabular-nums"
               style={{
-                background: `conic-gradient(${trailColor} ${pct}%, rgba(242,228,216,0.15) ${pct}%)`,
+                background: `conic-gradient(${trailColor} ${pct}%, rgba(9,9,9,0.08) ${pct}%)`,
               }}
               aria-hidden
             >
-              <span className="absolute inset-1 rounded-full bg-perestroika-preto flex items-center justify-center">
+              <span className="absolute inset-1 rounded-full bg-perestroika-bege flex items-center justify-center">
                 {pct}%
               </span>
             </div>
             <div className="text-left leading-tight">
-              <p className="font-body text-[9px] uppercase tracking-[0.22em] text-perestroika-bege/55">
+              <p className="font-body text-[9px] uppercase tracking-[0.22em] text-perestroika-preto/55">
                 sumário
               </p>
               <p className="font-body text-xs font-semibold">
@@ -175,8 +175,8 @@ export const FloatingSumario = ({ pills, completedPillIds, unlockedPillIds, trai
             </div>
           </div>
           <span
-            className="h-9 w-9 rounded-full flex items-center justify-center text-perestroika-preto transition-transform"
-            style={{ backgroundColor: trailColor, transform: open ? "rotate(180deg)" : "none" }}
+            className="h-9 w-9 rounded-full flex items-center justify-center text-perestroika-preto transition-transform bg-perestroika-preto/5"
+            style={{ transform: open ? "rotate(180deg)" : "none" }}
           >
             <ChevronUp className="h-4 w-4" />
           </span>

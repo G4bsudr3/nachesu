@@ -317,10 +317,9 @@ export function RadarFinal({ items, fluxos, accent, save, homeHref = "/app" }: P
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm uppercase tracking-wide text-perestroika-bege hover:scale-105 active:scale-95 transition-transform"
-          style={{ backgroundColor: accent }}
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm uppercase tracking-wide text-perestroika-bege bg-perestroika-preto hover:scale-105 active:scale-95 transition-transform"
         >
-          ver minha lista de novo <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          ver minha lista de novo <ArrowRight className="h-4 w-4" aria-hidden="true" style={{ color: accent }} />
         </a>
       </footer>
     </div>

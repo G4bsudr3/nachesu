@@ -34,8 +34,8 @@ export const ModuloHeader = ({
       className="relative overflow-hidden rounded-3xl bg-perestroika-preto text-perestroika-bege p-6 sm:p-9 mb-6"
     >
       <div
-        className="absolute inset-x-0 top-0 h-1.5"
-        style={{ backgroundColor: trailColor }}
+        className="absolute inset-x-0 top-0 h-1"
+        style={{ backgroundColor: trailColor, opacity: 0.6 }}
         aria-hidden="true"
       />
 
@@ -87,10 +87,7 @@ export const ModuloHeader = ({
           {totalMinutes ? `${totalMinutes} min` : "tempo variável"}
         </span>
         {isCompleted && (
-          <span
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto"
-            style={{ backgroundColor: trailColor }}
-          >
+          <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-bege bg-perestroika-bege/15">
             <CheckCircle2 className="h-3 w-3" /> concluído
           </span>
         )}
@@ -118,7 +115,7 @@ export const ModuloHeader = ({
           >
             <div
               className="h-full rounded-full transition-[width] duration-500"
-              style={{ width: `${pct}%`, backgroundColor: trailColor }}
+              style={{ width: `${pct}%`, backgroundColor: trailColor, opacity: 0.75 }}
             />
           </div>
         </div>
