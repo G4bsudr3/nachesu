@@ -1,6 +1,3 @@
-import { Link } from "react-router-dom";
-import { Shield } from "lucide-react";
-import { UserMenu } from "@/components/layout/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
@@ -10,6 +7,7 @@ import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
@@ -73,25 +71,7 @@ const AppDashboard = () => {
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
-      <PageHeader
-        showLogo
-        logoLink="/"
-        actions={
-          <div className="flex items-center gap-2 sm:gap-3">
-            {isAdmin && (
-              <Link
-                to="/admin"
-                aria-label="painel admin"
-                className="inline-flex items-center gap-2 min-h-11 px-3 rounded-full border border-perestroika-preto/15 bg-perestroika-preto/[0.04] hover:bg-perestroika-preto/[0.08] font-body text-sm text-perestroika-preto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-              >
-                <Shield className="h-4 w-4" />
-                <span className="hidden sm:inline">painel admin</span>
-              </Link>
-            )}
-            <UserMenu />
-          </div>
-        }
-      />
+      <PageHeader showLogo logoLink="/" actions={<AuthedHeaderActions />} />
 
 
       <main
