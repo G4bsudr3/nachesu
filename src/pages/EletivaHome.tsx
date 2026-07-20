@@ -6,6 +6,7 @@ import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress, type EletivaSnapshot } from "@/hooks/useEletivaProgress";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
@@ -173,7 +174,7 @@ const EletivaHome = () => {
   if (!course) {
     return (
       <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
-        <PageHeader showLogo logoLink="/app" />
+        <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
         <main className="container max-w-2xl pt-10 pb-20 text-center">
           <h1 className="font-display uppercase text-4xl mb-3">eletiva não encontrada</h1>
           <p className="font-body text-perestroika-preto/70 mb-6">esse link não bateu com nenhuma eletiva ativa.</p>
@@ -192,7 +193,7 @@ const EletivaHome = () => {
   if (!isEnrolled) {
     return (
       <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
-        <PageHeader showLogo logoLink="/app" />
+        <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
         <main className="container max-w-2xl pt-10 pb-20 text-center space-y-4">
           <EletivaSymbol size={80} pose="resting" />
           <h1 className="font-display uppercase text-3xl">acesso restrito</h1>
@@ -218,7 +219,7 @@ const EletivaHome = () => {
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
-      <PageHeader showLogo logoLink="/app" />
+      <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
       <main className="container max-w-3xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16">
         <motion.section
