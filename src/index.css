@@ -22,6 +22,9 @@
     --brand-azul: 237 97% 71%;         /* #6f77fc azul perestroika (jovem) */
     --brand-preto: 0 0% 4%;            /* #090909 */
 
+    /* ===== paleta naches (assinatura da marca) ===== */
+    --naches-lilas: 252 25% 62%;        /* #8A85BF lavanda */
+
     /* ===== paleta sebrae (assinatura institucional) ===== */
     --sebrae-azul: 209 100% 36%;          /* #005EB8 azul institucional */
     --sebrae-azul-escuro: 211 100% 25%;   /* #003E7E */
