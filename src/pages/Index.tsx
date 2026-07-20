@@ -154,7 +154,7 @@ const Index = () => {
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85 border-b border-perestroika-preto/10"
+        className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85"
       >
         <div className="container flex items-center justify-between gap-4 py-4">
           <NachesULogo variant="ink" />

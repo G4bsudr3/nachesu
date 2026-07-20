@@ -17,6 +17,8 @@ interface PageHeaderProps {
   logoHeight?: number;
   /** variante da logo. default "ink" (preta). */
   logoVariant?: "ink" | "dark" | "light";
+  /** remove a divisória inferior (útil em páginas públicas). default false. */
+  borderless?: boolean;
   /** classes extras pro <header>. */
   className?: string;
 }
@@ -32,6 +34,7 @@ export const PageHeader = ({
   logoLink,
   logoHeight = 28,
   logoVariant = "ink",
+  borderless = false,
   className,
 }: PageHeaderProps) => {
   const logo = (
@@ -53,7 +56,8 @@ export const PageHeader = ({
   return (
     <header
       className={cn(
-        "relative z-10 border-b border-perestroika-preto/10",
+        "relative z-10",
+        !borderless && "border-b border-perestroika-preto/10",
         className,
       )}
     >

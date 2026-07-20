@@ -31,7 +31,7 @@ const passos = [
 const Comecar = () => {
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85 border-b border-perestroika-preto/10">
+      <header className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85">
         <div className="container flex items-center justify-between gap-4 py-4">
           <Link to="/" aria-label="voltar pra home">
             <NachesULogo variant="dark" />
