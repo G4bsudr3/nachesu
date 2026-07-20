@@ -54,7 +54,7 @@ export const DashboardGreeting = ({
 
   return (
     <section aria-label="saudação" className="space-y-1.5">
-      <h1 className="font-display uppercase text-3xl sm:text-4xl leading-none text-perestroika-preto">
+      <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none text-perestroika-preto">
         oi, {nickname || "builder"}.
       </h1>
       {loading ? (
