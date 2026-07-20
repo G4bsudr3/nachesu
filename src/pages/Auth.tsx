@@ -88,6 +88,7 @@ const Auth = () => {
   const { user, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [phase, setPhase] = useState<AuthPhase>("idle");
   const submitting = phase !== "idle";
   const [sent, setSent] = useState(false);
