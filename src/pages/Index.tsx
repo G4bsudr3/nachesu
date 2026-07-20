@@ -538,13 +538,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-10 sm:mb-12 max-w-2xl"
         >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
             por dentro das trilhas
           </p>
-          <h2 className="font-display uppercase display-clamp-section mb-6 leading-[0.95]">
+          <h2 className="font-display uppercase display-clamp-section mb-8 leading-[0.95]">
             4 trilhas,<br />20 módulos,<br />1 projeto seu.
           </h2>
-          <p className="font-body text-base sm:text-lg text-perestroika-preto/75 mb-6">
+          <p className="font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75 mb-8">
             cada eletiva tem 4 trilhas. cada trilha tem 5 módulos. cada módulo tem 50 minutos. troque ali embaixo pra ver a outra.
           </p>
 
