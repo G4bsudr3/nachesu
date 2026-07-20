@@ -276,14 +276,14 @@ const Index = () => {
 
 
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
-          <motion.p variants={heroItem} className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
+          <motion.p variants={heroItem} className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
             uma plataforma naches · em parceria com escola sebrae
           </motion.p>
           <motion.h1 variants={heroItem} className="font-display uppercase display-clamp-hero">
             <span className="block">duas eletivas.</span>
             <span className="block">uma naches u.</span>
           </motion.h1>
-          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80">
+          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
             o lugar onde você aprende construindo.&nbsp;<br />
             uma aula por semana, um tutor ia do seu lado e, no fim do ano, um projeto de verdade no ar.
           </motion.p>
