@@ -77,6 +77,7 @@ export default {
         },
         // azul institucional NachesU (wordmark + selo)
         "naches-azul": "#1E2BB8",
+        "naches-lilas": "#8A85BF",
         // alias semântico curto pra paleta perestroika
         brand: {
           bege: "hsl(var(--brand-bege))",
