@@ -11,7 +11,7 @@ import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { EletivaOnboardingOverlay } from "@/components/eletiva/EletivaOnboardingOverlay";
-import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
+
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
@@ -305,10 +305,6 @@ const EletivaHome = () => {
               continuar de onde parou <ArrowRight className="h-4 w-4" />
             </button>
 
-            {/* status da entrega do módulo atual */}
-            <div className="mt-6 bg-perestroika-bege text-perestroika-preto rounded-2xl">
-              <DeliverableStatusPill moduleId={current.id} />
-            </div>
           </motion.section>
         )}
 
