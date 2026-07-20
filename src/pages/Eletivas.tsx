@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { EletivaLogo } from "@/components/brand/EletivaLogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
+import duduAsset from "@/assets/facilitadores/dudu.png.asset.json";
 
 type EletivaKey = "ia-na-pratica" | "economia-circular";
 
@@ -13,6 +15,7 @@ const eletivas: Record<
     n: string;
     nome: string;
     professor: string;
+    professorFoto: string;
     pitch: string;
     descLonga: string;
     accent: string;
@@ -24,6 +27,7 @@ const eletivas: Record<
     n: "01",
     nome: "ia na prática",
     professor: "com frattz",
+    professorFoto: frattzAsset.url,
     pitch: "construa seu primeiro app com ia, do problema ao mvp no ar.",
     descLonga:
       "20 módulos curtos pra você sair da ideia ao app no ar, com o tutor ia te provocando do seu lado.",
@@ -40,6 +44,7 @@ const eletivas: Record<
     n: "02",
     nome: "economia circular",
     professor: "com dudu",
+    professorFoto: duduAsset.url,
     pitch: "desenhe um negócio que regenera, do sistema ao protótipo validado.",
     descLonga:
       "20 semanas pra enxergar fluxos, mapear ciclos e prototipar negócios regenerativos usando a escola sebrae bh como laboratório vivo.",
@@ -135,8 +140,17 @@ const Eletivas = () => {
                   <span className="font-display text-7xl sm:text-8xl leading-none" style={{ color: e.accent }}>
                     {e.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55">
-                    {e.professor}
+                  <span className="inline-flex items-center gap-2.5">
+                    <img
+                      src={e.professorFoto}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-10 w-10 rounded-full object-cover border-2 border-perestroika-preto/15"
+                      draggable={false}
+                    />
+                    <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55">
+                      {e.professor}
+                    </span>
                   </span>
                 </div>
 
