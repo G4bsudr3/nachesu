@@ -19,7 +19,6 @@ const eletivas: Record<
     pitch: string;
     descLonga: string;
     accent: string;
-    tag: string;
     trilhas: { n: string; titulo: string; desc: string; color: string; range: string }[];
   }
 > = {
