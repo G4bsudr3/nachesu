@@ -257,7 +257,7 @@ const EletivaHome = () => {
           </div>
 
           {totalPublished > 0 && (
-            <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege p-4 sm:p-5">
+            <div className="rounded-2xl bg-perestroika-bege p-4 sm:p-5">
               <div className="flex items-center justify-between mb-2">
                 <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60">
                   seu progresso
