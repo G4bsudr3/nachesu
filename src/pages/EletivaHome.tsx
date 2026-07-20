@@ -244,7 +244,7 @@ const EletivaHome = () => {
               <img
                 src={course.professor_avatar_url}
                 alt={course.professor_name}
-                className="h-10 w-10 rounded-full object-cover border border-perestroika-preto/15"
+                className="h-14 w-14 rounded-full object-cover border-2 border-perestroika-preto/10"
                 loading="lazy"
               />
             )}
