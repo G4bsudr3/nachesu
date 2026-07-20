@@ -12,7 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import joaoTutor from "@/assets/joao-de-barro-tutor.png";
+import joaoTutor from "@/assets/joao-de-barro-tutor.webp";
 const frattzPhoto = "/__l5e/assets-v1/879997e7-97df-4ee0-b10d-69dac45457fa/frattz.png";
 const duduPhoto = "/__l5e/assets-v1/645ee65a-208b-4f4e-9a28-e2481ae26d97/dudu.png";
 
@@ -461,6 +461,10 @@ const Index = () => {
                   <img
                     src={f.photo}
                     alt={f.nome}
+                    width={56}
+                    height={56}
+                    loading="lazy"
+                    decoding="async"
                     className="shrink-0 w-14 h-14 rounded-full object-cover"
                     style={{ boxShadow: `0 0 0 3px ${e.accent}33` }}
                   />
@@ -514,7 +518,7 @@ const Index = () => {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto md:mx-0 w-44 sm:w-56 md:w-64"
           >
-            <img src={joaoTutor} alt="joão-de-barro tutor da naches u" className="w-full h-auto rounded-3xl" loading="lazy" />
+            <img src={joaoTutor} alt="joão-de-barro tutor da naches u" width={512} height={512} decoding="async" className="w-full h-auto rounded-3xl" loading="lazy" />
           </motion.div>
 
           <motion.div

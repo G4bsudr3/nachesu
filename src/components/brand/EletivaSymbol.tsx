@@ -1,9 +1,9 @@
-import buildingUrl from "@/assets/joao/building.png";
-import thinkingUrl from "@/assets/joao/thinking.png";
-import talkingUrl from "@/assets/joao/talking.png";
-import celebratingUrl from "@/assets/joao/celebrating.png";
-import restingUrl from "@/assets/joao/resting.png";
-import peekingUrl from "@/assets/joao/peeking.png";
+import buildingUrl from "@/assets/joao/building.webp";
+import thinkingUrl from "@/assets/joao/thinking.webp";
+import talkingUrl from "@/assets/joao/talking.webp";
+import celebratingUrl from "@/assets/joao/celebrating.webp";
+import restingUrl from "@/assets/joao/resting.webp";
+import peekingUrl from "@/assets/joao/peeking.webp";
 
 export type JoaoPose =
   | "building"
