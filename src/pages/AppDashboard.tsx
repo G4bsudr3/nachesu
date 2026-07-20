@@ -76,25 +76,9 @@ const AppDashboard = () => {
       <PageHeader
         showLogo
         logoLink="/"
-        actions={
-          <>
-            <div className="hidden sm:block font-body text-sm mr-1 text-perestroika-preto/65 truncate max-w-[160px]">
-              oi, <span className="font-semibold text-perestroika-preto">{nickname || "..."}</span>
-            </div>
-            {isAdmin && (
-              <Link to="/admin" aria-label="painel admin" title="painel admin" className="icon-btn">
-                <Shield className="h-4 w-4" />
-              </Link>
-            )}
-            <Link to="/app/conta" aria-label="conta" title="conta" className="icon-btn">
-              <Settings className="h-4 w-4" />
-            </Link>
-            <button type="button" onClick={signOut} aria-label="sair" className="icon-btn">
-              <LogOut className="h-4 w-4" />
-            </button>
-          </>
-        }
+        actions={<UserMenu />}
       />
+
 
       <main
         id="conteudo"
