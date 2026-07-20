@@ -421,7 +421,7 @@ const Auth = () => {
 
                 <div className="relative">
                   <label htmlFor="auth-password" className="sr-only">
-                    senha (opcional)
+                    senha
                   </label>
                   <Lock
                     className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40"
@@ -431,8 +431,8 @@ const Auth = () => {
                     id="auth-password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
-                    placeholder="senha (opcional)"
-                    aria-label="senha opcional"
+                    placeholder="senha"
+                    aria-label="senha"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={submitting}
