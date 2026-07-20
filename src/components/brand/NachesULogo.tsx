@@ -35,7 +35,7 @@ export const NachesULogo = ({
     variant === "light"
       ? "text-brand-bege/85"
       : variant === "ink"
-        ? "text-perestroika-preto"
+        ? "text-black"
         : "text-naches-azul";
 
   const Mark = ({ src, ratio }: { src: string; ratio: string }) => (
