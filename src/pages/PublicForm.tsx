@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { usePublicFbiForm } from "@/features/fbi/usePublicFbiForm";
 import {
@@ -161,10 +162,8 @@ const EmailScreen = ({
         </button>
       </div>
     </main>
-    <footer className="container max-w-5xl py-6">
-      <p className="font-body text-xs text-perestroika-preto/50 text-center">
-        eletiva sebrae · escola sebrae · 1º ano EM
-      </p>
+    <footer className="container max-w-5xl py-8">
+      <EletivaFooter />
     </footer>
   </div>
 );

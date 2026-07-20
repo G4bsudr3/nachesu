@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
 import duduAsset from "@/assets/facilitadores/dudu.png.asset.json";
@@ -197,6 +198,10 @@ const Eletivas = () => {
         </div>
 
       </section>
+
+      <footer className="container py-10">
+        <EletivaFooter />
+      </footer>
     </div>
   );
 };
