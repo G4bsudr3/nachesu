@@ -57,7 +57,7 @@ export const PageHeader = ({
     <header
       className={cn(
         "relative z-10",
-        !borderless && "border-b border-perestroika-preto/10",
+        !borderless && "shadow-[0_2px_8px_-4px_rgba(9,9,9,0.08)]",
         className,
       )}
     >
