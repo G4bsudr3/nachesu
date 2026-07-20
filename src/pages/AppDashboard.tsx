@@ -130,8 +130,8 @@ const AppDashboard = () => {
             <EletivaCard snapshot={eletiva ?? undefined} />
           )}
 
-          {/* painel de comando: complementa o hero sem repetir o CTA */}
-          {activeCourseId && (
+          {/* painel de comando: só na visão de eletiva única (evita fixar em uma das duas) */}
+          {!hasMultiple && activeCourseId && (
             <DashboardCommandPanel
               snapshot={eletiva ?? null}
               courseTitle={activeEnrollment?.course?.title}
