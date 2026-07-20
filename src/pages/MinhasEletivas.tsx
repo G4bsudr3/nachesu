@@ -1,17 +1,14 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, LogOut, Settings, Shield, Star } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserRole } from "@/hooks/useUserRole";
+import { ArrowLeft, ArrowRight, Check, Star } from "lucide-react";
 import { useMyEnrollments } from "@/hooks/useCourses";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 const MinhasEletivas = () => {
-  const { signOut } = useAuth();
-  const { isAdmin } = useUserRole();
   const { data: enrollments, isLoading } = useMyEnrollments();
   const { slug: activeSlug, setSlug } = useActiveEletiva();
 
@@ -22,21 +19,8 @@ const MinhasEletivas = () => {
       <PageHeader
         showLogo
         logoLink="/app"
-        actions={
-          <>
-            {isAdmin && (
-              <Link to="/admin" aria-label="painel admin" className="icon-btn">
-                <Shield className="h-4 w-4" />
-              </Link>
-            )}
-            <Link to="/app/conta" aria-label="conta" className="icon-btn">
-              <Settings className="h-4 w-4" />
-            </Link>
-            <button type="button" onClick={signOut} aria-label="sair" className="icon-btn">
-              <LogOut className="h-4 w-4" />
-            </button>
-          </>
-        }
+        back={{ to: "/app", label: "voltar" }}
+        actions={<AuthedHeaderActions />}
       />
 
       <main

@@ -1,11 +1,10 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, LogOut, Settings, Shield } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserRole } from "@/hooks/useUserRole";
+import { ArrowLeft } from "lucide-react";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
@@ -20,8 +19,6 @@ const trailColorByOrder: Record<number, string> = {
 };
 
 const Trilhas = () => {
-  const { signOut } = useAuth();
-  const { isAdmin } = useUserRole();
   const [params] = useSearchParams();
   const urlSlug = params.get("eletiva") ?? undefined;
   const { data: enrollments } = useMyEnrollments();
