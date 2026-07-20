@@ -607,10 +607,10 @@ const Index = () => {
                     {t.range}
                   </span>
                 </div>
-                <h3 className="font-display uppercase text-2xl sm:text-3xl mb-3 leading-tight">
+                <h3 className="font-display uppercase text-2xl sm:text-3xl mb-3 leading-[1.05]">
                   {t.titulo}
                 </h3>
-                <p className="font-body text-base text-perestroika-preto/75 leading-relaxed">
+                <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed">
                   {t.desc}
                 </p>
               </motion.article>
