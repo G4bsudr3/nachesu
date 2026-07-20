@@ -162,7 +162,7 @@ const EmailScreen = ({
         </button>
       </div>
     </main>
-    <footer className="container max-w-5xl py-8">
+    <footer className="container max-w-5xl py-10">
       <EletivaFooter />
     </footer>
   </div>

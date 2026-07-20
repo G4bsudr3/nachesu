@@ -47,7 +47,7 @@ const Comecar = () => {
       />
 
       {/* hero */}
-      <section className="container relative pt-12 pb-12 sm:pt-20 sm:pb-16">
+      <section className="container relative pt-12 pb-16 sm:pt-20 sm:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -93,7 +93,7 @@ const Comecar = () => {
       </section>
 
       {/* benefícios */}
-      <section className="container py-12 sm:py-16 border-t border-perestroika-preto/10">
+      <section className="container py-16 sm:py-24 border-t border-perestroika-preto/10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {beneficios.map((b, i) => (
             <motion.article

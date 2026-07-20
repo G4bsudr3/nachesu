@@ -82,7 +82,7 @@ const Unsubscribe = () => {
           )}
         </div>
       </main>
-      <footer className="container py-8">
+      <footer className="container py-10">
         <EletivaFooter />
       </footer>
     </div>
