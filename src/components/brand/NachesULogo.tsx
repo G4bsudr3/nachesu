@@ -4,7 +4,7 @@ import letterN from "@/assets/brand/naches-n.png";
 import letterU from "@/assets/brand/naches-u.png";
 
 interface NachesULogoProps {
-  variant?: "dark" | "light";
+  variant?: "dark" | "light" | "ink";
   className?: string;
   /** altura visual em px. default 36. */
   height?: number;
@@ -18,8 +18,7 @@ interface NachesULogoProps {
  * wordmark NachesU oficial. lockup completo "nachesU" como uma única
  * imagem (não compõe mais wordmark + U separados, evita desalinhamento).
  *
- * variant "dark" mantém o azul Naches (#1E2BB8).
- * variant "light" recolore via CSS mask pro bege Perestroika.
+ * variant "dark" azul Naches (#1E2BB8), "light" bege Perestroika, "ink" preto.
  *
  * iconOnly mostra só os dois símbolos N + U pra contextos compactos.
  */
@@ -30,9 +29,14 @@ export const NachesULogo = ({
   showSelo = true,
   iconOnly = false,
 }: NachesULogoProps) => {
-  const isLight = variant === "light";
-  const inkColor = isLight ? "#f2e4d8" : "#1E2BB8";
-  const seloColor = isLight ? "text-brand-bege/85" : "text-naches-azul";
+  const inkColor =
+    variant === "light" ? "#f2e4d8" : variant === "ink" ? "#090909" : "#1E2BB8";
+  const seloColor =
+    variant === "light"
+      ? "text-brand-bege/85"
+      : variant === "ink"
+        ? "text-perestroika-preto"
+        : "text-naches-azul";
 
   const Mark = ({ src, ratio }: { src: string; ratio: string }) => (
     <span
