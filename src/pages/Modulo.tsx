@@ -22,6 +22,7 @@ import { ModuloCelebration } from "@/components/eletiva/modulo/ModuloCelebration
 import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
+import { FloatingSumario } from "@/components/eletiva/modulo/FloatingSumario";
 import { ModuloProgressBar } from "@/components/eletiva/modulo/ModuloProgressBar";
 import { ModuloFeedbackCard } from "@/components/eletiva/modulo/ModuloFeedbackCard";
 import { ModuloLockedHero } from "@/components/eletiva/modulo/ModuloLockedHero";
@@ -495,6 +496,7 @@ const Modulo = () => {
         <ModuloFeedbackCard moduleId={moduleRow.id} trailColor={trailColor} />
 
         <ModuloHeader
+          courseTitle={activeCourse?.title ?? null}
           trailTitle={trail?.title ?? null}
           trailColor={trailColor}
           moduleNumber={moduleRow.number}
@@ -503,6 +505,8 @@ const Modulo = () => {
           objective={moduleRow.objective}
           totalMinutes={moduleRow.total_minutes}
           isCompleted={isCompleted}
+          totalPills={totalPills}
+          donePills={donePills}
         />
 
         {isCompleted && (
