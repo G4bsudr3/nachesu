@@ -308,24 +308,26 @@ const Auth = () => {
       <PageHeader back={{ to: "/" }} borderless />
 
       <main className="flex-1 container flex items-center justify-center py-16">
-        <div className="w-full max-w-md relative">
-          <motion.div
-            className="absolute -top-24 right-0"
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <EletivaSymbol size={72} rotate={-15} pose="peeking" />
-          </motion.div>
-
+        <div className="w-full max-w-md">
           {!sent ? (
             <>
               {!fromCarta && (
-                <FirstTimeChecklist
-                  emailFilled={email.trim().length > 3 && email.includes("@")}
-                  passwordFilled={password.trim().length > 0}
-                  submitted={submitting}
-                  sent={sent}
-                />
+                <div className="flex items-start gap-4 mb-8">
+                  <FirstTimeChecklist
+                    className="flex-1 mb-0"
+                    emailFilled={email.trim().length > 3 && email.includes("@")}
+                    passwordFilled={password.trim().length > 0}
+                    submitted={submitting}
+                    sent={sent}
+                  />
+                  <motion.div
+                    className="flex-shrink-0 hidden sm:block"
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <EletivaSymbol size={72} rotate={-15} pose="peeking" />
+                  </motion.div>
+                </div>
               )}
               <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none mb-3">
                 {fromCarta ? (<>abre a sua<br />carta completa</>) : (<>entrar<br />na nachesu</>)}
