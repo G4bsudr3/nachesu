@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { PageShell } from "@/components/layout/PageShell";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { MobileNav } from "@/components/layout/MobileNav";
@@ -30,7 +31,7 @@ const Notificacoes = () => {
 
   return (
     <PageShell>
-      <PageHeader back={{ to: "/app", label: "início" }} />
+      <PageHeader back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
       <main
         className="container max-w-3xl pt-4"
