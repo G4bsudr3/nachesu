@@ -29,7 +29,7 @@ export const EletivaFooter = ({ className, tone = "muted" }: EletivaFooterProps)
         className,
       )}
     >
-      nachesu · uma plataforma naches · em parceria com escola sebrae
+      NACHESU · UMA PLATAFORMA NACHES&nbsp; EM PARCERIA COM ESCOLA SEBRAE
     </p>
   );
 };
