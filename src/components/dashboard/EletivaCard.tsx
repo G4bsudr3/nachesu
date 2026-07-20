@@ -17,7 +17,7 @@ interface Props {
   /**
    * snapshot já fetchado lá no AppDashboard. opcional: se não vier,
    * o componente fetcha sozinho (react-query dedupa, sem custo).
-   * passar a prop garante que greeting + hero + trilhas leiam do mesmo
+   * passar a prop garante que greeting + hero + eletivas leiam do mesmo
    * snapshot na mesma render.
    */
   snapshot?: EletivaSnapshot;
@@ -96,7 +96,7 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
           sua eletiva tá aquecendo
         </h2>
         <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl mb-8 text-pretty">
-          são 20 módulos divididos em 4 trilhas. o primeiro abre em breve, você é avisado por aqui assim que liberar.
+          são 20 módulos na sua eletiva. o primeiro abre em breve, você é avisado por aqui assim que liberar.
         </p>
         <div className="flex flex-wrap gap-2">
           {trails.map((t) => (
@@ -155,7 +155,7 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
             to="/app/trilhas"
             className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
           >
-            revisitar a trilha <ArrowRight className="h-4 w-4" />
+            revisitar a eletiva <ArrowRight className="h-4 w-4" />
           </Link>
         )}
         {!fechouTudo && (
@@ -200,7 +200,7 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
       aria-label="próximo módulo da eletiva"
       className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-bege p-8 sm:p-12"
     >
-      {/* accent bar topo com cor da trilha */}
+      {/* accent bar topo com cor da etapa */}
       <div
         className="absolute inset-x-0 top-0 h-2"
         style={{ backgroundColor: trailColor }}
@@ -245,7 +245,7 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
             style={{ backgroundColor: trailColor }}
             aria-hidden="true"
           />
-          {trail?.title.toLowerCase() ?? "trilha"}
+          {trail?.title.toLowerCase() ?? "eletiva"}
         </span>
       </div>
 

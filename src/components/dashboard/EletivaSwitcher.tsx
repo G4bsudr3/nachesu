@@ -8,7 +8,7 @@ import { Check } from "lucide-react";
  * por eletiva. No desktop vira um segmented control discreto.
  *
  * Toque atualiza `useActiveEletiva` (localStorage) e o dashboard +
- * /app/trilhas re-renderizam automaticamente com o snapshot da nova ativa.
+ * /app/eletiva re-renderizam automaticamente com o snapshot da nova ativa.
  */
 export const EletivaSwitcher = ({ className = "" }: { className?: string }) => {
   const { data: enrollments } = useMyEnrollments();

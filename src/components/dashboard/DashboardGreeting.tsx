@@ -10,7 +10,7 @@ interface Props {
    * pra "boa, você tá construindo. 3/5 fechados." no segundo seguinte.
    */
   loading?: boolean;
-  /** aluno matriculado em 2+ eletivas — troca o convite pra escolha entre trilhas. */
+  /** aluno matriculado em 2+ eletivas — troca o convite pra escolha entre eletivas. */
   hasMultiple?: boolean;
 }
 

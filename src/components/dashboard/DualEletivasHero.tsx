@@ -31,7 +31,7 @@ const infoBySlug: Record<string, FacilitadorInfo> = {
 /**
  * Cards do dashboard pra estudante matriculada em 2+ eletivas.
  * Espelha a estética editorial da página /eletivas: fundo bege, faixa colorida no topo,
- * título preto em destaque, CTA pill preto. Adiciona a régua de progresso da trilha por baixo.
+ * título preto em destaque, CTA pill preto. Adiciona a régua de progresso da eletiva por baixo.
  */
 export const DualEletivasHero = () => {
   const { data: enrollments } = useMyEnrollments();
@@ -98,7 +98,7 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
   const ctaHref = `/app/eletiva/${slug}`;
 
   const pitch = moduleToShow
-    ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a trilha").toLowerCase()}`
+    ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a eletiva").toLowerCase()}`
     : totalPublished === 0
       ? "o primeiro módulo abre em breve. você é avisada por aqui."
       : "você tá em dia. revise materiais ou aguarde o próximo abrir.";

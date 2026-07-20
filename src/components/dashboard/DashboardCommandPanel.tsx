@@ -65,7 +65,7 @@ export const DashboardCommandPanel = ({ snapshot, courseTitle }: Props) => {
       : "tô começando agora. por onde a gente começa?";
   const tutorHref = `/app/tutor?prompt=${encodeURIComponent(tutorPrompt)}`;
 
-  // mapa: linka pra trilhas (única fonte do panorama "X de Y")
+  // mapa: linka pro mapa da eletiva (única fonte do panorama "X de Y")
   const mapHref = "/app/trilhas";
 
   return (
@@ -132,7 +132,7 @@ export const DashboardCommandPanel = ({ snapshot, courseTitle }: Props) => {
           <ArrowUpRight className="h-4 w-4 opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
         </div>
         <p className="font-display uppercase text-2xl sm:text-3xl leading-none text-perestroika-preto mb-2">
-          4 trilhas, 20 portas
+          20 módulos, um mapa
         </p>
         <p className="font-body text-sm text-perestroika-preto/70 mt-auto">
           enxergar a eletiva inteira, do começo ao final.
