@@ -157,7 +157,7 @@ const Index = () => {
         className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85 border-b border-perestroika-preto/10"
       >
         <div className="container flex items-center justify-between gap-4 py-4">
-          <NachesULogo variant="dark" />
+          <NachesULogo variant="ink" />
 
           <nav className="flex items-center gap-5 lg:gap-6" aria-label="seções da página">
             {navItems.map((item) => {
