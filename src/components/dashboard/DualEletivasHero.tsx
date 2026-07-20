@@ -142,30 +142,6 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
         </p>
       )}
 
-      {/* divisor + facilitador */}
-      <div className="border-t border-perestroika-preto/10 pt-5 mb-6 flex items-start gap-3">
-        <img
-          src={info.foto}
-          alt=""
-          aria-hidden="true"
-          width={56}
-          height={56}
-          loading="lazy"
-          decoding="async"
-          className="h-14 w-14 rounded-full object-cover border-2 border-perestroika-preto/15 shrink-0"
-          draggable={false}
-        />
-        <div className="min-w-0">
-          <p className="font-body font-semibold text-sm uppercase tracking-[0.15em] text-perestroika-preto">
-            {info.nome}
-          </p>
-          {info.bio && (
-            <p className="font-body text-sm text-perestroika-preto/65 leading-snug mt-1">
-              {info.bio}
-            </p>
-          )}
-        </div>
-      </div>
 
       {/* progresso */}
       <div className="mb-6">
