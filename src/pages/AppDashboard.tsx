@@ -122,26 +122,8 @@ const AppDashboard = () => {
             loading={!!activeCourseId && eletivaLoading && !eletiva}
           />
 
-          {/* 2+ matrículas → switcher mobile-first + hero da eletiva ATIVA */}
-          {hasMultiple && (
-            <>
-              <section aria-label="suas eletivas" className="space-y-3">
-                <div className="flex items-end justify-between gap-3">
-                  <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
-                    suas eletivas · escolha a atual
-                  </p>
-                  <Link
-                    to="/app/eletivas"
-                    className="font-body text-xs uppercase tracking-wider text-perestroika-preto/70 hover:text-perestroika-preto"
-                  >
-                    gerenciar →
-                  </Link>
-                </div>
-                <EletivaSwitcher />
-              </section>
-              {activeCourseId && <EletivaCard snapshot={eletiva ?? undefined} />}
-            </>
-          )}
+          {/* 2+ matrículas → hero paralelo com as duas eletivas em peso equivalente */}
+          {hasMultiple && <DualEletivasHero />}
 
           {/* 1 matrícula → hero direto (CTA leva pro módulo atual) */}
           {!hasMultiple && activeCourseId && (
