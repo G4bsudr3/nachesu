@@ -508,13 +508,13 @@ const Index = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-center md:text-left"
           >
-            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-bege/60 mb-4">
+            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-bege/60 mb-4">
               o tutor da escola
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
               por que um<br />joão-de-barro?
             </h2>
-            <div className="mt-6 max-w-xl space-y-4 font-body text-base sm:text-lg text-perestroika-bege/85 mx-auto md:mx-0">
+            <div className="mt-8 max-w-xl space-y-4 font-body font-normal text-base sm:text-lg leading-relaxed text-perestroika-bege/85 mx-auto md:mx-0">
               <p>
                 o joão-de-barro é o pássaro construtor do brasil. ele pega barro, palha e paciência e levanta uma casa firme, pedaço por pedaço. ninguém ensinou. ele aprende fazendo, com o que tem na mão.
               </p>
