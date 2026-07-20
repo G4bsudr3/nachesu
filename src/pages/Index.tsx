@@ -282,7 +282,8 @@ const Index = () => {
             <span className="block">uma naches u.</span>
           </motion.h1>
           <motion.p variants={heroItem} className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80">
-            o lugar onde você aprende construindo. uma aula curta por semana, um tutor ia do seu lado e, no fim do ano, um projeto seu de verdade no ar.
+            o lugar onde você aprende construindo.&nbsp;<br />
+            uma aula por semana, um tutor ia do seu lado e, no fim do ano, um projeto de verdade no ar.
           </motion.p>
 
           <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
