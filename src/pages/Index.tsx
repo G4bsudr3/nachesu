@@ -276,14 +276,14 @@ const Index = () => {
 
 
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
-          <motion.p variants={heroItem} className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
+          <motion.p variants={heroItem} className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
             uma plataforma naches · em parceria com escola sebrae
           </motion.p>
           <motion.h1 variants={heroItem} className="font-display uppercase display-clamp-hero">
             <span className="block">duas eletivas.</span>
             <span className="block">uma naches u.</span>
           </motion.h1>
-          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80">
+          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
             o lugar onde você aprende construindo.&nbsp;<br />
             uma aula por semana, um tutor ia do seu lado e, no fim do ano, um projeto de verdade no ar.
           </motion.p>
@@ -318,13 +318,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
             o que é o nachesu
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
             aqui você aprende<br />fazendo.
           </h2>
-          <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
+          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
             esqueça aula longa e prova no fim.&nbsp;<br />
             toda semana você abre um módulo, faz uma coisinha e essa coisinha&nbsp;no fim do ano, vira um projeto seu pra mostrar.
           </p>
@@ -374,10 +374,10 @@ const Index = () => {
                 </div>
                 <EletivaSymbol size={52} pose={card.pose} rotate={-4} />
               </div>
-              <h3 className="font-display uppercase text-3xl sm:text-3xl leading-[0.95] mb-2 sm:mb-3">
+              <h3 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] mb-2 sm:mb-3">
                 {card.titulo}
               </h3>
-              <p className="font-body text-[15px] sm:text-base text-perestroika-preto/75 leading-relaxed">
+              <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed">
                 {card.desc}
               </p>
             </motion.div>
@@ -397,13 +397,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
             escolha sua eletiva
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
             duas portas,<br />um mesmo combinado.
           </h2>
-          <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
+          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
             mesma duração, mesmo método, mesmo tutor. o que muda é por onde você quer entrar e quem te conduz.
           </p>
         </motion.div>
@@ -433,10 +433,10 @@ const Index = () => {
                   </span>
                 </div>
 
-                <h3 className="font-display uppercase text-3xl sm:text-4xl mb-4 leading-tight">
+                <h3 className="font-display uppercase text-2xl sm:text-3xl mb-4 leading-[1.05]">
                   {e.nome}
                 </h3>
-                <p className="font-body text-base sm:text-lg text-perestroika-preto/75 leading-relaxed mb-6">
+                <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed mb-6">
                   {e.pitch}
                 </p>
 
@@ -450,7 +450,7 @@ const Index = () => {
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="font-display uppercase text-xl leading-none">{f.nick}</p>
+                      <p className="font-display uppercase text-lg leading-none">{f.nick}</p>
                       <a
                         href={f.linkedin}
                         target="_blank"
@@ -461,7 +461,7 @@ const Index = () => {
                         <Linkedin className="w-4 h-4" />
                       </a>
                     </div>
-                    <p className="font-body text-xs text-perestroika-preto/65 mt-1 leading-snug">
+                    <p className="font-body text-sm text-perestroika-preto/65 mt-1 leading-snug">
                       {f.frase}
                     </p>
                   </div>
@@ -508,13 +508,13 @@ const Index = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-center md:text-left"
           >
-            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-bege/60 mb-4">
+            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-bege/60 mb-4">
               o tutor da escola
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
               por que um<br />joão-de-barro?
             </h2>
-            <div className="mt-6 max-w-xl space-y-4 font-body text-base sm:text-lg text-perestroika-bege/85 mx-auto md:mx-0">
+            <div className="mt-8 max-w-xl space-y-4 font-body font-normal text-base sm:text-lg leading-relaxed text-perestroika-bege/85 mx-auto md:mx-0">
               <p>
                 o joão-de-barro é o pássaro construtor do brasil. ele pega barro, palha e paciência e levanta uma casa firme, pedaço por pedaço. ninguém ensinou. ele aprende fazendo, com o que tem na mão.
               </p>
@@ -538,13 +538,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-10 sm:mb-12 max-w-2xl"
         >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
             por dentro das trilhas
           </p>
-          <h2 className="font-display uppercase display-clamp-section mb-6 leading-[0.95]">
+          <h2 className="font-display uppercase display-clamp-section mb-8 leading-[0.95]">
             4 trilhas,<br />20 módulos,<br />1 projeto seu.
           </h2>
-          <p className="font-body text-base sm:text-lg text-perestroika-preto/75 mb-6">
+          <p className="font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75 mb-8">
             cada eletiva tem 4 trilhas. cada trilha tem 5 módulos. cada módulo tem 50 minutos. troque ali embaixo pra ver a outra.
           </p>
 
@@ -607,10 +607,10 @@ const Index = () => {
                     {t.range}
                   </span>
                 </div>
-                <h3 className="font-display uppercase text-2xl sm:text-3xl mb-3 leading-tight">
+                <h3 className="font-display uppercase text-2xl sm:text-3xl mb-3 leading-[1.05]">
                   {t.titulo}
                 </h3>
-                <p className="font-body text-base text-perestroika-preto/75 leading-relaxed">
+                <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed">
                   {t.desc}
                 </p>
               </motion.article>
@@ -632,13 +632,13 @@ const Index = () => {
           className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-10 md:gap-16 items-start"
         >
           <div className="md:sticky md:top-32">
-            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
               perguntas frequentes
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
               tira a<br />dúvida.
             </h2>
-            <p className="mt-6 font-body text-base sm:text-lg text-perestroika-preto/75 max-w-sm">
+            <p className="mt-6 font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75 max-w-sm">
               o que mais perguntam por aqui. clica pra abrir.
             </p>
             <div className="mt-6 hidden md:block">
@@ -689,7 +689,7 @@ const Index = () => {
                 <AccordionTrigger className="font-display uppercase text-left text-xl sm:text-2xl leading-tight tracking-wide hover:no-underline py-5">
                   {item.q}
                 </AccordionTrigger>
-                <AccordionContent className="font-body text-base text-perestroika-preto/75 leading-relaxed pb-5">
+                <AccordionContent className="font-body font-normal text-base leading-relaxed text-perestroika-preto/75 pb-5">
                   {item.a}
                 </AccordionContent>
               </AccordionItem>
@@ -725,7 +725,7 @@ const Index = () => {
             </Link>
           </motion.div>
 
-          <p className="font-body text-xs sm:text-sm text-perestroika-preto/60 max-w-md">
+          <p className="font-body text-sm text-perestroika-preto/60 max-w-md">
             já tem matrícula?{" "}
             <Link to="/auth" className="underline underline-offset-4 hover:text-perestroika-preto">
               entrar direto
