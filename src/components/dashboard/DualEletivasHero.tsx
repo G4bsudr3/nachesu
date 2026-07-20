@@ -17,15 +17,10 @@ export const DualEletivasHero = () => {
   if (items.length < 2) return null;
 
   return (
-    <section aria-label="suas duas eletivas" className="space-y-4 sm:space-y-5">
-      <div className="flex items-center gap-3">
-        <span className="h-px flex-1 bg-perestroika-preto/30 min-w-6" aria-hidden="true" />
-        <span className="font-body font-bold text-[11px] tracking-[0.3em] uppercase text-perestroika-preto whitespace-nowrap">
-          escolha sua trilha
-        </span>
-        <span className="h-px flex-1 bg-perestroika-preto/30 min-w-6" aria-hidden="true" />
-      </div>
-
+    <section aria-label="suas duas eletivas" className="space-y-5 sm:space-y-6">
+      <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+        escolha sua trilha
+      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
         {items.map((e, idx) => {
@@ -34,8 +29,6 @@ export const DualEletivasHero = () => {
               typeof e.course!.theme === "object" &&
               (e.course!.theme as any).accent) ||
             null;
-          // fallback determinístico por slug pra garantir contraste visual
-          // entre as duas trilhas quando o accent do banco coincide.
           const slugAccent: Record<string, string> = {
             "ia-na-pratica": "#f756a6",
             "economia-circular": "#8A85BF",
@@ -63,6 +56,7 @@ export const DualEletivasHero = () => {
     </section>
   );
 };
+
 
 interface CardProps {
   courseId: string;
