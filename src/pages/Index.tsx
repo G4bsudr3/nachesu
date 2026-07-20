@@ -374,10 +374,10 @@ const Index = () => {
                 </div>
                 <EletivaSymbol size={52} pose={card.pose} rotate={-4} />
               </div>
-              <h3 className="font-display uppercase text-3xl sm:text-3xl leading-[0.95] mb-2 sm:mb-3">
+              <h3 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] mb-2 sm:mb-3">
                 {card.titulo}
               </h3>
-              <p className="font-body text-[15px] sm:text-base text-perestroika-preto/75 leading-relaxed">
+              <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed">
                 {card.desc}
               </p>
             </motion.div>
