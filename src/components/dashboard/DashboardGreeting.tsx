@@ -10,6 +10,8 @@ interface Props {
    * pra "boa, você tá construindo. 3/5 fechados." no segundo seguinte.
    */
   loading?: boolean;
+  /** aluno matriculado em 2+ eletivas — troca o convite pra escolha entre trilhas. */
+  hasMultiple?: boolean;
 }
 
 const buildContextLine = (
@@ -43,12 +45,12 @@ export const DashboardGreeting = ({
   totalPublished,
   daysSinceLastActivity,
   loading = false,
+  hasMultiple = false,
 }: Props) => {
-  const contextLine = buildContextLine(
-    totalCompleted,
-    totalPublished,
-    daysSinceLastActivity,
-  );
+  const contextLine = hasMultiple
+    ? "você tem duas trilhas abertas. escolha por onde avançar hoje."
+    : buildContextLine(totalCompleted, totalPublished, daysSinceLastActivity);
+
 
   return (
     <section aria-label="saudação" className="space-y-1.5">

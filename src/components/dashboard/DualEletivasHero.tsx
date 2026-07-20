@@ -17,18 +17,15 @@ export const DualEletivasHero = () => {
   if (items.length < 2) return null;
 
   return (
-    <section aria-label="suas duas eletivas" className="space-y-5 sm:space-y-6">
-      <header className="flex flex-col gap-1.5">
-        <span className="font-body font-bold text-[11px] tracking-[0.3em] uppercase text-perestroika-preto/60">
-          sua jornada atual
+    <section aria-label="suas duas eletivas" className="space-y-4 sm:space-y-5">
+      <div className="flex items-center gap-3">
+        <span className="h-px flex-1 bg-perestroika-preto/15" aria-hidden="true" />
+        <span className="font-body font-bold text-[11px] tracking-[0.3em] uppercase text-perestroika-preto/60 whitespace-nowrap">
+          escolha sua trilha
         </span>
-        <h2 className="font-display uppercase leading-[0.9] text-5xl sm:text-6xl md:text-7xl text-perestroika-preto text-balance">
-          duas trilhas <span className="text-perestroika-rosa">ativas</span>
-        </h2>
-        <p className="font-body text-base sm:text-lg text-perestroika-preto/70 max-w-md text-pretty">
-          você tá no comando. escolha qual eletiva quer avançar hoje?
-        </p>
-      </header>
+        <span className="h-px flex-1 bg-perestroika-preto/15" aria-hidden="true" />
+      </div>
+
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
         {items.map((e, idx) => {
