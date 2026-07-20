@@ -19,13 +19,15 @@ interface PageHeaderProps {
   logoVariant?: "ink" | "dark" | "light";
   /** remove a divisória inferior (útil em páginas públicas). default false. */
   borderless?: boolean;
+  /** "centered" (padrão hub logado) ou "split" (logo esquerda + ações direita, tipo Index). */
+  layout?: "centered" | "split";
   /** classes extras pro <header>. */
   className?: string;
 }
 
 /**
- * header padrão do hub: logo centralizada + back/ações à direita,
- * com divisória sutil separando do conteúdo da página.
+ * header padrão: logo centralizada + back/ações à direita (layout=centered),
+ * ou logo à esquerda + ações à direita (layout=split, usado nas páginas públicas).
  */
 export const PageHeader = ({
   back,
@@ -35,10 +37,23 @@ export const PageHeader = ({
   logoHeight = 28,
   logoVariant = "ink",
   borderless = false,
+  layout = "centered",
   className,
 }: PageHeaderProps) => {
   const logo = (
     <NachesULogo variant={logoVariant} height={logoHeight} showSelo={false} />
+  );
+
+  const logoNode = logoLink ? (
+    <Link
+      to={logoLink}
+      className="inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
+      aria-label="ir pra home"
+    >
+      {logo}
+    </Link>
+  ) : (
+    <span className="inline-flex items-center">{logo}</span>
   );
 
   const backLabel = back?.label ?? "voltar";
@@ -52,6 +67,23 @@ export const PageHeader = ({
       <span className="hidden sm:inline truncate">{backLabel}</span>
     </Link>
   ) : null;
+
+  if (layout === "split") {
+    return (
+      <header
+        className={cn(
+          "relative z-10",
+          !borderless && "shadow-[0_2px_8px_-4px_rgba(9,9,9,0.08)]",
+          className,
+        )}
+      >
+        <div className="container flex items-center justify-between gap-4 py-4 min-h-[64px]">
+          {showLogo && logoNode}
+          <div className="flex items-center gap-2 sm:gap-3">{actions}</div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header
@@ -70,17 +102,7 @@ export const PageHeader = ({
         {/* logo absolutamente centralizada */}
         {showLogo && (
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
-            {logoLink ? (
-              <Link
-                to={logoLink}
-                className="inline-flex items-center pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
-                aria-label="ir pra home"
-              >
-                {logo}
-              </Link>
-            ) : (
-              <span className="inline-flex items-center">{logo}</span>
-            )}
+            <span className="pointer-events-auto">{logoNode}</span>
           </div>
         )}
 
