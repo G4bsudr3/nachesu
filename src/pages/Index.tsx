@@ -281,7 +281,7 @@ const Index = () => {
       {/* hero */}
       <section className="container relative pt-20 pb-20 sm:pt-24 sm:pb-28">
         <motion.div
-          className="absolute right-4 top-3 sm:right-12 sm:top-6 pointer-events-none z-0 opacity-90 scale-x-[-1]"
+          className="absolute right-8 top-8 sm:right-16 sm:top-12 md:right-24 md:top-16 pointer-events-none z-0 opacity-90 scale-x-[-1]"
           animate={prefersReducedMotion ? undefined : { rotate: [6, 12, 6] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           aria-hidden="true"
