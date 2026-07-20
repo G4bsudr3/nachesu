@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { EletivaLogo } from "@/components/brand/EletivaLogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
@@ -19,7 +19,6 @@ const eletivas: Record<
     pitch: string;
     descLonga: string;
     accent: string;
-    tag: string;
     trilhas: { n: string; titulo: string; desc: string; color: string; range: string }[];
   }
 > = {
@@ -32,7 +31,6 @@ const eletivas: Record<
     descLonga:
       "20 módulos curtos pra você sair da ideia ao app no ar, com o tutor ia te provocando do seu lado.",
     accent: "#f756a6",
-    tag: "4 trilhas · 20 módulos · tutor ia",
     trilhas: [
       { n: "01", titulo: "fundamentos & ia", desc: "o que ia faz hoje, como conversar com ela, quando usar no-code.", color: "#fe7b02", range: "módulos 1-5" },
       { n: "02", titulo: "problema & decisão", desc: "achar uma dor real, escolher a sua, escopar e vender em 60 segundos.", color: "#fd4644", range: "módulos 6-10" },
@@ -49,7 +47,6 @@ const eletivas: Record<
     descLonga:
       "20 semanas pra enxergar fluxos, mapear ciclos e prototipar negócios regenerativos usando a escola sebrae bh como laboratório vivo.",
     accent: "#6f77fc",
-    tag: "4 trilhas · 20 módulos · pbl real",
     trilhas: [
       { n: "01", titulo: "enxergar", desc: "abrir o olho pro sistema. ver fluxos, resíduos e oportunidades onde os outros veem rotina.", color: "#fe7b02", range: "módulos 1-5" },
       { n: "02", titulo: "entender", desc: "mapear causas, atores e ciclos. desenhar o sistema antes de propor solução.", color: "#fd4644", range: "módulos 6-10" },
@@ -162,11 +159,6 @@ const Eletivas = () => {
                 </p>
                 <p className="font-body text-sm text-perestroika-preto/65 leading-relaxed mb-6">
                   {e.descLonga}
-                </p>
-
-                <p className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/60 inline-flex items-center gap-1.5 mb-5">
-                  <Clock className="h-3 w-3" aria-hidden="true" />
-                  {e.tag}
                 </p>
 
                 {/* trilhas */}
