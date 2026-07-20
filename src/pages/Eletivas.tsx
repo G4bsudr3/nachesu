@@ -140,8 +140,17 @@ const Eletivas = () => {
                   <span className="font-display text-7xl sm:text-8xl leading-none" style={{ color: e.accent }}>
                     {e.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55">
-                    {e.professor}
+                  <span className="inline-flex items-center gap-2.5">
+                    <img
+                      src={e.professorFoto}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-10 w-10 rounded-full object-cover border-2 border-perestroika-preto/15"
+                      draggable={false}
+                    />
+                    <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55">
+                      {e.professor}
+                    </span>
                   </span>
                 </div>
 
