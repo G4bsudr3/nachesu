@@ -72,12 +72,14 @@ interface Props {
 const PillCardShell = ({
   pill,
   index,
+  total,
   done,
   justUnlocked,
   children,
 }: {
   pill: ModuloPill;
   index: number;
+  total: number;
   done: boolean;
   justUnlocked?: boolean;
   children: React.ReactNode;
@@ -91,13 +93,20 @@ const PillCardShell = ({
     } ${justUnlocked ? "motion-safe:animate-pill-unlock ring-2 ring-perestroika-rosa/60 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
   >
     <div className="flex items-center justify-between gap-3 mb-3">
-      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-        {pill.order_index === 0 && !pill.required
-          ? "00 · bônus · opcional"
-          : `${String(index + 1).padStart(2, "0")} · ${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
-      </p>
+      <div className="flex items-center gap-2 flex-wrap min-w-0">
+        <span className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/75 font-semibold">
+          bloco {String(index + 1).padStart(2, "0")}
+          <span className="text-perestroika-preto/40"> de {String(total).padStart(2, "0")}</span>
+        </span>
+        <span aria-hidden className="text-perestroika-preto/25">·</span>
+        <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+          {pill.order_index === 0 && !pill.required
+            ? "bônus · opcional"
+            : `${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
+        </span>
+      </div>
       {(pill.duration_min_low || pill.duration_min_high) && (
-        <span className="inline-flex items-center gap-1 font-body text-xs text-perestroika-preto/55">
+        <span className="inline-flex items-center gap-1 font-body text-xs text-perestroika-preto/55 shrink-0">
           <Clock className="h-3 w-3" />
           {pill.duration_min_low === pill.duration_min_high || !pill.duration_min_high
             ? `${pill.duration_min_low ?? pill.duration_min_high} min`
@@ -218,7 +227,7 @@ export const ModuloPillList = ({
         if (!unlocked) {
           const prev = pills[idx - 1];
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={false} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={false} justUnlocked={justUnlockedIds.has(pill.id)}>
               <div className="flex items-start gap-3 opacity-70">
                 <Lock className="h-5 w-5 mt-1 text-perestroika-preto/50 shrink-0" aria-hidden />
                 <div>
@@ -241,7 +250,7 @@ export const ModuloPillList = ({
         // ---- novos schemas editoriais (módulo 1 da eletiva ia na prática) ----
         if (schemaType === "pilula_editorial") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillEditorial
                 pillId={pill.id}
                 title={pill.title}
@@ -259,7 +268,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "pbl_estruturado") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillPBLEstruturado
                 pillId={pill.id}
                 title={pill.title}
@@ -277,7 +286,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "checklist_pacto") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillChecklistPacto
                 pillId={pill.id}
                 title={pill.title}
@@ -295,7 +304,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "pbl_corf_triplo") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillPBLCorfTriplo
                 pillId={pill.id}
                 title={pill.title}
@@ -313,7 +322,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "guia_de_prompts") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillGuiaDePrompts
                 pillId={pill.id}
                 title={pill.title}
@@ -331,7 +340,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "classificador_linear_circular_regenerativo") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillClassificador3x3
                 pillId={pill.id}
                 title={pill.title}
@@ -354,7 +363,7 @@ export const ModuloPillList = ({
         // ---- vídeo embedado simples (loom/youtube, sem entrega) ----
         if (schemaType === "video_embed") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillVideoEmbed
                 title={pill.title}
                 bodyMd={pill.body_md}
@@ -371,7 +380,7 @@ export const ModuloPillList = ({
         // ---- 1. schemas ricos (quando o conteúdo é autorado) ----
         if (schemaType === "video_with_transcript") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillAbertura
                 title={pill.title}
                 bodyMd={pill.body_md}
@@ -386,7 +395,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "curated_content_with_questions") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillConteudoCurado
                 title={pill.title}
                 bodyMd={pill.body_md}
@@ -403,7 +412,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "radar_form") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillRadar
                 title={pill.title}
                 bodyMd={pill.body_md}
@@ -420,7 +429,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "quiz") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillQuiz
                 title={pill.title}
                 bodyMd={pill.body_md}
@@ -437,7 +446,7 @@ export const ModuloPillList = ({
         }
         if (schemaType === "bonus_text") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <PillBonus
                 title={pill.title}
                 bodyMd={pill.body_md}
@@ -459,7 +468,7 @@ export const ModuloPillList = ({
           const reflexaoPrompt =
             typeof reflexao === "string" ? reflexao : reflexao?.md;
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <h3
                 className={`font-display uppercase text-xl sm:text-2xl mb-3 leading-tight ${
                   done ? "line-through decoration-perestroika-preto/40 decoration-2" : ""
@@ -490,7 +499,7 @@ export const ModuloPillList = ({
         // ---- 3. exercicio_pbl sem schema → workspace PBL ----
         if (pill.kind === "exercicio_pbl") {
           return (
-            <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
               <h3
                 className={`font-display uppercase text-xl sm:text-2xl mb-3 leading-tight ${
                   done ? "line-through decoration-perestroika-preto/40 decoration-2" : ""
@@ -516,7 +525,7 @@ export const ModuloPillList = ({
 
         // ---- 4. fallback passivo (pilula_a/b/c sem schema) ----
         return (
-          <PillCardShell key={pill.id} pill={pill} index={idx} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
+          <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)}>
             <h3
               className={`font-display uppercase text-xl sm:text-2xl mb-2 leading-tight ${
                 done ? "line-through decoration-perestroika-preto/40 decoration-2" : ""
