@@ -60,9 +60,6 @@ export class RootErrorBoundary extends Component<Props, State> {
           <div className="mx-auto mb-6 w-fit motion-safe:animate-[pulse_3s_ease-in-out_infinite]">
             <EletivaSymbol size={96} pose="thinking" />
           </div>
-          <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-2">
-            algo travou aqui
-          </p>
           <h1 className="font-display uppercase text-3xl sm:text-4xl leading-none mb-3">
             o joão tá pensando
           </h1>
