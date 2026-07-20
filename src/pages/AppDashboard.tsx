@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { LogOut, Settings, Shield } from "lucide-react";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
