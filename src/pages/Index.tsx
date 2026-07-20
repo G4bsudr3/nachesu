@@ -170,7 +170,7 @@ const Index = () => {
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85"
+        className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85 shadow-[0_2px_8px_-4px_rgba(9,9,9,0.08)]"
       >
         <div className="container relative flex items-center justify-between gap-4 py-4 min-h-[72px]">
           <div className="flex-1" />

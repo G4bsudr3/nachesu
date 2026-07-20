@@ -84,7 +84,7 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
-      <PageHeader back={{ to: "/auth" }} borderless />
+      <PageHeader back={{ to: "/auth" }} />
 
       <main className="flex-1 container flex items-center justify-center py-16">
         <div className="w-full max-w-md relative">
