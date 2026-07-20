@@ -8,6 +8,7 @@ interface FirstTimeChecklistProps {
   passwordFilled: boolean;
   submitted: boolean;
   sent: boolean;
+  className?: string;
 }
 
 const STEPS = [
@@ -42,6 +43,7 @@ export const FirstTimeChecklist = ({
   passwordFilled,
   submitted,
   sent,
+  className = "",
 }: FirstTimeChecklistProps) => {
   const [visible, setVisible] = useState(false);
 
@@ -63,7 +65,7 @@ export const FirstTimeChecklist = ({
   const checks = [emailFilled, passwordFilled || submitted, sent];
 
   return (
-    <div className="mb-8 rounded-3xl border border-perestroika-preto/15 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6 animate-fade-up relative">
+    <div className={`rounded-3xl border border-perestroika-preto/15 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6 animate-fade-up relative ${className}`}>
       <button
         type="button"
         onClick={dismiss}
