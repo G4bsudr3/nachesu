@@ -5,6 +5,7 @@ import { ArrowLeft, LogOut, Lock, ArrowRight, Instagram, Linkedin, Moon, Eye } f
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { PasswordStrength } from "@/components/PasswordStrength";
 import { normalizeInstagram, normalizeLinkedin } from "@/lib/socialHandles";
 import { useReadingPreferences } from "@/hooks/useReadingPreferences";
@@ -143,15 +144,8 @@ const AccountSettings = () => {
       <PageHeader
         showLogo
         logoLink="/"
-        actions={
-          <Link
-            to="/app"
-            className="inline-flex items-center gap-2 min-h-11 px-2 font-body text-sm uppercase tracking-wide hover:opacity-60 transition-opacity"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            voltar
-          </Link>
-        }
+        back={{ to: "/app", label: "voltar" }}
+        actions={<AuthedHeaderActions />}
       />
 
       <main className="container max-w-xl py-12">

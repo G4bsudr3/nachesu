@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink, Check, AlertCircle, Clock, LogOut, Loader2, Sparkles, ArrowRight } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useMissions, type Mission, type MissionSubmission, type MissionStatus } from "@/features/missions/useMissions";
@@ -264,12 +265,8 @@ const Missions = () => {
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
       <PageHeader
-        back={{ to: "/app", label: "hub" }}
-        actions={
-          <button type="button" onClick={signOut} aria-label="sair" className="icon-btn">
-            <LogOut className="h-4 w-4" />
-          </button>
-        }
+        back={{ to: "/app", label: "voltar" }}
+        actions={<AuthedHeaderActions />}
       />
 
       <section className="container max-w-5xl pt-4 pb-2 relative z-10">
