@@ -3,7 +3,7 @@ import { ArrowRight, Clock } from "lucide-react";
 import { useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
-import { moduloHref } from "@/lib/moduleHref";
+
 
 /**
  * Hero de dashboard pra estudante matriculada em 2+ eletivas.
