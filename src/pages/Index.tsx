@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Clock, Linkedin, Calendar, Sparkles, Rocket, Menu, X } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
@@ -107,12 +107,27 @@ const Index = () => {
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const firstMenuItemRef = useRef<HTMLAnchorElement | null>(null);
 
   useEffect(() => {
     if (!menuOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    // move focus para o primeiro item do menu ao abrir
+    const t = window.setTimeout(() => firstMenuItemRef.current?.focus(), 60);
+    return () => {
+      document.body.style.overflow = prev;
+      document.removeEventListener("keydown", onKey);
+      window.clearTimeout(t);
+    };
   }, [menuOpen]);
   useEffect(() => {
     const ids = ["como-funciona", "eletivas", "tutor", "trilhas", "faq"];
@@ -169,7 +184,7 @@ const Index = () => {
                   href={`#${item.id}`}
                   onClick={(e) => handleAnchorClick(e, item.id)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`hidden relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
+                  className={`hidden relative font-body text-sm uppercase tracking-wide transition-opacity py-1 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-4 focus-visible:ring-offset-perestroika-bege ${
                     isActive ? "opacity-100 text-perestroika-preto" : "opacity-70 hover:opacity-100"
                   }`}
                 >
@@ -186,18 +201,18 @@ const Index = () => {
             })}
             <Link
               to="/auth"
-              className="hidden sm:inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+              className="hidden sm:inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
               entrar
             </Link>
             <button
+              ref={menuButtonRef}
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               aria-label={menuOpen ? "fechar menu" : "abrir menu"}
               className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border border-perestroika-preto/20 text-perestroika-preto hover:bg-perestroika-preto/5 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -216,15 +231,16 @@ const Index = () => {
               className="lg:hidden border-t border-perestroika-preto/10 bg-perestroika-bege/95 backdrop-blur-md"
             >
               <nav aria-label="menu" className="container py-4 flex flex-col gap-1">
-                {navItems.map((item) => {
+                {navItems.map((item, idx) => {
                   const isActive = activeSection === item.id;
                   return (
                     <a
                       key={item.id}
+                      ref={idx === 0 ? firstMenuItemRef : undefined}
                       href={`#${item.id}`}
                       onClick={(e) => handleAnchorClick(e, item.id)}
                       aria-current={isActive ? "true" : undefined}
-                      className={`flex items-center justify-between min-h-12 px-3 rounded-xl font-display uppercase text-2xl tracking-wide transition-colors ${
+                      className={`flex items-center justify-between min-h-12 px-3 rounded-xl font-display uppercase text-2xl tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege ${
                         isActive
                           ? "bg-perestroika-preto/5 text-perestroika-preto"
                           : "text-perestroika-preto/75 hover:bg-perestroika-preto/5 hover:text-perestroika-preto"
@@ -244,7 +260,7 @@ const Index = () => {
                 <Link
                   to="/auth"
                   onClick={() => setMenuOpen(false)}
-                  className="sm:hidden mt-3 inline-flex items-center justify-center min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-5 font-body text-sm uppercase tracking-wide"
+                  className="sm:hidden mt-3 inline-flex items-center justify-center min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-5 font-body text-sm uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
                 >
                   entrar
                 </Link>
