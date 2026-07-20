@@ -576,6 +576,15 @@ const Modulo = () => {
 
       <EletivaFooter />
 
+      {!isCompleted && pills && pills.length > 0 && (
+        <FloatingSumario
+          pills={pills}
+          completedPillIds={completedPillIds}
+          unlockedPillIds={unlockedPillIds}
+          trailColor={trailColor}
+        />
+      )}
+
       <ModuloAutoCompleteBurst
         open={burst.open}
         nextUnlocked={burst.nextUnlocked}
