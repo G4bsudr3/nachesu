@@ -299,14 +299,14 @@ const Index = () => {
 
 
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
-          <motion.p variants={heroItem} className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
+          <motion.p variants={heroItem} className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6">
             uma plataforma naches · em parceria com escola sebrae
           </motion.p>
           <motion.h1 variants={heroItem} className="font-display uppercase display-clamp-hero">
             <span className="block">duas eletivas.</span>
             <span className="block">uma naches u.</span>
           </motion.h1>
-          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
+          <motion.p variants={heroItem} className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground">
             o lugar onde você aprende construindo.&nbsp;<br />
             uma aula por semana, um tutor ia do seu lado e, no fim do ano, um projeto de verdade no ar.
           </motion.p>
@@ -321,7 +321,7 @@ const Index = () => {
             <a
               href="#como-funciona"
               onClick={(ev) => handleAnchorClick(ev, "como-funciona")}
-              className="inline-flex items-center min-h-11 px-1 font-body text-sm sm:text-base uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
+              className="inline-flex items-center min-h-11 px-1 font-body text-sm sm:text-base uppercase tracking-wide text-muted-foreground hover:text-perestroika-preto transition-colors underline-offset-4 hover:underline rounded"
             >
               como funciona ↓
             </a>
@@ -341,13 +341,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             o que é o nachesu
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
             aqui você aprende<br />fazendo.
           </h2>
-          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
+          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground">
             esqueça aula longa e prova no fim.&nbsp;<br />
             toda semana você abre um módulo, faz uma coisinha e essa coisinha&nbsp;no fim do ano, vira um projeto seu pra mostrar.
           </p>
@@ -388,7 +388,7 @@ const Index = () => {
               {/* topo: passo + mascote */}
               <div className="flex items-start justify-between mb-4 sm:mb-5">
                 <div className="flex items-center gap-3">
-                  <span className="font-display text-3xl sm:text-4xl leading-none text-perestroika-preto/30">
+                  <span className="font-display text-3xl sm:text-4xl leading-none text-muted-foreground/50">
                     {card.step}
                   </span>
                   <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-perestroika-preto text-perestroika-bege">
@@ -400,7 +400,7 @@ const Index = () => {
               <h3 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] mb-2 sm:mb-3">
                 {card.titulo}
               </h3>
-              <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed">
+              <p className="font-body font-normal text-base text-muted-foreground leading-relaxed">
                 {card.desc}
               </p>
             </motion.div>
@@ -420,13 +420,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             escolha sua eletiva
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
             duas portas,<br />um mesmo combinado.
           </h2>
-          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
+          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground">
             mesma duração, mesmo método, mesmo tutor. o que muda é por onde você quer entrar e quem te conduz.
           </p>
         </motion.div>
@@ -450,7 +450,7 @@ const Index = () => {
                   <span className="font-display text-7xl sm:text-8xl leading-none" style={{ color: e.accent }}>
                     {e.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55 inline-flex items-center gap-1.5">
+                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground inline-flex items-center gap-1.5">
                     <Clock className="h-3 w-3" aria-hidden="true" />
                     20 semanas
                   </span>
@@ -459,7 +459,7 @@ const Index = () => {
                 <h3 className="font-display uppercase text-2xl sm:text-3xl mb-4 leading-[1.05]">
                   {e.nome}
                 </h3>
-                <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed mb-6">
+                <p className="font-body font-normal text-base text-muted-foreground leading-relaxed mb-6">
                   {e.pitch}
                 </p>
 
@@ -483,12 +483,12 @@ const Index = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`linkedin de ${f.nick}`}
-                        className="text-perestroika-preto/50 hover:text-perestroika-preto transition-colors"
+                        className="text-muted-foreground hover:text-perestroika-preto transition-colors"
                       >
                         <Linkedin className="w-4 h-4" />
                       </a>
                     </div>
-                    <p className="font-body text-sm text-perestroika-preto/65 mt-1 leading-snug">
+                    <p className="font-body text-sm text-muted-foreground mt-1 leading-snug">
                       {f.frase}
                     </p>
                   </div>
@@ -565,13 +565,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-10 sm:mb-12 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             por dentro das trilhas
           </p>
           <h2 className="font-display uppercase display-clamp-section mb-8 leading-[0.95]">
             4 trilhas,<br />20 módulos,<br />1 projeto seu.
           </h2>
-          <p className="font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75 mb-8">
+          <p className="font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground mb-8">
             cada eletiva tem 4 trilhas. cada trilha tem 5 módulos. cada módulo tem 50 minutos. troque ali embaixo pra ver a outra.
           </p>
 
@@ -629,7 +629,7 @@ const Index = () => {
                   <span className="font-display text-6xl sm:text-7xl leading-none" style={{ color: t.color }}>
                     {t.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55 inline-flex items-center gap-1.5">
+                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground inline-flex items-center gap-1.5">
                     <Clock className="h-3 w-3" aria-hidden="true" />
                     {t.range}
                   </span>
@@ -637,7 +637,7 @@ const Index = () => {
                 <h3 className="font-display uppercase text-2xl sm:text-3xl mb-3 leading-[1.05]">
                   {t.titulo}
                 </h3>
-                <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed">
+                <p className="font-body font-normal text-base text-muted-foreground leading-relaxed">
                   {t.desc}
                 </p>
               </motion.article>
@@ -659,13 +659,13 @@ const Index = () => {
           className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-10 md:gap-16 items-start"
         >
           <div className="md:sticky md:top-32">
-            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
               perguntas frequentes
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
               tira a<br />dúvida.
             </h2>
-            <p className="mt-6 font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75 max-w-sm">
+            <p className="mt-6 font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground max-w-sm">
               o que mais perguntam por aqui. clica pra abrir.
             </p>
             <div className="mt-6 hidden md:block">
@@ -716,7 +716,7 @@ const Index = () => {
                 <AccordionTrigger className="font-display uppercase text-left text-xl sm:text-2xl leading-tight tracking-wide hover:no-underline py-5">
                   {item.q}
                 </AccordionTrigger>
-                <AccordionContent className="font-body font-normal text-base leading-relaxed text-perestroika-preto/75 pb-5">
+                <AccordionContent className="font-body font-normal text-base leading-relaxed text-muted-foreground pb-5">
                   {item.a}
                 </AccordionContent>
               </AccordionItem>
@@ -752,7 +752,7 @@ const Index = () => {
             </Link>
           </motion.div>
 
-          <p className="font-body text-sm text-perestroika-preto/60 max-w-md">
+          <p className="font-body text-sm text-muted-foreground max-w-md">
             já tem matrícula?{" "}
             <Link to="/auth" className="underline underline-offset-4 hover:text-perestroika-preto">
               entrar direto
