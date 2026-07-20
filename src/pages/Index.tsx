@@ -397,13 +397,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
             escolha sua eletiva
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
             duas portas,<br />um mesmo combinado.
           </h2>
-          <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
+          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
             mesma duração, mesmo método, mesmo tutor. o que muda é por onde você quer entrar e quem te conduz.
           </p>
         </motion.div>
