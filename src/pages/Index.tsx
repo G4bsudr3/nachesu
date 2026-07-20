@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ArrowRight, Clock, Linkedin, Calendar, Sparkles, Rocket, Menu, X } from "lucide-react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import {
   Accordion,
@@ -733,10 +734,8 @@ const Index = () => {
       </section>
       </main>
 
-      <footer className="container py-10 text-center">
-        <p className="font-body text-xs text-perestroika-preto/55">
-          nachesu · uma plataforma naches · em parceria com escola sebrae
-        </p>
+      <footer className="container py-10">
+        <EletivaFooter />
       </footer>
     </div>
   );

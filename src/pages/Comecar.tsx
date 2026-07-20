@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, ShieldCheck, Clock } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 const beneficios = [
@@ -186,10 +187,8 @@ const Comecar = () => {
         </div>
       </section>
 
-      <footer className="container py-10 text-center">
-        <p className="font-body text-xs text-perestroika-preto/55">
-          nachesu · uma plataforma naches · em parceria com escola sebrae
-        </p>
+      <footer className="container py-10">
+        <EletivaFooter />
       </footer>
     </div>
   );

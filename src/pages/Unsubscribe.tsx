@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 
 const Unsubscribe = () => {
   const [params] = useSearchParams();
@@ -81,6 +82,9 @@ const Unsubscribe = () => {
           )}
         </div>
       </main>
+      <footer className="container py-8">
+        <EletivaFooter />
+      </footer>
     </div>
   );
 };
