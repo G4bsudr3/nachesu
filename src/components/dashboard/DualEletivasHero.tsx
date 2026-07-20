@@ -42,7 +42,7 @@ export const DualEletivasHero = () => {
     <section aria-label="suas duas eletivas" className="space-y-5 sm:space-y-6">
       <div className="flex items-center gap-4 sm:gap-6">
         <div className="h-px flex-1 bg-perestroika-preto/20" aria-hidden="true" />
-        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60 font-semibold">
           ESCOLHA SUA ELETIVA
         </p>
         <div className="h-px flex-1 bg-perestroika-preto/20" aria-hidden="true" />
