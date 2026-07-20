@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
