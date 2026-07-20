@@ -45,7 +45,7 @@ export const TrailsProgress = ({ snapshot }: Props) => {
             id="trails-progress-title"
             className="font-display text-2xl uppercase leading-none text-perestroika-preto sm:text-3xl"
           >
-            quatro trilhas, vinte módulos
+            vinte módulos na sua eletiva
           </h2>
         </div>
       </header>

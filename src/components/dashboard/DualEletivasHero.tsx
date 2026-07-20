@@ -31,7 +31,7 @@ const infoBySlug: Record<string, FacilitadorInfo> = {
 /**
  * Cards do dashboard pra estudante matriculada em 2+ eletivas.
  * Espelha a estética editorial da página /eletivas: fundo bege, faixa colorida no topo,
- * título preto em destaque, CTA pill preto. Adiciona a régua de progresso da trilha por baixo.
+ * título preto em destaque, CTA pill preto. Adiciona a régua de progresso da eletiva por baixo.
  */
 export const DualEletivasHero = () => {
   const { data: enrollments } = useMyEnrollments();
