@@ -19,4 +19,4 @@ Allow: /
 Disallow: /app/
 Disallow: /admin/
 
-Sitemap: https://chorahub.lovable.app/sitemap.xml
+Sitemap: https://sebrae.frattz.com/sitemap.xml
