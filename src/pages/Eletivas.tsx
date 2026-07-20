@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 import { ArrowRight } from "lucide-react";
-import { EletivaLogo } from "@/components/brand/EletivaLogo";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
 import duduAsset from "@/assets/facilitadores/dudu.png.asset.json";
