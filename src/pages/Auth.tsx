@@ -2,7 +2,7 @@ import { useState, FormEvent, useEffect } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Mail, ArrowRight, Lock } from "lucide-react";
+import { Mail, ArrowRight, Lock, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
