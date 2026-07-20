@@ -72,12 +72,14 @@ interface Props {
 const PillCardShell = ({
   pill,
   index,
+  total,
   done,
   justUnlocked,
   children,
 }: {
   pill: ModuloPill;
   index: number;
+  total: number;
   done: boolean;
   justUnlocked?: boolean;
   children: React.ReactNode;
@@ -91,13 +93,20 @@ const PillCardShell = ({
     } ${justUnlocked ? "motion-safe:animate-pill-unlock ring-2 ring-perestroika-rosa/60 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
   >
     <div className="flex items-center justify-between gap-3 mb-3">
-      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-        {pill.order_index === 0 && !pill.required
-          ? "00 · bônus · opcional"
-          : `${String(index + 1).padStart(2, "0")} · ${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
-      </p>
+      <div className="flex items-center gap-2 flex-wrap min-w-0">
+        <span className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/75 font-semibold">
+          bloco {String(index + 1).padStart(2, "0")}
+          <span className="text-perestroika-preto/40"> de {String(total).padStart(2, "0")}</span>
+        </span>
+        <span aria-hidden className="text-perestroika-preto/25">·</span>
+        <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+          {pill.order_index === 0 && !pill.required
+            ? "bônus · opcional"
+            : `${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
+        </span>
+      </div>
       {(pill.duration_min_low || pill.duration_min_high) && (
-        <span className="inline-flex items-center gap-1 font-body text-xs text-perestroika-preto/55">
+        <span className="inline-flex items-center gap-1 font-body text-xs text-perestroika-preto/55 shrink-0">
           <Clock className="h-3 w-3" />
           {pill.duration_min_low === pill.duration_min_high || !pill.duration_min_high
             ? `${pill.duration_min_low ?? pill.duration_min_high} min`
