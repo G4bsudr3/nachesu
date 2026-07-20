@@ -112,7 +112,7 @@ export const FirstTimeChecklist = ({
         <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/50 mb-2">
           o que você acabou de aprender
         </p>
-        <ul className="space-y-1.5 mb-4">
+        <ul className="space-y-1.5">
           {LEARNINGS.map((l) => (
             <li key={l} className="font-body text-sm text-perestroika-preto/80 flex gap-2">
               <span className="text-perestroika-preto/40">•</span>
@@ -120,13 +120,6 @@ export const FirstTimeChecklist = ({
             </li>
           ))}
         </ul>
-        <button
-          type="button"
-          onClick={dismiss}
-          className="inline-flex items-center min-h-11 px-2 font-body text-sm uppercase tracking-wide underline underline-offset-4 hover:opacity-60 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
-        >
-          entendi, fechar
-        </button>
       </div>
     </div>
   );
