@@ -472,8 +472,7 @@ const Index = () => {
                       setActiveTab(key);
                       handleAnchorClick(ev, "trilhas");
                     }}
-                    className="inline-flex items-center justify-center gap-2 min-h-11 rounded-full text-perestroika-bege px-5 py-2.5 font-body text-xs sm:text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-                    style={{ backgroundColor: e.accent }}
+                    className="inline-flex items-center justify-center gap-2 min-h-11 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body text-xs sm:text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
                   >
                     ver trilhas <ArrowRight className="h-3.5 w-3.5" />
                   </a>
