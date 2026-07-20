@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { PageShell } from "@/components/layout/PageShell";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { useStudentProfile } from "@/features/admin/studentProfile/useStudentProfile";
 import { StudentProfileHeader } from "@/features/admin/studentProfile/StudentProfileHeader";
 import { StudentProgressPanel } from "@/features/admin/studentProfile/StudentProgressPanel";
@@ -25,7 +26,7 @@ const AdminStudentProfile = () => {
 
   return (
     <PageShell>
-      <PageHeader />
+      <PageHeader back={{ to: "/admin", label: "voltar" }} actions={<AuthedHeaderActions />} />
       <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-24 pt-6 space-y-10">
         {isLoading || !profile ? (
           <p className="text-sm text-perestroika-preto/55">carregando perfil…</p>

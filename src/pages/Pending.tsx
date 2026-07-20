@@ -8,6 +8,7 @@ import { useProfileStatus } from "@/hooks/useProfileStatus";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 
 const WHATSAPP_URL = "https://wa.me/5531995384834";
@@ -34,7 +35,7 @@ const Pending = () => {
         </div>
       </div>
 
-      <PageHeader back={{ to: "/" }} />
+      <PageHeader back={{ to: "/", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
       <main className="container max-w-2xl pt-12 pb-20 relative z-10">
         <motion.div

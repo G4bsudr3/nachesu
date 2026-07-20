@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, BookOpen, Play, Wrench, Check, ExternalLink, LogOut, ArrowRight, Sparkles } from "lucide-react";
 import { EletivaLogo as ChoraLogo } from "@/components/brand/EletivaLogo";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePrework, PreworkItem } from "@/features/prework/usePrework";
 import { LEVEL_INTRO } from "@/features/prework/preworkContent";
@@ -144,12 +145,8 @@ const Prework = () => {
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
       <PageHeader
-        back={{ to: "/app", label: "hub" }}
-        actions={
-          <button type="button" onClick={signOut} aria-label="sair" className="icon-btn">
-            <LogOut className="h-4 w-4" />
-          </button>
-        }
+        back={{ to: "/app", label: "voltar" }}
+        actions={<AuthedHeaderActions />}
       />
 
       <section className="container max-w-5xl pt-4 pb-2 relative z-10">

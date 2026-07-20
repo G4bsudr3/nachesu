@@ -5,6 +5,7 @@ import { ptBR } from "date-fns/locale";
 import { AlertTriangle, Mail, RefreshCw, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { PageShell } from "@/components/layout/PageShell";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -142,7 +143,7 @@ const AdminRisco = () => {
 
   return (
     <PageShell>
-      <PageHeader back={{ to: "/admin", label: "admin" }} />
+      <PageHeader back={{ to: "/admin", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
       <main className="container max-w-5xl pb-20 pt-4">
         <header className="mb-6">

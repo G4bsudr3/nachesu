@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { CertificateRenderer, CERTIFICATE_DIMENSIONS } from "@/components/certificate/CertificateRenderer";
 import { useCertificateDownload } from "@/components/certificate/useCertificateDownload";
 import { ARCHETYPE_TOKENS, type Archetype } from "@/components/carta/cartaTokens";
@@ -137,7 +138,7 @@ const AdminCertificateSandbox = () => {
 
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto">
-      <PageHeader back={{ to: "/admin", label: "voltar pro admin" }} />
+      <PageHeader back={{ to: "/admin", label: "voltar" }} actions={<AuthedHeaderActions />} />
       <main className="container max-w-6xl pb-20">
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-perestroika-laranja mb-2">

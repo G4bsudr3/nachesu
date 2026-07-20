@@ -5,6 +5,7 @@ import { ptBR } from "date-fns/locale";
 import { AlertTriangle, ClipboardCheck, Clock, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { PageShell } from "@/components/layout/PageShell";
 import { cn } from "@/lib/utils";
 
@@ -214,7 +215,7 @@ const AdminTurma = () => {
 
   return (
     <PageShell>
-      <PageHeader back={{ to: "/admin", label: "admin" }} />
+      <PageHeader back={{ to: "/admin", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
       <main className="container max-w-5xl pb-20 pt-4">
         <header className="mb-6">

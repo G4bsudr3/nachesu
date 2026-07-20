@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, ArrowLeft, BookOpen, ExternalLink, FileText, Film, Image as ImageIcon, Link as LinkIcon, RefreshCw, Sparkles, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { useHubMaterials, MATERIAL_CATEGORIES, MATERIAL_KIND_LABELS, type MaterialCategory, type HubMaterial, type MaterialKind, detectKind, materialOpenUrl, autoThumbUrl } from "@/features/hub/useHubMaterials";
 import { ReactionBar } from "@/components/hub/ReactionBar";
 import { CommentThread } from "@/components/hub/CommentThread";
@@ -379,11 +380,8 @@ const HubMateriais = () => {
       <PageHeader
         showLogo
         logoLink="/app"
-        actions={
-          <Link to="/app" className="inline-flex items-center gap-1 font-body text-xs uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto">
-            <ArrowLeft className="h-3.5 w-3.5" /> início
-          </Link>
-        }
+        back={{ to: "/app", label: "voltar" }}
+        actions={<AuthedHeaderActions />}
       />
 
       <main className="container max-w-6xl py-8 sm:py-12">
