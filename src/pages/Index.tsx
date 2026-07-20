@@ -184,7 +184,7 @@ const Index = () => {
                   href={`#${item.id}`}
                   onClick={(e) => handleAnchorClick(e, item.id)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`hidden relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
+                  className={`hidden relative font-body text-sm uppercase tracking-wide transition-opacity py-1 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-4 focus-visible:ring-offset-perestroika-bege ${
                     isActive ? "opacity-100 text-perestroika-preto" : "opacity-70 hover:opacity-100"
                   }`}
                 >
@@ -201,18 +201,18 @@ const Index = () => {
             })}
             <Link
               to="/auth"
-              className="hidden sm:inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+              className="hidden sm:inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
               entrar
             </Link>
             <button
+              ref={menuButtonRef}
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               aria-label={menuOpen ? "fechar menu" : "abrir menu"}
               className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border border-perestroika-preto/20 text-perestroika-preto hover:bg-perestroika-preto/5 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
