@@ -252,6 +252,7 @@ const Index = () => {
         </AnimatePresence>
       </motion.header>
 
+      <main>
       {/* hero */}
       <section className="container relative pt-20 pb-20 sm:pt-24 sm:pb-28">
         <motion.div
