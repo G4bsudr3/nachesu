@@ -117,7 +117,7 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
         className="font-display uppercase text-5xl sm:text-6xl mb-4 leading-[0.9] text-balance"
         style={{ color: info.accent }}
       >
-        {title.toLowerCase()}
+        {slug === "economia-circular" ? "ECONOMIA CIRCULAR\u00a0" : title.toLowerCase()}
       </h3>
       {isLoading ? (
         <div className="space-y-2 motion-safe:animate-pulse mb-6">
