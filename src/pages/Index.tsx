@@ -172,10 +172,16 @@ const Index = () => {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85"
       >
-        <div className="container flex items-center justify-between gap-4 py-4">
-          <NachesULogo variant="ink" />
+        <div className="container relative flex items-center justify-between gap-4 py-4 min-h-[72px]">
+          <div className="flex-1" />
 
-          <nav className="flex items-center gap-5 lg:gap-6" aria-label="seções da página">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <span className="pointer-events-auto inline-flex">
+              <NachesULogo variant="ink" />
+            </span>
+          </div>
+
+          <nav className="flex flex-1 items-center justify-end gap-5 lg:gap-6" aria-label="seções da página">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
@@ -218,6 +224,7 @@ const Index = () => {
             </button>
           </nav>
         </div>
+
 
         {/* menu hamburguer mobile/tablet */}
         <AnimatePresence>
