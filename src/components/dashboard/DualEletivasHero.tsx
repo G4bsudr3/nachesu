@@ -19,11 +19,11 @@ export const DualEletivasHero = () => {
   return (
     <section aria-label="suas duas eletivas" className="space-y-4 sm:space-y-5">
       <div className="flex items-center gap-3">
-        <span className="h-px flex-1 bg-perestroika-preto/15" aria-hidden="true" />
-        <span className="font-body font-bold text-[11px] tracking-[0.3em] uppercase text-perestroika-preto/60 whitespace-nowrap">
+        <span className="h-px flex-1 bg-perestroika-preto/30" aria-hidden="true" />
+        <span className="font-body font-bold text-[11px] tracking-[0.3em] uppercase text-perestroika-preto/80 whitespace-nowrap">
           escolha sua trilha
         </span>
-        <span className="h-px flex-1 bg-perestroika-preto/15" aria-hidden="true" />
+        <span className="h-px flex-1 bg-perestroika-preto/30" aria-hidden="true" />
       </div>
 
 
