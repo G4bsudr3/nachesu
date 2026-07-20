@@ -84,11 +84,9 @@ const EletivaJourneyCard = ({ courseId, slug, title, accent }: CardProps) => {
   const ctaLabel = !moduleToShow
     ? "revisar trilha"
     : started
-      ? "continuar agora"
-      : "começar agora";
-  const ctaHref = moduleToShow
-    ? moduloHref(slug, moduleToShow.number)
-    : `/app/eletiva/${slug}`;
+      ? "continuar trilha"
+      : "começar trilha";
+  const ctaHref = `/app/eletiva/${slug}`;
 
   const status = totalPublished === 0
     ? "aguardando primeiro módulo"
