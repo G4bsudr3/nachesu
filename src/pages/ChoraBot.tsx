@@ -278,7 +278,16 @@ const ChoraBot = () => {
     <div className="h-[calc(100dvh-var(--mobile-nav-h,0px))] bg-perestroika-bege flex flex-col overflow-hidden">
       {/* header mínimo: título · histórico · nova · voltar */}
       <header className="border-b border-perestroika-preto/10 px-4 py-3 flex items-center justify-between bg-perestroika-bege sticky top-0 z-10">
-        <div aria-hidden="true" className="flex-1" />
+        <div className="flex items-center justify-start gap-1 flex-1">
+          <Link
+            to="/app"
+            aria-label="voltar"
+            className="flex items-center gap-2 text-xs font-display uppercase tracking-[0.2em] text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">voltar</span>
+          </Link>
+        </div>
         <span className="font-display uppercase tracking-[0.15em] text-base sm:text-lg text-perestroika-preto">
           tutor ia
         </span>
@@ -299,14 +308,6 @@ const ChoraBot = () => {
           >
             <Plus className="w-4 h-4" />
           </button>
-          <Link
-            to="/app"
-            aria-label="voltar"
-            className="flex items-center gap-2 text-xs font-display uppercase tracking-[0.2em] text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">voltar</span>
-          </Link>
         </div>
       </header>
 
