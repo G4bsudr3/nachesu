@@ -450,7 +450,7 @@ const Index = () => {
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="font-display uppercase text-xl leading-none">{f.nick}</p>
+                      <p className="font-display uppercase text-lg leading-none">{f.nick}</p>
                       <a
                         href={f.linkedin}
                         target="_blank"
@@ -461,7 +461,7 @@ const Index = () => {
                         <Linkedin className="w-4 h-4" />
                       </a>
                     </div>
-                    <p className="font-body text-xs text-perestroika-preto/65 mt-1 leading-snug">
+                    <p className="font-body text-sm text-perestroika-preto/65 mt-1 leading-snug">
                       {f.frase}
                     </p>
                   </div>
