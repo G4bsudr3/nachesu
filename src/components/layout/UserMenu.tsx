@@ -23,7 +23,6 @@ const getInitials = (name: string, email?: string | null) => {
  */
 export const UserMenu = ({ className }: UserMenuProps) => {
   const { user, signOut } = useAuth();
-  const { isAdmin } = useUserRole();
   const { data: dashboard } = useDashboardData();
 
   if (!user) return null;
@@ -83,13 +82,6 @@ export const UserMenu = ({ className }: UserMenuProps) => {
         <nav className="py-1.5" aria-label="menu do perfil">
           <MenuLink to="/app/conta" icon={<UserIcon className="h-4 w-4" />} label="minha conta" />
           <MenuLink to="/app/conta" icon={<Settings className="h-4 w-4" />} label="configurações" />
-          {isAdmin && (
-            <MenuLink
-              to="/admin"
-              icon={<Shield className="h-4 w-4" />}
-              label="painel admin"
-            />
-          )}
           <div className="my-1.5 h-px bg-perestroika-preto/10" />
           <button
             type="button"
