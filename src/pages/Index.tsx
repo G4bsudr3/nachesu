@@ -169,7 +169,7 @@ const Index = () => {
                   href={`#${item.id}`}
                   onClick={(e) => handleAnchorClick(e, item.id)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`hidden lg:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
+                  className={`hidden relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
                     isActive ? "opacity-100 text-perestroika-preto" : "opacity-70 hover:opacity-100"
                   }`}
                 >
@@ -197,6 +197,7 @@ const Index = () => {
               aria-controls="mobile-menu"
               aria-label={menuOpen ? "fechar menu" : "abrir menu"}
               className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border border-perestroika-preto/20 text-perestroika-preto hover:bg-perestroika-preto/5 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
