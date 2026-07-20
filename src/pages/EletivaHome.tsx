@@ -216,6 +216,7 @@ const EletivaHome = () => {
   const totalPublished = snapshot?.totalPublished ?? 0;
   const progressPct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const tutorTo = current ? `/app/tutor?module=${current.number}` : "/app/tutor";
+  const heroColor = slug === "economia-circular" ? "#8A85BF" : "#f756a6";
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
@@ -288,7 +289,9 @@ const EletivaHome = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-3xl border-2 border-perestroika-preto bg-perestroika-preto text-perestroika-bege p-6 sm:p-8 mb-6"
+            className="rounded-3xl border-2 text-perestroika-bege p-6 sm:p-8 mb-6"
+            style={{ backgroundColor: heroColor, borderColor: heroColor }}
+
           >
             <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-bege/60 mb-2 inline-flex items-center gap-2">
               <EletivaSymbol size={22} pose="building" /> próximo passo
@@ -304,7 +307,9 @@ const EletivaHome = () => {
             <button
               type="button"
               onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
-              className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege text-perestroika-preto px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+              className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+              style={{ color: heroColor }}
+
             >
               continuar de onde parou <ArrowRight className="h-4 w-4" />
             </button>
