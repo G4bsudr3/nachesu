@@ -22,7 +22,7 @@ const STEPS = [
     n: 2,
     color: "bg-perestroika-laranja",
     title: "escolhe como entrar",
-    desc: "link mágico (só email) ou senha",
+    desc: "link mágico (só email) ou email + senha",
   },
   {
     n: 3,
