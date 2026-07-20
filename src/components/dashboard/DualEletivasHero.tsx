@@ -114,8 +114,7 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
 
       {/* título em destaque */}
       <h3
-        className="font-display uppercase text-5xl sm:text-6xl mb-4 leading-[0.9] text-balance"
-        style={{ color: info.accent }}
+        className="font-display uppercase text-5xl sm:text-6xl mb-4 leading-[0.9] text-balance text-perestroika-preto"
       >
         {slug === "economia-circular" ? "ECONOMIA CIRCULAR\u00a0" : title.toLowerCase()}
       </h3>
