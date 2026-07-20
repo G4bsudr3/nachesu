@@ -82,10 +82,10 @@ export const PageHeader = ({
           </div>
         )}
 
-        {/* direita: back + ações */}
+        {/* direita: ações + back no canto direito */}
         <div className="flex flex-1 items-center justify-end gap-1.5 sm:gap-3 shrink-0 flex-nowrap">
-          {backLink}
           {actions}
+          {backLink}
         </div>
       </div>
     </header>
