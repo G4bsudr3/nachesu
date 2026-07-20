@@ -15,6 +15,7 @@ const eletivas: Record<
     n: string;
     nome: string;
     professor: string;
+    professorFoto: string;
     pitch: string;
     descLonga: string;
     accent: string;
