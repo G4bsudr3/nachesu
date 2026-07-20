@@ -518,7 +518,7 @@ const Index = () => {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto md:mx-0 w-44 sm:w-56 md:w-64"
           >
-            <img src={joaoTutor} alt="joão-de-barro tutor da naches u" className="w-full h-auto rounded-3xl" loading="lazy" />
+            <img src={joaoTutor} alt="joão-de-barro tutor da naches u" width={512} height={512} decoding="async" className="w-full h-auto rounded-3xl" loading="lazy" />
           </motion.div>
 
           <motion.div
