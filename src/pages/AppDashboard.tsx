@@ -21,8 +21,8 @@ import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
-import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
 import { DashboardCommandPanel } from "@/components/dashboard/DashboardCommandPanel";
+import { DualEletivasHero } from "@/components/dashboard/DualEletivasHero";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
@@ -122,34 +122,16 @@ const AppDashboard = () => {
             loading={!!activeCourseId && eletivaLoading && !eletiva}
           />
 
-          {/* 2+ matrículas → switcher mobile-first + hero da eletiva ATIVA */}
-          {hasMultiple && (
-            <>
-              <section aria-label="suas eletivas" className="space-y-3">
-                <div className="flex items-end justify-between gap-3">
-                  <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
-                    suas eletivas · escolha a atual
-                  </p>
-                  <Link
-                    to="/app/eletivas"
-                    className="font-body text-xs uppercase tracking-wider text-perestroika-preto/70 hover:text-perestroika-preto"
-                  >
-                    gerenciar →
-                  </Link>
-                </div>
-                <EletivaSwitcher />
-              </section>
-              {activeCourseId && <EletivaCard snapshot={eletiva ?? undefined} />}
-            </>
-          )}
+          {/* 2+ matrículas → hero paralelo com as duas eletivas em peso equivalente */}
+          {hasMultiple && <DualEletivasHero />}
 
           {/* 1 matrícula → hero direto (CTA leva pro módulo atual) */}
           {!hasMultiple && activeCourseId && (
             <EletivaCard snapshot={eletiva ?? undefined} />
           )}
 
-          {/* painel de comando: complementa o hero sem repetir o CTA */}
-          {activeCourseId && (
+          {/* painel de comando: só na visão de eletiva única (evita fixar em uma das duas) */}
+          {!hasMultiple && activeCourseId && (
             <DashboardCommandPanel
               snapshot={eletiva ?? null}
               courseTitle={activeEnrollment?.course?.title}
