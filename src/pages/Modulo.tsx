@@ -11,6 +11,7 @@ import { logAdminModuleView } from "@/hooks/useAdminAuditLog";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ModuloSkeleton } from "@/components/eletiva/modulo/ModuloSkeleton";
@@ -463,17 +464,8 @@ const Modulo = () => {
       <PageHeader
         showLogo
         logoLink="/app"
-        actions={
-          <button
-            type="button"
-            onClick={() => navigate(courseSlug ? `/app/eletiva/${courseSlug}` : "/app")}
-            className="icon-btn"
-            aria-label={courseSlug ? "voltar pra eletiva" : "voltar pro início"}
-            title={courseSlug ? "voltar pra eletiva" : "voltar pro início"}
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </button>
-        }
+        back={{ to: courseSlug ? `/app/eletiva/${courseSlug}` : "/app", label: "voltar" }}
+        actions={<AuthedHeaderActions />}
       />
 
       <main id="conteudo" className="relative z-10 container max-w-3xl pt-6 pb-16 sm:pt-10">
