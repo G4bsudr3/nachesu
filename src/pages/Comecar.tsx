@@ -33,7 +33,9 @@ const Comecar = () => {
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
       <PageHeader
+        layout="split"
         borderless
+        layout="split"
         logoLink="/"
         actions={
           <Link
