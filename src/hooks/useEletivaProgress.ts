@@ -218,7 +218,7 @@ export const useEletivaProgress = (courseId?: string | null) => {
         completedPillIds,
         unlockedModuleIds,
         sequentialUnlock,
-        totalPublished: publishedModules.length,
+        totalPublished,
         totalCompleted,
         currentModule,
         nextModule,
