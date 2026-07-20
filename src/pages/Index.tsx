@@ -725,7 +725,7 @@ const Index = () => {
             </Link>
           </motion.div>
 
-          <p className="font-body text-xs sm:text-sm text-perestroika-preto/60 max-w-md">
+          <p className="font-body text-sm text-perestroika-preto/60 max-w-md">
             já tem matrícula?{" "}
             <Link to="/auth" className="underline underline-offset-4 hover:text-perestroika-preto">
               entrar direto
