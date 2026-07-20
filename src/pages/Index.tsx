@@ -318,13 +318,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
             o que é o nachesu
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
             aqui você aprende<br />fazendo.
           </h2>
-          <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
+          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
             esqueça aula longa e prova no fim.&nbsp;<br />
             toda semana você abre um módulo, faz uma coisinha e essa coisinha&nbsp;no fim do ano, vira um projeto seu pra mostrar.
           </p>
