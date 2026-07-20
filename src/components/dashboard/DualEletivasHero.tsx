@@ -7,7 +7,6 @@ import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
 import duduAsset from "@/assets/facilitadores/dudu.png.asset.json";
 
 type FacilitadorInfo = {
-  n: string;
   nome: string;
   foto: string;
   bio: string;
@@ -16,14 +15,12 @@ type FacilitadorInfo = {
 
 const infoBySlug: Record<string, FacilitadorInfo> = {
   "ia-na-pratica": {
-    n: "01",
     nome: "frattz",
     foto: frattzAsset.url,
     bio: "constrói na frente da turma, com a turma decidindo o caminho.",
     accent: "#f756a6",
   },
   "economia-circular": {
-    n: "02",
     nome: "dudu",
     foto: duduAsset.url,
     bio: "ex-perestroika, ex-500 global. junta empreender com aprender.",
@@ -34,8 +31,7 @@ const infoBySlug: Record<string, FacilitadorInfo> = {
 /**
  * Cards do dashboard pra estudante matriculada em 2+ eletivas.
  * Espelha a estética editorial da página /eletivas: fundo bege, faixa colorida no topo,
- * numeração grande na cor da trilha, chip com meta, título preto, divisor, facilitador
- * com foto + bio curta, CTA pill preto. Adiciona a régua de progresso da trilha por baixo.
+ * título preto em destaque, CTA pill preto. Adiciona a régua de progresso da trilha por baixo.
  */
 export const DualEletivasHero = () => {
   const { data: enrollments } = useMyEnrollments();
@@ -53,7 +49,6 @@ export const DualEletivasHero = () => {
           const info =
             infoBySlug[e.course!.slug] ??
             ({
-              n: String(idx + 1).padStart(2, "0"),
               nome: "seu tutor",
               foto: frattzAsset.url,
               bio: "",
@@ -113,18 +108,11 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
         aria-hidden="true"
       />
 
-      {/* topo: número */}
-      <div className="flex items-baseline justify-between gap-3 mb-6">
-        <span
-          className="font-display text-7xl sm:text-8xl leading-none"
-          style={{ color: info.accent }}
-        >
-          {info.n}
-        </span>
-      </div>
-
-      {/* título + pitch */}
-      <h3 className="font-display uppercase text-3xl sm:text-4xl mb-3 leading-tight text-perestroika-preto text-balance">
+      {/* título em destaque */}
+      <h3
+        className="font-display uppercase text-5xl sm:text-6xl mb-4 leading-[0.9] text-balance"
+        style={{ color: info.accent }}
+      >
         {title.toLowerCase()}
       </h3>
       {isLoading ? (
