@@ -7,7 +7,6 @@ import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
 import duduAsset from "@/assets/facilitadores/dudu.png.asset.json";
 
 type FacilitadorInfo = {
-  n: string;
   nome: string;
   foto: string;
   bio: string;
@@ -16,14 +15,12 @@ type FacilitadorInfo = {
 
 const infoBySlug: Record<string, FacilitadorInfo> = {
   "ia-na-pratica": {
-    n: "01",
     nome: "frattz",
     foto: frattzAsset.url,
     bio: "constrói na frente da turma, com a turma decidindo o caminho.",
     accent: "#f756a6",
   },
   "economia-circular": {
-    n: "02",
     nome: "dudu",
     foto: duduAsset.url,
     bio: "ex-perestroika, ex-500 global. junta empreender com aprender.",
@@ -52,7 +49,6 @@ export const DualEletivasHero = () => {
           const info =
             infoBySlug[e.course!.slug] ??
             ({
-              n: String(idx + 1).padStart(2, "0"),
               nome: "seu tutor",
               foto: frattzAsset.url,
               bio: "",
