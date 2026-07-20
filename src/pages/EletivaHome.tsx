@@ -11,7 +11,7 @@ import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { EletivaOnboardingOverlay } from "@/components/eletiva/EletivaOnboardingOverlay";
-import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
+
 
 const trailColorByOrder: Record<number, string> = {
   1: "#fe7b02",
