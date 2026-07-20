@@ -34,7 +34,7 @@ const Comecar = () => {
       <header className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85">
         <div className="container flex items-center justify-between gap-4 py-4">
           <Link to="/" aria-label="voltar pra home">
-            <NachesULogo variant="dark" />
+            <NachesULogo variant="ink" />
           </Link>
           <Link
             to="/auth"
