@@ -87,7 +87,7 @@ const Eletivas = () => {
       />
 
       {/* hero */}
-      <section className="container relative pt-10 pb-14 sm:pt-16 sm:pb-20">
+      <section className="container relative pt-12 pb-16 sm:pt-20 sm:pb-24">
         <motion.div
           className="absolute right-2 top-0 sm:right-12 sm:top-6 pointer-events-none z-0"
           animate={prefersReducedMotion ? undefined : { rotate: [8, 14, 8] }}
