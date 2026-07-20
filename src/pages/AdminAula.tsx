@@ -169,27 +169,27 @@ function AdminAulaInner({ number }: { number: number }) {
         style={{ backgroundColor: `${accent}10` }}
       >
         <div className="max-w-6xl mx-auto flex flex-wrap items-center gap-3 justify-between">
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="min-w-0">
+            <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/50">
+              aula {mod.number}
+            </p>
+            <h1 className="font-display text-2xl sm:text-3xl truncate">{mod.title}</h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <Badge
+              variant="outline"
+              className="border-2 font-body text-[11px]"
+              style={{ borderColor: accent, color: accent }}
+            >
+              módulo id {mod.id.slice(0, 8)}
+            </Badge>
             <Button asChild variant="ghost" size="sm" className="shrink-0">
               <Link to="/admin">
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 admin
               </Link>
             </Button>
-            <div className="min-w-0">
-              <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/50">
-                aula {mod.number}
-              </p>
-              <h1 className="font-display text-2xl sm:text-3xl truncate">{mod.title}</h1>
-            </div>
           </div>
-          <Badge
-            variant="outline"
-            className="border-2 font-body text-[11px]"
-            style={{ borderColor: accent, color: accent }}
-          >
-            módulo id {mod.id.slice(0, 8)}
-          </Badge>
         </div>
       </header>
 
