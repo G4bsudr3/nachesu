@@ -335,7 +335,7 @@ const Auth = () => {
               <p className="font-body text-base text-perestroika-preto/70 mb-10">
                 {fromCarta
                   ? "use o email do convite da escola sebrae. mandamos um link mágico em segundos."
-                  : "tem senha? preenche os dois. se não, só o email basta, a gente manda o link."}
+                  : <>tem senha? preenche os dois.&nbsp;<br />se não, só o email basta, a gente manda o link.</>}
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
