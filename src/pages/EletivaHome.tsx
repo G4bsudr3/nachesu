@@ -250,8 +250,8 @@ const EletivaHome = () => {
           className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto p-8 sm:p-12 mb-6"
           style={{ backgroundColor: heroColor }}
         >
-          <div className="absolute right-2 top-2 sm:right-6 sm:top-6 opacity-90 w-24 sm:w-36">
-            <EletivaSymbol size={144} pose="talking" className="!w-full !h-auto" />
+          <div className="absolute right-5 top-5 sm:right-10 sm:top-10 opacity-90 w-20 sm:w-28">
+            <EletivaSymbol size={112} pose="talking" className="!w-full !h-auto" />
           </div>
 
           <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/75 mb-3">
