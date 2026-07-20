@@ -26,7 +26,7 @@ export const DualEletivasHero = () => {
           duas trilhas <span className="text-perestroika-rosa">ativas</span>
         </h2>
         <p className="font-body text-base sm:text-lg text-perestroika-preto/70 max-w-md text-pretty">
-          você tá no comando. escolha qual eletiva quer avançar hoje.
+          você tá no comando. escolha qual eletiva quer avançar hoje?
         </p>
       </header>
 
