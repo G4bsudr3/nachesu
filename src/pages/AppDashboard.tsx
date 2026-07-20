@@ -21,8 +21,8 @@ import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
-import { EletivaSwitcher } from "@/components/dashboard/EletivaSwitcher";
 import { DashboardCommandPanel } from "@/components/dashboard/DashboardCommandPanel";
+import { DualEletivasHero } from "@/components/dashboard/DualEletivasHero";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
