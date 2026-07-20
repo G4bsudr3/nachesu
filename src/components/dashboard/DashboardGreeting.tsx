@@ -45,12 +45,12 @@ export const DashboardGreeting = ({
   totalPublished,
   daysSinceLastActivity,
   loading = false,
+  hasMultiple = false,
 }: Props) => {
-  const contextLine = buildContextLine(
-    totalCompleted,
-    totalPublished,
-    daysSinceLastActivity,
-  );
+  const contextLine = hasMultiple
+    ? "você tem duas trilhas abertas. escolha por onde avançar hoje."
+    : buildContextLine(totalCompleted, totalPublished, daysSinceLastActivity);
+
 
   return (
     <section aria-label="saudação" className="space-y-1.5">
