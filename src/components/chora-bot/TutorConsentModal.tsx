@@ -18,13 +18,13 @@ type Props = {
 
 export const TutorConsentModal = ({ open, onAccepted }: Props) => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
 
   const handleAccept = async () => {
     if (!user) return;
     setLoading(true);
     const now = new Date().toISOString();
-    // upsert garante que mesmo sem linha em profiles o consentimento persiste
     const { error } = await supabase
       .from("profiles")
       .upsert(
@@ -36,8 +36,11 @@ export const TutorConsentModal = ({ open, onAccepted }: Props) => {
       toast.error("não consegui registrar agora, tenta de novo");
       return;
     }
+    // fecha o modal imediatamente atualizando o cache antes do refetch
+    queryClient.setQueryData(["tutor-consent", user.id], { accepted: true, at: now });
     onAccepted();
   };
+
 
   return (
     <Dialog open={open}>
