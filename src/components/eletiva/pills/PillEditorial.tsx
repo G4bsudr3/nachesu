@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check, Sparkle } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, ChevronUp, Sparkle } from "lucide-react";
 import { PillVideoPlayer } from "@/components/eletiva/modulo/PillVideoPlayer";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { SaveIndicator } from "./SaveIndicator";
