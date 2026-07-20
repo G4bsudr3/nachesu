@@ -119,9 +119,7 @@ const EmailScreen = ({
   validating: boolean;
 }) => (
   <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
-    <header className="container max-w-5xl pt-8 pb-4">
-      <NachesULogo variant="ink" />
-    </header>
+    <PageHeader borderless back={{ to: "/" }} logoLink="/" />
     <main className="flex-1 container max-w-3xl flex flex-col justify-center py-20">
       <span className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/50">
         formulário básico de identidade

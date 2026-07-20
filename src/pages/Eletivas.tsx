@@ -71,18 +71,19 @@ const Eletivas = () => {
 
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
-      {/* topbar */}
-      <header className="container flex items-center justify-between pt-8 pb-4">
-        <EletivaLogo variant="ink" />
-        <nav className="flex items-center gap-5 sm:gap-7">
+      <PageHeader
+        borderless
+        back={{ to: "/" }}
+        logoLink="/"
+        actions={
           <Link
             to="/auth"
-            className="font-body text-sm sm:text-base uppercase tracking-wide hover:opacity-60 transition-opacity"
+            className="inline-flex items-center min-h-11 px-1 font-body text-sm uppercase tracking-wide hover:opacity-60 transition-opacity"
           >
             entrar
           </Link>
-        </nav>
-      </header>
+        }
+      />
 
       {/* hero */}
       <section className="container relative pt-10 pb-14 sm:pt-16 sm:pb-20">
