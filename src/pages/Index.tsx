@@ -632,13 +632,13 @@ const Index = () => {
           className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-10 md:gap-16 items-start"
         >
           <div className="md:sticky md:top-32">
-            <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
               perguntas frequentes
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
               tira a<br />dúvida.
             </h2>
-            <p className="mt-6 font-body text-base sm:text-lg text-perestroika-preto/75 max-w-sm">
+            <p className="mt-6 font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75 max-w-sm">
               o que mais perguntam por aqui. clica pra abrir.
             </p>
             <div className="mt-6 hidden md:block">
