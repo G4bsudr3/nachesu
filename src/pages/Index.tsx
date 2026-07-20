@@ -689,7 +689,7 @@ const Index = () => {
                 <AccordionTrigger className="font-display uppercase text-left text-xl sm:text-2xl leading-tight tracking-wide hover:no-underline py-5">
                   {item.q}
                 </AccordionTrigger>
-                <AccordionContent className="font-body text-base text-perestroika-preto/75 leading-relaxed pb-5">
+                <AccordionContent className="font-body font-normal text-base leading-relaxed text-perestroika-preto/75 pb-5">
                   {item.a}
                 </AccordionContent>
               </AccordionItem>
