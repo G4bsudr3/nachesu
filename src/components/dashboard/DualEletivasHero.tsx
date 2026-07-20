@@ -98,7 +98,7 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
   const ctaHref = `/app/eletiva/${slug}`;
 
   const pitch = moduleToShow
-    ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a trilha").toLowerCase()}`
+    ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a eletiva").toLowerCase()}`
     : totalPublished === 0
       ? "o primeiro módulo abre em breve. você é avisada por aqui."
       : "você tá em dia. revise materiais ou aguarde o próximo abrir.";

@@ -200,7 +200,7 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
       aria-label="próximo módulo da eletiva"
       className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-bege p-8 sm:p-12"
     >
-      {/* accent bar topo com cor da trilha */}
+      {/* accent bar topo com cor da etapa */}
       <div
         className="absolute inset-x-0 top-0 h-2"
         style={{ backgroundColor: trailColor }}
