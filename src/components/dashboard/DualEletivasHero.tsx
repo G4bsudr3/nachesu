@@ -37,7 +37,7 @@ export const DualEletivasHero = () => {
           // fallback determinístico por slug pra garantir contraste visual
           // entre as duas trilhas quando o accent do banco coincide.
           const slugAccent: Record<string, string> = {
-            "ia-na-pratica": "#f756a6",
+            "ia-na-pratica": "#fe7b02",
             "economia-circular": "#8A85BF",
           };
           const siblingsShareColor =
