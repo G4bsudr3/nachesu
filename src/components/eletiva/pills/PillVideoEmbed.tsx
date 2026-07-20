@@ -63,8 +63,7 @@ export function PillVideoEmbed({
           onClick={() => !isCompleted && onComplete()}
           disabled={isCompleted || isCompleting}
           aria-busy={isCompleting}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
-          style={{ backgroundColor: accent }}
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege bg-perestroika-preto transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isCompleted ? (
             <>
@@ -74,7 +73,7 @@ export function PillVideoEmbed({
           ) : (
             <>
               vi, bora pra missão
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <ArrowRight className="h-4 w-4" aria-hidden="true" style={{ color: accent }} />
             </>
           )}
         </button>

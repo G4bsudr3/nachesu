@@ -158,8 +158,7 @@ export function PillBonus({
           onClick={onComplete}
           disabled={isCompleted || isCompleting}
           aria-busy={isCompleting}
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-60"
-          style={{ backgroundColor: accent }}
+          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege bg-perestroika-preto transition-transform hover:scale-105 active:scale-95 disabled:opacity-60"
         >
           {isCompleted ? (
             <>
