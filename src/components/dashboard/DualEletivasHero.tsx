@@ -152,11 +152,28 @@ const EletivaJourneyCard = ({ courseId, slug, title, accent }: CardProps) => {
       </div>
 
       <div className="relative z-10 mt-8 space-y-4">
-        <div className="w-full bg-perestroika-preto/25 h-2 rounded-full overflow-hidden">
+        <div>
+          <div className="flex items-baseline justify-between mb-1.5 gap-3">
+            <span className="font-body text-[10px] uppercase tracking-[0.22em] font-bold text-perestroika-bege/80">
+              progresso
+            </span>
+            <span className="font-body text-xs font-bold tabular-nums text-perestroika-bege">
+              {totalCompleted}/{totalPublished} · {pct}%
+            </span>
+          </div>
           <div
-            className="h-full bg-perestroika-bege rounded-full transition-[width] duration-500"
-            style={{ width: `${Math.max(pct, moduleToShow ? 4 : 0)}%` }}
-          />
+            className="w-full bg-perestroika-preto/25 h-2 rounded-full overflow-hidden"
+            role="progressbar"
+            aria-valuenow={pct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`${totalCompleted} de ${totalPublished} módulos concluídos, ${pct}%`}
+          >
+            <div
+              className="h-full bg-perestroika-bege rounded-full transition-[width] duration-500"
+              style={{ width: `${Math.max(pct, moduleToShow ? 4 : 0)}%` }}
+            />
+          </div>
         </div>
 
         <div className="flex items-center justify-between gap-3 rounded-2xl bg-perestroika-bege text-perestroika-preto px-4 sm:px-5 py-3 sm:py-3.5 font-body font-extrabold text-sm sm:text-base uppercase tracking-tight transition-all group-hover:bg-perestroika-preto group-hover:text-perestroika-bege">
