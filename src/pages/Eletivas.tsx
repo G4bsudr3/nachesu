@@ -27,6 +27,7 @@ const eletivas: Record<
     n: "01",
     nome: "ia na prática",
     professor: "com frattz",
+    professorFoto: frattzAsset.url,
     pitch: "construa seu primeiro app com ia, do problema ao mvp no ar.",
     descLonga:
       "20 módulos curtos pra você sair da ideia ao app no ar, com o tutor ia te provocando do seu lado.",
@@ -43,6 +44,7 @@ const eletivas: Record<
     n: "02",
     nome: "economia circular",
     professor: "com dudu",
+    professorFoto: duduAsset.url,
     pitch: "desenhe um negócio que regenera, do sistema ao protótipo validado.",
     descLonga:
       "20 semanas pra enxergar fluxos, mapear ciclos e prototipar negócios regenerativos usando a escola sebrae bh como laboratório vivo.",
