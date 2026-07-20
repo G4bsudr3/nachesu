@@ -47,7 +47,7 @@ const Comecar = () => {
       />
 
       {/* hero */}
-      <section className="container relative pt-12 pb-12 sm:pt-20 sm:pb-16">
+      <section className="container relative pt-12 pb-16 sm:pt-20 sm:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
