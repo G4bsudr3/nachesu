@@ -565,13 +565,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-10 sm:mb-12 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             por dentro das trilhas
           </p>
           <h2 className="font-display uppercase display-clamp-section mb-8 leading-[0.95]">
             4 trilhas,<br />20 módulos,<br />1 projeto seu.
           </h2>
-          <p className="font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75 mb-8">
+          <p className="font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground mb-8">
             cada eletiva tem 4 trilhas. cada trilha tem 5 módulos. cada módulo tem 50 minutos. troque ali embaixo pra ver a outra.
           </p>
 
@@ -629,7 +629,7 @@ const Index = () => {
                   <span className="font-display text-6xl sm:text-7xl leading-none" style={{ color: t.color }}>
                     {t.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55 inline-flex items-center gap-1.5">
+                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground inline-flex items-center gap-1.5">
                     <Clock className="h-3 w-3" aria-hidden="true" />
                     {t.range}
                   </span>
@@ -637,7 +637,7 @@ const Index = () => {
                 <h3 className="font-display uppercase text-2xl sm:text-3xl mb-3 leading-[1.05]">
                   {t.titulo}
                 </h3>
-                <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed">
+                <p className="font-body font-normal text-base text-muted-foreground leading-relaxed">
                   {t.desc}
                 </p>
               </motion.article>
@@ -659,13 +659,13 @@ const Index = () => {
           className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-10 md:gap-16 items-start"
         >
           <div className="md:sticky md:top-32">
-            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
               perguntas frequentes
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
               tira a<br />dúvida.
             </h2>
-            <p className="mt-6 font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75 max-w-sm">
+            <p className="mt-6 font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground max-w-sm">
               o que mais perguntam por aqui. clica pra abrir.
             </p>
             <div className="mt-6 hidden md:block">
@@ -716,7 +716,7 @@ const Index = () => {
                 <AccordionTrigger className="font-display uppercase text-left text-xl sm:text-2xl leading-tight tracking-wide hover:no-underline py-5">
                   {item.q}
                 </AccordionTrigger>
-                <AccordionContent className="font-body font-normal text-base leading-relaxed text-perestroika-preto/75 pb-5">
+                <AccordionContent className="font-body font-normal text-base leading-relaxed text-muted-foreground pb-5">
                   {item.a}
                 </AccordionContent>
               </AccordionItem>
@@ -752,7 +752,7 @@ const Index = () => {
             </Link>
           </motion.div>
 
-          <p className="font-body text-sm text-perestroika-preto/60 max-w-md">
+          <p className="font-body text-sm text-muted-foreground max-w-md">
             já tem matrícula?{" "}
             <Link to="/auth" className="underline underline-offset-4 hover:text-perestroika-preto">
               entrar direto
