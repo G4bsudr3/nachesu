@@ -164,7 +164,8 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
           to={ctaHref}
           onClick={() => setSlug(slug)}
           aria-label={`abrir eletiva ${title.toLowerCase()}`}
-          className="inline-flex items-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-[1.03] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+          className="inline-flex items-center gap-2 min-h-12 rounded-full text-perestroika-preto px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-[1.03] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+          style={{ backgroundColor: info.accent }}
         >
           {ctaLabel}
           <ArrowRight className="h-4 w-4" />
