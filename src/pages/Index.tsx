@@ -169,7 +169,7 @@ const Index = () => {
                   href={`#${item.id}`}
                   onClick={(e) => handleAnchorClick(e, item.id)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`hidden lg:inline relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
+                  className={`hidden relative font-body text-sm uppercase tracking-wide transition-opacity py-1 ${
                     isActive ? "opacity-100 text-perestroika-preto" : "opacity-70 hover:opacity-100"
                   }`}
                 >
