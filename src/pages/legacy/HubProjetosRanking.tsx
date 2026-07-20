@@ -95,7 +95,7 @@ const HubProjetosRanking = () => {
 };
 
 const EmptyState = ({ message }: { message: string }) => (
-  <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/40 px-6 py-16 text-center">
+  <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 px-6 py-16 text-center">
     <Trophy className="mx-auto mb-4 h-8 w-8 text-perestroika-preto/40" />
     <p className="mx-auto max-w-sm font-body text-sm text-perestroika-preto/65">{message}</p>
   </div>
@@ -115,10 +115,10 @@ const RankCard = ({ row }: { row: { rank: number; project_id: string; title: str
       className={cn(
         "relative overflow-hidden rounded-3xl border shadow-sm",
         isFirst
-          ? "border-perestroika-preto/20 bg-white"
+          ? "border-perestroika-preto/20 bg-perestroika-bege"
           : isPodium
-            ? "border-perestroika-preto/15 bg-white/85"
-            : "border-perestroika-preto/10 bg-white/60",
+            ? "border-perestroika-preto/15 bg-perestroika-bege/85"
+            : "border-perestroika-preto/10 bg-perestroika-bege/60",
       )}
     >
       {isFirst && (

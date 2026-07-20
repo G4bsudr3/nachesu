@@ -138,7 +138,7 @@ export const FeedbackFinalFlow = ({
           </Link>
           <Link
             to="/app/hub"
-            className="inline-flex items-center gap-2 rounded-full bg-white border border-perestroika-preto/15 text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege border border-perestroika-preto/15 text-perestroika-preto px-7 py-4 font-body text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
           >
             voltar pro hub
           </Link>

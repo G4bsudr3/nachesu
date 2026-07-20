@@ -52,7 +52,7 @@ export const StudentMessageComposer = ({ userId }: Props) => {
             value={subject}
             onChange={(e) => setSubject(e.target.value.slice(0, 200))}
             placeholder="ex: gostei demais da sua entrega"
-            className="w-full bg-white/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/45"
+            className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/45"
           />
         </div>
 
@@ -65,7 +65,7 @@ export const StudentMessageComposer = ({ userId }: Props) => {
             onChange={(e) => setBody(e.target.value.slice(0, 4000))}
             rows={6}
             placeholder="escreva direto, primeira pessoa, sem corporativês"
-            className="w-full bg-white/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/45 resize-y"
+            className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/45 resize-y"
           />
           <p className="text-[10px] text-perestroika-preto/40 mt-1 text-right">
             {body.length}/4000
@@ -81,7 +81,7 @@ export const StudentMessageComposer = ({ userId }: Props) => {
               value={link}
               onChange={(e) => setLink(e.target.value)}
               placeholder="/app/modulo/..."
-              className="w-full bg-white/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm"
+              className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm"
             />
           </div>
           <label className="flex items-end gap-2 text-sm text-perestroika-preto/80 pb-2">
@@ -125,7 +125,7 @@ export const StudentMessageComposer = ({ userId }: Props) => {
             {messages.map((m) => (
               <li
                 key={m.id}
-                className="rounded-xl border border-perestroika-preto/12 bg-white/60 p-4"
+                className="rounded-xl border border-perestroika-preto/12 bg-perestroika-bege/60 p-4"
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <p className="font-medium text-perestroika-preto text-sm">{m.subject}</p>

@@ -155,7 +155,7 @@ const AdminCertificateSandbox = () => {
         </div>
 
         {/* controles */}
-        <div className="grid sm:grid-cols-2 gap-4 mb-8 p-5 rounded-2xl bg-white/40 border border-perestroika-preto/10">
+        <div className="grid sm:grid-cols-2 gap-4 mb-8 p-5 rounded-2xl bg-perestroika-bege/40 border border-perestroika-preto/10">
           <div>
             <label className="block text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-2">
               nome no certificado
@@ -212,7 +212,7 @@ const AdminCertificateSandbox = () => {
               <button
                 onClick={handleDownload}
                 disabled={downloading || critiquing}
-                className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege border border-perestroika-preto/20 text-perestroika-preto px-5 py-2.5 text-xs uppercase tracking-wide hover:bg-white transition-colors disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-full bg-perestroika-bege border border-perestroika-preto/20 text-perestroika-preto px-5 py-2.5 text-xs uppercase tracking-wide hover:bg-perestroika-bege transition-colors disabled:opacity-60"
               >
                 {downloading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -225,7 +225,7 @@ const AdminCertificateSandbox = () => {
           </div>
 
           {critique && (
-            <div className="mb-6 p-6 rounded-2xl bg-white/70 border border-perestroika-preto/15">
+            <div className="mb-6 p-6 rounded-2xl bg-perestroika-bege/70 border border-perestroika-preto/15">
               <div className="flex items-baseline gap-3 mb-4">
                 <span className="font-display text-5xl">{critique.overall_score.toFixed(1)}</span>
                 <span className="text-xs uppercase tracking-[0.3em] text-perestroika-preto/55">/ 10 nota geral</span>

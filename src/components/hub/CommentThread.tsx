@@ -56,7 +56,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
       <div className="space-y-3">
         {loading && <div className="font-body text-sm text-perestroika-preto/50">carregando comentários…</div>}
         {!loading && comments.length === 0 && (
-          <div className="rounded-xl border border-dashed border-perestroika-preto/20 bg-white/30 px-4 py-6 text-center font-body text-sm text-perestroika-preto/55">
+          <div className="rounded-xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/30 px-4 py-6 text-center font-body text-sm text-perestroika-preto/55">
             ainda sem comentários. quebra o silêncio.
           </div>
         )}
@@ -65,7 +65,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
             const isMine = user?.id === c.user_id;
             const name = c.author.nickname || c.author.display_name || "alguém";
             return (
-              <div key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-white/50 px-4 py-3">
+              <div key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/50 px-4 py-3">
                 <div className="mb-1 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="font-body text-sm font-semibold text-perestroika-preto">{name}</span>
@@ -102,7 +102,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
       </div>
 
       {user && (
-        <div className="rounded-xl border border-perestroika-preto/15 bg-white/70 p-3">
+        <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/70 p-3">
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}

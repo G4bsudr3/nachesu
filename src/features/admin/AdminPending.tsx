@@ -130,7 +130,7 @@ export const AdminPending = () => {
           rows.map((r) => (
             <div
               key={r.user_id}
-              className="rounded-lg border border-perestroika-preto/15 bg-white/40 p-3"
+              className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 p-3"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
@@ -164,7 +164,7 @@ export const AdminPending = () => {
       </div>
 
       {/* desktop: table */}
-      <div className="hidden sm:block rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+      <div className="hidden sm:block rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">

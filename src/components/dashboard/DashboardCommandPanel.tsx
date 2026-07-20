@@ -74,7 +74,7 @@ export const DashboardCommandPanel = ({ snapshot, courseTitle }: Props) => {
       className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
     >
       {/* cadência */}
-      <div className="rounded-2xl border-2 border-perestroika-preto/12 bg-white/40 p-5 flex flex-col">
+      <div className="rounded-2xl border-2 border-perestroika-preto/12 bg-perestroika-bege/40 p-5 flex flex-col">
         <div className="flex items-center gap-2 text-perestroika-preto/55 mb-3">
           {nextReleaseDate && unlockedPending.length === 0 ? (
             <CalendarClock className="h-3.5 w-3.5" aria-hidden="true" />

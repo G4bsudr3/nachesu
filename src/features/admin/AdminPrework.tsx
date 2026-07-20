@@ -283,7 +283,7 @@ export const AdminPrework = () => {
                     type="number"
                     value={editing.ordem}
                     onChange={(e) => setEditing({ ...editing, ordem: parseInt(e.target.value) || 0 })}
-                    className="mt-1 bg-white/60"
+                    className="mt-1 bg-perestroika-bege/60"
                   />
                 </div>
                 <div>
@@ -292,7 +292,7 @@ export const AdminPrework = () => {
                     value={editing.tipo}
                     onValueChange={(v) => setEditing({ ...editing, tipo: v })}
                   >
-                    <SelectTrigger className="mt-1 bg-white/60">
+                    <SelectTrigger className="mt-1 bg-perestroika-bege/60">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -310,7 +310,7 @@ export const AdminPrework = () => {
                   value={editing.titulo}
                   onChange={(e) => setEditing({ ...editing, titulo: e.target.value })}
                   placeholder="ex: lovable em 10 minutos"
-                  className="mt-1 bg-white/60"
+                  className="mt-1 bg-perestroika-bege/60"
                 />
               </div>
 
@@ -321,7 +321,7 @@ export const AdminPrework = () => {
                   onChange={(e) => setEditing({ ...editing, descricao: e.target.value })}
                   placeholder="o que esse item entrega"
                   rows={3}
-                  className="mt-1 bg-white/60 resize-y"
+                  className="mt-1 bg-perestroika-bege/60 resize-y"
                 />
               </div>
 
@@ -332,7 +332,7 @@ export const AdminPrework = () => {
                   value={editing.url ?? ""}
                   onChange={(e) => setEditing({ ...editing, url: e.target.value })}
                   placeholder="https://..."
-                  className="mt-1 bg-white/60"
+                  className="mt-1 bg-perestroika-bege/60"
                 />
               </div>
 
@@ -348,7 +348,7 @@ export const AdminPrework = () => {
                     })
                   }
                   placeholder="ex: 10"
-                  className="mt-1 bg-white/60"
+                  className="mt-1 bg-perestroika-bege/60"
                 />
               </div>
 

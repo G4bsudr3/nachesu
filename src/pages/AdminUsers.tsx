@@ -283,11 +283,11 @@ const AdminUsers = () => {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="buscar por email, nome, nickname, papel ou eletiva…"
-            className="pl-9 bg-white/60 border-perestroika-preto/20"
+            className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
           />
         </div>
         <Select value={courseFilter} onValueChange={setCourseFilter}>
-          <SelectTrigger className="w-full md:w-56 bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-full md:w-56 bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="eletiva" />
           </SelectTrigger>
           <SelectContent>
@@ -299,7 +299,7 @@ const AdminUsers = () => {
           </SelectContent>
         </Select>
         <Select value={domainFilter} onValueChange={setDomainFilter}>
-          <SelectTrigger className="w-full md:w-56 bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-full md:w-56 bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="domínio" />
           </SelectTrigger>
           <SelectContent>
@@ -321,7 +321,7 @@ const AdminUsers = () => {
       </div>
 
 
-      <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">

@@ -229,7 +229,7 @@ export const AdminFeedbackFinal = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="buscar por nome ou conteúdo…"
-          className="pl-9 bg-white/60 border-perestroika-preto/20"
+          className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
         />
       </div>
 
@@ -244,7 +244,7 @@ export const AdminFeedbackFinal = () => {
       ) : (
         <div className="grid gap-4">
           {filtered.map((r) => (
-            <article key={r.id} className="rounded-2xl border border-perestroika-preto/15 bg-white/50 p-5 sm:p-6">
+            <article key={r.id} className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/50 p-5 sm:p-6">
               <header className="flex items-start justify-between gap-3 mb-4 flex-wrap">
                 <div>
                   <h3 className="font-display text-2xl uppercase leading-none text-perestroika-preto">

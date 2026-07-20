@@ -61,8 +61,8 @@ export const VoteButton = ({ projectId, projectOwnerId }: Props) => {
         isMyVote
           ? "border-perestroika-azul bg-perestroika-azul text-white hover:bg-perestroika-azul/90"
           : hasOtherVote
-            ? "border-perestroika-preto/20 bg-white/60 text-perestroika-preto/70 hover:border-perestroika-azul hover:text-perestroika-azul"
-            : "border-perestroika-preto/20 bg-white/60 text-perestroika-preto hover:border-perestroika-preto/50",
+            ? "border-perestroika-preto/20 bg-perestroika-bege/60 text-perestroika-preto/70 hover:border-perestroika-azul hover:text-perestroika-azul"
+            : "border-perestroika-preto/20 bg-perestroika-bege/60 text-perestroika-preto hover:border-perestroika-preto/50",
       )}
     >
       {isMyVote ? <Check className="h-3.5 w-3.5" /> : <Vote className="h-3.5 w-3.5" />}

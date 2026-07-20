@@ -88,7 +88,7 @@ export const AdminRubrics = () => {
         {rubrics.map((r) => (
           <li
             key={r.id}
-            className="rounded-xl border border-perestroika-preto/15 bg-white/50 p-4"
+            className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/50 p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -154,7 +154,7 @@ export const AdminRubrics = () => {
                 <Input
                   value={editing.name ?? ""}
                   onChange={(e) => setEditing({ ...editing, name: e.target.value })}
-                  className="bg-white/60"
+                  className="bg-perestroika-bege/60"
                 />
               </div>
               <div>
@@ -163,7 +163,7 @@ export const AdminRubrics = () => {
                   value={editing.description ?? ""}
                   onChange={(e) => setEditing({ ...editing, description: e.target.value })}
                   rows={2}
-                  className="bg-white/60"
+                  className="bg-perestroika-bege/60"
                 />
               </div>
               <label className="flex items-center gap-2 text-xs">
@@ -184,7 +184,7 @@ export const AdminRubrics = () => {
                   onChange={(e) =>
                     setEditing({ ...editing, score_type: e.target.value as "none" | "numeric" })
                   }
-                  className="w-full bg-white/60 border border-perestroika-preto/20 rounded-md px-2 py-1.5 text-sm"
+                  className="w-full bg-perestroika-bege/60 border border-perestroika-preto/20 rounded-md px-2 py-1.5 text-sm"
                 >
                   <option value="none">sem pontuação (só feedback)</option>
                   <option value="numeric">pontuação numérica</option>
@@ -202,7 +202,7 @@ export const AdminRubrics = () => {
                       onChange={(e) =>
                         setEditing({ ...editing, score_max: Number(e.target.value) })
                       }
-                      className="bg-white/60 h-8"
+                      className="bg-perestroika-bege/60 h-8"
                     />
                     <p className="text-[10px] text-perestroika-preto/50 mt-1">
                       ex: 10 vira "nota: 8 / 10" no card do estudante.
@@ -240,7 +240,7 @@ export const AdminRubrics = () => {
                           next[i] = { ...next[i], label: e.target.value };
                           setEditing({ ...editing, criteria: next });
                         }}
-                        className="bg-white/60 text-sm h-8"
+                        className="bg-perestroika-bege/60 text-sm h-8"
                       />
                       <Input
                         placeholder="descrição curta (opcional, ajuda a IA)"
@@ -250,7 +250,7 @@ export const AdminRubrics = () => {
                           next[i] = { ...next[i], description: e.target.value };
                           setEditing({ ...editing, criteria: next });
                         }}
-                        className="bg-white/60 text-xs h-8"
+                        className="bg-perestroika-bege/60 text-xs h-8"
                       />
                       <button
                         type="button"

@@ -16,7 +16,7 @@ export const MatchCard = ({ builder, reason, onOpen }: Props) => {
     <button
       type="button"
       onClick={() => onOpen(builder)}
-      className="group flex w-full gap-4 rounded-2xl border border-perestroika-preto/10 bg-white/50 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-perestroika-preto/30 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
+      className="group flex w-full gap-4 rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/50 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-perestroika-preto/30 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
     >
       <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-perestroika-preto/5 sm:h-24 sm:w-20">
         {builder.image_url ? (

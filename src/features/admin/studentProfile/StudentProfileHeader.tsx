@@ -72,7 +72,7 @@ export const StudentProfileHeader = ({ userId, profile }: Props) => {
   };
 
   return (
-    <header className="rounded-2xl border border-perestroika-preto/10 bg-white/60 p-6">
+    <header className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-6">
       <div className="flex flex-col sm:flex-row sm:items-start gap-4">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege font-display text-2xl uppercase">
           {profile.profile?.avatar_url ? (

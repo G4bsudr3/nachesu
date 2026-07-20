@@ -36,7 +36,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
             {nudges.map((n) => (
               <li
                 key={n.id}
-                className="rounded-lg border border-perestroika-preto/10 bg-white/60 px-3 py-2 text-xs flex items-center justify-between"
+                className="rounded-lg border border-perestroika-preto/10 bg-perestroika-bege/60 px-3 py-2 text-xs flex items-center justify-between"
               >
                 <span>
                   <strong className="uppercase">{n.level}</strong> · {n.days_inactive}d parado
@@ -62,7 +62,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
             {notifications.map((n) => (
               <li
                 key={n.id}
-                className="rounded-lg border border-perestroika-preto/10 bg-white/60 px-3 py-2 text-xs"
+                className="rounded-lg border border-perestroika-preto/10 bg-perestroika-bege/60 px-3 py-2 text-xs"
               >
                 <div className="flex items-center justify-between mb-0.5">
                   <span className="font-medium">{n.title}</span>

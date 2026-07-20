@@ -95,7 +95,7 @@ export const AdminInviteUserForm = ({ onDone }: Props) => {
   return (
     <form
       onSubmit={submit}
-      className="rounded-2xl border border-perestroika-preto/15 bg-white/60 p-5 space-y-4"
+      className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-5 space-y-4"
     >
       <div className="flex items-center justify-between">
         <h2 className="font-display uppercase text-2xl">convidar pessoa</h2>

@@ -40,7 +40,7 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
   return (
     <section
       aria-labelledby="modulos-title"
-      className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/55 p-6 sm:p-8"
+      className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/55 p-6 sm:p-8"
     >
       <header className="mb-8">
         <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-2">

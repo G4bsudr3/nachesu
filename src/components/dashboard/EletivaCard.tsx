@@ -102,7 +102,7 @@ export const EletivaCard = ({ snapshot, courseTitle }: Props = {}) => {
           {trails.map((t) => (
             <span
               key={t.id}
-              className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 bg-white/40 px-3 py-1.5 font-body text-xs sm:text-sm"
+              className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 bg-perestroika-bege/40 px-3 py-1.5 font-body text-xs sm:text-sm"
             >
               <span
                 className="h-2 w-2 rounded-full"

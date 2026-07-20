@@ -66,7 +66,7 @@ export const AdminLayout = () => {
             <button
               type="button"
               onClick={() => setCmdOpen(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-white/50 hover:bg-white/80 px-2.5 py-1 text-[11px] text-perestroika-preto/65 transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-perestroika-bege/50 hover:bg-perestroika-bege/80 px-2.5 py-1 text-[11px] text-perestroika-preto/65 transition-colors"
             >
               <CommandIcon className="w-3 h-3" />
               busca rápida

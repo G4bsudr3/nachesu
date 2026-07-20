@@ -78,7 +78,7 @@ export const VotingBanner = ({ onJumpToFeed }: { onJumpToFeed?: () => void }) =>
         "mb-6 overflow-hidden rounded-3xl border px-5 py-4",
         hasVoted
           ? "border-perestroika-azul/30 bg-perestroika-azul/8"
-          : "border-perestroika-preto/15 bg-white/70",
+          : "border-perestroika-preto/15 bg-perestroika-bege/70",
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">

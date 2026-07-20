@@ -204,7 +204,7 @@ export const TutorSafetyEscalations = () => {
                   : "text-perestroika-preto/60";
 
             return (
-              <div key={esc.id} className="rounded-xl border border-perestroika-preto/15 bg-white/60 p-4 space-y-3">
+              <div key={esc.id} className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4 space-y-3">
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className={`font-body text-[10px] uppercase tracking-[0.18em] rounded-full px-2 py-1 border ${STATUS_TONE[esc.status]}`}>
@@ -263,7 +263,7 @@ export const TutorSafetyEscalations = () => {
                     placeholder="o que foi feito? (acolhimento, encaminhamento, conversa)"
                     value={notesDraft[esc.id] ?? ""}
                     onChange={(e) => setNotesDraft((d) => ({ ...d, [esc.id]: e.target.value }))}
-                    className="bg-white/80 font-body text-sm"
+                    className="bg-perestroika-bege/80 font-body text-sm"
                   />
                 )}
 

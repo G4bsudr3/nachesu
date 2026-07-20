@@ -31,7 +31,7 @@ const ReactionBar = ({ submissionId }: { submissionId: string }) => {
             className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 font-body text-sm transition-all ${
               mine
                 ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege"
-                : "border-perestroika-preto/15 bg-white/60 text-perestroika-preto/80 hover:border-perestroika-preto/40"
+                : "border-perestroika-preto/15 bg-perestroika-bege/60 text-perestroika-preto/80 hover:border-perestroika-preto/40"
             } ${!user ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             <span>{emoji}</span>
@@ -87,7 +87,7 @@ const CommentMural = ({ submissionId }: { submissionId: string }) => {
             return (
               <li
                 key={c.id}
-                className="flex gap-3 rounded-2xl border border-perestroika-preto/10 bg-white/50 px-3 py-2.5"
+                className="flex gap-3 rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/50 px-3 py-2.5"
               >
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-perestroika-laranja via-perestroika-rosa to-perestroika-azul font-display text-sm uppercase text-perestroika-bege">
                   {initial}
@@ -137,7 +137,7 @@ const CommentMural = ({ submissionId }: { submissionId: string }) => {
                 onChange={(e) => setDraft(e.target.value.slice(0, 280))}
                 placeholder={myComment ? "edita seu comentário" : "deixa um recado curto pro builder"}
                 rows={2}
-                className="w-full resize-none rounded-2xl border border-perestroika-preto/15 bg-white/70 p-3 font-body text-sm placeholder:text-perestroika-preto/40 focus-visible:border-perestroika-preto focus-visible:outline-none"
+                className="w-full resize-none rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 p-3 font-body text-sm placeholder:text-perestroika-preto/40 focus-visible:border-perestroika-preto focus-visible:outline-none"
               />
               <div className="flex items-center justify-between gap-2">
                 <span
@@ -325,7 +325,7 @@ const HubBuilder = () => {
           </header>
 
           {profile.submissions.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/40 p-8 text-center">
+            <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-8 text-center">
               <p className="font-body text-sm text-perestroika-preto/60 italic">
                 ainda construindo. assim que enviar, aparece aqui.
               </p>
@@ -335,7 +335,7 @@ const HubBuilder = () => {
               {profile.submissions.map((s) => (
                 <li
                   key={s.id}
-                  className="rounded-3xl border border-perestroika-preto/10 bg-white/50 p-5 sm:p-6"
+                  className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/50 p-5 sm:p-6"
                 >
                   <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/50">

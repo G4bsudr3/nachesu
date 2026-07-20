@@ -150,7 +150,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
               onClick={() => setMode("link")}
               className={cn(
                 "rounded-xl border p-3 text-left transition-all",
-                mode === "link" ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege" : "border-perestroika-preto/15 bg-white/50 hover:border-perestroika-preto/40",
+                mode === "link" ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege" : "border-perestroika-preto/15 bg-perestroika-bege/50 hover:border-perestroika-preto/40",
               )}
             >
               <LinkIcon className="mb-1.5 h-4 w-4" />
@@ -164,7 +164,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
               onClick={() => setMode("file")}
               className={cn(
                 "rounded-xl border p-3 text-left transition-all",
-                mode === "file" ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege" : "border-perestroika-preto/15 bg-white/50 hover:border-perestroika-preto/40",
+                mode === "file" ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege" : "border-perestroika-preto/15 bg-perestroika-bege/50 hover:border-perestroika-preto/40",
               )}
             >
               <Upload className="mb-1.5 h-4 w-4" />
@@ -183,7 +183,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
                 value={externalUrl}
                 onChange={(e) => setExternalUrl(e.target.value)}
                 placeholder="https://docs.google.com/presentation/…"
-                className="mt-1 bg-white/70"
+                className="mt-1 bg-perestroika-bege/70"
               />
             </div>
           ) : (
@@ -193,7 +193,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
                 type="file"
                 accept="application/pdf,image/*,video/*"
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                className="mt-1 block w-full rounded-md border border-perestroika-preto/20 bg-white/70 px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-perestroika-preto file:px-3 file:py-1.5 file:text-xs file:uppercase file:text-perestroika-bege"
+                className="mt-1 block w-full rounded-md border border-perestroika-preto/20 bg-perestroika-bege/70 px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-perestroika-preto file:px-3 file:py-1.5 file:text-xs file:uppercase file:text-perestroika-bege"
               />
               {editing?.file_url && !file && (
                 <p className="mt-1 font-body text-xs text-perestroika-preto/55">
@@ -206,7 +206,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
           {/* título */}
           <div>
             <label className="font-body text-xs uppercase tracking-wide text-perestroika-preto/60">título</label>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="ex: slides da abertura" className="mt-1 bg-white/70" />
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="ex: slides da abertura" className="mt-1 bg-perestroika-bege/70" />
           </div>
 
           {/* descrição */}
@@ -218,7 +218,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
               placeholder="o que é, pra que serve, por que vale a pena ler"
               rows={3}
               maxLength={280}
-              className="mt-1 w-full rounded-md border border-perestroika-preto/20 bg-white/70 px-3 py-2 font-body text-sm placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto"
+              className="mt-1 w-full rounded-md border border-perestroika-preto/20 bg-perestroika-bege/70 px-3 py-2 font-body text-sm placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto"
             />
             <div className="mt-1 text-right font-body text-[10px] text-perestroika-preto/40">{description.length}/280</div>
           </div>
@@ -228,7 +228,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
             <div>
               <label className="font-body text-xs uppercase tracking-wide text-perestroika-preto/60">categoria</label>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="mt-1 bg-white/70"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 bg-perestroika-bege/70"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {MATERIAL_CATEGORIES.map((c) => (
                     <SelectItem key={c.value} value={c.value}>{c.emoji} {c.label}</SelectItem>
@@ -242,7 +242,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
                 type="number"
                 value={orderIndex}
                 onChange={(e) => setOrderIndex(parseInt(e.target.value || "0", 10))}
-                className="mt-1 bg-white/70"
+                className="mt-1 bg-perestroika-bege/70"
               />
             </div>
           </div>

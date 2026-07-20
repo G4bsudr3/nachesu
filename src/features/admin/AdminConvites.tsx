@@ -180,7 +180,7 @@ export function AdminConvites() {
               className={`text-left p-4 rounded-xl border transition ${
                 active
                   ? "border-perestroika-preto bg-perestroika-bege"
-                  : "border-perestroika-preto/15 bg-white hover:bg-perestroika-bege/40"
+                  : "border-perestroika-preto/15 bg-perestroika-bege hover:bg-perestroika-bege/40"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -239,7 +239,7 @@ export function AdminConvites() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-perestroika-preto/15 bg-white/40 overflow-x-auto">
+        <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -287,7 +287,7 @@ function StatCard({
   tone?: "default" | "ok" | "bad" | "warn" | "muted";
 }) {
   const toneClass = {
-    default: "bg-white border-perestroika-preto/15",
+    default: "bg-perestroika-bege border-perestroika-preto/15",
     ok: "bg-green-50 border-green-200",
     bad: "bg-red-50 border-red-200",
     warn: "bg-amber-50 border-amber-200",

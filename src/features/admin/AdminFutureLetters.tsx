@@ -111,7 +111,7 @@ export const AdminFutureLetters = () => {
       </div>
 
       {sessions.length === 0 && !loading && (
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-white/40 p-12 text-center">
+        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-12 text-center">
           <p className="text-perestroika-preto/60">
             nenhuma sessão criada. crie uma pra começar a dinâmica.
           </p>
@@ -124,7 +124,7 @@ export const AdminFutureLetters = () => {
           return (
             <section
               key={s.id}
-              className="rounded-2xl border border-perestroika-preto/15 bg-white/50 p-5 sm:p-6"
+              className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/50 p-5 sm:p-6"
             >
               <header className="flex items-start justify-between gap-3 mb-4 flex-wrap">
                 <div>
@@ -189,7 +189,7 @@ export const AdminFutureLetters = () => {
                           <summary className="cursor-pointer text-xs uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto">
                             ver carta
                           </summary>
-                          <pre className="mt-2 p-3 rounded-lg bg-white/70 text-sm whitespace-pre-wrap font-body italic text-perestroika-preto/85 max-h-96 overflow-auto">
+                          <pre className="mt-2 p-3 rounded-lg bg-perestroika-bege/70 text-sm whitespace-pre-wrap font-body italic text-perestroika-preto/85 max-h-96 overflow-auto">
                             {g.letter_text}
                           </pre>
                         </details>
@@ -267,18 +267,18 @@ const CreateSessionModal = ({
         <div className="space-y-4 mt-2">
           <div>
             <label className="text-xs uppercase tracking-wide text-perestroika-preto/60">título</label>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} className="bg-white/70" />
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} className="bg-perestroika-bege/70" />
           </div>
           <div>
             <label className="text-xs uppercase tracking-wide text-perestroika-preto/60">slug</label>
-            <Input value={slug} onChange={(e) => setSlug(e.target.value)} className="bg-white/70" />
+            <Input value={slug} onChange={(e) => setSlug(e.target.value)} className="bg-perestroika-bege/70" />
           </div>
           <div>
             <label className="text-xs uppercase tracking-wide text-perestroika-preto/60">descrição</label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="bg-white/70 min-h-[80px]"
+              className="bg-perestroika-bege/70 min-h-[80px]"
             />
           </div>
           <button

@@ -121,7 +121,7 @@ const AdminHome = () => {
               "rounded-full px-4 py-1.5 text-xs uppercase tracking-wide border transition-colors",
               scope === "all"
                 ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                : "bg-white/60 border-perestroika-preto/15 hover:border-perestroika-preto/40",
+                : "bg-perestroika-bege/60 border-perestroika-preto/15 hover:border-perestroika-preto/40",
             )}
           >
             todas as eletivas
@@ -134,7 +134,7 @@ const AdminHome = () => {
                 "rounded-full px-4 py-1.5 text-xs uppercase tracking-wide border transition-colors",
                 scope === c.id
                   ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                  : "bg-white/60 border-perestroika-preto/15 hover:border-perestroika-preto/40",
+                  : "bg-perestroika-bege/60 border-perestroika-preto/15 hover:border-perestroika-preto/40",
               )}
             >
               {c.title.toLowerCase()}
@@ -151,7 +151,7 @@ const AdminHome = () => {
         <ActionQueue items={queueItems} loading={isLoading} />
 
         {/* AI insight */}
-        <section className="rounded-3xl border border-perestroika-preto/10 bg-white/60 backdrop-blur p-5 sm:p-6">
+        <section className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-2 text-perestroika-preto/60">
               <Sparkles className="w-4 h-4" />
@@ -320,7 +320,7 @@ const AdminHome = () => {
               <Link
                 key={l.to}
                 to={l.to}
-                className="rounded-full bg-white/60 border border-perestroika-preto/15 px-3 py-1.5 text-[11px] uppercase tracking-wide text-perestroika-preto/70 hover:border-perestroika-preto/40 hover:text-perestroika-preto transition-colors"
+                className="rounded-full bg-perestroika-bege/60 border border-perestroika-preto/15 px-3 py-1.5 text-[11px] uppercase tracking-wide text-perestroika-preto/70 hover:border-perestroika-preto/40 hover:text-perestroika-preto transition-colors"
               >
                 {l.label}
               </Link>
@@ -343,7 +343,7 @@ const Tile = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <section className="rounded-3xl border border-perestroika-preto/10 bg-white/60 backdrop-blur p-5 sm:p-6">
+  <section className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
     <div className="flex items-center gap-2 text-perestroika-preto/60 mb-4">
       <Icon className="w-4 h-4" />
       <span className="font-body text-[10px] uppercase tracking-[0.18em]">{title}</span>

@@ -41,7 +41,7 @@ export const WeekCadenceStrip = ({ snapshot }: Props) => {
   if (unlockedPending.length === 0 && !nextReleaseDate) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-2xl border border-perestroika-preto/15 bg-white/40 px-4 py-3 font-body text-sm text-perestroika-preto/75">
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 px-4 py-3 font-body text-sm text-perestroika-preto/75">
       {unlockedPending.length > 0 && (
         <span className="inline-flex items-center gap-2">
           <Clock className="h-3.5 w-3.5" aria-hidden="true" />

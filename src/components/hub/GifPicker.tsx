@@ -26,7 +26,7 @@ export const GifPicker = ({ onPick, trigger, align = "end" }: Props) => {
         sideOffset={8}
         className="w-[320px] p-3 sm:w-[360px] bg-perestroika-bege border-perestroika-preto/15"
       >
-        <div className="mb-2 flex items-center gap-2 rounded-full border border-perestroika-preto/15 bg-white/70 px-3 py-1.5">
+        <div className="mb-2 flex items-center gap-2 rounded-full border border-perestroika-preto/15 bg-perestroika-bege/70 px-3 py-1.5">
           <Search className="h-3.5 w-3.5 text-perestroika-preto/45" />
           <input
             value={query}
@@ -64,7 +64,7 @@ export const GifPicker = ({ onPick, trigger, align = "end" }: Props) => {
                     setOpen(false);
                   }}
                   className={cn(
-                    "group relative overflow-hidden rounded-lg border border-transparent bg-white/30 transition-all hover:border-perestroika-preto/30 hover:scale-[1.02]",
+                    "group relative overflow-hidden rounded-lg border border-transparent bg-perestroika-bege/30 transition-all hover:border-perestroika-preto/30 hover:scale-[1.02]",
                   )}
                 >
                   <img

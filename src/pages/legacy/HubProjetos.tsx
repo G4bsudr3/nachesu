@@ -50,7 +50,7 @@ const FeedCard = ({ item, isMine, expanded, onToggle, onEdit, onDelete }: CardPr
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="overflow-hidden rounded-3xl border border-perestroika-preto/10 bg-white/60 shadow-sm"
+      className="overflow-hidden rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/60 shadow-sm"
     >
       {item.cover_url && (
         <a href={item.link} target="_blank" rel="noreferrer noopener" className="block aspect-[16/9] w-full overflow-hidden bg-perestroika-preto/5">
@@ -247,7 +247,7 @@ const HubProjetos = () => {
         )}
 
         {!loading && projects.length === 0 && (
-          <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/40 px-6 py-16 text-center">
+          <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 px-6 py-16 text-center">
             <Sparkles className="mx-auto mb-4 h-8 w-8 text-perestroika-preto/40" />
             <h3 className="font-display text-2xl uppercase text-perestroika-preto">
               feed vazio por enquanto

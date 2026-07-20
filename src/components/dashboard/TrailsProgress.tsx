@@ -34,7 +34,7 @@ export const TrailsProgress = ({ snapshot }: Props) => {
   return (
     <section
       aria-labelledby="trails-progress-title"
-      className="rounded-3xl border border-perestroika-preto/10 bg-white/55 p-5 sm:p-6"
+      className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/55 p-5 sm:p-6"
     >
       <header className="mb-4 flex items-end justify-between gap-4">
         <div>

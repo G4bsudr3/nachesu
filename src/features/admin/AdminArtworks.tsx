@@ -542,7 +542,7 @@ export const AdminArtworks = () => {
           return (
             <div
               key={archetype}
-              className="rounded-2xl border border-perestroika-preto/15 bg-white/40 overflow-hidden flex flex-col"
+              className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-hidden flex flex-col"
             >
               <div
                 className="relative bg-perestroika-preto/5"
@@ -887,7 +887,7 @@ export const AdminArtworks = () => {
                       return (
                         <li
                           key={v.id}
-                          className={`relative rounded-xl border overflow-hidden flex flex-col bg-white/40 ${
+                          className={`relative rounded-xl border overflow-hidden flex flex-col bg-perestroika-bege/40 ${
                             v.is_current
                               ? "border-perestroika-preto"
                               : "border-perestroika-preto/15"

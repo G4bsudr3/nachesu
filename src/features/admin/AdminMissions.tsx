@@ -214,7 +214,7 @@ export const AdminMissions = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
         <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -225,7 +225,7 @@ export const AdminMissions = () => {
           </SelectContent>
         </Select>
         <Select value={missionFilter} onValueChange={setMissionFilter}>
-          <SelectTrigger className="bg-white/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -368,7 +368,7 @@ export const AdminMissions = () => {
                   rows={4}
                   maxLength={1000}
                   placeholder="opcional. seja direto e construtivo."
-                  className="bg-white/60 resize-y"
+                  className="bg-perestroika-bege/60 resize-y"
                 />
                 <p className="mt-1 text-right text-[10px] text-perestroika-preto/40 tabular-nums">
                   {feedback.length}/1000

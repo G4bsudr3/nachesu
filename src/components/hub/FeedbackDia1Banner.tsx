@@ -20,7 +20,7 @@ export const FeedbackDia1Banner = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mb-8 overflow-hidden rounded-3xl border border-perestroika-laranja/40 bg-white/60 p-5 sm:p-6 shadow-sm"
+          className="relative mb-8 overflow-hidden rounded-3xl border border-perestroika-laranja/40 bg-perestroika-bege/60 p-5 sm:p-6 shadow-sm"
         >
           {/* faixa gradient lateral */}
           <div

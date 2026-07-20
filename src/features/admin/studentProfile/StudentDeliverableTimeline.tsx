@@ -46,7 +46,7 @@ const Thread = ({ deliverableId }: { deliverableId: string }) => {
           key={m.id}
           className={`rounded-lg p-2.5 text-xs ${
             m.author_role === "student"
-              ? "bg-white/70 border border-perestroika-preto/10"
+              ? "bg-perestroika-bege/70 border border-perestroika-preto/10"
               : "bg-perestroika-preto/5 border border-perestroika-preto/15"
           }`}
         >
@@ -96,7 +96,7 @@ export const StudentDeliverableTimeline = ({ userId }: Props) => {
           return (
             <li
               key={d.id}
-              className="rounded-xl border border-perestroika-preto/10 bg-white/60"
+              className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60"
             >
               <button
                 type="button"

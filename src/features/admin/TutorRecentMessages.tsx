@@ -85,7 +85,7 @@ export const TutorRecentMessages = ({ windowDays }: { windowDays: 7 | 30 }) => {
 
         <div className="flex gap-2 mt-4 flex-wrap">
           <Select value={trailFilter} onValueChange={setTrailFilter}>
-            <SelectTrigger className="w-44 bg-white/60"><SelectValue placeholder="trilha" /></SelectTrigger>
+            <SelectTrigger className="w-44 bg-perestroika-bege/60"><SelectValue placeholder="trilha" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">todas trilhas</SelectItem>
               {(trails ?? []).map((t) => (
@@ -94,7 +94,7 @@ export const TutorRecentMessages = ({ windowDays }: { windowDays: 7 | 30 }) => {
             </SelectContent>
           </Select>
           <Select value={helpfulFilter} onValueChange={(v) => setHelpfulFilter(v as typeof helpfulFilter)}>
-            <SelectTrigger className="w-44 bg-white/60"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-44 bg-perestroika-bege/60"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">todas</SelectItem>
               <SelectItem value="up">marcadas úteis</SelectItem>
@@ -113,7 +113,7 @@ export const TutorRecentMessages = ({ windowDays }: { windowDays: 7 | 30 }) => {
             <p className="font-body text-sm text-perestroika-preto/55">nada por aqui no filtro atual.</p>
           ) : (
             (rows ?? []).map((r) => (
-              <div key={r.id} className="rounded-xl border border-perestroika-preto/10 bg-white/50 p-3">
+              <div key={r.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/50 p-3">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
                     {r.trail_id ? trailMap.get(r.trail_id) ?? "–" : "sem trilha"}

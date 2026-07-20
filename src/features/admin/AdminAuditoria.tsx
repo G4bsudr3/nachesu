@@ -93,7 +93,7 @@ export const AdminAuditoria = () => {
         </p>
       </header>
 
-      <section className="rounded-xl border border-perestroika-preto/10 bg-white/60 p-4 space-y-3">
+      <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4 space-y-3">
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[200px]">
             <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1">
@@ -113,7 +113,7 @@ export const AdminAuditoria = () => {
             <select
               value={days}
               onChange={(e) => setDays(Number(e.target.value))}
-              className="h-9 rounded-md border border-perestroika-preto/15 bg-white px-2 text-sm"
+              className="h-9 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-2 text-sm"
             >
               <option value={1}>último dia</option>
               <option value={7}>últimos 7 dias</option>
@@ -124,7 +124,7 @@ export const AdminAuditoria = () => {
           <button
             type="button"
             onClick={downloadCSV}
-            className="h-9 inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-white px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
+            className="h-9 inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
           >
             <Download className="w-3.5 h-3.5" /> CSV
           </button>
@@ -157,7 +157,7 @@ export const AdminAuditoria = () => {
         </div>
       </section>
 
-      <section className="rounded-xl border border-perestroika-preto/10 bg-white/60 overflow-hidden">
+      <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
         {isLoading ? (
           <p className="p-6 text-sm text-perestroika-preto/55">carregando…</p>
         ) : filtered.length === 0 ? (

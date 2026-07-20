@@ -267,7 +267,7 @@ function ConteudoTab({ module: mod, accent }: { module: ModuleRow; accent: strin
           <Loader2 className="h-5 w-5 animate-spin text-perestroika-preto/50" />
         </div>
       ) : (
-        <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-white divide-y divide-perestroika-preto/10">
+        <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege divide-y divide-perestroika-preto/10">
           {(pillsQuery.data ?? []).map((p) => (
             <div key={p.id} className="flex items-center gap-3 px-4 py-3">
               <span
@@ -396,7 +396,7 @@ function MetricsPanel({
         {cards.map((c) => (
           <div
             key={c.label}
-            className="rounded-2xl border-2 border-perestroika-preto/10 bg-white p-4"
+            className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege p-4"
           >
             <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55">
               {c.label}
@@ -411,7 +411,7 @@ function MetricsPanel({
         ))}
       </div>
 
-      <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-white p-5">
+      <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege p-5">
         <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3">
           distribuição por fluxo
         </p>
@@ -478,7 +478,7 @@ function WatcherPanel({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-white p-5 space-y-3">
+    <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege p-5 space-y-3">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55">
@@ -653,7 +653,7 @@ function DeliverablesPanel({
           </p>
         </div>
       ) : (
-        <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-white overflow-x-auto">
+        <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>

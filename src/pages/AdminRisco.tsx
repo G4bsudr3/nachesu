@@ -160,7 +160,7 @@ const AdminRisco = () => {
 
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <Select value={courseFilter} onValueChange={setCourseFilter}>
-            <SelectTrigger className="w-[260px] bg-white">
+            <SelectTrigger className="w-[260px] bg-perestroika-bege">
               <SelectValue placeholder="filtrar eletiva" />
             </SelectTrigger>
             <SelectContent>
@@ -230,14 +230,14 @@ const AdminRisco = () => {
             {loading ? (
               <p className="font-body text-sm text-perestroika-preto/55">carregando...</p>
             ) : filteredRisk.length === 0 ? (
-              <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/40 p-12 text-center">
+              <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-12 text-center">
                 <p className="font-display text-2xl uppercase text-perestroika-preto mb-2">todo mundo respirando</p>
                 <p className="font-body text-sm text-perestroika-preto/65">
                   ninguém que começou está em risco de evasão agora.
                 </p>
               </div>
             ) : (
-              <div className="rounded-2xl border border-perestroika-preto/10 bg-white overflow-hidden">
+              <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
                 <table className="w-full text-sm">
                   <thead className="bg-perestroika-bege/60">
                     <tr className="text-left font-body text-[11px] uppercase tracking-wide text-perestroika-preto/65">
@@ -300,14 +300,14 @@ const AdminRisco = () => {
             {loading ? (
               <p className="font-body text-sm text-perestroika-preto/55">carregando...</p>
             ) : filteredActivation.length === 0 ? (
-              <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-white/40 p-12 text-center">
+              <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-12 text-center">
                 <p className="font-display text-2xl uppercase text-perestroika-preto mb-2">todo mundo já entrou</p>
                 <p className="font-body text-sm text-perestroika-preto/65">
                   nenhum matriculado pendente de ativação.
                 </p>
               </div>
             ) : (
-              <div className="rounded-2xl border border-perestroika-preto/10 bg-white overflow-hidden">
+              <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
                 <table className="w-full text-sm">
                   <thead className="bg-perestroika-bege/60">
                     <tr className="text-left font-body text-[11px] uppercase tracking-wide text-perestroika-preto/65">

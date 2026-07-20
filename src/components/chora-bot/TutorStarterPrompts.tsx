@@ -26,7 +26,7 @@ export const TutorStarterPrompts = ({ pillTitle, onPick }: TutorStarterPromptsPr
           variant="outline"
           size="sm"
           onClick={() => onPick(s)}
-          className="rounded-full border-perestroika-preto/20 bg-white/40 text-perestroika-preto/80 font-body text-xs hover:bg-white/70"
+          className="rounded-full border-perestroika-preto/20 bg-perestroika-bege/40 text-perestroika-preto/80 font-body text-xs hover:bg-perestroika-bege/70"
         >
           {s}
         </Button>

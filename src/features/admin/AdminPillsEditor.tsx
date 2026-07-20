@@ -507,7 +507,7 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-start gap-3 rounded-lg border bg-white/60 p-3 ${
+      className={`flex items-start gap-3 rounded-lg border bg-perestroika-bege/60 p-3 ${
         isDragging
           ? "border-perestroika-preto/40 shadow-lg"
           : pill.published

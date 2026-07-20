@@ -38,7 +38,7 @@ export const ActionQueue = ({ items, loading, emptyMessage, rightSlot }: Props) 
   const visible = items.filter((i) => i.count > 0);
 
   return (
-    <section className="rounded-3xl border border-perestroika-preto/10 bg-white/60 backdrop-blur p-5 sm:p-6">
+    <section className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
       <div className="flex items-center justify-between gap-3 mb-4">
         <div>
           <p className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/50">

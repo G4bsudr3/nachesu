@@ -170,7 +170,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
             {aggregates.paradoxos.map((p, i) => (
               <article
                 key={p.titulo}
-                className="relative rounded-2xl border border-perestroika-preto bg-white/60 p-5"
+                className="relative rounded-2xl border border-perestroika-preto bg-perestroika-bege/60 p-5"
               >
                 <span className="font-display text-3xl leading-none text-perestroika-preto/30">
                   {String(i + 1).padStart(2, "0")}
@@ -203,7 +203,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
               return (
                 <article
                   key={`${o.titulo}-${i}`}
-                  className="rounded-2xl border border-perestroika-preto/15 bg-white/50 p-5"
+                  className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/50 p-5"
                 >
                   <div className="mb-3 flex items-center gap-2">
                     <span
@@ -250,7 +250,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
             {aggregates.constelacoes.map((c) => (
               <article
                 key={c.nome}
-                className="rounded-2xl border border-perestroika-preto/20 bg-white/50 p-6"
+                className="rounded-2xl border border-perestroika-preto/20 bg-perestroika-bege/50 p-6"
               >
                 <div className="flex items-baseline justify-between gap-3">
                   <h4 className="font-display text-xl uppercase leading-tight text-perestroika-preto">
@@ -285,13 +285,13 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
       {/* fallback temas antigos */}
       {(!aggregates?.constelacoes || aggregates.constelacoes.length === 0) &&
         aggregates?.top_themes && aggregates.top_themes.length > 0 && (
-          <div className="rounded-3xl border border-perestroika-preto/10 bg-white/40 p-6">
+          <div className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/40 p-6">
             <h3 className="mb-4 font-display text-xl uppercase">temas que estão sendo construídos</h3>
             <div className="flex flex-wrap gap-2">
               {aggregates.top_themes.map((t) => (
                 <div
                   key={t.theme}
-                  className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-white/60 px-3 py-1.5"
+                  className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-perestroika-bege/60 px-3 py-1.5"
                 >
                   <span className="font-body text-sm text-perestroika-preto">{t.theme}</span>
                   <span className="font-body text-xs tabular-nums text-perestroika-preto/50">{t.count}</span>
@@ -308,7 +308,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
         </p>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-3xl border border-perestroika-preto/10 bg-white/40 p-6">
+          <div className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/40 p-6">
             <h3 className="mb-4 font-display text-xl uppercase">arquétipos</h3>
             <div className="space-y-2.5">
               {ARCHETYPE_ORDER.map((a) => {
@@ -333,7 +333,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
             </div>
           </div>
 
-          <div className="rounded-3xl border border-perestroika-preto/10 bg-white/40 p-6">
+          <div className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/40 p-6">
             <h3 className="mb-4 font-display text-xl uppercase">nível lovable</h3>
             {levelCounts.size === 0 ? (
               <p className="font-body text-sm text-perestroika-preto/50">
@@ -367,7 +367,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
         </div>
 
         {aggregates?.top_cities && aggregates.top_cities.length > 0 && (
-          <div className="rounded-3xl border border-perestroika-preto/10 bg-white/40 p-6">
+          <div className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/40 p-6">
             <h3 className="mb-3 font-display text-xl uppercase">de onde vem a turma</h3>
             <div className="flex flex-wrap gap-x-4 gap-y-1.5">
               {aggregates.top_cities.map((c) => (
