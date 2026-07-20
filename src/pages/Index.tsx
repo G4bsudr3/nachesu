@@ -730,6 +730,7 @@ const Index = () => {
           </p>
         </div>
       </section>
+      </main>
 
       <footer className="container py-10 text-center">
         <p className="font-body text-xs text-perestroika-preto/55">
