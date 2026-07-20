@@ -62,8 +62,10 @@ export const PageHeader = ({
       )}
     >
       <div className="container max-w-5xl relative flex items-center justify-between gap-2 sm:gap-3 pt-6 pb-4 flex-nowrap min-h-[64px]">
-        {/* spacer esquerdo pra balancear a logo centralizada */}
-        <div aria-hidden="true" className="flex-1" />
+        {/* esquerda: back */}
+        <div className="flex flex-1 items-center justify-start gap-1.5 sm:gap-3 shrink-0 flex-nowrap">
+          {backLink}
+        </div>
 
         {/* logo absolutamente centralizada */}
         {showLogo && (
@@ -82,10 +84,9 @@ export const PageHeader = ({
           </div>
         )}
 
-        {/* direita: ações + back no canto direito */}
+        {/* direita: ações */}
         <div className="flex flex-1 items-center justify-end gap-1.5 sm:gap-3 shrink-0 flex-nowrap">
           {actions}
-          {backLink}
         </div>
       </div>
     </header>
