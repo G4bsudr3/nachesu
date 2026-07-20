@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import nachesuWordmark from "@/assets/brand/nachesu-wordmark.png";
-import letterN from "@/assets/brand/naches-n.png";
-import letterU from "@/assets/brand/naches-u.png";
+import nachesuWordmark from "@/assets/brand/nachesu-wordmark.webp";
+import letterN from "@/assets/brand/naches-n.webp";
+import letterU from "@/assets/brand/naches-u.webp";
 
 interface NachesULogoProps {
   variant?: "dark" | "light" | "ink";
