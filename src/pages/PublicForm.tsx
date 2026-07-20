@@ -123,6 +123,7 @@ const EmailScreen = ({
 }) => (
   <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
     <PageHeader
+        layout="split"
       borderless
       logoLink="/"
       actions={
