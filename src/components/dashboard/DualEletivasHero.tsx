@@ -158,7 +158,7 @@ const EletivaJourneyCard = ({ courseId, slug, title, accent }: CardProps) => {
               progresso
             </span>
             <span className="font-body text-xs font-bold tabular-nums text-perestroika-bege">
-              {totalCompleted}/{totalPublished} · {pct}%
+              {pct}%
             </span>
           </div>
           <div
