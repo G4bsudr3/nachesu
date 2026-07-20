@@ -40,9 +40,13 @@ export const DualEletivasHero = () => {
 
   return (
     <section aria-label="suas duas eletivas" className="space-y-5 sm:space-y-6">
-      <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
-        escolha sua trilha
-      </p>
+      <div className="flex items-center gap-4 sm:gap-6">
+        <div className="h-px flex-1 bg-perestroika-preto/20" aria-hidden="true" />
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+          escolha sua trilha
+        </p>
+        <div className="h-px flex-1 bg-perestroika-preto/20" aria-hidden="true" />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {items.map((e, idx) => {
