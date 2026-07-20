@@ -24,7 +24,7 @@ const infoBySlug: Record<string, FacilitadorInfo> = {
     nome: "dudu",
     foto: duduAsset.url,
     bio: "ex-perestroika, ex-500 global. junta empreender com aprender.",
-    accent: "#6f77fc",
+    accent: "#8A85BF",
   },
 };
 
