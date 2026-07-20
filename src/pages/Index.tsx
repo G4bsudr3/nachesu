@@ -231,15 +231,16 @@ const Index = () => {
               className="lg:hidden border-t border-perestroika-preto/10 bg-perestroika-bege/95 backdrop-blur-md"
             >
               <nav aria-label="menu" className="container py-4 flex flex-col gap-1">
-                {navItems.map((item) => {
+                {navItems.map((item, idx) => {
                   const isActive = activeSection === item.id;
                   return (
                     <a
                       key={item.id}
+                      ref={idx === 0 ? firstMenuItemRef : undefined}
                       href={`#${item.id}`}
                       onClick={(e) => handleAnchorClick(e, item.id)}
                       aria-current={isActive ? "true" : undefined}
-                      className={`flex items-center justify-between min-h-12 px-3 rounded-xl font-display uppercase text-2xl tracking-wide transition-colors ${
+                      className={`flex items-center justify-between min-h-12 px-3 rounded-xl font-display uppercase text-2xl tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege ${
                         isActive
                           ? "bg-perestroika-preto/5 text-perestroika-preto"
                           : "text-perestroika-preto/75 hover:bg-perestroika-preto/5 hover:text-perestroika-preto"
@@ -259,7 +260,7 @@ const Index = () => {
                 <Link
                   to="/auth"
                   onClick={() => setMenuOpen(false)}
-                  className="sm:hidden mt-3 inline-flex items-center justify-center min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-5 font-body text-sm uppercase tracking-wide"
+                  className="sm:hidden mt-3 inline-flex items-center justify-center min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-5 font-body text-sm uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
                 >
                   entrar
                 </Link>
