@@ -31,19 +31,19 @@ const passos = [
 const Comecar = () => {
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-perestroika-bege/85">
-        <div className="container flex items-center justify-between gap-4 py-4">
-          <Link to="/" aria-label="voltar pra home">
-            <NachesULogo variant="ink" />
-          </Link>
+      <PageHeader
+        borderless
+        back={{ to: "/" }}
+        logoLink="/"
+        actions={
           <Link
             to="/auth"
-            className="inline-flex items-center gap-1.5 font-body text-xs sm:text-sm uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
+            className="inline-flex items-center min-h-11 px-1 font-body text-sm uppercase tracking-wide hover:opacity-60 transition-opacity"
           >
             entrar
           </Link>
-        </div>
-      </header>
+        }
+      />
 
       {/* hero */}
       <section className="container relative pt-12 pb-12 sm:pt-20 sm:pb-16">
