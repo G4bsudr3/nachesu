@@ -91,10 +91,10 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
 
   const started = totalCompleted > 0;
   const ctaLabel = !moduleToShow
-    ? "revisar trilha"
+    ? "REVISAR"
     : started
-      ? "continuar trilha"
-      : "começar trilha";
+      ? "CONTINUAR"
+      : "COMEÇAR";
   const ctaHref = `/app/eletiva/${slug}`;
 
   const pitch = moduleToShow
