@@ -101,8 +101,8 @@ const PillCardShell = ({
         <span aria-hidden className="text-perestroika-preto/25">·</span>
         <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
           {pill.order_index === 0 && !pill.required
-            ? "bônus · opcional"
-            : `${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
+            ? "OPCIONAL"
+            : `${pillKindLabel[pill.kind]}${!pill.required ? " · OPCIONAL" : ""}`}
         </span>
       </div>
       {(pill.duration_min_low || pill.duration_min_high) && (
