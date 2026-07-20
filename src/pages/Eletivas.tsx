@@ -32,7 +32,6 @@ const eletivas: Record<
     descLonga:
       "20 módulos curtos pra você sair da ideia ao app no ar, com o tutor ia te provocando do seu lado.",
     accent: "#f756a6",
-    tag: "4 trilhas · 20 módulos · tutor ia",
     trilhas: [
       { n: "01", titulo: "fundamentos & ia", desc: "o que ia faz hoje, como conversar com ela, quando usar no-code.", color: "#fe7b02", range: "módulos 1-5" },
       { n: "02", titulo: "problema & decisão", desc: "achar uma dor real, escolher a sua, escopar e vender em 60 segundos.", color: "#fd4644", range: "módulos 6-10" },
@@ -49,7 +48,6 @@ const eletivas: Record<
     descLonga:
       "20 semanas pra enxergar fluxos, mapear ciclos e prototipar negócios regenerativos usando a escola sebrae bh como laboratório vivo.",
     accent: "#6f77fc",
-    tag: "4 trilhas · 20 módulos · pbl real",
     trilhas: [
       { n: "01", titulo: "enxergar", desc: "abrir o olho pro sistema. ver fluxos, resíduos e oportunidades onde os outros veem rotina.", color: "#fe7b02", range: "módulos 1-5" },
       { n: "02", titulo: "entender", desc: "mapear causas, atores e ciclos. desenhar o sistema antes de propor solução.", color: "#fd4644", range: "módulos 6-10" },
