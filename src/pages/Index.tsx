@@ -420,13 +420,13 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             escolha sua eletiva
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
             duas portas,<br />um mesmo combinado.
           </h2>
-          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-perestroika-preto/75">
+          <p className="mt-8 max-w-xl font-body font-normal text-lg sm:text-xl leading-relaxed text-muted-foreground">
             mesma duração, mesmo método, mesmo tutor. o que muda é por onde você quer entrar e quem te conduz.
           </p>
         </motion.div>
@@ -450,7 +450,7 @@ const Index = () => {
                   <span className="font-display text-7xl sm:text-8xl leading-none" style={{ color: e.accent }}>
                     {e.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55 inline-flex items-center gap-1.5">
+                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground inline-flex items-center gap-1.5">
                     <Clock className="h-3 w-3" aria-hidden="true" />
                     20 semanas
                   </span>
@@ -459,7 +459,7 @@ const Index = () => {
                 <h3 className="font-display uppercase text-2xl sm:text-3xl mb-4 leading-[1.05]">
                   {e.nome}
                 </h3>
-                <p className="font-body font-normal text-base text-perestroika-preto/75 leading-relaxed mb-6">
+                <p className="font-body font-normal text-base text-muted-foreground leading-relaxed mb-6">
                   {e.pitch}
                 </p>
 
@@ -483,12 +483,12 @@ const Index = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`linkedin de ${f.nick}`}
-                        className="text-perestroika-preto/50 hover:text-perestroika-preto transition-colors"
+                        className="text-muted-foreground hover:text-perestroika-preto transition-colors"
                       >
                         <Linkedin className="w-4 h-4" />
                       </a>
                     </div>
-                    <p className="font-body text-sm text-perestroika-preto/65 mt-1 leading-snug">
+                    <p className="font-body text-sm text-muted-foreground mt-1 leading-snug">
                       {f.frase}
                     </p>
                   </div>
