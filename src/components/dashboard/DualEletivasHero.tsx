@@ -113,17 +113,13 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
         aria-hidden="true"
       />
 
-      {/* topo: número + chip 20 semanas */}
+      {/* topo: número */}
       <div className="flex items-baseline justify-between gap-3 mb-6">
         <span
           className="font-display text-7xl sm:text-8xl leading-none"
           style={{ color: info.accent }}
         >
           {info.n}
-        </span>
-        <span className="inline-flex items-center gap-1.5 font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/55">
-          <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-          20 semanas
         </span>
       </div>
 
