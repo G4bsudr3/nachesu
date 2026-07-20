@@ -469,12 +469,6 @@ const Modulo = () => {
       />
 
       <main id="conteudo" className="relative z-10 container max-w-3xl pt-6 pb-16 sm:pt-10">
-        <Link
-          to={courseSlug ? `/app/eletiva/${courseSlug}` : "/app"}
-          className="group inline-flex items-center gap-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto mb-6 transition-colors"
-        >
-          <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" /> {courseSlug ? "voltar pra eletiva" : "meu início"}
-        </Link>
 
         {/* marco de transição: aparece nos primeiros módulos das trilhas 2/3/4
             (números 6, 11, 16) quando a trilha anterior está completa */}
