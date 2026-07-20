@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { motion } from "framer-motion";
+import { RefreshCw } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { logger } from "@/lib/logger";
 
