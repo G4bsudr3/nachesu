@@ -247,52 +247,67 @@ const EletivaHome = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto bg-perestroika-bege p-6 sm:p-10 mb-6"
+          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto p-8 sm:p-12 mb-6"
+          style={{ backgroundColor: heroColor }}
         >
-          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-4">
+          <div className="absolute right-4 top-4 sm:right-8 sm:top-8 opacity-90">
+            <EletivaSymbol size={88} pose="talking" className="sm:w-32 sm:h-32" />
+          </div>
+
+          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/75 mb-3">
             sua eletiva
           </p>
-          <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.9] mb-4">
+          <h1 className="font-display uppercase text-6xl sm:text-8xl leading-[0.85] mb-5 max-w-[16ch]">
             {course.title.toLowerCase()}
           </h1>
           {course.subtitle && (
-            <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl mb-8">
+            <p className="font-body text-lg sm:text-xl text-perestroika-preto/85 max-w-2xl mb-10">
               {course.subtitle}
             </p>
           )}
 
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-5 pt-6 border-t border-perestroika-preto/10">
+          {current && (
+            <button
+              type="button"
+              onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
+              className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-7 py-3.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform mb-10"
+            >
+              continuar módulo {String(current.number).padStart(2, "0")} <ArrowRight className="h-4 w-4" />
+            </button>
+          )}
+
+          <div className="flex flex-wrap items-end gap-x-10 gap-y-6 pt-6 border-t border-perestroika-preto/20">
             <div className="flex items-center gap-3 min-w-0">
               {course.professor_avatar_url && (
                 <img
                   src={course.professor_avatar_url}
                   alt={course.professor_name}
-                  width={48}
-                  height={48}
+                  width={56}
+                  height={56}
                   decoding="async"
-                  className="h-12 w-12 rounded-full object-cover border border-perestroika-preto/10 shrink-0"
+                  className="h-14 w-14 rounded-full object-cover border-2 border-perestroika-preto/15 shrink-0"
                   loading="lazy"
                 />
               )}
               <div className="min-w-0">
-                <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55 mb-0.5">
+                <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/65 mb-0.5">
                   quem te guia
                 </p>
-                <p className="font-body text-sm font-medium truncate">{course.professor_name.toLowerCase()}</p>
+                <p className="font-body text-base font-semibold truncate">{course.professor_name.toLowerCase()}</p>
               </div>
             </div>
 
             {totalPublished > 0 && (
-              <div className="flex-1 min-w-[180px]">
+              <div className="flex-1 min-w-[200px]">
                 <div className="flex items-baseline justify-between mb-2 gap-3">
-                  <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+                  <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/65">
                     seu progresso
                   </p>
-                  <p className="font-body text-xs tabular-nums text-perestroika-preto/70">
+                  <p className="font-body text-sm font-semibold tabular-nums text-perestroika-preto">
                     {totalCompleted}/{totalPublished} · {progressPct}%
                   </p>
                 </div>
-                <div className="h-1.5 rounded-full bg-perestroika-preto/10 overflow-hidden">
+                <div className="h-2 rounded-full bg-perestroika-preto/15 overflow-hidden border border-perestroika-preto/10">
                   <motion.div
                     className="h-full bg-perestroika-preto"
                     initial={{ width: 0 }}
@@ -303,7 +318,6 @@ const EletivaHome = () => {
               </div>
             )}
           </div>
-
         </motion.section>
 
         {/* próximo passo único + estado da entrega */}
