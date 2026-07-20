@@ -124,71 +124,87 @@ const Eletivas = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10%" }}
                 transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-9"
+                className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-perestroika-preto bg-perestroika-bege"
               >
+                {/* header do card: número + tag */}
                 <div
-                  className="absolute inset-x-0 top-0 h-1.5"
-                  style={{ backgroundColor: e.accent }}
-                  aria-hidden="true"
-                />
-                <div className="flex items-baseline justify-between gap-3 mb-6">
-                  <span className="font-display text-7xl sm:text-8xl leading-none" style={{ color: e.accent }}>
+                  className="flex items-center justify-between gap-4 border-b-2 border-perestroika-preto px-6 py-4 sm:px-8 sm:py-5"
+                  style={{ backgroundColor: `${e.accent}10` }}
+                >
+                  <span
+                    className="font-display text-4xl sm:text-5xl leading-none"
+                    style={{ color: e.accent }}
+                  >
                     {e.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55">
-                    {e.professor}
+                  <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.2em] text-perestroika-preto/70 text-right">
+                    {e.tag}
                   </span>
                 </div>
 
-                <h2 className="font-display uppercase text-3xl sm:text-4xl mb-3 leading-tight">
-                  {e.nome}
-                </h2>
-                <p className="font-body text-base sm:text-lg text-perestroika-preto/80 leading-relaxed mb-2">
-                  {e.pitch}
-                </p>
-                <p className="font-body text-sm text-perestroika-preto/65 leading-relaxed mb-6">
-                  {e.descLonga}
-                </p>
+                {/* corpo do card */}
+                <div className="flex flex-col flex-1 p-6 sm:p-8">
+                  {/* professor */}
+                  <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+                    {e.professor}
+                  </p>
 
-                <p className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/60 inline-flex items-center gap-1.5 mb-5">
-                  <Clock className="h-3 w-3" aria-hidden="true" />
-                  {e.tag}
-                </p>
+                  {/* título */}
+                  <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95] mb-4">
+                    {e.nome}
+                  </h2>
 
-                {/* trilhas */}
-                <ul className="space-y-2 mb-7 border-t border-perestroika-preto/10 pt-5">
-                  {e.trilhas.map((t) => (
-                    <li
-                      key={t.n}
-                      className="flex items-baseline gap-3 font-body text-sm text-perestroika-preto/80"
+                  {/* pitch */}
+                  <p className="font-body text-base sm:text-lg text-perestroika-preto/90 leading-snug mb-3">
+                    {e.pitch}
+                  </p>
+
+                  {/* descrição longa */}
+                  <p className="font-body text-sm text-perestroika-preto/65 leading-relaxed mb-6">
+                    {e.descLonga}
+                  </p>
+
+                  {/* trilhas */}
+                  <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-preto/[0.02] p-4 mb-6">
+                    <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50 mb-3">
+                      o que você vai percorrer
+                    </p>
+                    <ul className="space-y-2.5">
+                      {e.trilhas.map((t) => (
+                        <li
+                          key={t.n}
+                          className="flex items-start gap-3 font-body text-sm text-perestroika-preto/85"
+                        >
+                          <span
+                            className="font-display text-lg leading-none pt-0.5 shrink-0"
+                            style={{ color: t.color }}
+                          >
+                            {t.n}
+                          </span>
+                          <span className="flex-1 leading-snug">
+                            <span className="font-semibold">{t.titulo}</span>
+                            <span className="text-perestroika-preto/55"> · {t.range}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* cta */}
+                  <div className="mt-auto pt-2">
+                    <Link
+                      to={`/app/trilhas?eletiva=${key}`}
+                      className="inline-flex w-full sm:w-auto items-center justify-center gap-2 min-h-12 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                      style={{ backgroundColor: e.accent }}
                     >
-                      <span
-                        className="font-display text-base leading-none shrink-0"
-                        style={{ color: t.color }}
-                      >
-                        {t.n}
-                      </span>
-                      <span className="flex-1">
-                        <span className="font-medium">{t.titulo}</span>
-                        <span className="text-perestroika-preto/55"> · {t.range}</span>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Link
-                    to={`/app/trilhas?eletiva=${key}`}
-                    className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
-                  >
-                    entrar nas trilhas <ArrowRight className="h-4 w-4" />
-                  </Link>
+                      entrar nas trilhas <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
                 </div>
               </motion.article>
             );
           })}
         </div>
-
       </section>
     </div>
   );
