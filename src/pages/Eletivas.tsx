@@ -74,7 +74,6 @@ const Eletivas = () => {
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
       <PageHeader
         borderless
-        back={{ to: "/" }}
         logoLink="/"
         actions={
           <Link
