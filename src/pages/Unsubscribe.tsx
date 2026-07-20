@@ -45,7 +45,6 @@ const Unsubscribe = () => {
       <PageHeader
         layout="split"
         borderless
-        layout="split"
         logoLink="/"
         actions={
           <Link
