@@ -117,7 +117,7 @@ const Eletivas = () => {
       </section>
 
       {/* cards das eletivas */}
-      <section className="container pb-24 sm:pb-32">
+      <section className="container pb-20 sm:pb-28">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {(Object.keys(eletivas) as EletivaKey[]).map((key, i) => {
             const e = eletivas[key];
