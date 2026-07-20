@@ -305,7 +305,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
-      <PageHeader back={{ to: "/" }} borderless />
+      <PageHeader back={{ to: "/" }} />
 
       <main className="flex-1 container flex items-center justify-center py-16">
         <div className="w-full max-w-md">
