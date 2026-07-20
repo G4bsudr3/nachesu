@@ -305,10 +305,6 @@ const EletivaHome = () => {
               continuar de onde parou <ArrowRight className="h-4 w-4" />
             </button>
 
-            {/* status da entrega do módulo atual */}
-            <div className="mt-6 bg-perestroika-bege text-perestroika-preto rounded-2xl">
-              <DeliverableStatusPill moduleId={current.id} />
-            </div>
           </motion.section>
         )}
 
