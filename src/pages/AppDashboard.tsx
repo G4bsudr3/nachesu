@@ -25,7 +25,6 @@ import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
   const { user, signOut } = useAuth();
-  const { isAdmin } = useUserRole();
   const queryClient = useQueryClient();
 
   const { data: dashboard, isLoading: dashboardLoading } = useDashboardData();
