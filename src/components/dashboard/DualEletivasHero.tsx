@@ -34,8 +34,7 @@ const infoBySlug: Record<string, FacilitadorInfo> = {
 /**
  * Cards do dashboard pra estudante matriculada em 2+ eletivas.
  * Espelha a estética editorial da página /eletivas: fundo bege, faixa colorida no topo,
- * numeração grande na cor da trilha, chip com meta, título preto, divisor, facilitador
- * com foto + bio curta, CTA pill preto. Adiciona a régua de progresso da trilha por baixo.
+ * título preto em destaque, CTA pill preto. Adiciona a régua de progresso da trilha por baixo.
  */
 export const DualEletivasHero = () => {
   const { data: enrollments } = useMyEnrollments();
@@ -113,18 +112,11 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
         aria-hidden="true"
       />
 
-      {/* topo: número */}
-      <div className="flex items-baseline justify-between gap-3 mb-6">
-        <span
-          className="font-display text-7xl sm:text-8xl leading-none"
-          style={{ color: info.accent }}
-        >
-          {info.n}
-        </span>
-      </div>
-
-      {/* título + pitch */}
-      <h3 className="font-display uppercase text-3xl sm:text-4xl mb-3 leading-tight text-perestroika-preto text-balance">
+      {/* título em destaque */}
+      <h3
+        className="font-display uppercase text-5xl sm:text-6xl mb-4 leading-[0.9] text-balance"
+        style={{ color: info.accent }}
+      >
         {title.toLowerCase()}
       </h3>
       {isLoading ? (
