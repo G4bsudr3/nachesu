@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, ShieldCheck, Clock } from "lucide-react";
-import { NachesULogo } from "@/components/brand/NachesULogo";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 const beneficios = [
