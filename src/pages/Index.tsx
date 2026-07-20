@@ -282,7 +282,8 @@ const Index = () => {
             <span className="block">uma naches u.</span>
           </motion.h1>
           <motion.p variants={heroItem} className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/80">
-            o lugar onde você aprende construindo. uma aula curta por semana, um tutor ia do seu lado e, no fim do ano, um projeto seu de verdade no ar.
+            o lugar onde você aprende construindo.&nbsp;<br />
+            uma aula por semana, um tutor ia do seu lado e, no fim do ano, um projeto de verdade no ar.
           </motion.p>
 
           <motion.div variants={heroItem} className="mt-10 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
@@ -322,7 +323,8 @@ const Index = () => {
             aqui você aprende<br />fazendo.
           </h2>
           <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
-            esqueça aula longa e prova no fim. toda semana você abre um módulo curto, faz uma coisinha de verdade, e essa coisinha vai virando seu projeto. no fim do ano, você tem algo seu pra mostrar.
+            esqueça aula longa e prova no fim.&nbsp;<br />
+            toda semana você abre um módulo, cria uma coisinha de verdade, e essa coisinha vai virando seu projeto. no fim do ano, você tem algo seu pra mostrar.
           </p>
         </motion.div>
 
