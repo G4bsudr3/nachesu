@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { EletivaLogo } from "@/components/brand/EletivaLogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
+import duduAsset from "@/assets/facilitadores/dudu.png.asset.json";
 
 type EletivaKey = "ia-na-pratica" | "economia-circular";
 
