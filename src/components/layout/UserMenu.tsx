@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { LogOut, Settings, Shield, User as UserIcon, ChevronDown } from "lucide-react";
+import { LogOut, Settings, User as UserIcon, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useAuth } from "@/contexts/AuthContext";
-import { useUserRole } from "@/hooks/useUserRole";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { cn } from "@/lib/utils";
 
