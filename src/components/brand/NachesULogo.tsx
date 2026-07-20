@@ -60,7 +60,7 @@ export const NachesULogo = ({
 
   return (
     <div
-      className={cn("inline-flex flex-col items-start leading-none select-none shrink-0", className)}
+      className={cn("inline-flex flex-col items-center leading-none select-none shrink-0", className)}
       aria-label="nachesu"
     >
       <span className="inline-flex items-center" style={{ height, gap: `${height * 0.06}px` }}>
