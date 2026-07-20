@@ -164,11 +164,6 @@ const Eletivas = () => {
                   {e.descLonga}
                 </p>
 
-                <p className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/60 inline-flex items-center gap-1.5 mb-5">
-                  <Clock className="h-3 w-3" aria-hidden="true" />
-                  {e.tag}
-                </p>
-
                 {/* trilhas */}
                 <ul className="space-y-2 mb-7 border-t border-perestroika-preto/10 pt-5">
                   {e.trilhas.map((t) => (
