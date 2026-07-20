@@ -48,7 +48,7 @@ export const DashboardGreeting = ({
   hasMultiple = false,
 }: Props) => {
   const contextLine = hasMultiple
-    ? "você tem duas trilhas abertas. escolha por onde avançar hoje."
+    ? "você tem duas trilhas liberadas. escolha uma para avançar hoje:"
     : buildContextLine(totalCompleted, totalPublished, daysSinceLastActivity);
 
 
