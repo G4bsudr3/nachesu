@@ -85,11 +85,6 @@ export class RootErrorBoundary extends Component<Props, State> {
               voltar pro início
             </a>
           </div>
-          {import.meta.env.DEV && (
-            <pre className="mt-6 text-left text-[11px] text-perestroika-preto/50 bg-perestroika-preto/5 p-3 rounded-xl overflow-x-auto">
-              {error.message}
-            </pre>
-          )}
         </motion.div>
       </div>
     );
