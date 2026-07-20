@@ -122,7 +122,18 @@ const EmailScreen = ({
   validating: boolean;
 }) => (
   <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
-    <PageHeader borderless back={{ to: "/" }} logoLink="/" />
+    <PageHeader
+      borderless
+      logoLink="/"
+      actions={
+        <Link
+          to="/auth"
+          className="inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+        >
+          entrar
+        </Link>
+      }
+    />
     <main className="flex-1 container max-w-3xl flex flex-col justify-center py-20">
       <span className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/50">
         formulário básico de identidade
