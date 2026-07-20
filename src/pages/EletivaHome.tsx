@@ -40,18 +40,18 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
   return (
     <section
       aria-labelledby="modulos-title"
-      className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/55 p-5 sm:p-6"
+      className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/55 p-6 sm:p-8"
     >
-      <header className="mb-5">
-        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-1">
-          O MAPA
+      <header className="mb-8">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-2">
+          o mapa
         </p>
-        <h2 id="modulos-title" className="font-display uppercase text-2xl sm:text-3xl leading-none">
-          AS ETAPAS DA SUA JORNADA
+        <h2 id="modulos-title" className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
+          as etapas da sua jornada
         </h2>
       </header>
 
-      <div className="space-y-6">
+      <div className="space-y-10">
         {snapshot.trails.map((trail) => {
           const trailModules = snapshot.modules
             .filter((m) => m.trail_id === trail.id)
@@ -59,18 +59,29 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
           if (!trailModules.length) return null;
           const color = trail.color ?? trailColorByOrder[trail.order_index] ?? "#090909";
           const done = trailModules.filter((m) => snapshot.progressByModuleId[m.id]?.completed_at).length;
+          const trailPct = Math.round((done / trailModules.length) * 100);
           return (
             <div key={trail.id}>
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <span className="inline-flex items-center gap-2 font-body text-sm">
-                  <span aria-hidden className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
-                  <span className="font-display uppercase text-base">{trail.title.toLowerCase()}</span>
-                </span>
-                <span className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55 tabular-nums">
-                  {done}/{trailModules.length}
-                </span>
+              <div className="mb-4">
+                <div className="flex items-baseline justify-between gap-3 mb-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span aria-hidden className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                    <h3 className="font-display uppercase text-lg sm:text-xl leading-none truncate">
+                      {trail.title.toLowerCase()}
+                    </h3>
+                  </div>
+                  <span className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 tabular-nums shrink-0">
+                    {done}/{trailModules.length}
+                  </span>
+                </div>
+                <div className="h-[3px] rounded-full bg-perestroika-preto/8 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-[width] duration-700"
+                    style={{ width: `${trailPct}%`, backgroundColor: color }}
+                  />
+                </div>
               </div>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {trailModules.map((m) => {
                   const state = moduleState(m, snapshot);
                   const clickable = state === "current" || state === "available" || state === "done";
@@ -95,40 +106,48 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
                               : "em breve"
                             : "termine o anterior";
                   const base =
-                    "group flex items-center justify-between gap-3 rounded-xl border px-3 py-3 text-left transition-colors";
+                    "group relative flex items-center justify-between gap-3 rounded-xl border px-4 py-3.5 text-left transition-all w-full";
                   const variant =
                     state === "current"
-                      ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege"
+                      ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege shadow-[0_4px_0_0_rgba(9,9,9,0.15)]"
                       : state === "done"
-                        ? "border-perestroika-preto/20 bg-perestroika-bege"
+                        ? "border-perestroika-preto/20 bg-perestroika-bege hover:border-perestroika-preto/60"
                         : state === "available"
-                          ? "border-perestroika-preto/30 bg-perestroika-bege hover:border-perestroika-preto"
-                          : "border-perestroika-preto/10 bg-perestroika-preto/[0.03] text-perestroika-preto/55 cursor-not-allowed";
+                          ? "border-perestroika-preto/25 bg-perestroika-bege hover:border-perestroika-preto hover:-translate-y-0.5"
+                          : "border-perestroika-preto/10 bg-perestroika-preto/[0.02] text-perestroika-preto/50 cursor-not-allowed";
+                  const numColor =
+                    state === "current"
+                      ? "text-perestroika-bege"
+                      : state === "locked" || state === "scheduled"
+                        ? "text-perestroika-preto/35"
+                        : undefined;
                   return (
                     <li key={m.id}>
                       <button
                         type="button"
                         disabled={!clickable}
                         onClick={() => clickable && onPick(m.number)}
-                        className={`${base} ${variant} w-full`}
+                        className={`${base} ${variant}`}
                         aria-label={`módulo ${m.number} ${m.title} — ${stateLabel}`}
                       >
-                        <div className="flex items-center gap-3 min-w-0">
+                        <div className="flex items-center gap-3.5 min-w-0">
                           <span
                             aria-hidden
-                            className="font-display text-xl shrink-0 tabular-nums"
-                            style={{ color: state === "current" ? undefined : color }}
+                            className={`font-display text-2xl leading-none shrink-0 tabular-nums ${numColor ?? ""}`}
+                            style={numColor ? undefined : { color }}
                           >
                             {String(m.number).padStart(2, "0")}
                           </span>
                           <div className="min-w-0">
-                            <p className="font-body text-sm font-medium truncate">{m.title.toLowerCase()}</p>
-                            <p className="font-body text-[10px] uppercase tracking-wide opacity-70">
+                            <p className="font-body text-sm font-medium leading-snug truncate">
+                              {m.title.toLowerCase()}
+                            </p>
+                            <p className="font-body text-[10px] uppercase tracking-[0.15em] opacity-65 mt-0.5">
                               {stateLabel}
                             </p>
                           </div>
                         </div>
-                        <Icon className="h-4 w-4 shrink-0 opacity-70 group-hover:translate-x-0.5 transition-transform" />
+                        <Icon className="h-4 w-4 shrink-0 opacity-60 group-hover:translate-x-0.5 transition-transform" />
                       </button>
                     </li>
                   );
@@ -141,6 +160,7 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
     </section>
   );
 };
+
 
 const EletivaHome = () => {
   const { slug } = useParams<{ slug: string }>();
