@@ -267,6 +267,9 @@ const EletivaHome = () => {
                 <img
                   src={course.professor_avatar_url}
                   alt={course.professor_name}
+                  width={48}
+                  height={48}
+                  decoding="async"
                   className="h-12 w-12 rounded-full object-cover border border-perestroika-preto/10 shrink-0"
                   loading="lazy"
                 />
