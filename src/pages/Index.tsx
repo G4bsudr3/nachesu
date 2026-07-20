@@ -324,7 +324,7 @@ const Index = () => {
           </h2>
           <p className="mt-8 max-w-xl font-body text-lg sm:text-xl text-perestroika-preto/75">
             esqueça aula longa e prova no fim.&nbsp;<br />
-            toda semana você abre um módulo, cria uma coisinha de verdade, e essa coisinha vai virando seu projeto. no fim do ano, você tem algo seu pra mostrar.
+            toda semana você abre um módulo, faz uma coisinha e essa coisinha&nbsp;no fim do ano, vira um projeto seu pra mostrar.
           </p>
         </motion.div>
 
