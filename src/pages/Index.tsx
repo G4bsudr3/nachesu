@@ -252,6 +252,7 @@ const Index = () => {
         </AnimatePresence>
       </motion.header>
 
+      <main>
       {/* hero */}
       <section className="container relative pt-20 pb-20 sm:pt-24 sm:pb-28">
         <motion.div
@@ -729,6 +730,7 @@ const Index = () => {
           </p>
         </div>
       </section>
+      </main>
 
       <footer className="container py-10 text-center">
         <p className="font-body text-xs text-perestroika-preto/55">

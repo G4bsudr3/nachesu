@@ -1,0 +1,12 @@
+# NachesU
+
+> plataforma de eletivas assíncronas da naches pro ensino médio, em parceria com a escola sebrae bh. duas eletivas de 20 semanas: ia na prática (com frattz) e economia circular e negócios regenerativos (com dudu obregon).
+
+nachesu (naches university) é a extensão educacional da naches. cada eletiva tem 20 módulos semanais de 50 minutos, formato pbl + microlearning, com tutor ia (joão-de-barro) do lado do estudante. os estudantes constroem projetos reais: uma plataforma no lovable resolvendo problema da rotina escolar (ia) ou um mini-dossiê de negócio regenerativo usando a própria escola como laboratório (economia circular).
+
+## Pages
+
+- [Início](/): o que é nachesu, as duas eletivas, como funciona, faq
+- [Eletivas](/eletivas): detalhe das duas trilhas (ia na prática + economia circular)
+- [Começar](/comecar): primeiros passos pra estudante da escola sebrae bh
+- [Entrar](/auth): login por email institucional sebrae
