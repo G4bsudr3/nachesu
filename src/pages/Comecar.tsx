@@ -93,7 +93,7 @@ const Comecar = () => {
       </section>
 
       {/* benefícios */}
-      <section className="container py-12 sm:py-16 border-t border-perestroika-preto/10">
+      <section className="container py-16 sm:py-24 border-t border-perestroika-preto/10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {beneficios.map((b, i) => (
             <motion.article
