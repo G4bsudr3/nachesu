@@ -99,7 +99,7 @@ const Marco = () => {
       {/* logo discreto no topo */}
       <header className="absolute top-0 inset-x-0 z-10 px-4 sm:px-6 pt-6">
         <Link to="/app" aria-label="ir pro início" className="inline-block">
-          <NachesULogo variant="light" height={24} showSelo={false} />
+          <NachesULogo variant="ink" height={24} showSelo={false} />
         </Link>
       </header>
 

@@ -73,7 +73,7 @@ const Eletivas = () => {
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
       {/* topbar */}
       <header className="container flex items-center justify-between pt-8 pb-4">
-        <EletivaLogo variant="dark" />
+        <EletivaLogo variant="ink" />
         <nav className="flex items-center gap-5 sm:gap-7">
           <Link
             to="/auth"
