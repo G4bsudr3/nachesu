@@ -252,10 +252,10 @@ const EletivaHome = () => {
             className="absolute top-0 inset-x-0 h-1.5 sm:h-2 bg-perestroika-rosa"
           />
 
-          {/* mascote do tutor no hero */}
+          {/* mascote do tutor no topo do hero */}
           <div
             aria-hidden
-            className="absolute right-2 bottom-2 sm:right-6 sm:bottom-6 pointer-events-none"
+            className="absolute top-2 right-2 sm:top-6 sm:right-6 pointer-events-none"
           >
             <EletivaSymbol
               size={80}
@@ -267,11 +267,11 @@ const EletivaHome = () => {
           <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
             sua eletiva
           </p>
-          <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.85] mb-3 max-w-[14ch] sm:max-w-[16ch] text-perestroika-preto">
+          <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.85] mb-3 max-w-[12ch] sm:max-w-[14ch] text-perestroika-preto">
             {course.title.toLowerCase()}
           </h1>
           {course.subtitle && (
-            <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl sm:max-w-2xl mb-6">
+            <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-lg sm:max-w-xl mb-6">
               {course.subtitle}
             </p>
           )}
