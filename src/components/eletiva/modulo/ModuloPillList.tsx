@@ -124,15 +124,10 @@ const PillCardShell = ({
             >
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/80 font-semibold">
-              bloco {String(index + 1).padStart(2, "0")}
-              <span className="text-perestroika-preto/45"> de {String(total).padStart(2, "0")}</span>
-            </span>
-            <span aria-hidden className="text-perestroika-preto/25">·</span>
-            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.16em] text-perestroika-preto/60">
+            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/70">
               {pill.order_index === 0 && !pill.required
-                ? "OPCIONAL"
-                : `${pillKindLabel[pill.kind]}${!pill.required ? " · OPCIONAL" : ""}`}
+                ? "opcional"
+                : `${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
             </span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -253,7 +248,14 @@ export const ModuloPillList = ({
 
   return (
     <section aria-label="pílulas do módulo" className="space-y-4 mb-10">
-      <h2 className="font-display uppercase text-2xl mb-2">BLOCOS</h2>
+      <header className="mb-4 sm:mb-6">
+        <p className="font-body text-[10px] sm:text-xs uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1.5">
+          conteúdo do módulo
+        </p>
+        <h2 className="font-display uppercase text-3xl sm:text-4xl leading-none text-perestroika-preto">
+          blocos
+        </h2>
+      </header>
 
       {loading && (
         <div className="space-y-3">

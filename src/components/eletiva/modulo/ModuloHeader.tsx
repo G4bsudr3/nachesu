@@ -31,7 +31,7 @@ export const ModuloHeader = ({
   return (
     <section
       aria-label="cabeçalho do módulo"
-      className="relative overflow-hidden rounded-3xl bg-perestroika-bege text-perestroika-preto p-6 sm:p-9 mb-6 mx-4 sm:mx-6 lg:mx-8 border-2 border-perestroika-preto/25"
+      className="relative overflow-hidden rounded-3xl bg-perestroika-bege text-perestroika-preto p-6 sm:p-9 mb-8 sm:mb-10 border-2 border-perestroika-preto/25"
     >
       <div
         className="absolute inset-x-0 top-0 h-1.5"
