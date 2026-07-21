@@ -83,9 +83,7 @@ const Modulo = () => {
     }
   }, [isAdmin, moduleRow?.id]);
   const trailColor =
-    activeCourse?.slug === "ia-na-pratica"
-      ? "#f756a6"
-      : (trail?.color ?? trailColorByOrder[trail?.order_index ?? 1] ?? "#fe7b02");
+    trail?.color ?? trailColorByOrder[trail?.order_index ?? 1] ?? "#fe7b02";
 
   // slug do curso (pra navegar pro marco entre trilhas + CTAs escopadas)
   const courseSlug = activeCourse?.slug ?? slugParam ?? null;
