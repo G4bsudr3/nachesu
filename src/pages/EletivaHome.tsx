@@ -44,7 +44,7 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
     >
       <header className="mb-8">
         <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-2">
-          o mapa
+          O MAPA DA ELETIVA
         </p>
         <h2 id="modulos-title" className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
           as etapas da sua jornada
