@@ -322,7 +322,7 @@ const EletivaHome = () => {
 
           {/* próximo passo integrado no hero */}
           {!snapLoading && current && (
-            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/80 p-5 sm:p-6">
+            <div className="rounded-2xl border-2 border-perestroika-preto/30 bg-perestroika-bege/80 p-5 sm:p-6 shadow-sm">
               <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/60 mb-2 inline-flex items-center gap-2">
                 <EletivaSymbol size={20} pose="building" /> próximo passo
               </p>
