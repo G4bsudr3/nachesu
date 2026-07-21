@@ -76,12 +76,12 @@ export const ModuloHeader = ({
       {/* chips de ficha técnica */}
       <div className="flex flex-wrap items-center gap-2">
         {typeof totalPills === "number" && totalPills > 0 && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-bege/10 px-3 py-1.5 font-body text-xs uppercase tracking-wider">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-preto/10 px-3 py-1.5 font-body text-xs uppercase tracking-wider">
             <Layers className="h-3 w-3" aria-hidden />
             {totalPills} {totalPills === 1 ? "bloco" : "blocos"}
           </span>
         )}
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-bege/10 px-3 py-1.5 font-body text-xs uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-preto/10 px-3 py-1.5 font-body text-xs uppercase tracking-wider">
           <Clock className="h-3 w-3" aria-hidden />
           {totalMinutes ? `${totalMinutes} min` : "tempo variável"}
         </span>
@@ -99,17 +99,17 @@ export const ModuloHeader = ({
       {typeof totalPills === "number" && totalPills > 0 && (
         <div className="mt-6" aria-label={`progresso: ${donePills ?? 0} de ${totalPills} blocos, ${pct}%`}>
           <div className="flex items-baseline justify-between mb-2 gap-3">
-            <p className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-bege/60">
+            <p className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/60">
               progresso do módulo
             </p>
-            <p className="font-body text-xs tabular-nums text-perestroika-bege/85">
-              <span className="font-semibold text-perestroika-bege">{donePills ?? 0}/{totalPills}</span>
-              <span className="text-perestroika-bege/40 mx-1.5">·</span>
-              <span className="font-semibold text-perestroika-bege">{pct}%</span>
+            <p className="font-body text-xs tabular-nums text-perestroika-preto/85">
+              <span className="font-semibold text-perestroika-preto">{donePills ?? 0}/{totalPills}</span>
+              <span className="text-perestroika-preto/40 mx-1.5">·</span>
+              <span className="font-semibold text-perestroika-preto">{pct}%</span>
             </p>
           </div>
           <div
-            className="h-1.5 w-full rounded-full bg-perestroika-bege/10 overflow-hidden"
+            className="h-1.5 w-full rounded-full bg-perestroika-preto/10 overflow-hidden"
             role="progressbar"
             aria-valuenow={pct}
             aria-valuemin={0}
