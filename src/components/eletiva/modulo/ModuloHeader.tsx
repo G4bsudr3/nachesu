@@ -42,12 +42,12 @@ export const ModuloHeader = ({
       {/* breadcrumb eletiva > trilha */}
       <nav
         aria-label="localização"
-        className="flex items-center gap-2 flex-wrap font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-bege/60 mb-5"
+        className="flex items-center gap-2 flex-wrap font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/60 mb-5"
       >
         {courseTitle && (
           <>
             <span>{courseTitle.toLowerCase()}</span>
-            <span aria-hidden className="text-perestroika-bege/30">/</span>
+            <span aria-hidden className="text-perestroika-preto/30">/</span>
           </>
         )}
         {trailTitle && (
