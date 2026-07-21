@@ -75,6 +75,7 @@ const PillCardShell = ({
   total,
   done,
   justUnlocked,
+  trailColor,
   children,
 }: {
   pill: ModuloPill;
@@ -82,6 +83,7 @@ const PillCardShell = ({
   total: number;
   done: boolean;
   justUnlocked?: boolean;
+  trailColor?: string;
   children: React.ReactNode;
 }) => (
   <article
@@ -92,14 +94,21 @@ const PillCardShell = ({
         : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
     } ${justUnlocked ? "motion-safe:animate-pill-unlock ring-2 ring-perestroika-rosa/60 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
   >
-    <div className="flex items-center justify-between gap-3 mb-3">
-      <div className="flex items-center gap-2 flex-wrap min-w-0">
-        <span className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/75 font-semibold">
+    <div className="flex items-center justify-between gap-3 mb-4">
+      <div className="flex items-center gap-3 flex-wrap min-w-0">
+        <span
+          className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full font-display text-sm sm:text-base text-perestroika-bege shrink-0"
+          style={{ backgroundColor: trailColor || "#090909" }}
+          aria-label={`bloco ${index + 1} de ${total}`}
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/80 font-semibold">
           bloco {String(index + 1).padStart(2, "0")}
-          <span className="text-perestroika-preto/40"> de {String(total).padStart(2, "0")}</span>
+          <span className="text-perestroika-preto/45"> de {String(total).padStart(2, "0")}</span>
         </span>
         <span aria-hidden className="text-perestroika-preto/25">·</span>
-        <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+        <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.16em] text-perestroika-preto/60">
           {pill.order_index === 0 && !pill.required
             ? "OPCIONAL"
             : `${pillKindLabel[pill.kind]}${!pill.required ? " · OPCIONAL" : ""}`}
