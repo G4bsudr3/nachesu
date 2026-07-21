@@ -36,10 +36,10 @@ import type {
 } from "@/features/admin/deliverableRendering/types";
 
 const trailColorByOrder: Record<number, string> = {
-  1: "#fe7b02",
-  2: "#fd4644",
-  3: "#f756a6",
-  4: "#6f77fc",
+  1: "#fe7b02", // fundamentos & ia — laranja
+  2: "#fd4644", // problema & decisão — vermelho
+  3: "#f756a6", // construção no lovable — rosa
+  4: "#8A85BF", // validação & evolução — lilás
 };
 
 const Modulo = () => {
@@ -83,9 +83,7 @@ const Modulo = () => {
     }
   }, [isAdmin, moduleRow?.id]);
   const trailColor =
-    activeCourse?.slug === "ia-na-pratica"
-      ? "#f756a6"
-      : (trail?.color ?? trailColorByOrder[trail?.order_index ?? 1] ?? "#fe7b02");
+    trail?.color ?? trailColorByOrder[trail?.order_index ?? 1] ?? "#fe7b02";
 
   // slug do curso (pra navegar pro marco entre trilhas + CTAs escopadas)
   const courseSlug = activeCourse?.slug ?? slugParam ?? null;

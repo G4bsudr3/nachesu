@@ -1,0 +1,1 @@
+update public.trails set color = '#8A85BF' where color = '#6f77fc' and order_index = 4 and course_id in (select id from public.courses where slug='ia-na-pratica');
