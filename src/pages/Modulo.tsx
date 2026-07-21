@@ -82,7 +82,10 @@ const Modulo = () => {
       logAdminModuleView(moduleRow.id);
     }
   }, [isAdmin, moduleRow?.id]);
-  const trailColor = trailColorByOrder[trail?.order_index ?? 1] ?? trail?.color ?? "#fe7b02";
+  const trailColor =
+    activeCourse?.slug === "ia-na-pratica"
+      ? "#f756a6"
+      : (trailColorByOrder[trail?.order_index ?? 1] ?? trail?.color ?? "#fe7b02");
 
   // slug do curso (pra navegar pro marco entre trilhas + CTAs escopadas)
   const courseSlug = activeCourse?.slug ?? slugParam ?? null;
