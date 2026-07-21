@@ -245,8 +245,12 @@ const EletivaHome = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-10 mb-6"
+          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege pt-8 sm:pt-12 p-6 sm:p-10 mb-6"
         >
+          <div
+            aria-hidden
+            className="absolute top-0 inset-x-0 h-3 sm:h-4 bg-perestroika-rosa"
+          />
           <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
             sua eletiva
           </p>
