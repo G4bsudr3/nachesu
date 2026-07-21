@@ -61,7 +61,6 @@ export const ModuloHeader = ({
       {/* número do módulo em destaque */}
       <p className="font-display uppercase text-2xl leading-none mb-1 text-perestroika-bege/70">
         módulo <span className="text-perestroika-bege">{String(moduleNumber).padStart(2, "0")}</span>
-        <span className="text-perestroika-bege/40"> / {String(totalModules).padStart(2, "0")}</span>
       </p>
 
       <h1 className="font-display uppercase text-5xl sm:text-6xl mb-4 leading-[0.9] text-perestroika-bege">
