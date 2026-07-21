@@ -105,10 +105,10 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
 
   return (
     <article className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-9 flex flex-col">
-      {/* faixa colorida no topo — mais sutil */}
+      {/* faixa colorida no topo */}
       <div
-        className="absolute inset-x-0 top-0 h-1"
-        style={{ backgroundColor: info.accent, opacity: 0.45 }}
+        className="absolute inset-x-0 top-0 h-1.5"
+        style={{ backgroundColor: info.accent }}
         aria-hidden="true"
       />
 
@@ -153,22 +153,22 @@ const EletivaJourneyCard = ({ courseId, slug, title, info }: CardProps) => {
             style={{
               width: `${Math.max(pct, moduleToShow ? 4 : 0)}%`,
               backgroundColor: info.accent,
-              opacity: 0.75,
             }}
           />
         </div>
       </div>
 
-      {/* CTA — preto com detalhe colorido sutil */}
+      {/* CTA */}
       <div className="mt-auto">
         <Link
           to={ctaHref}
           onClick={() => setSlug(slug)}
           aria-label={`abrir eletiva ${title.toLowerCase()}`}
-          className="inline-flex items-center gap-2 min-h-12 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-[1.03] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+          className="inline-flex items-center gap-2 min-h-12 rounded-full text-perestroika-preto px-6 py-3 font-body font-medium text-sm uppercase tracking-wide hover:scale-[1.03] active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+          style={{ backgroundColor: info.accent }}
         >
           {ctaLabel}
-          <ArrowRight className="h-4 w-4" style={{ color: info.accent }} />
+          <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     </article>

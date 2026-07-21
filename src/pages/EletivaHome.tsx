@@ -20,18 +20,6 @@ const trailColorByOrder: Record<number, string> = {
   4: "#6f77fc",
 };
 
-const trailTintByOrder: Record<number, string> = {
-  1: "hsl(28 90% 92%)",
-  2: "hsl(1 80% 92%)",
-  3: "hsl(329 60% 92%)",
-  4: "hsl(237 70% 94%)",
-};
-
-const heroTintBySlug: Record<string, string> = {
-  "economia-circular": "hsl(252 22% 88%)",
-  "ia-na-pratica": "hsl(329 65% 90%)",
-};
-
 type ModuleState = "done" | "current" | "available" | "scheduled" | "locked";
 
 const moduleState = (
@@ -70,7 +58,6 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
             .sort((a, b) => a.number - b.number);
           if (!trailModules.length) return null;
           const color = trail.color ?? trailColorByOrder[trail.order_index] ?? "#090909";
-          const tint = trailTintByOrder[trail.order_index] ?? "hsl(28 47% 90%)";
           const done = trailModules.filter((m) => snapshot.progressByModuleId[m.id]?.completed_at).length;
           const trailPct = Math.round((done / trailModules.length) * 100);
           return (
@@ -78,7 +65,7 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
               <div className="mb-4">
                 <div className="flex items-baseline justify-between gap-3 mb-2">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span aria-hidden className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: color, opacity: 0.75 }} />
+                    <span aria-hidden className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
                     <h3 className="font-display uppercase text-lg sm:text-xl leading-none truncate">
                       {trail.title.toLowerCase()}
                     </h3>
@@ -87,10 +74,10 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
                     {done}/{trailModules.length}
                   </span>
                 </div>
-                <div className="h-[3px] rounded-full overflow-hidden" style={{ backgroundColor: tint }}>
+                <div className="h-[3px] rounded-full bg-perestroika-preto/8 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-[width] duration-700"
-                    style={{ width: `${trailPct}%`, backgroundColor: color, opacity: 0.7 }}
+                    style={{ width: `${trailPct}%`, backgroundColor: color }}
                   />
                 </div>
               </div>
@@ -250,7 +237,6 @@ const EletivaHome = () => {
   const progressPct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const tutorTo = current ? `/app/tutor?module=${current.number}` : "/app/tutor";
   const heroColor = slug === "economia-circular" ? "#8A85BF" : "#f756a6";
-  const heroTint = heroTintBySlug[slug ?? ""] ?? "hsl(28 47% 90%)";
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
@@ -262,27 +248,20 @@ const EletivaHome = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto p-8 sm:p-12 mb-6"
-          style={{ backgroundColor: heroTint }}
+          style={{ backgroundColor: heroColor }}
         >
-          {/* traço de cor no topo como assinatura sutil */}
-          <div
-            className="absolute inset-x-0 top-0 h-1.5"
-            style={{ backgroundColor: heroColor, opacity: 0.5 }}
-            aria-hidden="true"
-          />
-
-          <div className="absolute right-5 top-5 sm:right-10 sm:top-10 opacity-80 w-20 sm:w-28">
+          <div className="absolute right-5 top-5 sm:right-10 sm:top-10 opacity-90 w-20 sm:w-28">
             <EletivaSymbol size={112} pose="talking" className="!w-full !h-auto" />
           </div>
 
-          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/70 mb-3">
+          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/75 mb-3">
             sua eletiva
           </p>
           <h1 className="font-display uppercase text-6xl sm:text-8xl leading-[0.85] mb-5 max-w-[16ch]">
             {course.title.toLowerCase()}
           </h1>
           {course.subtitle && (
-            <p className="font-body text-lg sm:text-xl text-perestroika-preto/80 max-w-2xl mb-10">
+            <p className="font-body text-lg sm:text-xl text-perestroika-preto/85 max-w-2xl mb-10">
               {course.subtitle}
             </p>
           )}
@@ -347,22 +326,19 @@ const EletivaHome = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto text-perestroika-preto p-6 sm:p-8 mb-6"
-            style={{ backgroundColor: heroTint }}
+            className="rounded-3xl border-2 border-perestroika-preto text-perestroika-preto p-6 sm:p-8 mb-6"
+            style={{ backgroundColor: heroColor }}
+
+
           >
-            <div
-              className="absolute inset-x-0 top-0 h-1"
-              style={{ backgroundColor: heroColor, opacity: 0.5 }}
-              aria-hidden="true"
-            />
-            <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-preto/70 mb-2 inline-flex items-center gap-2">
+            <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-preto/75 mb-2 inline-flex items-center gap-2">
               <EletivaSymbol size={22} pose="building" /> próximo passo
             </p>
             <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95] mb-3">
               módulo {String(current.number).padStart(2, "0")} · {current.title.toLowerCase()}
             </h2>
             {current.objective && (
-              <p className="font-body text-sm sm:text-base text-perestroika-preto/80 mb-5 max-w-lg">
+              <p className="font-body text-sm sm:text-base text-perestroika-preto/85 mb-5 max-w-lg">
                 {current.objective}
               </p>
             )}
@@ -373,6 +349,7 @@ const EletivaHome = () => {
             >
               continuar de onde parou <ArrowRight className="h-4 w-4" />
             </button>
+
           </motion.section>
         )}
 

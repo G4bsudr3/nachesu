@@ -22,13 +22,6 @@
     --brand-azul: 237 97% 71%;         /* #6f77fc azul perestroika (jovem) */
     --brand-preto: 0 0% 4%;            /* #090909 */
 
-    /* ===== tons suaves para grandes superfícies ===== */
-    --brand-laranja-suave: 28 90% 92%;
-    --brand-vermelho-suave: 1 80% 92%;
-    --brand-rosa-suave: 329 60% 92%;
-    --brand-azul-suave: 237 70% 94%;
-    --naches-lilas-suave: 252 20% 90%;
-
     /* ===== paleta naches (assinatura da marca) ===== */
     --naches-lilas: 252 25% 62%;        /* #8A85BF lavanda */
 
@@ -156,8 +149,8 @@
   }
 
   ::selection {
-    background: hsl(var(--brand-rosa) / 0.35);
-    color: hsl(var(--brand-preto));
+    background: hsl(var(--brand-rosa));
+    color: hsl(var(--brand-bege));
   }
 
   /* touch targets mínimos pra botões icônicos */

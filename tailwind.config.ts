@@ -70,19 +70,14 @@ export default {
         perestroika: {
           bege: "hsl(var(--brand-bege))",
           laranja: "hsl(var(--brand-laranja))",
-          "laranja-suave": "hsl(var(--brand-laranja-suave))",
           vermelho: "hsl(var(--brand-vermelho))",
-          "vermelho-suave": "hsl(var(--brand-vermelho-suave))",
           rosa: "hsl(var(--brand-rosa))",
-          "rosa-suave": "hsl(var(--brand-rosa-suave))",
           azul: "hsl(var(--brand-azul))",
-          "azul-suave": "hsl(var(--brand-azul-suave))",
           preto: "hsl(var(--brand-preto))",
         },
         // azul institucional NachesU (wordmark + selo)
         "naches-azul": "#1E2BB8",
         "naches-lilas": "#8A85BF",
-        "naches-lilas-suave": "hsl(var(--naches-lilas-suave))",
         // alias semântico curto pra paleta perestroika
         brand: {
           bege: "hsl(var(--brand-bege))",
