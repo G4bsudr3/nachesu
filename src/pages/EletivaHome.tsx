@@ -237,6 +237,7 @@ const EletivaHome = () => {
   const progressPct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const tutorTo = current ? `/app/tutor?module=${current.number}` : "/app/tutor";
   const heroColor = slug === "economia-circular" ? "#8A85BF" : "#f756a6";
+  const courseNumber = slug === "economia-circular" ? 2 : 1;
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
