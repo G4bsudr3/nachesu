@@ -52,11 +52,12 @@ export const ModuloHeader = ({
           </>
         )}
         {trailTitle && (
-          <span className="inline-flex items-center gap-1.5" style={{ color: trailColor }}>
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: trailColor }} />
+          <span className="inline-flex items-center gap-1.5 text-perestroika-preto">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-perestroika-preto" />
             {trailTitle.toLowerCase()}
           </span>
         )}
+
       </nav>
 
       {/* número do módulo em destaque */}
