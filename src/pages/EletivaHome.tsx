@@ -14,10 +14,10 @@ import { EletivaOnboardingOverlay } from "@/components/eletiva/EletivaOnboarding
 
 
 const trailColorByOrder: Record<number, string> = {
-  1: "#fe7b02",
-  2: "#fd4644",
-  3: "#f756a6",
-  4: "#6f77fc",
+  1: "#fe7b02", // fundamentos & ia — laranja
+  2: "#fd4644", // problema & decisão — vermelho
+  3: "#f756a6", // construção no lovable — rosa
+  4: "#8A85BF", // validação & evolução — lilás
 };
 
 type ModuleState = "done" | "current" | "available" | "scheduled" | "locked";
