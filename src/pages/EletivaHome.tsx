@@ -238,6 +238,11 @@ const EletivaHome = () => {
   const tutorTo = current ? `/app/tutor?module=${current.number}` : "/app/tutor";
   const heroColor = slug === "economia-circular" ? "#8A85BF" : "#f756a6";
   const courseNumber = slug === "economia-circular" ? 2 : 1;
+  const professorHandle = course.professor_name.toLowerCase().includes("dudu")
+    ? "dudu"
+    : course.professor_name.toLowerCase().includes("frattz") || course.professor_name.toLowerCase().includes("frattezi")
+      ? "frattz"
+      : course.professor_name.split(" ")[0].toLowerCase();
 
   return (
     <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
