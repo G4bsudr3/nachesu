@@ -247,29 +247,37 @@ const EletivaHome = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto p-6 sm:p-10 mb-6"
-          style={{ backgroundColor: heroColor }}
+          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-10 mb-6"
         >
-          <div className="absolute right-4 top-4 sm:right-8 sm:top-8 opacity-90 w-16 sm:w-24">
-            <EletivaSymbol size={96} pose="talking" className="!w-full !h-auto" />
+          {/* número grande + quem guia */}
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <span
+              className="font-display text-7xl sm:text-9xl leading-[0.8] tabular-nums"
+              style={{ color: heroColor }}
+            >
+              {String(courseNumber).padStart(2, "0")}
+            </span>
+            <span className="font-body text-[11px] sm:text-xs uppercase tracking-[0.3em] text-perestroika-preto/50 mt-2">
+              com {course.professor_name.split(" ")[0].toLowerCase()}
+            </span>
           </div>
 
-          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/75 mb-2">
+          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
             sua eletiva
           </p>
-          <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.85] mb-3 max-w-[16ch]">
+          <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.85] mb-3 max-w-[16ch] text-perestroika-preto">
             {course.title.toLowerCase()}
           </h1>
           {course.subtitle && (
-            <p className="font-body text-base sm:text-lg text-perestroika-preto/85 max-w-2xl mb-6">
+            <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-2xl mb-6">
               {course.subtitle}
             </p>
           )}
 
           {/* próximo passo integrado no hero */}
           {!snapLoading && current && (
-            <div className="rounded-2xl border border-perestroika-preto/20 bg-perestroika-bege/90 p-5 sm:p-6 mb-6">
-              <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/65 mb-2 inline-flex items-center gap-2">
+            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/80 p-5 sm:p-6 mb-6">
+              <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/60 mb-2 inline-flex items-center gap-2">
                 <EletivaSymbol size={20} pose="building" /> próximo passo
               </p>
               <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
@@ -290,7 +298,7 @@ const EletivaHome = () => {
             </div>
           )}
 
-          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pt-5 border-t border-perestroika-preto/20">
+          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pt-5 border-t border-perestroika-preto/10">
             <div className="flex items-center gap-3 min-w-0">
               {course.professor_avatar_url && (
                 <img
