@@ -280,31 +280,8 @@ const EletivaHome = () => {
             </p>
           )}
 
-          {/* próximo passo integrado no hero */}
-          {!snapLoading && current && (
-            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/80 p-5 sm:p-6 mb-6">
-              <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/60 mb-2 inline-flex items-center gap-2">
-                <EletivaSymbol size={20} pose="building" /> próximo passo
-              </p>
-              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
-                módulo {String(current.number).padStart(2, "0")} · {current.title.toLowerCase()}
-              </h2>
-              {current.objective && (
-                <p className="font-body text-sm text-perestroika-preto/80 mb-4 max-w-lg">
-                  {current.objective}
-                </p>
-              )}
-              <button
-                type="button"
-                onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
-                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
-              >
-                continuar de onde parou <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-
-          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pt-5 border-t border-perestroika-preto/10">
+          {/* quem te guia + progresso */}
+          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pb-5 mb-5 border-b border-perestroika-preto/10">
             <div className="flex items-center gap-3 min-w-0">
               {course.professor_avatar_url && (
                 <img
@@ -346,6 +323,31 @@ const EletivaHome = () => {
               </div>
             )}
           </div>
+
+          {/* próximo passo integrado no hero */}
+          {!snapLoading && current && (
+            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/80 p-5 sm:p-6">
+              <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/60 mb-2 inline-flex items-center gap-2">
+                <EletivaSymbol size={20} pose="building" /> próximo passo
+              </p>
+              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
+                módulo {String(current.number).padStart(2, "0")} · {current.title.toLowerCase()}
+              </h2>
+              {current.objective && (
+                <p className="font-body text-sm text-perestroika-preto/80 mb-4 max-w-lg">
+                  {current.objective}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
+                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+              >
+                continuar de onde parou <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
         </motion.section>
 
         {/* mapa de módulos com estado */}
