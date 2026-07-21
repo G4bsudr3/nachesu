@@ -7,7 +7,6 @@ export type Course = {
   slug: string;
   title: string;
   subtitle: string | null;
-  description?: string | null;
   professor_name: string;
   professor_bio_md: string | null;
   professor_avatar_url: string | null;
