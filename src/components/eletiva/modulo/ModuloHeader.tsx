@@ -111,17 +111,18 @@ export const ModuloHeader = ({
             </p>
           </div>
           <div
-            className="h-1.5 w-full rounded-full bg-perestroika-preto/10 overflow-hidden"
+            className="h-1.5 w-full rounded-full bg-perestroika-preto/15 overflow-hidden"
             role="progressbar"
             aria-valuenow={pct}
             aria-valuemin={0}
             aria-valuemax={100}
           >
             <div
-              className="h-full rounded-full transition-[width] duration-500"
-              style={{ width: `${pct}%`, backgroundColor: trailColor }}
+              className="h-full rounded-full bg-perestroika-preto transition-[width] duration-500"
+              style={{ width: `${pct}%` }}
             />
           </div>
+
         </div>
       )}
     </section>
