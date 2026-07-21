@@ -264,7 +264,7 @@ const EletivaHome = () => {
               {String(courseNumber).padStart(2, "0")}
             </span>
             <span className="font-body text-[11px] sm:text-xs uppercase tracking-[0.3em] text-perestroika-preto/50 mt-2">
-              com {course.professor_name.split(" ")[0].toLowerCase()}
+              com {professorHandle}
             </span>
           </div>
 
