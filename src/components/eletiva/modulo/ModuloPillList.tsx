@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckCircle2, ChevronDown, ChevronUp, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, Sparkles } from "lucide-react";
 import { PillVideoPlayer } from "./PillVideoPlayer";
 import { PillReflection } from "./PillReflection";
 import { PillPBL } from "./PillPBL";
@@ -77,6 +78,7 @@ const PillCardShell = ({
   justUnlocked,
   trailColor,
   children,
+  defaultExpanded = true,
 }: {
   pill: ModuloPill;
   index: number;
@@ -85,52 +87,90 @@ const PillCardShell = ({
   justUnlocked?: boolean;
   trailColor?: string;
   children: React.ReactNode;
-}) => (
-  <article
-    id={`pilula-${index + 1}`}
-    className={`rounded-2xl border-2 p-5 sm:p-6 transition-colors scroll-mt-24 ${
-      done
-        ? "border-perestroika-preto/40 bg-perestroika-preto/[0.04]"
-        : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
-    } ${justUnlocked ? "motion-safe:animate-pill-unlock ring-2 ring-perestroika-rosa/60 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
-  >
-    <div className="flex items-center justify-between gap-3 mb-4">
-      <div className="flex items-center gap-3 flex-wrap min-w-0">
-        <span
-          className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full font-display text-sm sm:text-base text-perestroika-bege shrink-0"
-          style={{ backgroundColor: trailColor || "#090909" }}
-          aria-label={`bloco ${index + 1} de ${total}`}
-        >
-          {String(index + 1).padStart(2, "0")}
-        </span>
-        <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/80 font-semibold">
-          bloco {String(index + 1).padStart(2, "0")}
-          <span className="text-perestroika-preto/45"> de {String(total).padStart(2, "0")}</span>
-        </span>
-        <span aria-hidden className="text-perestroika-preto/25">·</span>
-        <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.16em] text-perestroika-preto/60">
-          {pill.order_index === 0 && !pill.required
-            ? "OPCIONAL"
-            : `${pillKindLabel[pill.kind]}${!pill.required ? " · OPCIONAL" : ""}`}
-        </span>
-      </div>
-      {(pill.duration_min_low || pill.duration_min_high) && (
-        <span className="inline-flex items-center gap-1 font-body text-xs text-perestroika-preto/55 shrink-0">
-          <Clock className="h-3 w-3" />
-          {pill.duration_min_low === pill.duration_min_high || !pill.duration_min_high
-            ? `${pill.duration_min_low ?? pill.duration_min_high} min`
-            : `${pill.duration_min_low}-${pill.duration_min_high} min`}
-        </span>
-      )}
-    </div>
-    {justUnlocked && (
-      <p className="flex items-center gap-1.5 mb-3 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-rosa font-semibold motion-safe:animate-fade-in">
-        <Sparkles className="h-3 w-3" aria-hidden /> agora é a sua vez
-      </p>
-    )}
-    {children}
-  </article>
-);
+  defaultExpanded?: boolean;
+}) => {
+  const [expanded, setExpanded] = useState(defaultExpanded);
+  const bodyId = `pilula-body-${pill.id}`;
+
+  return (
+    <article
+      id={`pilula-${index + 1}`}
+      className={`rounded-2xl border-2 transition-colors scroll-mt-24 overflow-hidden ${
+        done
+          ? "border-perestroika-preto/40 bg-perestroika-preto/[0.04]"
+          : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
+      } ${justUnlocked ? "motion-safe:animate-pill-unlock ring-2 ring-perestroika-rosa/60 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
+    >
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        aria-controls={bodyId}
+        className="w-full text-left p-5 sm:p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa/60 focus-visible:ring-inset"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 flex-wrap min-w-0">
+            <span
+              className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full font-display text-sm sm:text-base text-perestroika-bege shrink-0"
+              style={{ backgroundColor: trailColor || "#090909" }}
+              aria-label={`bloco ${index + 1} de ${total}`}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/80 font-semibold">
+              bloco {String(index + 1).padStart(2, "0")}
+              <span className="text-perestroika-preto/45"> de {String(total).padStart(2, "0")}</span>
+            </span>
+            <span aria-hidden className="text-perestroika-preto/25">·</span>
+            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.16em] text-perestroika-preto/60">
+              {pill.order_index === 0 && !pill.required
+                ? "OPCIONAL"
+                : `${pillKindLabel[pill.kind]}${!pill.required ? " · OPCIONAL" : ""}`}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {(pill.duration_min_low || pill.duration_min_high) && (
+              <span className="hidden sm:inline-flex items-center gap-1 font-body text-xs text-perestroika-preto/55">
+                <Clock className="h-3 w-3" />
+                {pill.duration_min_low === pill.duration_min_high || !pill.duration_min_high
+                  ? `${pill.duration_min_low ?? pill.duration_min_high} min`
+                  : `${pill.duration_min_low}-${pill.duration_min_high} min`}
+              </span>
+            )}
+            <span
+              className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border border-perestroika-preto/15 text-perestroika-preto/70"
+              aria-hidden
+            >
+              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </span>
+          </div>
+        </div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            id={bodyId}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+              {justUnlocked && (
+                <p className="flex items-center gap-1.5 mb-3 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-rosa font-semibold motion-safe:animate-fade-in">
+                  <Sparkles className="h-3 w-3" aria-hidden /> agora é a sua vez
+                </p>
+              )}
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </article>
+  );
+};
 
 /**
  * dispatcher de pílulas: roteia por `kind` + `interaction_schema.type`.
