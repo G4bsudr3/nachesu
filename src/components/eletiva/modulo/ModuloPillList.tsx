@@ -101,12 +101,19 @@ const PillCardShell = ({
           : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
       } ${justUnlocked ? "motion-safe:animate-pill-unlock ring-2 ring-perestroika-rosa/60 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
     >
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setExpanded((v) => !v)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setExpanded((v) => !v);
+          }
+        }}
         aria-expanded={expanded}
         aria-controls={bodyId}
-        className="w-full text-left p-5 sm:p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa/60 focus-visible:ring-inset"
+        className="w-full text-left p-5 sm:p-6 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa/60 focus-visible:ring-inset"
       >
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-wrap min-w-0">
@@ -145,7 +152,7 @@ const PillCardShell = ({
             </span>
           </div>
         </div>
-      </button>
+      </div>
 
       <AnimatePresence initial={false}>
         {expanded && (
