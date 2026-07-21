@@ -249,7 +249,7 @@ const EletivaHome = () => {
         >
           <div
             aria-hidden
-            className="absolute top-0 inset-x-0 h-3 sm:h-4 bg-perestroika-rosa"
+            className="absolute top-0 inset-x-0 h-1.5 sm:h-2 bg-perestroika-rosa"
           />
 
           {/* mascote do tutor no hero */}
