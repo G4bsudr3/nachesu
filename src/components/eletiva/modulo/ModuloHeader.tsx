@@ -59,16 +59,16 @@ export const ModuloHeader = ({
       </nav>
 
       {/* número do módulo em destaque */}
-      <p className="font-display uppercase text-2xl leading-none mb-1 text-perestroika-bege/70">
-        módulo <span className="text-perestroika-bege">{String(moduleNumber).padStart(2, "0")}</span>
+      <p className="font-display uppercase text-2xl leading-none mb-1 text-perestroika-preto/70">
+        módulo <span className="text-perestroika-preto">{String(moduleNumber).padStart(2, "0")}</span>
       </p>
 
-      <h1 className="font-display uppercase text-5xl sm:text-6xl mb-4 leading-[0.9] text-perestroika-bege">
+      <h1 className="font-display uppercase text-5xl sm:text-6xl mb-4 leading-[0.9] text-perestroika-preto">
         {title.toLowerCase()}
       </h1>
 
       {objective && (
-        <p className="font-body text-base sm:text-lg text-perestroika-bege/75 max-w-2xl mb-6">
+        <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-2xl mb-6">
           {objective}
         </p>
       )}
