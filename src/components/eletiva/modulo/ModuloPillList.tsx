@@ -124,15 +124,10 @@ const PillCardShell = ({
             >
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/80 font-semibold">
-              bloco {String(index + 1).padStart(2, "0")}
-              <span className="text-perestroika-preto/45"> de {String(total).padStart(2, "0")}</span>
-            </span>
-            <span aria-hidden className="text-perestroika-preto/25">·</span>
-            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.16em] text-perestroika-preto/60">
+            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/70">
               {pill.order_index === 0 && !pill.required
-                ? "OPCIONAL"
-                : `${pillKindLabel[pill.kind]}${!pill.required ? " · OPCIONAL" : ""}`}
+                ? "opcional"
+                : `${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
             </span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
