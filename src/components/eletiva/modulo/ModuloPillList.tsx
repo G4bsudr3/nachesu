@@ -253,7 +253,14 @@ export const ModuloPillList = ({
 
   return (
     <section aria-label="pílulas do módulo" className="space-y-4 mb-10">
-      <h2 className="font-display uppercase text-2xl mb-2">BLOCOS</h2>
+      <header className="mb-4 sm:mb-6">
+        <p className="font-body text-[10px] sm:text-xs uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1.5">
+          conteúdo do módulo
+        </p>
+        <h2 className="font-display uppercase text-3xl sm:text-4xl leading-none text-perestroika-preto">
+          blocos
+        </h2>
+      </header>
 
       {loading && (
         <div className="space-y-3">
