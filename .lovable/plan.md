@@ -1,86 +1,62 @@
+## situação atual (já pronto no repo, verificado)
 
-## O que já existe (bom saber antes)
+- **Módulo 2 no banco**: `reciclar não é o suficiente`, 5 pílulas publicadas com todo o texto do briefing (abertura com vídeo + transcript, 2 cards curados + 3 perguntas-guia, classificador 3x3 com os 10 exemplos fixos + `radar_source_module_id` apontando pra Aula 1, quiz com as 3 perguntas + gabaritos + feedbacks, bônus "Story of Stuff").
+- **Componente `PillClassificador3x3`**: já criado, já renderizado no `ModuloPillList`. O hook `useAula1RadarItems` já puxa os 3 primeiros itens do `deliverable.items` do módulo 1 do aluno.
+- **Assinatura visual Duduo** (creme + laranja-vermelho + Sora 800): já aplicada em toda a eletiva de Economia Circular via `[data-eletiva="ecc"]`.
+- **Pré-requisito Aula 1 completa**: o sistema de `unlockedModuleIds` já bloqueia o módulo 2 até o 1 fechar (`snapshot.sequentialUnlock`).
 
-Rodei o banco. **As 5 pílulas do Módulo 1 de Economia Circular já estão criadas com o texto exato do briefing** — vídeo de abertura + transcrição, 2 cards curados com as 3 perguntas-guia, radar de campo com fluxos, quiz de 3 perguntas, bônus Kurzgesagt. Os componentes `PillAbertura`, `PillConteudoCurado`, `PillRadar`, `PillQuiz`, `PillBonus` também já existem em `src/components/eletiva/pills/`.
+O que o briefing pede que **ainda falta** entregar são os dois "além da pílula": a celebração pós-aula com os cards coloridos + o painel do professor com distribuição agregada.
 
-Ou seja: a Aula 1 já roda hoje. Este plano **não é "criar do zero"** — é fechar 4 lacunas específicas:
+## o que vou construir
 
-1. Adotar a paleta Duduo em toda a eletiva de Economia Circular
-2. Trocar o upload de evidência do Radar (hoje só link) por upload real de imagem/áudio com bucket
-3. Criar a tela final "missão 1 cumprida" renderizando a lista do aluno
-4. Um dashboard básico do professor pra ver a turma
+### 1. tela pós-conclusão "missão 2 cumprida" — cards coloridos por categoria
 
-## 1. Paleta Duduo na eletiva inteira
+Componente novo `<ModuloConclusaoClassificador />` que renderiza acima do `ModuloCelebration` padrão só quando `courseSlug === "economia-circular"` e `moduleNumber === 2` e `isCompleted`.
 
-Aplicar creme + vermelho-laranja + acentos secundários **só quando o slug do curso é `economia-circular`**. Zero impacto na eletiva de IA e no chrome NachesU (header/footer/dashboard `/app`).
+O componente:
 
-**Tokens novos em `tailwind.config.ts`** (namespace `duduo`):
-- `escuro #202124`, `creme #F5EEE1`, `dourado #EFD7A9`, `cinza #9AA0A7`, `rosa #F2D8DC`, `azul #448FF2`, `verde #75BF9C`, `amarelo #F2BC57`, `laranja #F25E3D`
+- Lê o deliverable do próprio aluno pra reconstruir o classificador (`content.classificacao_aula2[pillId]`).
+- Junta os 10 itens fixos do schema + os 3 itens puxados do Radar do módulo 1 (mesma lógica do `useAula1RadarItems`).
+- Renderiza os 13 cards agrupados em 3 colunas por categoria, cada card com fundo da cor da categoria (linear `#9AA0A7`, circular `#75BF9C`, regenerativo `#448FF2`), texto do item e — quando existir — a justificativa embaixo.
+- Cabeçalho "missão 2 cumprida" (Sora 800), copy exato do briefing, e chip contador ("X linear · Y circular · Z regenerativo").
+- Vazio-friendly: se por algum motivo não houver classificações salvas, mostra fallback discreto e não quebra.
 
-**Font Sora 800** carregada em `index.html` (Google Fonts), exposta como `font-duduo-display`.
+Integração: adicionar o slot no `Modulo.tsx` logo depois do `<ModuloCelebration />` existente, atrás de um guard `courseSlug === "economia-circular" && moduleRow.number === 2`.
 
-**Onde aplica** (dentro da eletiva `economia-circular`):
-- `src/pages/EletivaHome.tsx` — hero, cards de módulo, próximo passo passam a usar `bg-duduo-creme` + accent `#F25E3D` + Sora 800 nos títulos. Continua com header/footer NachesU.
-- `src/pages/Modulo.tsx` — mesmo tratamento. Bloco de instrução do Radar ganha o doodle de seta + fundo creme + caixa amarela `#F2BC57` da "regra anti-óbvio".
-- Trocar `trails.color` das 4 trilhas de Economia Circular pra vermelho-laranja / dourado / rosa / verde-teal (migration), mantendo a lógica atual de "cor por trilha".
-- `EletivaSwitcher` e `DualEletivasHero` no `/app` **não mudam** — chrome geral fica NachesU.
+### 2. painel do professor — distribuição agregada de classificações
 
-**Doodles** (setas, espirais, sublinhados desenhados à mão): 3-4 SVGs decorativos em `src/assets/duduo/` como componentes React de baixo peso. Usados como decoração nas seções de instrução, sem interatividade.
+Nova rota admin `/admin/eletiva/economia-circular/modulo/2` protegida por `AdminRoute`, com:
 
-## 2. Upload real de evidência no Radar
+- **KPIs no topo**: total de alunos matriculados, quantos completaram o módulo, quantos fizeram o classificador, mediana de itens classificados.
+- **Distribuição por item (13 linhas)**: barra empilhada horizontal por item mostrando % linear / circular / regenerativo da turma. Ao lado, badge "gabarito: X" (do briefing).
+- **Ranking de discordância**: os 5 itens onde a turma mais divergiu (menor % na categoria dominante) — o painel de dor pedagógica que o briefing chama de "altamente informativo".
+- **Amostra das justificativas**: por item, 3 justificativas escolhidas por ordem cronológica (com o nickname do aluno). Serve pro professor entender o raciocínio, não só a resposta.
 
-- Novo bucket privado `radar-evidencias` via `supabase--storage_create_bucket`.
-- RLS em `storage.objects`: aluno lê/insere/deleta só arquivos com path `{user_id}/...`; admin lê tudo.
-- Refactor `EvidenceUploader.tsx` (já existe hoje só como link) pra aceitar 3 modos: **arquivo** (imagem/áudio até 10MB, validado no cliente e no server), **link** (URL), **texto** (fallback).
-- Preview: thumb da imagem, player de áudio nativo, ou chip do link.
-- URL assinada de 7 dias no professor pra visualizar.
-- Estrutura salva em `deliverable.content.radar[i].evidence`: `{ kind: 'file'|'link'|'text', path?, url?, text?, mime?, size? }`.
+Implementação:
 
-## 3. Tela final "missão 1 cumprida"
+- Uma RPC nova `admin_module2_classificador_stats(course_slug, module_number)` que roda com `SECURITY DEFINER`, checa `has_role(auth.uid(), 'admin')` e agrega `content -> 'classificacao_aula2'` de todos os `module_deliverables` do módulo. Retorna JSON com KPIs, distribuição por item e amostra de justificativas.
+- Página `src/pages/AdminEletivaModulo2.tsx` com `useQuery` chamando a RPC, layout dentro do `AdminLayout`.
+- Um link novo na `AdminSidebar` (ou no `AdminHome`) quando a rota fizer sentido: "eletiva · economia circular · módulo 2".
 
-Novo componente `ModuloConclusaoAula1.tsx` disparado em `Modulo.tsx` quando o módulo 1 da Economia Circular é concluído (após pílula 4 — o bônus continua opcional, sem bloquear).
+### 3. ajustes pontuais (baixo risco)
 
-- Headline Sora 800 grande "missão 1 cumprida"
-- Texto do briefing (o dos "95% que ficam na teoria")
-- Grid de cards renderizando cada item do Radar do aluno com evidência (thumb/áudio/link)
-- CTA principal `#F25E3D`: "ver minha lista" → `/app/eletiva/economia-circular`
-- CTA secundário cinza: "voltar pro início" → `/app`
+- **Guard do pré-requisito visível**: se o aluno abrir `/app/eletiva/economia-circular/modulo/2` sem ter fechado o 1, o `ModuloLockedHero` atual já bloqueia — mas o copy é genérico. Adicionar um caso especial no `ModuloLockedHero` (quando `moduleNumber === 2 && prev não foi fechado`) que mostra o texto exato do briefing: "Precisamos de pelo menos 3 itens no seu Radar — volta lá e completa antes de seguir."
+- **Validação da regra "≥3 itens no Radar"**: hoje o `PillClassificador3x3` só mostra fallback quando a query volta vazia. Melhorar pra quando `items.length < 3`, mostrar o mesmo aviso + CTA "voltar pro módulo 1".
 
-Reusa a lógica de `ModuloCelebration.tsx` existente pra timing/animação.
+## fora do escopo desta rodada
 
-## 4. Dashboard básico do professor
+- Reescrever qualquer conteúdo/schema do módulo 2 (o banco já bate 1:1 com o briefing).
+- Drag-and-drop no classificador — o dropdown atual já cumpre a regra do briefing ("drag-drop OU dropdown"). Se você quiser trocar depois, faço em outra rodada.
+- Dashboard genérico do professor pra todos os módulos — este PR entrega só o de "distribuição de classificações" que o briefing pede pra Aula 2.
 
-Nova rota `/admin/eletiva/economia-circular/modulo/1` (extensível pros outros módulos depois).
+## detalhes técnicos
 
-Já existe a função `compute_module_metrics(_module_id)` no banco — devolve total_students, started/completed, mediana de itens, distribuição de fluxos, tempo médio. Só falta a UI:
+- RPC nova em `public.admin_module2_classificador_stats(_course_slug text, _module_number int)` retornando `jsonb`. Roda `SECURITY DEFINER` com `SET search_path = public`. Bloqueia com `RAISE EXCEPTION` se `NOT has_role(auth.uid(), 'admin')`. Sem `GRANT` novo além do padrão de funções (`GRANT EXECUTE ... TO authenticated`).
+- Zero mudança de tabela: tudo agrega o JSON já persistido em `module_deliverables.content`.
+- Componentes novos: `src/components/eletiva/modulo/ModuloConclusaoClassificador.tsx`, `src/pages/AdminEletivaModulo2.tsx`. Rota adicionada em `src/App.tsx` dentro do bloco admin já existente.
+- Nada foge do escopo dos tokens `[data-eletiva="ecc"]` — a celebração e o painel do professor herdam a paleta Duduo automaticamente.
 
-- Cards de KPI no topo (conclusão, mediana de itens, diversidade de fluxos, tempo médio)
-- Gráfico de barras horizontal por fluxo (usar `recharts` — já no projeto)
-- Tabela de alunos: nome · status (não iniciou / em andamento / concluído) · itens no radar · última atividade
-- Botão "exportar csv" que serializa respostas + evidências (URLs assinadas) da turma
+## como valido
 
-Alerta de evasão automático **fica pra próxima iteração** (você marcou notificações fora do escopo).
-
-## Migrations necessárias
-
-1. `update trails set color = ... where course_id = (select id from courses where slug='economia-circular')` — cores por trilha
-2. Bucket `radar-evidencias` (via tool dedicada, não SQL) + policies RLS em `storage.objects`
-
-Sem mudanças em schema de tabelas.
-
-## Ordem de execução
-
-1. Tokens Duduo (tailwind + index.css + Sora via link) — base pra tudo
-2. Migration trilhas + doodles SVG
-3. Refactor visual `EletivaHome` e `Modulo` só na eletiva Economia Circular
-4. Bucket + refactor `EvidenceUploader` + `PillRadar`
-5. `ModuloConclusaoAula1` + wiring em `Modulo.tsx`
-6. Rota admin `/admin/eletiva/:slug/modulo/:n` + KPIs + tabela + export CSV
-
-## Detalhes técnicos
-
-- Nenhuma migração de dados existentes de aluno (as pílulas atuais já estão no schema esperado)
-- Zero impacto na eletiva de IA na Prática — todo o tratamento Duduo é gated por `course.slug === 'economia-circular'`
-- Mobile-first mantido em todo componente novo
-- RLS em bucket seguindo padrão `{user_id}/...`
-- CSV exportado via edge function nova `admin-export-radar` pra assinar URLs server-side
+- Fluxo do aluno: abro `/app/eletiva/economia-circular/modulo/2` com um usuário que já fez o Radar, classifico os 13 itens, concluo, screenshot da tela "missão 2 cumprida" com os cards coloridos.
+- Fluxo do professor: entro como admin, abro `/admin/eletiva/economia-circular/modulo/2`, screenshot da distribuição e da amostra de justificativas.
