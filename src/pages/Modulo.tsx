@@ -31,6 +31,7 @@ import { ModuloConclusaoStakeholders } from "@/components/eletiva/modulo/ModuloC
 import { ModuloConclusaoSprintIdeacao } from "@/components/eletiva/modulo/ModuloConclusaoSprintIdeacao";
 import { ModuloConclusaoSelecaoIdeia } from "@/components/eletiva/modulo/ModuloConclusaoSelecaoIdeia";
 import { ModuloConclusaoPropostaValor } from "@/components/eletiva/modulo/ModuloConclusaoPropostaValor";
+import { ModuloConclusaoBMC } from "@/components/eletiva/modulo/ModuloConclusaoBMC";
 import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
