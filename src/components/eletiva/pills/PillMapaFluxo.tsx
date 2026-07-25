@@ -332,7 +332,7 @@ export function PillMapaFluxo({
                   <div className="flex-1 min-w-0">
                     <TextareaWithVoice
                       value={vaz ?? ""}
-                      onChange={(v) => updateVaz(i, v)}
+                      onChange={(e) => updateVaz(i, e.target.value)}
                       placeholder={`vazamento ${i + 1} · onde recurso escapa, é desperdiçado ou vira problema`}
                       rows={2}
                       className="w-full rounded-xl border border-perestroika-preto/15 bg-perestroika-bege p-2 font-body text-sm"
