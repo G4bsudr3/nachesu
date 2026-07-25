@@ -53,6 +53,11 @@ type Schema = {
   type?: "curated_content_with_questions";
   cards?: Card[];
   questions?: Question[];
+  turma_stats?: {
+    field_id: string;
+    module_id: string;
+    warn_threshold?: number; // percentual (0-100) acima do qual mostra aviso
+  };
 };
 
 interface Props {
