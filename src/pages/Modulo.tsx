@@ -458,7 +458,10 @@ const Modulo = () => {
   const canCompleteModule = requiredPills.length > 0 && pillsRemaining === 0;
 
   return (
-    <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
+    <div
+      data-eletiva={courseSlug === "economia-circular" ? "ecc" : undefined}
+      className="relative min-h-dvh bg-background text-foreground font-body [overflow-x:clip]"
+    >
       <ModuloProgressBar
         total={requiredPills.length > 0 ? requiredPills.length : totalPills}
         done={requiredPills.length > 0 ? doneRequired : donePills}
