@@ -21,6 +21,7 @@ import {
   PillQuatroFiltrosBriefing,
   PillMapaFluxo,
   PillMatrizValor,
+  PillRegrasJogo,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -31,6 +32,7 @@ import {
   type BriefingValue,
   type MapaFluxoValue,
   type MatrizValorValue,
+  type RegrasJogoValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -251,6 +253,7 @@ export const ModuloPillList = ({
   const briefingMap = (content.briefing_aula5 ?? {}) as Record<string, BriefingValue>;
   const mapaFluxoMap = (content.mapa_fluxo_aula6 ?? {}) as Record<string, MapaFluxoValue>;
   const matrizValorMap = (content.matriz_valor_aula7 ?? {}) as Record<string, MatrizValorValue>;
+  const regrasJogoMap = (content.regras_jogo_aula8 ?? {}) as Record<string, RegrasJogoValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -517,6 +520,24 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={matrizValorMap[pill.id] ?? {}}
                 matrizMap={matrizValorMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "regras_jogo") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillRegrasJogo
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={regrasJogoMap[pill.id] ?? {}}
+                regrasMap={regrasJogoMap}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}
