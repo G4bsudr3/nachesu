@@ -15,6 +15,8 @@ export { PillGuiaDePrompts } from "./PillGuiaDePrompts";
 export type { GuiaPromptsValue } from "./PillGuiaDePrompts";
 export { PillCacaEvidencias } from "./PillCacaEvidencias";
 export type { CacaEvidenciasValue } from "./PillCacaEvidencias";
+export { PillQuatroFiltrosBriefing } from "./PillQuatroFiltrosBriefing";
+export type { BriefingValue } from "./PillQuatroFiltrosBriefing";
 export { CorfSignature } from "./CorfSignature";
 export { ComparacaoNiveis } from "./ComparacaoNiveis";
 export type { NivelItem } from "./ComparacaoNiveis";
