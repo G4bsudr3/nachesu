@@ -16,6 +16,8 @@ export default {
       fontFamily: {
         display: ['"League Gothic"', "Impact", "sans-serif"],
         body: ['"Urbanist"', "system-ui", "sans-serif"],
+        // duduo signature (economia circular): sora 800 pra headline editorial
+        "display-duduo": ['"Sora"', '"League Gothic"', "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
