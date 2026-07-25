@@ -33,6 +33,8 @@ export { PillSelecaoIdeia } from "./PillSelecaoIdeia";
 export type { SelecaoIdeiaValue } from "./PillSelecaoIdeia";
 export { PillPropostaValor } from "./PillPropostaValor";
 export type { PropostaValorValue } from "./PillPropostaValor";
+export { PillBMCSimplificado } from "./PillBMCSimplificado";
+export type { BMCValue } from "./PillBMCSimplificado";
 export { CorfSignature } from "./CorfSignature";
 export { ComparacaoNiveis } from "./ComparacaoNiveis";
 export type { NivelItem } from "./ComparacaoNiveis";
