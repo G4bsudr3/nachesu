@@ -98,9 +98,19 @@ export function PillConteudoCurado({
 
   const ready = useMemo(() => {
     return (schema.questions ?? []).every((q) => {
-      const v = answers[q.id]?.trim() ?? "";
-      if (q.type === "long_text") return v.length >= (q.min_chars ?? 0);
-      return v.length > 0;
+      if (q.type === "long_text") {
+        const v = answers[q.id]?.trim() ?? "";
+        return v.length >= (q.min_chars ?? 0);
+      }
+      if (q.type === "single_choice") {
+        return (answers[q.id]?.trim() ?? "").length > 0;
+      }
+      // iceberg_four_levels: os 4 sub-campos precisam do mínimo
+      const min = q.min_chars ?? 0;
+      return ICEBERG_LEVELS.every((lvl) => {
+        const v = answers[`${q.id}::${lvl.id}`]?.trim() ?? "";
+        return v.length >= min;
+      });
     });
   }, [answers, schema.questions]);
 
