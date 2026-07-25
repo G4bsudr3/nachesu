@@ -375,10 +375,11 @@ export function PillMapaFluxo({
           entrega mesmo sem preencher os campos acima.
         </p>
         <EvidenceUploader
+          itemId={`aula6-mapa-${pillId}`}
           value={value.imagem ?? emptyEvidence}
           onChange={(next) => setValue((prev) => ({ ...prev, imagem: next }))}
-          uploadPathPrefix={`aula6-mapa-fluxo/${pillId}`}
-          accept="image/*,application/pdf"
+          accent={accent}
+          compact
         />
       </div>
 
