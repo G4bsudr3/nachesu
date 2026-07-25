@@ -29,6 +29,8 @@ export { PillStakeholdersMatriz } from "./PillStakeholdersMatriz";
 export type { StakeholdersMatrizValue } from "./PillStakeholdersMatriz";
 export { PillSprintIdeacao } from "./PillSprintIdeacao";
 export type { SprintIdeacaoValue } from "./PillSprintIdeacao";
+export { PillSelecaoIdeia } from "./PillSelecaoIdeia";
+export type { SelecaoIdeiaValue } from "./PillSelecaoIdeia";
 export { CorfSignature } from "./CorfSignature";
 export { ComparacaoNiveis } from "./ComparacaoNiveis";
 export type { NivelItem } from "./ComparacaoNiveis";
