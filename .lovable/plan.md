@@ -1,36 +1,35 @@
-# Aula 11 · sprint de ideação (4 rodadas × 5 min)
+# Aula 12 · escolher é abandonar
 
-Abertura da Trilha 3 "Criar". Mesma anatomia das aulas 6-10: 5 blocos, pull da aula anterior, tela de conclusão dedicada e dashboard admin.
+Segunda pílula da Trilha 3 "Criar". Mesma anatomia das aulas 6-11: 5 blocos, pull da aula anterior, tela de conclusão dedicada e dashboard admin.
 
 ## Blocos
 
-1. **Abertura (`video_with_transcript`)** — headline "criatividade não é dom. é volume." + transcrição das regras do Osborn
-2. **Conteúdo curado (`curated_content_with_questions`)** — 2 cards (SCAMPER + regras do brainstorming IDEO/Sebrae) + 2 perguntas single_choice com feedback (5ª ideia + córtex crítico)
-3. **PBL Sprint de Ideação (`sprint_ideacao`, novo schema)** — 4 rodadas sequenciais com timer de 5min cada + provocações rotativas + input rápido de ideias. Pull automático do HMW (aula 5) e da oportunidade top da aula 7. Bloqueia deletar durante ideação (só na fase de compilação, com aviso). Valida mín 15 ideias no total, sinaliza 20+ como meta
-4. **Checagem (`quiz`)** — cenário fluência caindo, multi-select verdades sobre ideação, long_text ideia mais doida
-5. **Bônus (`bonus_text`)** — TED David Kelley creative confidence
+1. **Abertura (`video_with_transcript`)** — "escolher é abandonar", transcrição sobre impacto × viabilidade + raridade + refinamento
+2. **Conteúdo curado (`curated_content_with_questions`)** — 2 cards (matriz priorização impacto × esforço + intro Sebrae ao Lean Startup) + 3 perguntas (2 single_choice + 1 long_text sobre "e se fossem 4 semanas?")
+3. **PBL Matriz + Refinamento (`selecao_ideia`, novo schema)** — três partes num único componente: (a) drag-drop das 20 ideias da aula 11 nos 4 quadrantes impacto × viabilidade, (b) escolha final entre as do quadrante IDEAL com filtro de raridade (radio a/b/c + confirmação extra se "óbvia mesmo"), (c) refinamento em 3 versões (A original, B escala, C ângulo) com validação de distinção textual (similaridade simples via tokens)
+4. **Checagem (`quiz`)** — cenário lixeiras coloridas, multi-select variação de escala, long_text plano B
+5. **Bônus (`bonus_text`)** — artigo "22 tipos de MVP" (Evolve MVP)
 
 ## Novos arquivos
 
-- `src/components/eletiva/pills/PillSprintIdeacao.tsx` — componente com 4 tabs de rodada + timer visual (mm:ss regressivo, controle play/pause, som opcional). Cada rodada carrega provocações do schema, input "+ ideia" com Enter pra adicionar. Fase final "compilação" mostra todas as ideias em lista única editável, botão delete só ativa após pedir confirmação explícita. Pull no topo (HMW + oportunidade). CTA "entregar sprint" habilita com ≥15 ideias
-- `src/components/eletiva/modulo/ModuloConclusaoSprintIdeacao.tsx` — resumo com total de ideias, quebra por rodada e amostra das 5 mais recentes
-- `src/pages/AdminEletivaModulo11.tsx` — KPIs (matriculados, entregas, média de ideias/aluno, % que atingiu 20+, distribuição por rodada) e amostras
+- `src/components/eletiva/pills/PillSelecaoIdeia.tsx` — pill com pull das 20 ideias da aula 11 (via `useQuery` em `module_deliverables` do módulo 11, campo `ideias_aula11`). Interface em 3 abas: MATRIZ → ESCOLHA → REFINAMENTO. Drag-drop desktop + fallback dropdown mobile (padrão já usado em outras aulas). Similaridade textual: normaliza e compara sobreposição de tokens; se >70% entre B ou C e A, mostra aviso. CTA "entregar seleção" só habilita quando: 1 ideia final + raridade respondida + 3 versões preenchidas e distintas
+- `src/components/eletiva/modulo/ModuloConclusaoSelecaoIdeia.tsx` — resumo com ideia escolhida em destaque, tag de raridade e as 3 versões lado a lado
+- `src/pages/AdminEletivaModulo12.tsx` — KPIs (matriculados, entregas, distribuição por quadrante, distribuição de raridade a/b/c) + amostras (ideia final por aluno)
 
 ## Wiring
 
-- `src/components/eletiva/pills/index.ts` — exporta `PillSprintIdeacao` + `SprintIdeacaoValue`
-- `src/components/eletiva/modulo/ModuloPillList.tsx` — registra schema `sprint_ideacao` + mapa `ideias_aula11`
-- `src/pages/Modulo.tsx` — renderiza `ModuloConclusaoSprintIdeacao` quando `courseSlug === "economia-circular" && number === 11`
-- `src/App.tsx` — rota `/admin/eletiva/economia-circular/modulo/11`
+- `src/components/eletiva/pills/index.ts` — exporta `PillSelecaoIdeia` + `SelecaoIdeiaValue`
+- `src/components/eletiva/modulo/ModuloPillList.tsx` — registra schema `selecao_ideia` e mapa `selecao_aula12`
+- `src/pages/Modulo.tsx` — renderiza `ModuloConclusaoSelecaoIdeia` quando `courseSlug === "economia-circular" && number === 12`
+- `src/App.tsx` — rota `/admin/eletiva/economia-circular/modulo/12`
 
 ## Migração
 
-- RPC `admin_module11_ideacao_stats` no padrão da aula 10 (só admin, agrega total de ideias por aluno e distribuição por rodada)
-- Atualiza `modules.title/objective` do encontro 11
-- `DELETE` + `INSERT` das 5 pílulas com `interaction_schema` completo, incluindo as 4 rodadas com provocações e o `briefing_source_module_id` (aula 5) e `matriz_source_module_id` (aula 7)
+- RPC `admin_module12_selecao_stats` no padrão da aula 11 (só admin, agrega distribuição de quadrante, raridade e amostras)
+- Atualiza `modules.title/objective` do encontro 12
+- `DELETE` + `INSERT` das 5 pílulas do módulo 12 com `interaction_schema` completo, incluindo `ideias_source_module_id` (aula 11)
 
 ## Fora de escopo
 
-- Som real de timer (nice-to-have, silêncio por padrão)
-- Vídeo real (placeholder)
-- Ranking/agrupamento de ideias — isso é aula 12
+- Ranking/pitch — isso é aula 13+
+- Análise semântica pesada de similaridade (usar heurística de tokens simples)
