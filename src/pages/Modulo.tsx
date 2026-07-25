@@ -19,6 +19,7 @@ import { TutorChat } from "@/components/eletiva/TutorChat";
 import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
 import { ModuloCelebration } from "@/components/eletiva/modulo/ModuloCelebration";
+import { ModuloConclusaoClassificador } from "@/components/eletiva/modulo/ModuloConclusaoClassificador";
 import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
@@ -526,6 +527,10 @@ const Modulo = () => {
                 : "obrigado por entregar com presença. próximo módulo libera em breve."
             }
           />
+        )}
+
+        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 2 && (
+          <ModuloConclusaoClassificador moduleId={moduleRow.id} />
         )}
 
 

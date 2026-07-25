@@ -33,6 +33,7 @@ const AdminLayout = lazy(() =>
   import("./components/admin/layout/AdminLayout").then((m) => ({ default: m.AdminLayout })),
 );
 const AdminAula = lazy(() => import("./pages/AdminAula.tsx"));
+const AdminEletivaModulo2 = lazy(() => import("./pages/AdminEletivaModulo2.tsx"));
 const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
 const MinhaCarta = lazy(() => import("./pages/legacy/MinhaCarta.tsx"));
 const CartaPublica = lazy(() => import("./pages/legacy/CartaPublica.tsx"));
@@ -381,6 +382,7 @@ const App = () => (
                 <Route path="/admin/aluno/:userId" element={<AdminStudentProfile />} />
                 <Route path="/admin/certificate-sandbox" element={<AdminCertificateSandbox />} />
                 <Route path="/admin/aula/:n" element={<AdminAula />} />
+                <Route path="/admin/eletiva/economia-circular/modulo/2" element={<AdminEletivaModulo2 />} />
                 <Route path="/admin/legado" element={<Navigate to="/admin/legado/fbi" replace />} />
                 <Route path="/admin/legado/:tab" element={<AdminFbi />} />
                 {/* compat: /admin/:tab continua respondendo no AdminFbi pra abas "operação" antigas */}
