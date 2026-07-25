@@ -24,6 +24,7 @@ import {
   type GuiaPromptsValue,
   type ClassificadorValue,
 } from "@/components/eletiva/pills";
+import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
 
 export type ModuloPill = {
@@ -237,6 +238,7 @@ export const ModuloPillList = ({
   const pblCorf = (content.pbl_corf ?? {}) as Record<string, PblCorfValue>;
   const guiaPrompts = (content.guia_prompts ?? {}) as Record<string, GuiaPromptsValue>;
   const classificadorMap = (content.classificacao_aula2 ?? {}) as Record<string, ClassificadorValue>;
+  const mapaAtoresMap = (content.mapa_atores_aula3 ?? {}) as Record<string, MapaAtoresValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -406,6 +408,24 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={classificadorMap[pill.id] ?? {}}
                 classMap={classificadorMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "mapa_atores_2x2") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillMapaAtores
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={mapaAtoresMap[pill.id] ?? {}}
+                mapaMap={mapaAtoresMap}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}
