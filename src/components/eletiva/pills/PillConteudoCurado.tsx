@@ -191,7 +191,61 @@ export function PillConteudoCurado({
               </div>
             );
           }
+
+          if (q.type === "iceberg_four_levels") {
+            const min = q.min_chars ?? 0;
+            return (
+              <div key={q.id} className="space-y-3">
+                <label className="block font-body text-sm font-medium text-perestroika-preto">
+                  <span className="text-perestroika-preto/55 mr-1">{idx + 1}.</span>
+                  {q.label}
+                </label>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {ICEBERG_LEVELS.map((lvl, li) => {
+                    const key = `${q.id}::${lvl.id}`;
+                    const val = answers[key] ?? "";
+                    const ok = val.trim().length >= min;
+                    return (
+                      <div
+                        key={lvl.id}
+                        className="rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-3 space-y-1.5"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="font-display leading-none tabular-nums"
+                            style={{ color: accent, fontSize: "clamp(18px, 2.4vw, 22px)" }}
+                            aria-hidden
+                          >
+                            {String(li + 1).padStart(2, "0")}
+                          </span>
+                          <div>
+                            <p className="font-body text-sm font-medium leading-none">{lvl.label}</p>
+                            <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
+                              {lvl.hint}
+                            </p>
+                          </div>
+                          {ok && <Check className="h-3.5 w-3.5 ml-auto" style={{ color: "#3a8a5f" }} aria-hidden />}
+                        </div>
+                        <textarea
+                          value={val}
+                          onChange={(e) => setAnswers((prev) => ({ ...prev, [key]: e.target.value }))}
+                          rows={2}
+                          className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-2.5 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+                          placeholder={`1 frase sobre ${lvl.label} do seu problema`}
+                          aria-label={lvl.label}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+
           // single_choice
+          const chosen = v;
+          const isCorrect = (q.correct ?? []).includes(chosen);
+          const showFeedback = chosen.length > 0 && (q.correct?.length ?? 0) > 0;
           return (
             <fieldset key={q.id} className="space-y-2">
               <legend className="font-body text-sm font-medium text-perestroika-preto mb-1">
@@ -229,6 +283,26 @@ export function PillConteudoCurado({
                   );
                 })}
               </div>
+              {showFeedback && (
+                <div
+                  role="status"
+                  className="mt-2 rounded-xl border-2 p-3 font-body text-sm flex items-start gap-2 text-perestroika-preto"
+                  style={
+                    isCorrect
+                      ? { borderColor: "#75BF9C", backgroundColor: "#75BF9C1A" }
+                      : { borderColor: "#fd4644", backgroundColor: "#fd46440D" }
+                  }
+                >
+                  {isCorrect ? (
+                    <Check className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: "#3a8a5f" }} aria-hidden />
+                  ) : (
+                    <X className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: "#fd4644" }} aria-hidden />
+                  )}
+                  <span className="whitespace-pre-wrap">
+                    {isCorrect ? q.feedback_correct : q.feedback_wrong}
+                  </span>
+                </div>
+              )}
             </fieldset>
           );
         })}
