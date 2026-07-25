@@ -35,6 +35,10 @@ import {
   PillRegistroResultado,
   PillChangelogV2,
   PillPitchRoteiro,
+  PillPitchFinal,
+  PillCartaEncerramento,
+  PillFechamentoAvaliacao,
+  PillMiniDossie,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -59,6 +63,10 @@ import {
   type RegistroResultadoValue,
   type ChangelogV2Value,
   type PitchRoteiroValue,
+  type PitchFinalValue,
+  type CartaEncerramentoValue,
+  type FechamentoAvaliacaoValue,
+  type MiniDossieValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -293,6 +301,10 @@ export const ModuloPillList = ({
   const registroResultadoMap = (content.experimento_resultado_aula17 ?? {}) as Record<string, RegistroResultadoValue>;
   const changelogV2Map = (content.changelog_aula18 ?? {}) as Record<string, ChangelogV2Value>;
   const pitchRoteiroMap = (content.pitch_aula19 ?? {}) as Record<string, PitchRoteiroValue>;
+  const pitchFinalMap = (content.pitch_final ?? {}) as Record<string, PitchFinalValue>;
+  const cartaEncerramentoMap = (content.carta_encerramento ?? {}) as Record<string, CartaEncerramentoValue>;
+  const fechamentoAvaliacaoMap = (content.fechamento_avaliacao ?? {}) as Record<string, FechamentoAvaliacaoValue>;
+  const miniDossieMap = (content.mini_dossie ?? {}) as Record<string, MiniDossieValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -822,6 +834,78 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={pitchRoteiroMap[pill.id] ?? {}}
                 pitchMap={pitchRoteiroMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "pitch_final") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillPitchFinal
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={pitchFinalMap[pill.id] ?? {}}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "carta_encerramento") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillCartaEncerramento
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={cartaEncerramentoMap[pill.id] ?? {}}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "fechamento_avaliacao") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillFechamentoAvaliacao
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={fechamentoAvaliacaoMap[pill.id] ?? {}}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "mini_dossie") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillMiniDossie
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={miniDossieMap[pill.id] ?? {}}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}
