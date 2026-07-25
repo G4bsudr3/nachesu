@@ -26,6 +26,7 @@ import { ModuloConclusaoBriefing } from "@/components/eletiva/modulo/ModuloConcl
 import { ModuloConclusaoMapaFluxo } from "@/components/eletiva/modulo/ModuloConclusaoMapaFluxo";
 import { ModuloConclusaoMatrizValor } from "@/components/eletiva/modulo/ModuloConclusaoMatrizValor";
 import { ModuloConclusaoRegrasJogo } from "@/components/eletiva/modulo/ModuloConclusaoRegrasJogo";
+import { ModuloConclusaoImpactos } from "@/components/eletiva/modulo/ModuloConclusaoImpactos";
 import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
@@ -561,6 +562,10 @@ const Modulo = () => {
 
         {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 8 && (
           <ModuloConclusaoRegrasJogo moduleId={moduleRow.id} />
+        )}
+
+        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 9 && (
+          <ModuloConclusaoImpactos moduleId={moduleRow.id} />
         )}
 
 

@@ -2939,6 +2939,10 @@ export type Database = {
         Args: { _course_slug?: string; _module_number?: number }
         Returns: Json
       }
+      admin_module9_impactos_stats: {
+        Args: { _course_slug?: string; _module_number?: number }
+        Returns: Json
+      }
       admin_set_profile_status: {
         Args: { _status: string; _user_id: string }
         Returns: undefined

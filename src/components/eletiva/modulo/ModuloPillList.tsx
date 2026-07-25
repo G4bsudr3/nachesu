@@ -22,6 +22,7 @@ import {
   PillMapaFluxo,
   PillMatrizValor,
   PillRegrasJogo,
+  PillImpactos3P,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -33,6 +34,7 @@ import {
   type MapaFluxoValue,
   type MatrizValorValue,
   type RegrasJogoValue,
+  type Impactos3PValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -254,6 +256,7 @@ export const ModuloPillList = ({
   const mapaFluxoMap = (content.mapa_fluxo_aula6 ?? {}) as Record<string, MapaFluxoValue>;
   const matrizValorMap = (content.matriz_valor_aula7 ?? {}) as Record<string, MatrizValorValue>;
   const regrasJogoMap = (content.regras_jogo_aula8 ?? {}) as Record<string, RegrasJogoValue>;
+  const impactos3pMap = (content.impactos_aula9 ?? {}) as Record<string, Impactos3PValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -546,6 +549,27 @@ export const ModuloPillList = ({
             </PillCardShell>
           );
         }
+        if (schemaType === "impactos_3p") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillImpactos3P
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={impactos3pMap[pill.id] ?? {}}
+                impactosMap={impactos3pMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+
+
 
 
 
