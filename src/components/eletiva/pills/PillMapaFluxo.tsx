@@ -451,7 +451,7 @@ function BlocoCampo({
       <p className="font-body text-[11px] text-perestroika-preto/55 mb-2 leading-tight">{hint}</p>
       <TextareaWithVoice
         value={value}
-        onChange={onChange}
+        onChange={(e) => onChange(e.target.value)}
         placeholder="descreva aqui"
         rows={3}
         className="flex-1 w-full rounded-xl border border-perestroika-preto/15 bg-perestroika-bege p-2 font-body text-sm resize-none"
