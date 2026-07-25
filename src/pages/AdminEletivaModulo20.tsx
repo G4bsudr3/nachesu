@@ -24,7 +24,8 @@ export default function AdminEletivaModulo20() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-m20-stats"],
     queryFn: async (): Promise<Stats> => {
-      const { data, error } = await supabase.rpc("admin_module20_stats");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase.rpc as any)("admin_module20_stats");
       if (error) throw error;
       return (data as Stats) ?? {
         total_alunos: 0, entregas_completas: 0, dim_medias: null, nota_media: null,

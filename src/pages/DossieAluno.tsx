@@ -38,18 +38,9 @@ export default function DossieAluno() {
     queryKey: ["public-dossie", userId],
     enabled: !!userId,
     queryFn: async (): Promise<Dossie> => {
-      const { data, error } = await (supabase.rpc as unknown as (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>)("get_public_dossier", { p_user_id: userId! });
-      if (error) throw error as Error;
-      return (data ?? null) as Dossie;
-    },
-  });
-  // silencer
-  void 0;
-  return _renderDossie(showCertificado, autoPrint, isLoading, error, data);
-}
-
-function _renderDossie(showCertificado: boolean, autoPrint: boolean, isLoading: boolean, error: unknown, data: Dossie | undefined) {
-  useEffect(() => {
+      // rpc não é tipada até a migration rodar; cast intencional.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase.rpc as any)("get_public_dossier", { p_user_id: userId! });
       if (error) throw error;
       return data as Dossie;
     },
