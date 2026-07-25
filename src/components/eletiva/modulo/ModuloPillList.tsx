@@ -34,6 +34,7 @@ import {
   PillEmCampo,
   PillRegistroResultado,
   PillChangelogV2,
+  PillPitchRoteiro,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -57,6 +58,7 @@ import {
   type EmCampoValue,
   type RegistroResultadoValue,
   type ChangelogV2Value,
+  type PitchRoteiroValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -290,6 +292,7 @@ export const ModuloPillList = ({
   const emCampoMap = (content.em_campo_aula17 ?? {}) as Record<string, EmCampoValue>;
   const registroResultadoMap = (content.experimento_resultado_aula17 ?? {}) as Record<string, RegistroResultadoValue>;
   const changelogV2Map = (content.changelog_aula18 ?? {}) as Record<string, ChangelogV2Value>;
+  const pitchRoteiroMap = (content.pitch_aula19 ?? {}) as Record<string, PitchRoteiroValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -800,6 +803,25 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={changelogV2Map[pill.id] ?? {}}
                 changelogMap={changelogV2Map}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "pitch_roteiro") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillPitchRoteiro
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={pitchRoteiroMap[pill.id] ?? {}}
+                pitchMap={pitchRoteiroMap}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}

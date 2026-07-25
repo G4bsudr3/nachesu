@@ -47,6 +47,8 @@ export { PillRegistroResultado } from "./PillRegistroResultado";
 export type { RegistroResultadoValue } from "./PillRegistroResultado";
 export { PillChangelogV2 } from "./PillChangelogV2";
 export type { ChangelogV2Value } from "./PillChangelogV2";
+export { PillPitchRoteiro } from "./PillPitchRoteiro";
+export type { PitchRoteiroValue } from "./PillPitchRoteiro";
 export { CorfSignature } from "./CorfSignature";
 export { ComparacaoNiveis } from "./ComparacaoNiveis";
 export type { NivelItem } from "./ComparacaoNiveis";
