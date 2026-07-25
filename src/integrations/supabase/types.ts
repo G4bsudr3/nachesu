@@ -2923,6 +2923,10 @@ export type Database = {
         Args: { _course_slug?: string; _module_number?: number }
         Returns: Json
       }
+      admin_module5_briefing_stats: {
+        Args: { _course_slug?: string; _module_number?: number }
+        Returns: Json
+      }
       admin_set_profile_status: {
         Args: { _status: string; _user_id: string }
         Returns: undefined
@@ -3015,6 +3019,10 @@ export type Database = {
       }
       get_course_invite_stats: {
         Args: { _course_id: string; _since: string }
+        Returns: Json
+      }
+      get_fluxo_turma_distribution: {
+        Args: { _field_id: string; _module_id: string }
         Returns: Json
       }
       get_my_card_state: {

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { ExternalLink, ArrowRight, Clock, Check, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ExternalLink, ArrowRight, Clock, Check, X, AlertTriangle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
@@ -51,6 +53,11 @@ type Schema = {
   type?: "curated_content_with_questions";
   cards?: Card[];
   questions?: Question[];
+  turma_stats?: {
+    field_id: string;
+    module_id: string;
+    warn_threshold?: number; // percentual (0-100) acima do qual mostra aviso
+  };
 };
 
 interface Props {
@@ -113,6 +120,22 @@ export function PillConteudoCurado({
       });
     });
   }, [answers, schema.questions]);
+
+  // distribuição da turma (opcional) — mostra bar % ao lado de cada opção da pergunta configurada
+  const turmaStats = schema.turma_stats;
+  const turmaQuery = useQuery({
+    queryKey: ["turma-fluxo-dist", turmaStats?.module_id, turmaStats?.field_id],
+    enabled: !!turmaStats?.module_id && !!turmaStats?.field_id,
+    staleTime: 30_000,
+    queryFn: async (): Promise<{ total: number; counts: Record<string, number> }> => {
+      const { data, error } = await (supabase.rpc as unknown as (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>)(
+        "get_fluxo_turma_distribution",
+        { _module_id: turmaStats!.module_id, _field_id: turmaStats!.field_id },
+      );
+      if (error) throw error as Error;
+      return (data ?? { total: 0, counts: {} }) as { total: number; counts: Record<string, number> };
+    },
+  });
 
   return (
     <div className="space-y-6">
@@ -246,15 +269,29 @@ export function PillConteudoCurado({
           const chosen = v;
           const isCorrect = (q.correct ?? []).includes(chosen);
           const showFeedback = chosen.length > 0 && (q.correct?.length ?? 0) > 0;
+          const showTurmaStats = turmaStats?.field_id === q.id && !!turmaQuery.data;
+          const turmaTotal = turmaQuery.data?.total ?? 0;
+          const turmaCounts = turmaQuery.data?.counts ?? {};
+          const warnThreshold = turmaStats?.warn_threshold ?? 30;
+          const chosenPct = showTurmaStats && chosen && turmaTotal > 0
+            ? Math.round(((turmaCounts[chosen] ?? 0) / turmaTotal) * 100)
+            : 0;
           return (
             <fieldset key={q.id} className="space-y-2">
               <legend className="font-body text-sm font-medium text-perestroika-preto mb-1">
                 <span className="text-perestroika-preto/55 mr-1">{idx + 1}.</span>
                 {q.label}
               </legend>
+              {showTurmaStats && turmaTotal > 0 && (
+                <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">
+                  distribuição da turma · {turmaTotal} respostas
+                </p>
+              )}
               <div className="space-y-1.5">
                 {q.options.map((opt) => {
                   const checked = v === opt.value;
+                  const optCount = turmaCounts[opt.value] ?? 0;
+                  const optPct = showTurmaStats && turmaTotal > 0 ? Math.round((optCount / turmaTotal) * 100) : 0;
                   return (
                     <label
                       key={opt.value}
@@ -278,11 +315,33 @@ export function PillConteudoCurado({
                         }`}
                         aria-hidden="true"
                       />
-                      <span className="font-body text-sm leading-snug">{opt.label}</span>
+                      <span className="font-body text-sm leading-snug flex-1">{opt.label}</span>
+                      {showTurmaStats && turmaTotal > 0 && (
+                        <span
+                          className={`inline-flex items-center gap-1.5 font-body text-[11px] uppercase tracking-wider whitespace-nowrap ${
+                            checked ? "text-perestroika-bege/80" : "text-perestroika-preto/55"
+                          }`}
+                          aria-label={`${optPct}% da turma escolheu essa opção`}
+                        >
+                          <span className={`h-1.5 rounded-full ${checked ? "bg-perestroika-bege/40" : "bg-perestroika-preto/15"}`} style={{ width: `${Math.max(6, optPct * 0.6)}px` }} aria-hidden />
+                          {optPct}%
+                        </span>
+                      )}
                     </label>
                   );
                 })}
               </div>
+              {showTurmaStats && chosen && chosenPct > warnThreshold && (
+                <div
+                  className="mt-2 rounded-xl border-2 p-3 font-body text-sm flex items-start gap-2"
+                  style={{ borderColor: "#F2C94C", backgroundColor: "#F2C94C1A" }}
+                >
+                  <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: "#8a6c00" }} aria-hidden />
+                  <span>
+                    esse fluxo já está bem representado ({chosenPct}% da turma). topa um menos óbvio? ainda assim você pode seguir — é só uma sugestão.
+                  </span>
+                </div>
+              )}
               {showFeedback && (
                 <div
                   role="status"
