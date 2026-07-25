@@ -13,6 +13,8 @@ export { PillClassificador3x3 } from "./PillClassificador3x3";
 export type { ClassificadorValue } from "./PillClassificador3x3";
 export { PillGuiaDePrompts } from "./PillGuiaDePrompts";
 export type { GuiaPromptsValue } from "./PillGuiaDePrompts";
+export { PillCacaEvidencias } from "./PillCacaEvidencias";
+export type { CacaEvidenciasValue } from "./PillCacaEvidencias";
 export { CorfSignature } from "./CorfSignature";
 export { ComparacaoNiveis } from "./ComparacaoNiveis";
 export type { NivelItem } from "./ComparacaoNiveis";
