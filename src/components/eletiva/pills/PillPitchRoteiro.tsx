@@ -370,11 +370,14 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
         {pulls.evidencias?.length ? (
           <RefCard title={`evidências (aula 4) · ${pulls.evidencias.length}`}>
             <ul className="space-y-1">
-              {pulls.evidencias.slice(0, 3).map((ev, i) => (
-                <li key={i} className="font-body text-xs text-perestroika-preto/75 leading-snug">
-                  <span className="text-perestroika-preto/50">#{i + 1}</span> {ev.o_que_encontrou || ev.descricao || "—"}
-                </li>
-              ))}
+              {pulls.evidencias.slice(0, 3).map((ev, i) => {
+                const resumo = ev.descricao || ev.frase1 || ev.prova || ev.entrevistado || "—";
+                return (
+                  <li key={i} className="font-body text-xs text-perestroika-preto/75 leading-snug">
+                    <span className="text-perestroika-preto/50">#{i + 1}</span> {resumo}
+                  </li>
+                );
+              })}
             </ul>
           </RefCard>
         ) : null}
@@ -391,7 +394,7 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
         {pulls.impactos ? (
           <RefCard title="impactos regenerativos (aula 9)">
             <p className="font-body text-xs text-perestroika-preto/75 leading-snug">
-              {pulls.impactos.pessoas_depois || pulls.impactos.planeta_depois || pulls.impactos.lucro_depois || "—"}
+              {pulls.impactos.pessoas?.estado_desejado || pulls.impactos.planeta?.estado_desejado || pulls.impactos.prosperidade?.estado_desejado || "—"}
             </p>
           </RefCard>
         ) : null}
