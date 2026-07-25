@@ -2955,6 +2955,7 @@ export type Database = {
         Args: { _course_slug?: string; _module_number?: number }
         Returns: Json
       }
+      admin_module20_stats: { Args: never; Returns: Json }
       admin_module3_mapa_atores_stats: {
         Args: { _course_slug?: string; _module_number?: number }
         Returns: Json
@@ -3187,6 +3188,7 @@ export type Database = {
           tagline: string
         }[]
       }
+      get_public_dossier: { Args: { p_user_id: string }; Returns: Json }
       get_turma_socials: {
         Args: never
         Returns: {
