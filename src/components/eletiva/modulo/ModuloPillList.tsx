@@ -28,6 +28,7 @@ import {
   PillSelecaoIdeia,
   PillPropostaValor,
   PillBMCSimplificado,
+  PillSuposicoesRiscos,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -45,6 +46,7 @@ import {
   type SelecaoIdeiaValue,
   type PropostaValorValue,
   type BMCValue,
+  type SuposicoesRiscosValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -272,6 +274,7 @@ export const ModuloPillList = ({
   const selecaoIdeiaMap = (content.selecao_aula12 ?? {}) as Record<string, SelecaoIdeiaValue>;
   const propostaValorMap = (content.proposta_valor_aula13 ?? {}) as Record<string, PropostaValorValue>;
   const bmcMap = (content.bmc_aula14 ?? {}) as Record<string, BMCValue>;
+  const suposicoesRiscosMap = (content.suposicoes_riscos_aula15 ?? {}) as Record<string, SuposicoesRiscosValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -668,6 +671,25 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={bmcMap[pill.id] ?? {}}
                 bmcMap={bmcMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "suposicoes_riscos") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillSuposicoesRiscos
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={suposicoesRiscosMap[pill.id] ?? {}}
+                suposicoesMap={suposicoesRiscosMap}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}
