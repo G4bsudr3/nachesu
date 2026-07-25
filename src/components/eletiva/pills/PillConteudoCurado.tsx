@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { ExternalLink, ArrowRight, Clock, Check, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ExternalLink, ArrowRight, Clock, Check, X, AlertTriangle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
