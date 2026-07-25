@@ -24,6 +24,7 @@ import {
   PillRegrasJogo,
   PillImpactos3P,
   PillStakeholdersMatriz,
+  PillSprintIdeacao,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -37,6 +38,7 @@ import {
   type RegrasJogoValue,
   type Impactos3PValue,
   type StakeholdersMatrizValue,
+  type SprintIdeacaoValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -260,6 +262,7 @@ export const ModuloPillList = ({
   const regrasJogoMap = (content.regras_jogo_aula8 ?? {}) as Record<string, RegrasJogoValue>;
   const impactos3pMap = (content.impactos_aula9 ?? {}) as Record<string, Impactos3PValue>;
   const stakeholdersMap = (content.stakeholders_aula10 ?? {}) as Record<string, StakeholdersMatrizValue>;
+  const sprintIdeacaoMap = (content.ideias_aula11 ?? {}) as Record<string, SprintIdeacaoValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
