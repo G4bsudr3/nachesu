@@ -136,7 +136,7 @@ export function PillRegistroResultado({
   const quantidadeOk = (value.quantidade ?? "").trim().length >= 1;
   const obsSurpresaOk = (value.obs_surpresa ?? "").trim().length >= 20;
   const obsIncomodouOk = (value.obs_incomodou ?? "").trim().length >= 20;
-  const criterioOk = value.criterio_resultado && value.criterio_resultado !== "";
+  const criterioOk = !!value.criterio_resultado;
   const honestidadeOk =
     value.honestidade_atalho === "nao" ||
     (value.honestidade_atalho === "sim" && (value.honestidade_qual ?? "").trim().length >= 15);
