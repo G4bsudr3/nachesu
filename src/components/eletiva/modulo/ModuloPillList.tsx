@@ -790,6 +790,25 @@ export const ModuloPillList = ({
           );
         }
 
+        if (schemaType === "changelog_v2") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillChangelogV2
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={changelogV2Map[pill.id] ?? {}}
+                changelogMap={changelogV2Map}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
 
 
 
