@@ -407,7 +407,10 @@ const Modulo = () => {
   const isUnlocked = isAdmin || (snapshot?.unlockedModuleIds.has(moduleRow.id) ?? false);
   if (!isUnlocked) {
     return (
-      <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
+      <div
+        data-eletiva={courseSlug === "economia-circular" ? "ecc" : undefined}
+        className="relative min-h-dvh bg-background text-foreground font-body [overflow-x:clip]"
+      >
         <PageHeader showLogo logoLink="/app" />
         <ModuloLockedHero
           moduleNumber={moduleRow.number}
