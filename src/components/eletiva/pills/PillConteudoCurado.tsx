@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ExternalLink, ArrowRight, Clock } from "lucide-react";
+import { ExternalLink, ArrowRight, Clock, Check, X } from "lucide-react";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
@@ -26,9 +26,26 @@ type QuestionSingle = {
   type: "single_choice";
   label: string;
   options: { label: string; value: string }[];
+  correct?: string[];
+  feedback_correct?: string;
+  feedback_wrong?: string;
 };
 
-type Question = QuestionLong | QuestionSingle;
+const ICEBERG_LEVELS = [
+  { id: "eventos", label: "eventos", hint: "o que se vê" },
+  { id: "padroes", label: "padrões", hint: "o que se repete" },
+  { id: "estruturas", label: "estruturas", hint: "regras, recursos, incentivos" },
+  { id: "modelos", label: "modelos mentais", hint: "crenças que sustentam" },
+] as const;
+
+type QuestionIceberg = {
+  id: string;
+  type: "iceberg_four_levels";
+  label: string;
+  min_chars?: number;
+};
+
+type Question = QuestionLong | QuestionSingle | QuestionIceberg;
 
 type Schema = {
   type?: "curated_content_with_questions";
