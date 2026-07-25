@@ -406,6 +406,7 @@ const App = () => (
                 <Route path="/admin/eletiva/economia-circular/modulo/11" element={<AdminEletivaModulo11 />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/12" element={<AdminEletivaModulo12 />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/13" element={<AdminEletivaModulo13 />} />
+                <Route path="/admin/eletiva/economia-circular/modulo/14" element={<AdminEletivaModulo14 />} />
                 <Route path="/admin/legado" element={<Navigate to="/admin/legado/fbi" replace />} />
                 <Route path="/admin/legado/:tab" element={<AdminFbi />} />
                 {/* compat: /admin/:tab continua respondendo no AdminFbi pra abas "operação" antigas */}
