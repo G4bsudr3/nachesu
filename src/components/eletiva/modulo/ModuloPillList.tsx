@@ -658,6 +658,26 @@ export const ModuloPillList = ({
           );
         }
 
+        if (schemaType === "bmc_simplificado") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillBMCSimplificado
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={bmcMap[pill.id] ?? {}}
+                bmcMap={bmcMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+
 
 
 
