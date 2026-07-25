@@ -30,6 +30,9 @@ import {
   PillBMCSimplificado,
   PillSuposicoesRiscos,
   PillPlanoExperimento,
+  PillInstrumentoColeta,
+  PillEmCampo,
+  PillRegistroResultado,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -49,6 +52,9 @@ import {
   type BMCValue,
   type SuposicoesRiscosValue,
   type PlanoExperimentoValue,
+  type InstrumentoColetaValue,
+  type EmCampoValue,
+  type RegistroResultadoValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -278,6 +284,9 @@ export const ModuloPillList = ({
   const bmcMap = (content.bmc_aula14 ?? {}) as Record<string, BMCValue>;
   const suposicoesRiscosMap = (content.suposicoes_riscos_aula15 ?? {}) as Record<string, SuposicoesRiscosValue>;
   const planoExperimentoMap = (content.experimento_plano_aula16 ?? {}) as Record<string, PlanoExperimentoValue>;
+  const instrumentoColetaMap = (content.instrumento_coleta_aula17 ?? {}) as Record<string, InstrumentoColetaValue>;
+  const emCampoMap = (content.em_campo_aula17 ?? {}) as Record<string, EmCampoValue>;
+  const registroResultadoMap = (content.experimento_resultado_aula17 ?? {}) as Record<string, RegistroResultadoValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -712,6 +721,63 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={planoExperimentoMap[pill.id] ?? {}}
                 planoMap={planoExperimentoMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "instrumento_coleta") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillInstrumentoColeta
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={instrumentoColetaMap[pill.id] ?? {}}
+                instrumentoMap={instrumentoColetaMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "em_campo") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillEmCampo
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={emCampoMap[pill.id] ?? {}}
+                emCampoMap={emCampoMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "registro_resultado") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillRegistroResultado
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={registroResultadoMap[pill.id] ?? {}}
+                registroMap={registroResultadoMap}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}
