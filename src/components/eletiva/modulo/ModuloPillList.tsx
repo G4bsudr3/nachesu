@@ -29,6 +29,7 @@ import {
   PillPropostaValor,
   PillBMCSimplificado,
   PillSuposicoesRiscos,
+  PillPlanoExperimento,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -47,6 +48,7 @@ import {
   type PropostaValorValue,
   type BMCValue,
   type SuposicoesRiscosValue,
+  type PlanoExperimentoValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -275,6 +277,7 @@ export const ModuloPillList = ({
   const propostaValorMap = (content.proposta_valor_aula13 ?? {}) as Record<string, PropostaValorValue>;
   const bmcMap = (content.bmc_aula14 ?? {}) as Record<string, BMCValue>;
   const suposicoesRiscosMap = (content.suposicoes_riscos_aula15 ?? {}) as Record<string, SuposicoesRiscosValue>;
+  const planoExperimentoMap = (content.experimento_plano_aula16 ?? {}) as Record<string, PlanoExperimentoValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -690,6 +693,25 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={suposicoesRiscosMap[pill.id] ?? {}}
                 suposicoesMap={suposicoesRiscosMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "plano_experimento") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillPlanoExperimento
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={planoExperimentoMap[pill.id] ?? {}}
+                planoMap={planoExperimentoMap}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}
