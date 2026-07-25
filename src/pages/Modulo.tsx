@@ -534,6 +534,10 @@ const Modulo = () => {
           <ModuloConclusaoClassificador moduleId={moduleRow.id} />
         )}
 
+        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 3 && (
+          <ModuloConclusaoMapaAtores moduleId={moduleRow.id} />
+        )}
+
 
         <ModuloPillList
           pills={pills}
