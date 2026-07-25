@@ -549,6 +549,10 @@ const Modulo = () => {
           <ModuloConclusaoBriefing moduleId={moduleRow.id} />
         )}
 
+        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 6 && (
+          <ModuloConclusaoMapaFluxo moduleId={moduleRow.id} />
+        )}
+
 
 
 

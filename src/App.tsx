@@ -37,6 +37,7 @@ const AdminEletivaModulo2 = lazy(() => import("./pages/AdminEletivaModulo2.tsx")
 const AdminEletivaModulo3 = lazy(() => import("./pages/AdminEletivaModulo3.tsx"));
 const AdminEletivaModulo4 = lazy(() => import("./pages/AdminEletivaModulo4.tsx"));
 const AdminEletivaModulo5 = lazy(() => import("./pages/AdminEletivaModulo5.tsx"));
+const AdminEletivaModulo6 = lazy(() => import("./pages/AdminEletivaModulo6.tsx"));
 const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
 const MinhaCarta = lazy(() => import("./pages/legacy/MinhaCarta.tsx"));
 const CartaPublica = lazy(() => import("./pages/legacy/CartaPublica.tsx"));
