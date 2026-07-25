@@ -30,6 +30,9 @@ import {
   PillBMCSimplificado,
   PillSuposicoesRiscos,
   PillPlanoExperimento,
+  PillInstrumentoColeta,
+  PillEmCampo,
+  PillRegistroResultado,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -49,6 +52,9 @@ import {
   type BMCValue,
   type SuposicoesRiscosValue,
   type PlanoExperimentoValue,
+  type InstrumentoColetaValue,
+  type EmCampoValue,
+  type RegistroResultadoValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
