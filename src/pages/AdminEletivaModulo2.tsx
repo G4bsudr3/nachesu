@@ -51,7 +51,6 @@ export default function AdminEletivaModulo2() {
     queryKey: ["admin-ecc-m2-classificador-stats"],
     queryFn: async (): Promise<StatsResponse> => {
       const { data, error } = await supabase.rpc(
-        // @ts-expect-error rpc types are re-generated after migration approval
         "admin_module2_classificador_stats",
         { _course_slug: "economia-circular", _module_number: 2 },
       );
