@@ -23,6 +23,7 @@ import {
   PillMatrizValor,
   PillRegrasJogo,
   PillImpactos3P,
+  PillStakeholdersMatriz,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -35,6 +36,7 @@ import {
   type MatrizValorValue,
   type RegrasJogoValue,
   type Impactos3PValue,
+  type StakeholdersMatrizValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -257,6 +259,7 @@ export const ModuloPillList = ({
   const matrizValorMap = (content.matriz_valor_aula7 ?? {}) as Record<string, MatrizValorValue>;
   const regrasJogoMap = (content.regras_jogo_aula8 ?? {}) as Record<string, RegrasJogoValue>;
   const impactos3pMap = (content.impactos_aula9 ?? {}) as Record<string, Impactos3PValue>;
+  const stakeholdersMap = (content.stakeholders_aula10 ?? {}) as Record<string, StakeholdersMatrizValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -559,6 +562,24 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={impactos3pMap[pill.id] ?? {}}
                 impactosMap={impactos3pMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "stakeholders_matriz") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillStakeholdersMatriz
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={stakeholdersMap[pill.id] ?? {}}
+                stakeholdersMap={stakeholdersMap}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}
