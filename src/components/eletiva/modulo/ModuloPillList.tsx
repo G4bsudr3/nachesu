@@ -33,6 +33,7 @@ import {
   PillInstrumentoColeta,
   PillEmCampo,
   PillRegistroResultado,
+  PillChangelogV2,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -55,6 +56,7 @@ import {
   type InstrumentoColetaValue,
   type EmCampoValue,
   type RegistroResultadoValue,
+  type ChangelogV2Value,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -287,6 +289,7 @@ export const ModuloPillList = ({
   const instrumentoColetaMap = (content.instrumento_coleta_aula17 ?? {}) as Record<string, InstrumentoColetaValue>;
   const emCampoMap = (content.em_campo_aula17 ?? {}) as Record<string, EmCampoValue>;
   const registroResultadoMap = (content.experimento_resultado_aula17 ?? {}) as Record<string, RegistroResultadoValue>;
+  const changelogV2Map = (content.changelog_aula18 ?? {}) as Record<string, ChangelogV2Value>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -778,6 +781,25 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={registroResultadoMap[pill.id] ?? {}}
                 registroMap={registroResultadoMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+        if (schemaType === "changelog_v2") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillChangelogV2
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={changelogV2Map[pill.id] ?? {}}
+                changelogMap={changelogV2Map}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}

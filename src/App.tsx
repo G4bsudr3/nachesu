@@ -49,6 +49,7 @@ const AdminEletivaModulo14 = lazy(() => import("./pages/AdminEletivaModulo14.tsx
 const AdminEletivaModulo15 = lazy(() => import("./pages/AdminEletivaModulo15.tsx"));
 const AdminEletivaModulo16 = lazy(() => import("./pages/AdminEletivaModulo16.tsx"));
 const AdminEletivaModulo17 = lazy(() => import("./pages/AdminEletivaModulo17.tsx"));
+const AdminEletivaModulo18 = lazy(() => import("./pages/AdminEletivaModulo18.tsx"));
 const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
 const MinhaCarta = lazy(() => import("./pages/legacy/MinhaCarta.tsx"));
 const CartaPublica = lazy(() => import("./pages/legacy/CartaPublica.tsx"));
@@ -413,6 +414,7 @@ const App = () => (
                 <Route path="/admin/eletiva/economia-circular/modulo/15" element={<AdminEletivaModulo15 />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/16" element={<AdminEletivaModulo16 />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/17" element={<AdminEletivaModulo17 />} />
+                <Route path="/admin/eletiva/economia-circular/modulo/18" element={<AdminEletivaModulo18 />} />
                 <Route path="/admin/legado" element={<Navigate to="/admin/legado/fbi" replace />} />
                 <Route path="/admin/legado/:tab" element={<AdminFbi />} />
                 {/* compat: /admin/:tab continua respondendo no AdminFbi pra abas "operação" antigas */}

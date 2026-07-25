@@ -45,6 +45,8 @@ export { PillEmCampo } from "./PillEmCampo";
 export type { EmCampoValue } from "./PillEmCampo";
 export { PillRegistroResultado } from "./PillRegistroResultado";
 export type { RegistroResultadoValue } from "./PillRegistroResultado";
+export { PillChangelogV2 } from "./PillChangelogV2";
+export type { ChangelogV2Value } from "./PillChangelogV2";
 export { CorfSignature } from "./CorfSignature";
 export { ComparacaoNiveis } from "./ComparacaoNiveis";
 export type { NivelItem } from "./ComparacaoNiveis";
