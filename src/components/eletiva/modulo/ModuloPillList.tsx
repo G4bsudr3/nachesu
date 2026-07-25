@@ -416,6 +416,24 @@ export const ModuloPillList = ({
             </PillCardShell>
           );
         }
+        if (schemaType === "mapa_atores_2x2") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillMapaAtores
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={mapaAtoresMap[pill.id] ?? {}}
+                mapaMap={mapaAtoresMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
 
 
 
