@@ -21,6 +21,7 @@ import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/Mod
 import { ModuloCelebration } from "@/components/eletiva/modulo/ModuloCelebration";
 import { ModuloConclusaoClassificador } from "@/components/eletiva/modulo/ModuloConclusaoClassificador";
 import { ModuloConclusaoMapaAtores } from "@/components/eletiva/modulo/ModuloConclusaoMapaAtores";
+import { ModuloConclusaoEvidencias } from "@/components/eletiva/modulo/ModuloConclusaoEvidencias";
 import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
@@ -537,6 +538,12 @@ const Modulo = () => {
         {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 3 && (
           <ModuloConclusaoMapaAtores moduleId={moduleRow.id} />
         )}
+
+        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 4 && (
+          <ModuloConclusaoEvidencias moduleId={moduleRow.id} />
+        )}
+
+
 
 
         <ModuloPillList

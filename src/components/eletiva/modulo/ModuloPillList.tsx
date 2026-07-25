@@ -17,12 +17,14 @@ import {
   PillPBLCorfTriplo,
   PillGuiaDePrompts,
   PillClassificador3x3,
+  PillCacaEvidencias,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
   type PblCorfValue,
   type GuiaPromptsValue,
   type ClassificadorValue,
+  type CacaEvidenciasValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -239,6 +241,7 @@ export const ModuloPillList = ({
   const guiaPrompts = (content.guia_prompts ?? {}) as Record<string, GuiaPromptsValue>;
   const classificadorMap = (content.classificacao_aula2 ?? {}) as Record<string, ClassificadorValue>;
   const mapaAtoresMap = (content.mapa_atores_aula3 ?? {}) as Record<string, MapaAtoresValue>;
+  const cacaEvidenciasMap = (content.caca_evidencias ?? {}) as Record<string, CacaEvidenciasValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -426,6 +429,28 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={mapaAtoresMap[pill.id] ?? {}}
                 mapaMap={mapaAtoresMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "caca_evidencias") {
+          const schema = pill.interaction_schema as { metodo_field_id?: string } | null;
+          const metodoFieldId = schema?.metodo_field_id ?? "";
+          const metodo = metodoFieldId ? guidedAnswers[metodoFieldId] : undefined;
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillCacaEvidencias
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={cacaEvidenciasMap[pill.id] ?? { evidencias: [] }}
+                cacaMap={cacaEvidenciasMap}
+                metodoEscolhido={metodo}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}

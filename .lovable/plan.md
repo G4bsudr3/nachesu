@@ -1,53 +1,71 @@
-## situação atual (verificado)
+## Aula 4 — Prova de Realidade (economia circular)
 
-- Módulo 3 de "economia-circular" já existe no banco (`02fe9a42-…`), mas o conteúdo atual é sobre "input e output / cafezinho" — nada a ver com o briefing novo (Iceberg + Mapa de Atores). Vai ser reescrita completa das 5 pílulas.
-- Componente `PillMapaAtores` não existe ainda.
-- "Problema escolhido" mais confiável no fluxo atual: os 3 itens do Radar da Aula 1 (`module_deliverables.content.items`) — a Aula 2 classifica esses mesmos itens, então eles são o "problema" que a Aula 3 precisa ancorar. Vou puxar dali.
+Módulo já existe (`8c71dbda-...`, número 4, publicado). Vou reescrever os 5 blocos conforme briefing, criar 1 pílula nova de coleta de evidências (com templates dinâmicos por método) e a tela pós-conclusão. Segue a mesma arquitetura das Aulas 1–3.
 
-## o que vou construir
+### 1. Migração do módulo (SQL, sem dropar)
 
-### 1. reescrever conteúdo do módulo 3 (migration)
+- Atualizar `modules` #4: `title = "encontro 4 · até aqui você teve hipótese. agora precisa de prova."`, `objective = "produzir 3 evidências reais do problema escolhido — método científico em 50 min."`
+- Reescrever `module_pills` (delete + insert por `order_index`, preservando `id` via upsert quando possível):
+  1. **abertura** (`pilula_a`, `video_with_transcript`): headline, subheadline, transcrição do briefing, botão "começar".
+  2. **conteúdo curado** (`pilula_b`, `curated_content_with_questions`): 2 cards (IDEO Field Guide PDF + Valkíria) + 3 perguntas-guia. A pergunta 3 é `single_choice` com key `metodo_escolhido` (valores `observacao|entrevista|coleta|mistura`) — salvo em `content.metodo_escolhido` do deliverable.
+  3. **atividade prática — caça às 3 evidências** (`exercicio_pbl`, novo tipo `caca_evidencias`): puxa problema (Aula 1) + mapa de atores (Aula 3) no topo, renderiza template dinâmico conforme `metodo_escolhido`, valida 3 evidências + síntese ≥200 chars + ≥1 evidência com upload real.
+  4. **checagem rápida** (`pilula_c`, `curated_content_with_questions`): 3 perguntas (cenário, múltiplas corretas, texto longo). Requer suporte a `multi_choice` no `PillConteudoCurado`.
+  5. **bônus** (`bonus`, esquema atual `bonus_link_com_reflexao`): card MJV + campo opcional "técnica avançada".
 
-- Novo título: `o problema não é o lixo — é o sistema` · objetivo alinhado ao briefing.
-- 5 pílulas reescritas via `INSERT ... ON CONFLICT (id) DO UPDATE` mantendo os IDs atuais pra preservar progresso:
-  - **Pílula 1 — Abertura**: texto do briefing + placeholder de vídeo + transcrição integral.
-  - **Pílula 2 — Curado**: 2 cards (Iceberg video + artigo Estácio) + 3 perguntas-guia (4 campos texto pro Iceberg / múltipla escolha com feedback / texto longo "quem ganha").
-  - **Pílula 3 — PBL Mapa de Atores**: schema novo `mapa_atores_2x2` com 4 quadrantes, min 2 atores cada, quadrante "ganha" obrigatório, pull dos 3 radar items no topo.
-  - **Pílula 4 — Checagem**: 3 perguntas (cenário Iceberg / múltipla escolha com várias corretas / texto longo sobre resistência).
-  - **Pílula 5 — Bônus**: Story of Bottled Water + campo opcional Iceberg aplicado.
+### 2. Componente novo `PillCacaEvidencias.tsx`
 
-### 2. componente novo `<PillMapaAtores />`
+- Recebe `moduleId`, `content`, `updateSection`, `pillSchema`, `courseSlug`.
+- Puxa via hook o problema escolhido (`radar` da Aula 1) e o mapa de atores (Aula 3) para exibir cabeçalho contextual (read-only).
+- Lê `metodo_escolhido` do próprio deliverable; se ausente, mostra aviso "escolha o método na pílula anterior" com link.
+- Renderiza 3 fichas de evidência conforme método:
+  - **observação**: data, hora, local, descrição factual, quantidade, upload foto (via `EvidenceUploader` no bucket `radar-evidences`, subpasta `aula4/`).
+  - **entrevista**: upload de áudio (MP3/M4A, ≤5 min, ≤10 MB) + 3 "frases marcantes" + perfil do entrevistado.
+  - **coleta**: link, data, fonte, "o que isso prova".
+  - **mistura**: para cada uma das 3 fichas, seletor de tipo + campos correspondentes.
+- Campo síntese (textarea, mín 200 chars).
+- Validação e barra de status igual ao `PillPBLEstruturado`.
+- Persistência: `content.caca_evidencias[pill_id] = { metodo, evidencias:[{tipo,...campos,upload_path}], sintese }`.
 
-- 4 cards editáveis em grid 2x2 (mobile: 1 coluna empilhada). Não uso drag-drop — o próprio briefing diz "drag-drop OU cards editáveis" e cards editáveis funciona muito melhor mobile-first.
-- Cada quadrante: título + descrição + lista dinâmica de atores (nome + descrição de 1 frase, `add ator` / remove).
-- Header ancoragem: bloco cor lilás/creme mostrando "seu problema escolhido" com os 3 itens do Radar (`useAula1RadarItems`, mesma lógica do classificador).
-- Aviso amarelo `#F2BC57` sobre o quadrante "ganha".
-- Validação dura: `ready = todos quadrantes com ≥2 atores E quadrante ganha com ≥1 ator (redundante, ganha faz parte dos 4) E cada ator tem nome+descrição preenchidos`.
-- Copy de erro no rodapé: "faltam atores em X", "detalhe cada ator", "explique quem ganha".
-- Persistência via `useAutoSaveField` no field `mapa_atores_aula3` — objeto `{ [quadrante]: Array<{nome, descricao}> }`.
-- Wire no `ModuloPillList` como novo `schemaType === "mapa_atores_2x2"`.
+### 3. Ajustes em componentes existentes
 
-### 3. celebração pós-conclusão `<ModuloConclusaoMapaAtores />`
+- `EvidenceUploader`: já grava em `radar-evidences`. Adicionar prop `subfolder` para separar `aula1/` de `aula4/`; aceitar áudio (mime `audio/*`) além de imagem.
+- `PillConteudoCurado`: adicionar `multi_choice` (checkboxes + validação de conjunto correto) para a pergunta 2 do checkpoint.
+- `ModuloPillList`: registrar `caca_evidencias` → `<PillCacaEvidencias />`, mesma mecânica das outras interações.
 
-- Aparece quando `courseSlug === "economia-circular" && moduleNumber === 3 && isCompleted`.
-- Renderiza o mapa 2x2 preenchido em versão "bonita" (cores duduo por quadrante, tipografia Sora display), contador total de atores, referência ao problema escolhido.
-- Botão **"baixar mapa (PNG)"** usando `html-to-image` (já disponível como dep leve, ou fallback nativo `canvas`) — se `html-to-image` não estiver instalado, uso `dom-to-image-more` via CDN dinâmico OU escrevo função pura com `canvas` desenhando o mapa. Direção final: usar `html-to-image` (adiciono a dep) porque é o mínimo de código pro melhor resultado.
-- Sem PDF por enquanto — o briefing diz "PNG/PDF" mas com PNG o aluno já consegue anexar/imprimir; se pedirem PDF depois, adiciono.
+### 4. Tela final `ModuloConclusaoEvidencias.tsx`
 
-### 4. painel admin `/admin/eletiva/economia-circular/modulo/3`
+- Rota nova como as anteriores (`Modulo.tsx` decide qual conclusão exibir baseado no módulo).
+- Headline "missão 4 cumprida" + texto do briefing.
+- Lista as 3 evidências (mostra thumbnail/áudio player/link + descrição) e a síntese.
+- CTA "ver minhas evidências" → dashboard da eletiva.
 
-- Nova RPC `admin_module3_mapa_atores_stats` (mesmo pattern da aula 2, `SECURITY DEFINER`, `has_role admin`).
-- Agrega: KPIs (matriculados, fecharam a 3, entregaram o mapa), média de atores por quadrante, top 20 atores mais citados por quadrante (agrupamento por normalização simples do nome — lowercase trim), amostra de justificativas do quadrante "ganha" (é o mais rico pedagogicamente).
-- Nova página `AdminEletivaModulo3.tsx` renderizando isso (cards por quadrante, ranking de atores, lista de "quem ganha").
-- Rota adicionada em `App.tsx`.
+### 5. Admin `AdminEletivaModulo4.tsx`
 
-## fora do escopo desta rodada
+- Rota `/admin/eletiva/economia-circular/modulo/4` (registrar em `App.tsx`).
+- RPC nova `admin_module4_evidencias_stats` (admin-only, security definer):
+  - KPIs: total estudantes ativos na eletiva, iniciaram módulo 4, concluíram, entregaram evidências.
+  - Distribuição por método escolhido (barras).
+  - % que anexou pelo menos 1 arquivo real (foto/áudio) vs só texto.
+  - Amostras recentes de sínteses (últimas 10, com nickname).
+- UI espelhando `AdminEletivaModulo3`.
 
-- Persistir cada ator numa tabela nova `mapa_atores_aula3` (o briefing sugere isso). O padrão da eletiva é persistir tudo no JSON do `module_deliverables.content`, que já dá pra agregar por RPC. Criar tabela nova só quebraria o padrão sem ganho concreto — a agregação por JSON já responde tudo que o professor precisa.
-- Drag-drop entre quadrantes.
-- Export em PDF (fica pra rodada seguinte se pedirem).
+### 6. Tom / copy
 
-## como valido
+- Direto, adulto, sem infantilizar. Mensagens de erro apoiam ("sem evidência ainda? tudo bem, respira e volta quando estiver em campo").
+- Alternativa clara para quem não conseguir entrevistar: destaque no card do método entrevista ("sem conseguir? troca pra coleta documental sem culpa").
 
-- Aluno: entro na aula 3 com um user que já tem radar preenchido, monto o mapa, tento concluir sem preencher o quadrante ganha (deve travar), preencho, concluo, screenshot da celebração + baixo o PNG.
-- Admin: `/admin/eletiva/economia-circular/modulo/3`, screenshot dos KPIs + ranking + amostra.
+### Detalhes técnicos
+
+- Reutiliza `useDeliverable` + `updateSection` (já autosalva).
+- Storage: bucket `radar-evidences` já existe e é público-read com upload autenticado; adicionar policy adicional só se limite de mime bloquear áudio (verificar antes; caso bloqueie, migração ajusta policy).
+- Transcrição Whisper: fora do escopo desta entrega (registrado como follow-up).
+- Não altera schema de outras aulas nem mexe em fluxo Chŏra legado.
+
+### Ordem de execução
+
+1. Migração pílulas + RPC admin.
+2. `EvidenceUploader` (subfolder + áudio) e `PillConteudoCurado` (multi_choice).
+3. `PillCacaEvidencias`.
+4. `ModuloConclusaoEvidencias` + wiring em `Modulo.tsx`.
+5. `AdminEletivaModulo4` + rota.
+6. Verificação: abrir aula 4 no preview em desktop e mobile, testar cada método e a página admin.
