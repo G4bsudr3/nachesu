@@ -27,6 +27,7 @@ import {
   PillSprintIdeacao,
   PillSelecaoIdeia,
   PillPropostaValor,
+  PillBMCSimplificado,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -43,6 +44,7 @@ import {
   type SprintIdeacaoValue,
   type SelecaoIdeiaValue,
   type PropostaValorValue,
+  type BMCValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
