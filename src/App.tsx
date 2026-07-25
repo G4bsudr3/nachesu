@@ -382,6 +382,7 @@ const App = () => (
                 <Route path="/admin/aluno/:userId" element={<AdminStudentProfile />} />
                 <Route path="/admin/certificate-sandbox" element={<AdminCertificateSandbox />} />
                 <Route path="/admin/aula/:n" element={<AdminAula />} />
+                <Route path="/admin/eletiva/economia-circular/modulo/2" element={<AdminEletivaModulo2 />} />
                 <Route path="/admin/legado" element={<Navigate to="/admin/legado/fbi" replace />} />
                 <Route path="/admin/legado/:tab" element={<AdminFbi />} />
                 {/* compat: /admin/:tab continua respondendo no AdminFbi pra abas "operação" antigas */}
