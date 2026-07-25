@@ -2919,6 +2919,10 @@ export type Database = {
         Args: { _course_slug?: string; _module_number?: number }
         Returns: Json
       }
+      admin_module12_selecao_stats: {
+        Args: { _course_slug?: string; _module_number?: number }
+        Returns: Json
+      }
       admin_module2_classificador_stats: {
         Args: { _course_slug?: string; _module_number?: number }
         Returns: Json
