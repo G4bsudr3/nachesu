@@ -33,6 +33,7 @@ const AdminLayout = lazy(() =>
   import("./components/admin/layout/AdminLayout").then((m) => ({ default: m.AdminLayout })),
 );
 const AdminAula = lazy(() => import("./pages/AdminAula.tsx"));
+const AdminEletivaModulo2 = lazy(() => import("./pages/AdminEletivaModulo2.tsx"));
 const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
 const MinhaCarta = lazy(() => import("./pages/legacy/MinhaCarta.tsx"));
 const CartaPublica = lazy(() => import("./pages/legacy/CartaPublica.tsx"));
