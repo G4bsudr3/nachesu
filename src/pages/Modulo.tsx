@@ -30,6 +30,7 @@ import { ModuloConclusaoImpactos } from "@/components/eletiva/modulo/ModuloConcl
 import { ModuloConclusaoStakeholders } from "@/components/eletiva/modulo/ModuloConclusaoStakeholders";
 import { ModuloConclusaoSprintIdeacao } from "@/components/eletiva/modulo/ModuloConclusaoSprintIdeacao";
 import { ModuloConclusaoSelecaoIdeia } from "@/components/eletiva/modulo/ModuloConclusaoSelecaoIdeia";
+import { ModuloConclusaoPropostaValor } from "@/components/eletiva/modulo/ModuloConclusaoPropostaValor";
 import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
@@ -581,6 +582,10 @@ const Modulo = () => {
 
         {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 12 && (
           <ModuloConclusaoSelecaoIdeia moduleId={moduleRow.id} />
+        )}
+
+        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 13 && (
+          <ModuloConclusaoPropostaValor moduleId={moduleRow.id} />
         )}
 
 
