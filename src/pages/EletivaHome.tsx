@@ -237,7 +237,10 @@ const EletivaHome = () => {
   const progressPct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const tutorTo = current ? `/app/tutor?module=${current.number}` : "/app/tutor";
   return (
-    <div className="relative min-h-dvh bg-perestroika-bege text-perestroika-preto font-body [overflow-x:clip]">
+    <div
+      data-eletiva={course.slug === "economia-circular" ? "ecc" : undefined}
+      className="relative min-h-dvh bg-background text-foreground font-body [overflow-x:clip]"
+    >
       <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
       <main className="container max-w-3xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16">
