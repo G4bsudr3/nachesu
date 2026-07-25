@@ -33,6 +33,7 @@ import {
   PillInstrumentoColeta,
   PillEmCampo,
   PillRegistroResultado,
+  PillChangelogV2,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -55,6 +56,7 @@ import {
   type InstrumentoColetaValue,
   type EmCampoValue,
   type RegistroResultadoValue,
+  type ChangelogV2Value,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -287,6 +289,7 @@ export const ModuloPillList = ({
   const instrumentoColetaMap = (content.instrumento_coleta_aula17 ?? {}) as Record<string, InstrumentoColetaValue>;
   const emCampoMap = (content.em_campo_aula17 ?? {}) as Record<string, EmCampoValue>;
   const registroResultadoMap = (content.experimento_resultado_aula17 ?? {}) as Record<string, RegistroResultadoValue>;
+  const changelogV2Map = (content.changelog_aula18 ?? {}) as Record<string, ChangelogV2Value>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
