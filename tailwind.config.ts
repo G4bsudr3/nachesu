@@ -16,6 +16,8 @@ export default {
       fontFamily: {
         display: ['"League Gothic"', "Impact", "sans-serif"],
         body: ['"Urbanist"', "system-ui", "sans-serif"],
+        // duduo signature (economia circular): sora 800 pra headline editorial
+        "display-duduo": ['"Sora"', '"League Gothic"', "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -78,6 +80,18 @@ export default {
         // azul institucional NachesU (wordmark + selo)
         "naches-azul": "#1E2BB8",
         "naches-lilas": "#8A85BF",
+        // duduo (economia circular): base creme + acento vermelho-laranja + apoios
+        duduo: {
+          escuro: "#202124",
+          creme: "#F5EEE1",
+          dourado: "#EFD7A9",
+          cinza: "#9AA0A7",
+          rosa: "#F2D8DC",
+          azul: "#448FF2",
+          verde: "#75BF9C",
+          amarelo: "#F2BC57",
+          laranja: "#F25E3D",
+        },
         // alias semântico curto pra paleta perestroika
         brand: {
           bege: "hsl(var(--brand-bege))",

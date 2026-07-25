@@ -127,6 +127,53 @@
     --input: 0 0% 22%;
     --ring: var(--brand-rosa);
   }
+
+  /* ============================================
+     escopo duduo — eletiva economia circular
+     ativado por [data-eletiva="ecc"] no wrapper da eletiva/módulo.
+     sobrescreve tokens semânticos pra virar assinatura editorial
+     do dudu obregon (creme + laranja-vermelho + sora display).
+     ============================================ */
+  [data-eletiva="ecc"] {
+    /* paleta duduo em hsl pros overrides */
+    --duduo-creme: 34 55% 92%;         /* #F5EEE1 */
+    --duduo-escuro: 220 4% 13%;        /* #202124 */
+    --duduo-laranja: 10 87% 60%;       /* #F25E3D acento principal */
+    --duduo-amarelo: 39 85% 65%;       /* #F2BC57 */
+    --duduo-verde: 147 33% 61%;        /* #75BF9C */
+    --duduo-azul: 214 88% 61%;         /* #448FF2 */
+    --duduo-dourado: 39 68% 80%;       /* #EFD7A9 */
+
+    --background: var(--duduo-creme);
+    --foreground: var(--duduo-escuro);
+    --card: var(--duduo-creme);
+    --card-foreground: var(--duduo-escuro);
+    --popover: var(--duduo-creme);
+    --popover-foreground: var(--duduo-escuro);
+    --primary: var(--duduo-laranja);
+    --primary-foreground: 34 55% 96%;
+    --secondary: 34 40% 85%;
+    --secondary-foreground: var(--duduo-escuro);
+    --muted: 34 30% 87%;
+    --muted-foreground: 220 4% 30%;
+    --accent: var(--duduo-amarelo);
+    --accent-foreground: var(--duduo-escuro);
+    --border: 34 20% 80%;
+    --input: 34 20% 80%;
+    --ring: var(--duduo-laranja);
+
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  /* headline duduo: sora 800 quando dentro do escopo */
+  [data-eletiva="ecc"] .font-display {
+    font-family: "Sora", "League Gothic", system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+
 }
 
 @layer base {
