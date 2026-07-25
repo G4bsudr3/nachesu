@@ -22,6 +22,7 @@ import { ModuloCelebration } from "@/components/eletiva/modulo/ModuloCelebration
 import { ModuloConclusaoClassificador } from "@/components/eletiva/modulo/ModuloConclusaoClassificador";
 import { ModuloConclusaoMapaAtores } from "@/components/eletiva/modulo/ModuloConclusaoMapaAtores";
 import { ModuloConclusaoEvidencias } from "@/components/eletiva/modulo/ModuloConclusaoEvidencias";
+import { ModuloConclusaoBriefing } from "@/components/eletiva/modulo/ModuloConclusaoBriefing";
 import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
