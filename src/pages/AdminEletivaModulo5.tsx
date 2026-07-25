@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, CheckCircle2, AlertTriangle, XCircle, RefreshCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { EletivaFooter } from "@/components/eletiva/EletivaFooter";
+import { EletivaFooter } from "@/components/layout/EletivaFooter";
 
 const FLUXO_LABELS: Record<string, string> = {
   materiais: "Materiais e Compras",
@@ -33,7 +33,7 @@ export default function AdminEletivaModulo5() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-module5-briefing-stats"],
     queryFn: async (): Promise<Stats> => {
-      const { data, error } = await supabase.rpc("admin_module5_briefing_stats" as never, {
+      const { data, error } = await (supabase.rpc as unknown as (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>)("admin_module5_briefing_stats", {
         _course_slug: "economia-circular",
         _module_number: 5,
       });
