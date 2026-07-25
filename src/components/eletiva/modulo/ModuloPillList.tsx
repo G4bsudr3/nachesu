@@ -592,6 +592,26 @@ export const ModuloPillList = ({
           );
         }
 
+        if (schemaType === "sprint_ideacao") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillSprintIdeacao
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={sprintIdeacaoMap[pill.id] ?? {}}
+                ideiasMap={sprintIdeacaoMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+
+
 
 
 
