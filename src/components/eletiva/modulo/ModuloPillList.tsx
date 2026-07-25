@@ -24,6 +24,7 @@ import {
   type GuiaPromptsValue,
   type ClassificadorValue,
 } from "@/components/eletiva/pills";
+import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
 
 export type ModuloPill = {
