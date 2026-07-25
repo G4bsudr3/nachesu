@@ -1,71 +1,101 @@
-## Aula 4 — Prova de Realidade (economia circular)
 
-Módulo já existe (`8c71dbda-...`, número 4, publicado). Vou reescrever os 5 blocos conforme briefing, criar 1 pílula nova de coleta de evidências (com templates dinâmicos por método) e a tela pós-conclusão. Segue a mesma arquitetura das Aulas 1–3.
+# Aula 7 · vazamento vira oportunidade
 
-### 1. Migração do módulo (SQL, sem dropar)
+Mantém o mesmo padrão de Aula 6 (5 blocos, mesma linguagem visual, mesmos componentes-base) e adiciona uma nova pílula interativa: a **matriz Vazamento → Oportunidade**, que puxa automaticamente os vazamentos que o estudante escreveu na Aula 6.
 
-- Atualizar `modules` #4: `title = "encontro 4 · até aqui você teve hipótese. agora precisa de prova."`, `objective = "produzir 3 evidências reais do problema escolhido — método científico em 50 min."`
-- Reescrever `module_pills` (delete + insert por `order_index`, preservando `id` via upsert quando possível):
-  1. **abertura** (`pilula_a`, `video_with_transcript`): headline, subheadline, transcrição do briefing, botão "começar".
-  2. **conteúdo curado** (`pilula_b`, `curated_content_with_questions`): 2 cards (IDEO Field Guide PDF + Valkíria) + 3 perguntas-guia. A pergunta 3 é `single_choice` com key `metodo_escolhido` (valores `observacao|entrevista|coleta|mistura`) — salvo em `content.metodo_escolhido` do deliverable.
-  3. **atividade prática — caça às 3 evidências** (`exercicio_pbl`, novo tipo `caca_evidencias`): puxa problema (Aula 1) + mapa de atores (Aula 3) no topo, renderiza template dinâmico conforme `metodo_escolhido`, valida 3 evidências + síntese ≥200 chars + ≥1 evidência com upload real.
-  4. **checagem rápida** (`pilula_c`, `curated_content_with_questions`): 3 perguntas (cenário, múltiplas corretas, texto longo). Requer suporte a `multi_choice` no `PillConteudoCurado`.
-  5. **bônus** (`bonus`, esquema atual `bonus_link_com_reflexao`): card MJV + campo opcional "técnica avançada".
+## Anatomia dos 5 blocos
 
-### 2. Componente novo `PillCacaEvidencias.tsx`
+1. **Abertura** (pilula_a, ~3-5 min) — vídeo + transcript colapsável. Headline "onde há vazamento, há valor não capturado".
+2. **Conteúdo curado** (pilula_b, ~12-18 min) — 2 cards (7 desperdícios do Lean · case Ambev Zero Aterro) + 3 perguntas-guia (1 múltipla escolha + 2 texto longo). Usa o componente `curated_content_with_questions` já existente.
+3. **Missão 7** (exercicio_pbl, ~18-28 min) — nova pílula `matriz_valor` com tabela 5×5, vazamentos pré-preenchidos do módulo 6, dropdown de tipo, validação de diversidade e beneficiário nomeado.
+4. **Checagem** (pilula_c, ~5-8 min) — quiz padrão (1 cenário + 1 multi-select + 1 texto longo). Usa o componente `quiz` existente.
+5. **Bônus** (registro, ~8-12 min) — podcast Café com ESG, com campo de reflexão. Usa `bonus_text` existente.
 
-- Recebe `moduleId`, `content`, `updateSection`, `pillSchema`, `courseSlug`.
-- Puxa via hook o problema escolhido (`radar` da Aula 1) e o mapa de atores (Aula 3) para exibir cabeçalho contextual (read-only).
-- Lê `metodo_escolhido` do próprio deliverable; se ausente, mostra aviso "escolha o método na pílula anterior" com link.
-- Renderiza 3 fichas de evidência conforme método:
-  - **observação**: data, hora, local, descrição factual, quantidade, upload foto (via `EvidenceUploader` no bucket `radar-evidences`, subpasta `aula4/`).
-  - **entrevista**: upload de áudio (MP3/M4A, ≤5 min, ≤10 MB) + 3 "frases marcantes" + perfil do entrevistado.
-  - **coleta**: link, data, fonte, "o que isso prova".
-  - **mistura**: para cada uma das 3 fichas, seletor de tipo + campos correspondentes.
-- Campo síntese (textarea, mín 200 chars).
-- Validação e barra de status igual ao `PillPBLEstruturado`.
-- Persistência: `content.caca_evidencias[pill_id] = { metodo, evidencias:[{tipo,...campos,upload_path}], sintese }`.
+## A matriz Vazamento → Oportunidade
 
-### 3. Ajustes em componentes existentes
+Tabela editável de 5 linhas com estas colunas:
 
-- `EvidenceUploader`: já grava em `radar-evidences`. Adicionar prop `subfolder` para separar `aula1/` de `aula4/`; aceitar áudio (mime `audio/*`) além de imagem.
-- `PillConteudoCurado`: adicionar `multi_choice` (checkboxes + validação de conjunto correto) para a pergunta 2 do checkpoint.
-- `ModuloPillList`: registrar `caca_evidencias` → `<PillCacaEvidencias />`, mesma mecânica das outras interações.
+```text
+| vazamento (auto)   | tipo (dropdown)      | valor perdido | oportunidade | quem se beneficiaria |
+|--------------------|----------------------|---------------|--------------|----------------------|
+| [do mapa aula 6]   | material/tempo/…     | R$/h/kg/…     | descrição    | pessoa/grupo nomeado |
+```
 
-### 4. Tela final `ModuloConclusaoEvidencias.tsx`
+- **Pull automático**: lê `mapa_fluxo_aula6[pill_id].vazamentos` do deliverable do módulo 6 e pré-preenche a coluna "vazamento" (mínimo 5 linhas; se o mapa tiver menos, mostra placeholder "volta ao Encontro 6 e cava mais 3 vazamentos" com link direto).
+- **Dropdown Tipo**: material · tempo · energia · potencial humano · informação/conhecimento.
+- **Valor perdido**: campo livre curto (aceita "R$ 200/mês", "8 kg/dia", "3 h/semana"…).
+- **Oportunidade** e **beneficiário**: textareas curtas.
+- **Validações antes de liberar entrega**:
+  - 5 linhas com todos os campos preenchidos
+  - pelo menos 3 tipos diferentes selecionados (evita "só material")
+  - beneficiário bloqueia termos genéricos: "todos", "todo mundo", "sociedade", "comunidade", "as pessoas" (mensagem in-line pedindo nome específico)
+- **Autosave** a cada mudança (mesmo padrão da Aula 6).
 
-- Rota nova como as anteriores (`Modulo.tsx` decide qual conclusão exibir baseado no módulo).
-- Headline "missão 4 cumprida" + texto do briefing.
-- Lista as 3 evidências (mostra thumbnail/áudio player/link + descrição) e a síntese.
-- CTA "ver minhas evidências" → dashboard da eletiva.
+## Tela de conclusão
 
-### 5. Admin `AdminEletivaModulo4.tsx`
+Depois de completar todos os itens, aparece `ModuloConclusaoMatrizValor`:
+- headline "missão 7 cumprida" + as 5 linhas resumidas em cards visuais.
+- destaque da resposta "mais promissora" (P3 da checagem).
+- CTA "voltar pra eletiva".
 
-- Rota `/admin/eletiva/economia-circular/modulo/4` (registrar em `App.tsx`).
-- RPC nova `admin_module4_evidencias_stats` (admin-only, security definer):
-  - KPIs: total estudantes ativos na eletiva, iniciaram módulo 4, concluíram, entregaram evidências.
-  - Distribuição por método escolhido (barras).
-  - % que anexou pelo menos 1 arquivo real (foto/áudio) vs só texto.
-  - Amostras recentes de sínteses (últimas 10, com nickname).
-- UI espelhando `AdminEletivaModulo3`.
+## Dashboard admin
 
-### 6. Tom / copy
+Rota nova `/admin/eletiva/economia-circular/modulo/7` com:
+- KPIs: matriculados · concluíram · entregaram matriz · com beneficiário nomeado · nº médio de tipos diferentes
+- Distribuição dos tipos de vazamento escolhidos pela turma (barra horizontal)
+- Amostras: últimas 20 entregas com nome, 1ª oportunidade e beneficiário
 
-- Direto, adulto, sem infantilizar. Mensagens de erro apoiam ("sem evidência ainda? tudo bem, respira e volta quando estiver em campo").
-- Alternativa clara para quem não conseguir entrevistar: destaque no card do método entrevista ("sem conseguir? troca pra coleta documental sem culpa").
+## Detalhes técnicos
 
-### Detalhes técnicos
+**Arquivos novos**
+- `src/components/eletiva/pills/PillMatrizValor.tsx` — nova pílula interativa
+- `src/components/eletiva/modulo/ModuloConclusaoMatrizValor.tsx` — tela pós-conclusão
+- `src/pages/AdminEletivaModulo7.tsx` — dashboard admin
 
-- Reutiliza `useDeliverable` + `updateSection` (já autosalva).
-- Storage: bucket `radar-evidences` já existe e é público-read com upload autenticado; adicionar policy adicional só se limite de mime bloquear áudio (verificar antes; caso bloqueie, migração ajusta policy).
-- Transcrição Whisper: fora do escopo desta entrega (registrado como follow-up).
-- Não altera schema de outras aulas nem mexe em fluxo Chŏra legado.
+**Arquivos editados**
+- `src/components/eletiva/pills/index.ts` — exporta `PillMatrizValor` + tipo `MatrizValorValue`
+- `src/components/eletiva/modulo/ModuloPillList.tsx` — registra schema `matriz_valor`
+- `src/pages/Modulo.tsx` — monta a tela de conclusão quando `number === 7`
+- `src/App.tsx` — registra rota admin
 
-### Ordem de execução
+**Schema do deliverable** (segue o mesmo padrão de aula 6, tudo dentro de `module_deliverables.content`):
 
-1. Migração pílulas + RPC admin.
-2. `EvidenceUploader` (subfolder + áudio) e `PillConteudoCurado` (multi_choice).
-3. `PillCacaEvidencias`.
-4. `ModuloConclusaoEvidencias` + wiring em `Modulo.tsx`.
-5. `AdminEletivaModulo4` + rota.
-6. Verificação: abrir aula 4 no preview em desktop e mobile, testar cada método e a página admin.
+```json
+{
+  "matriz_valor_aula7": {
+    "<pill_id>": {
+      "linhas": [
+        { "vazamento": "...", "tipo": "material", "valor_perdido": "...", "oportunidade": "...", "beneficiario": "..." }
+      ],
+      "mais_promissora_index": 2
+    }
+  }
+}
+```
+
+**Interaction schema** da pílula 3 (guarda o módulo-fonte pra pull automático, como já foi feito no `briefing_source_module_id` da Aula 5):
+
+```json
+{
+  "type": "matriz_valor",
+  "mapa_source_module_id": "29e2d414-53ad-494f-8856-3d4a7caed582",
+  "min_linhas": 5,
+  "min_tipos_diferentes": 3,
+  "beneficiario_bloqueio": ["todos","todo mundo","sociedade","comunidade","as pessoas","gente"]
+}
+```
+
+**RPC admin**
+- `admin_module7_matriz_valor_stats(_course_slug, _module_number)` retorna JSONB com `kpis`, `tipo_distribution` e `samples`. `SECURITY DEFINER` com checagem `has_role(auth.uid(),'admin')`, `GRANT EXECUTE ... TO authenticated`.
+
+**Seed em migração**
+- Atualiza título e objetivo do módulo 7.
+- `DELETE` das pílulas antigas de placeholder e `INSERT` das 5 novas com todo o `interaction_schema` conforme briefing.
+
+## Pontos a confirmar antes de implementar
+
+- **Vídeo da abertura**: mantenho `video_placeholder: true` (mesmo padrão das outras aulas) e o transcript já entra no ar. Você sobe o vídeo depois.
+- **Links do conteúdo curado**: uso os que você indicou (Voitto + busca Ambev Zero Aterro) com o mesmo disclaimer que a gente já tem no bônus da Aula 6 ("o link específico pode mudar").
+- **Podcast bônus**: search_url pro Spotify + campo de reflexão livre, sem obrigatoriedade.
+
+Se algum desses três pontos merece ajuste, me diz antes de eu partir pra construção.
