@@ -21,6 +21,8 @@ export { PillMapaFluxo } from "./PillMapaFluxo";
 export type { MapaFluxoValue } from "./PillMapaFluxo";
 export { PillMatrizValor } from "./PillMatrizValor";
 export type { MatrizValorValue } from "./PillMatrizValor";
+export { PillRegrasJogo } from "./PillRegrasJogo";
+export type { RegrasJogoValue } from "./PillRegrasJogo";
 export { CorfSignature } from "./CorfSignature";
 export { ComparacaoNiveis } from "./ComparacaoNiveis";
 export type { NivelItem } from "./ComparacaoNiveis";
