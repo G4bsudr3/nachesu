@@ -19,6 +19,7 @@ import {
   PillClassificador3x3,
   PillCacaEvidencias,
   PillQuatroFiltrosBriefing,
+  PillMapaFluxo,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -27,6 +28,7 @@ import {
   type ClassificadorValue,
   type CacaEvidenciasValue,
   type BriefingValue,
+  type MapaFluxoValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
