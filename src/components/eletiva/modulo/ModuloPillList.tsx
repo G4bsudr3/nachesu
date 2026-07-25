@@ -238,6 +238,7 @@ export const ModuloPillList = ({
   const pblCorf = (content.pbl_corf ?? {}) as Record<string, PblCorfValue>;
   const guiaPrompts = (content.guia_prompts ?? {}) as Record<string, GuiaPromptsValue>;
   const classificadorMap = (content.classificacao_aula2 ?? {}) as Record<string, ClassificadorValue>;
+  const mapaAtoresMap = (content.mapa_atores_aula3 ?? {}) as Record<string, MapaAtoresValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
