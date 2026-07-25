@@ -20,6 +20,7 @@ import {
   PillCacaEvidencias,
   PillQuatroFiltrosBriefing,
   PillMapaFluxo,
+  PillMatrizValor,
   useDeliverable,
   type DeliverableContent,
   type RadarItem,
@@ -29,6 +30,7 @@ import {
   type CacaEvidenciasValue,
   type BriefingValue,
   type MapaFluxoValue,
+  type MatrizValorValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 
@@ -248,6 +250,7 @@ export const ModuloPillList = ({
   const cacaEvidenciasMap = (content.caca_evidencias ?? {}) as Record<string, CacaEvidenciasValue>;
   const briefingMap = (content.briefing_aula5 ?? {}) as Record<string, BriefingValue>;
   const mapaFluxoMap = (content.mapa_fluxo_aula6 ?? {}) as Record<string, MapaFluxoValue>;
+  const matrizValorMap = (content.matriz_valor_aula7 ?? {}) as Record<string, MatrizValorValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
@@ -496,6 +499,24 @@ export const ModuloPillList = ({
                 accent={trailColor}
                 initial={mapaFluxoMap[pill.id] ?? {}}
                 mapaFluxoMap={mapaFluxoMap}
+                save={safeSave}
+                isCompleted={done}
+                isCompleting={togglePending}
+                onComplete={() => !done && onTogglePill(pill)}
+              />
+            </PillCardShell>
+          );
+        }
+        if (schemaType === "matriz_valor") {
+          return (
+            <PillCardShell key={pill.id} pill={pill} index={idx} total={pills.length} done={done} justUnlocked={justUnlockedIds.has(pill.id)} trailColor={trailColor}>
+              <PillMatrizValor
+                pillId={pill.id}
+                title={pill.title}
+                schema={pill.interaction_schema as never}
+                accent={trailColor}
+                initial={matrizValorMap[pill.id] ?? {}}
+                matrizMap={matrizValorMap}
                 save={safeSave}
                 isCompleted={done}
                 isCompleting={togglePending}
