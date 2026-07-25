@@ -271,6 +271,7 @@ export const ModuloPillList = ({
   const sprintIdeacaoMap = (content.ideias_aula11 ?? {}) as Record<string, SprintIdeacaoValue>;
   const selecaoIdeiaMap = (content.selecao_aula12 ?? {}) as Record<string, SelecaoIdeiaValue>;
   const propostaValorMap = (content.proposta_valor_aula13 ?? {}) as Record<string, PropostaValorValue>;
+  const bmcMap = (content.bmc_aula14 ?? {}) as Record<string, BMCValue>;
   const checklist = (content.checklist ?? {}) as Record<string, Record<string, unknown>>;
   const guidedAnswers = (content.guided_answers ?? {}) as Record<string, string>;
   const radarItems = (content.items ?? []) as RadarItem[];
