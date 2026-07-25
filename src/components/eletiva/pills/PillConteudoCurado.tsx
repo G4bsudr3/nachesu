@@ -121,6 +121,22 @@ export function PillConteudoCurado({
     });
   }, [answers, schema.questions]);
 
+  // distribuição da turma (opcional) — mostra bar % ao lado de cada opção da pergunta configurada
+  const turmaStats = schema.turma_stats;
+  const turmaQuery = useQuery({
+    queryKey: ["turma-fluxo-dist", turmaStats?.module_id, turmaStats?.field_id],
+    enabled: !!turmaStats?.module_id && !!turmaStats?.field_id,
+    staleTime: 30_000,
+    queryFn: async (): Promise<{ total: number; counts: Record<string, number> }> => {
+      const { data, error } = await (supabase.rpc as unknown as (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>)(
+        "get_fluxo_turma_distribution",
+        { _module_id: turmaStats!.module_id, _field_id: turmaStats!.field_id },
+      );
+      if (error) throw error as Error;
+      return (data ?? { total: 0, counts: {} }) as { total: number; counts: Record<string, number> };
+    },
+  });
+
   return (
     <div className="space-y-6">
       <header className="flex items-start justify-between gap-3">
