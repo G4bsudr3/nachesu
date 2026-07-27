@@ -70,12 +70,6 @@ const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx")
 const Marco = lazy(() => import("./pages/Marco.tsx"));
 const Comecar = lazy(() => import("./pages/Comecar.tsx"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
-const GlobalVotingBanner = lazy(() =>
-  import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
-);
-// FeedbackFinalGlobalNudge removido do fluxo do aluno (resíduo da imersão Chŏra).
-// GlobalVotingBanner agora vive atrás de <ExtrasGate>: só aparece quando a flag
-// `eletiva_extras_enabled` estiver ligada (admin reativa quando precisar).
 
 const queryClient = new QueryClient({
   defaultOptions: {
