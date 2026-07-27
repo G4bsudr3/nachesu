@@ -25,8 +25,6 @@ const Pending = lazy(() => import("./pages/Pending.tsx"));
 
 // rotas secundárias: lazy (cada página vira chunk separado)
 const AccountSettings = lazy(() => import("./pages/AccountSettings.tsx"));
-const Prework = lazy(() => import("./pages/Prework.tsx"));
-const Missions = lazy(() => import("./pages/Missions.tsx"));
 const AdminFbi = lazy(() => import("./pages/AdminFbi.tsx"));
 const AdminHome = lazy(() => import("./pages/AdminHome.tsx"));
 const AdminLayout = lazy(() =>
