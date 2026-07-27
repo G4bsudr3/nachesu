@@ -114,15 +114,6 @@ const AppDashboard = () => {
 
           {/* 0 matrículas → estado vazio */}
           {enrollments && enrollments.length === 0 && <MyCoursesList />}
-
-          {/* extras pós-evento Chŏra: só com flag ligada (admin reativa quando precisar) */}
-          {extrasEnabled && (
-            <>
-              <NextActionHero nickname={nickname} status={status} />
-              <JourneyChips status={status} />
-              <ArchiveSection />
-            </>
-          )}
         </div>
       </main>
 
