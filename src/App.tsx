@@ -110,9 +110,6 @@ const App = () => (
         <AuthProvider>
           <SeoRouter />
           <DashboardDraftPersistence />
-          <Suspense fallback={null}>
-            <GlobalVotingBanner />
-          </Suspense>
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
