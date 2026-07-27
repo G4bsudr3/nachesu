@@ -1,5 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { NavLink } from "react-router-dom";
 import {
   Home,
   BookOpen,
@@ -15,8 +14,6 @@ import {
   Bell,
   ClipboardList,
   Settings,
-  Archive,
-  ChevronDown,
   LogOut,
   Eye,
   History,
@@ -47,30 +44,12 @@ export const OPERACAO: Item[] = [
   { to: "/admin/eletiva", label: "settings", icon: Settings },
 ];
 
-export const LEGADO: Item[] = [
-  { to: "/admin/legado/fbi", label: "fbi" , icon: Archive },
-  { to: "/admin/legado/prework", label: "pré-work", icon: Archive },
-  { to: "/admin/legado/missoes", label: "missões", icon: Archive },
-  { to: "/admin/legado/cartas", label: "cartas", icon: Archive },
-  { to: "/admin/legado/artworks", label: "artworks", icon: Archive },
-  { to: "/admin/legado/convidados", label: "convidados", icon: Archive },
-  { to: "/admin/legado/emails", label: "emails", icon: Archive },
-  { to: "/admin/legado/feedback-d1", label: "feedback dia 1", icon: Archive },
-  { to: "/admin/legado/feedback-final", label: "pesquisa final", icon: Archive },
-  { to: "/admin/legado/carta-futuro", label: "carta futuro", icon: Archive },
-  { to: "/admin/legado/votacao-projetos", label: "votação projetos", icon: Archive },
-  { to: "/admin/legado/chora-bot", label: "chora bot", icon: Archive },
-];
-
 export const AdminSidebar = ({
   onNavigate,
 }: {
   onNavigate?: () => void;
 }) => {
   const { signOut } = useAuth();
-  const { pathname } = useLocation();
-  const inLegacy = pathname.startsWith("/admin/legado");
-  const [openLegacy, setOpenLegacy] = useState(inLegacy);
 
   const renderItem = (i: Item) => (
     <NavLink
@@ -104,18 +83,6 @@ export const AdminSidebar = ({
           operação
         </p>
         {OPERACAO.map(renderItem)}
-
-        <div className="pt-3">
-          <button
-            type="button"
-            onClick={() => setOpenLegacy((v) => !v)}
-            className="w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-[11px] uppercase tracking-wide text-perestroika-preto/45 hover:text-perestroika-preto transition-colors"
-          >
-            <span>legado Chŏra</span>
-            <ChevronDown className={cn("w-3 h-3 transition-transform", !openLegacy && "-rotate-90")} />
-          </button>
-          {openLegacy && <div className="space-y-1 mt-1">{LEGADO.map(renderItem)}</div>}
-        </div>
       </nav>
 
       <div className="px-3 py-3 border-t border-perestroika-preto/10 flex items-center justify-between gap-2">
