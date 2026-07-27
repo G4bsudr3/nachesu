@@ -3,7 +3,7 @@ import { Command } from "cmdk";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut, Link2, Sparkles, Search, UserCheck, User } from "lucide-react";
-import { OPERACAO, LEGADO } from "./layout/AdminSidebar";
+import { OPERACAO } from "./layout/AdminSidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
 import { supabase } from "@/integrations/supabase/client";
@@ -126,19 +126,6 @@ export const CommandPalette = ({
           ))}
         </Command.Group>
 
-        <Command.Group heading="legado">
-          {LEGADO.map((i) => (
-            <Command.Item
-              key={i.to}
-              value={`legado ${i.label} ${i.to}`}
-              onSelect={run(() => navigate(i.to))}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/70 cursor-pointer aria-selected:bg-perestroika-preto/10"
-            >
-              <i.icon className="w-4 h-4" />
-              {i.label}
-            </Command.Item>
-          ))}
-        </Command.Group>
 
         <Command.Group heading="ações">
           <Command.Item

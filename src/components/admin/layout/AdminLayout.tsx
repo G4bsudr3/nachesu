@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { Menu, Command as CommandIcon } from "lucide-react";
-import { AdminSidebar, OPERACAO, LEGADO } from "./AdminSidebar";
+import { AdminSidebar, OPERACAO } from "./AdminSidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { CommandPalette, useCommandPaletteHotkey } from "../CommandPalette";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { Badge } from "@/components/ui/badge";
 
 const findLabel = (pathname: string) => {
-  const all = [...OPERACAO, ...LEGADO];
+  const all = [...OPERACAO];
   // priorize match mais específico
   const sorted = [...all].sort((a, b) => b.to.length - a.to.length);
   const hit = sorted.find((i) =>

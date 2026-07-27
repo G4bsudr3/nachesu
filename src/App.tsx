@@ -54,7 +54,7 @@ const DossieAluno = lazy(() => import("./pages/DossieAluno.tsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
 const HubIndex = lazy(() => import("./pages/HubIndex.tsx"));
 const HubMateriais = lazy(() => import("./pages/HubMateriais.tsx"));
-const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandbox.tsx"));
+
 
 
 const TutorPage = lazy(() => import("./pages/TutorPage.tsx"));
@@ -235,34 +235,6 @@ const App = () => (
               {/* rotas /app/feedback-final, /app/certificado e /app/dinamica/carta-futuro removidas junto com as páginas legadas */}
 
 
-              {/* rota antiga sandbox: redireciona pra novo path (mantém compat) */}
-              <Route
-                path="/admin/preview/feedback-final"
-                element={<Navigate to="/admin/certificate-sandbox" replace />}
-              />
-
-              {/* redirects de URLs legado antigas → novo prefixo /admin/legado/:tab */}
-              {[
-                "fbi",
-                "prework",
-                "missoes",
-                "cartas",
-                "artworks",
-                "convidados",
-                "emails",
-                "feedback-d1",
-                "feedback-final",
-                "carta-futuro",
-                "votacao-projetos",
-                "chora-bot",
-              ].map((tab) => (
-                <Route
-                  key={`legacy-${tab}`}
-                  path={`/admin/${tab}`}
-                  element={<Navigate to={`/admin/legado/${tab}`} replace />}
-                />
-              ))}
-
               {/* shell admin com sidebar + command palette */}
               <Route
                 element={
@@ -275,7 +247,6 @@ const App = () => (
                 <Route path="/admin/risco" element={<AdminRisco />} />
                 <Route path="/admin/turma/:courseId" element={<AdminTurma />} />
                 <Route path="/admin/aluno/:userId" element={<AdminStudentProfile />} />
-                <Route path="/admin/certificate-sandbox" element={<AdminCertificateSandbox />} />
                 <Route path="/admin/aula/:n" element={<AdminAula />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/2" element={<AdminEletivaModulo2 />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/3" element={<AdminEletivaModulo3 />} />
@@ -297,9 +268,6 @@ const App = () => (
                 <Route path="/admin/eletiva/economia-circular/modulo/19" element={<AdminEletivaModulo19 />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/20" element={<AdminEletivaModulo20 />} />
                 <Route path="/dossie/:userId" element={<DossieAluno />} />
-                <Route path="/admin/legado" element={<Navigate to="/admin/legado/fbi" replace />} />
-                <Route path="/admin/legado/:tab" element={<AdminFbi />} />
-                {/* compat: /admin/:tab continua respondendo no AdminFbi pra abas "operação" antigas */}
                 <Route path="/admin/:tab" element={<AdminFbi />} />
               </Route>
 
