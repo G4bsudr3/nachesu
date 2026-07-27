@@ -54,24 +54,15 @@ const AdminEletivaModulo19 = lazy(() => import("./pages/AdminEletivaModulo19.tsx
 const AdminEletivaModulo20 = lazy(() => import("./pages/AdminEletivaModulo20.tsx"));
 const DossieAluno = lazy(() => import("./pages/DossieAluno.tsx"));
 const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
-const MinhaCarta = lazy(() => import("./pages/legacy/MinhaCarta.tsx"));
-const CartaPublica = lazy(() => import("./pages/legacy/CartaPublica.tsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
 const Tutorial = lazy(() => import("./pages/Tutorial.tsx"));
 const Onboarding = lazy(() => import("./pages/Onboarding.tsx"));
 const OnboardingDialogPage = lazy(() => import("./pages/OnboardingDialogPage.tsx"));
 const HubIndex = lazy(() => import("./pages/HubIndex.tsx"));
-const HubGallery = lazy(() => import("./pages/legacy/HubGallery.tsx"));
-const HubBuilder = lazy(() => import("./pages/legacy/HubBuilder.tsx"));
-const HubTurma = lazy(() => import("./pages/legacy/HubTurma.tsx"));
 const HubMateriais = lazy(() => import("./pages/HubMateriais.tsx"));
-const HubProjetos = lazy(() => import("./pages/legacy/HubProjetos.tsx"));
-const HubProjetosRanking = lazy(() => import("./pages/legacy/HubProjetosRanking.tsx"));
-const HubAlbum = lazy(() => import("./pages/legacy/HubAlbum.tsx"));
-const FeedbackFinal = lazy(() => import("./pages/legacy/FeedbackFinal.tsx"));
-const Certificado = lazy(() => import("./pages/legacy/Certificado.tsx"));
 const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandbox.tsx"));
-const FutureLetter = lazy(() => import("./pages/legacy/FutureLetter.tsx"));
+
+
 const TutorPage = lazy(() => import("./pages/TutorPage.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
@@ -143,8 +134,8 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/forms" element={<PublicForm />} />
-              <Route path="/carta/:token" element={<CartaPublica />} />
-              <Route path="/c/:token" element={<CartaPublica />} />
+              {/* rotas /carta/:token e /c/:token removidas junto com a página CartaPublica legada */}
+
               <Route
                 path="/app"
                 element={
@@ -268,16 +259,8 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/app/carta"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <MinhaCarta />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
+              {/* rota /app/carta removida junto com MinhaCarta legada */}
+
               <Route
                 path="/app/tutorial"
                 element={
@@ -317,48 +300,16 @@ const App = () => (
                 }
               >
                 <Route path="/app/hub" element={<HubIndex />} />
-                <Route path="/app/hub/galeria" element={<ExtrasGate><HubGallery /></ExtrasGate>} />
                 <Route path="/app/hub/materiais" element={<HubMateriais />} />
-                <Route path="/app/hub/projetos" element={<ExtrasGate><HubProjetos /></ExtrasGate>} />
-                <Route path="/app/hub/projetos/ranking" element={<ExtrasGate><HubProjetosRanking /></ExtrasGate>} />
-                <Route path="/app/hub/album" element={<ExtrasGate><HubAlbum /></ExtrasGate>} />
-                <Route path="/app/hub/turma" element={<ExtrasGate><HubTurma /></ExtrasGate>} />
-                <Route path="/app/hub/builder/:slug" element={<ExtrasGate><HubBuilder /></ExtrasGate>} />
+                {/* rotas legadas do hub (galeria, projetos, ranking, album, turma, builder) removidas */}
                 {/* tutor ia: rota canônica é /app/tutor. /app/chora-bot é alias legado
                     que redireciona pra não quebrar bookmarks antigos. */}
                 <Route path="/app/tutor" element={<TutorPage />} />
                 <Route path="/app/chora-bot" element={<Navigate to="/app/tutor" replace />} />
               </Route>
-              <Route
-                path="/app/feedback-final"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <FeedbackFinal />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/certificado"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Certificado />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/dinamica/carta-futuro"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <FutureLetter />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
+              {/* rotas /app/feedback-final, /app/certificado e /app/dinamica/carta-futuro removidas junto com as páginas legadas */}
+
+
               {/* rota antiga sandbox: redireciona pra novo path (mantém compat) */}
               <Route
                 path="/admin/preview/feedback-final"
