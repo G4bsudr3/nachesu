@@ -2,8 +2,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useMyEnrollments } from "@/hooks/useCourses";
-import { usePostEventStatus } from "@/hooks/usePostEventStatus";
-import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -11,9 +9,6 @@ import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
-import { NextActionHero } from "@/components/dashboard/NextActionHero";
-import { JourneyChips } from "@/components/dashboard/JourneyChips";
-import { ArchiveSection } from "@/components/dashboard/ArchiveSection";
 import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
@@ -43,8 +38,6 @@ const AppDashboard = () => {
         null;
   const activeCourseId = activeEnrollment?.course_id ?? null;
   const { data: eletiva, isLoading: eletivaLoading } = useEletivaProgress(activeCourseId);
-  const status = usePostEventStatus();
-  const { enabled: extrasEnabled } = useEletivaExtras(activeCourseId);
 
   const nickname = dashboard?.nicknameDisplay ?? "";
   const hasPassword = dashboard?.profile?.has_password ?? true;
@@ -121,15 +114,6 @@ const AppDashboard = () => {
 
           {/* 0 matrículas → estado vazio */}
           {enrollments && enrollments.length === 0 && <MyCoursesList />}
-
-          {/* extras pós-evento Chŏra: só com flag ligada (admin reativa quando precisar) */}
-          {extrasEnabled && (
-            <>
-              <NextActionHero nickname={nickname} status={status} />
-              <JourneyChips status={status} />
-              <ArchiveSection />
-            </>
-          )}
         </div>
       </main>
 

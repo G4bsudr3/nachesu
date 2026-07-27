@@ -6,18 +6,16 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 vi.mock("@/contexts/AuthContext", () => ({ useAuth: vi.fn() }));
 vi.mock("@/hooks/useUserRole", () => ({ useUserRole: vi.fn() }));
 vi.mock("@/hooks/useProfileStatus", () => ({ useProfileStatus: vi.fn() }));
-vi.mock("@/features/hub/useEletivaExtras", () => ({ useActiveEletivaExtras: vi.fn() }));
 vi.mock("@/components/brand/EletivaSymbol", () => ({ EletivaSymbol: () => null }));
 vi.mock("sonner", () => ({ toast: { error: vi.fn(), info: vi.fn(), success: vi.fn() } }));
 
 import { AdminRoute } from "@/components/AdminRoute";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { ExtrasGate } from "@/components/ExtrasGate";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useProfileStatus } from "@/hooks/useProfileStatus";
-import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { toast } from "sonner";
+
 
 const asMock = <T,>(fn: T) => fn as unknown as ReturnType<typeof vi.fn>;
 
@@ -109,37 +107,6 @@ describe("ProtectedRoute", () => {
     asMock(useAuth).mockReturnValue({ user: { id: "u1" }, loading: false, signOut: vi.fn() });
     asMock(useProfileStatus).mockReturnValue({ status: "active", loading: false });
     renderAt(<ProtectedRoute><Guarded /></ProtectedRoute>);
-    expect(screen.getByText("CONTEUDO PROTEGIDO")).toBeInTheDocument();
-  });
-});
-
-describe("ExtrasGate", () => {
-  it("mostra loading enquanto flag/role carregam", () => {
-    asMock(useActiveEletivaExtras).mockReturnValue({ enabled: false, isLoading: true });
-    asMock(useUserRole).mockReturnValue({ isAdmin: false, loading: true });
-    renderAt(<ExtrasGate><Guarded /></ExtrasGate>);
-    expect(screen.getByText(/verificando acesso/i)).toBeInTheDocument();
-  });
-
-  it("admin passa mesmo com flag desligada", () => {
-    asMock(useActiveEletivaExtras).mockReturnValue({ enabled: false, isLoading: false });
-    asMock(useUserRole).mockReturnValue({ isAdmin: true, loading: false });
-    renderAt(<ExtrasGate><Guarded /></ExtrasGate>);
-    expect(screen.getByText("CONTEUDO PROTEGIDO")).toBeInTheDocument();
-  });
-
-  it("aluno com flag desligada é redirecionado para /app", () => {
-    asMock(useActiveEletivaExtras).mockReturnValue({ enabled: false, isLoading: false });
-    asMock(useUserRole).mockReturnValue({ isAdmin: false, loading: false });
-    renderAt(<ExtrasGate><Guarded /></ExtrasGate>);
-    expect(screen.getByText("APP HOME")).toBeInTheDocument();
-    expect(toast.info).toHaveBeenCalled();
-  });
-
-  it("aluno com flag ligada passa", () => {
-    asMock(useActiveEletivaExtras).mockReturnValue({ enabled: true, isLoading: false });
-    asMock(useUserRole).mockReturnValue({ isAdmin: false, loading: false });
-    renderAt(<ExtrasGate><Guarded /></ExtrasGate>);
     expect(screen.getByText("CONTEUDO PROTEGIDO")).toBeInTheDocument();
   });
 });

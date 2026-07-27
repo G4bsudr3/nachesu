@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Bell, Home, Map, MessageCircleHeart, Sparkles } from "lucide-react";
-import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
+import { Bell, Home, Map, Sparkles } from "lucide-react";
 import { FeedbackBadge } from "@/components/dashboard/FeedbackBadge";
 import { useNotifications } from "@/features/notifications/useNotifications";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,7 +24,6 @@ const isActive = (pathname: string, item: NavItem) => {
  */
 export const MobileNav = () => {
   const { pathname } = useLocation();
-  const { enabled: extrasEnabled } = useActiveEletivaExtras();
   const { user } = useAuth();
   const { unreadCount } = useNotifications();
 
@@ -45,13 +43,6 @@ export const MobileNav = () => {
     });
   }
 
-  if (extrasEnabled) {
-    items.push({
-      to: "/app/feedback-final",
-      label: "pesquisa",
-      icon: <MessageCircleHeart className="h-5 w-5" />,
-    });
-  }
 
   const cols =
     items.length === 5 ? "grid-cols-5" : items.length === 4 ? "grid-cols-4" : "grid-cols-3";

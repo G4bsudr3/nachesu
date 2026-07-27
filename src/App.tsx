@@ -9,7 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { HubLayout } from "@/components/layout/HubLayout";
-import { ExtrasGate } from "@/components/ExtrasGate";
+
 import { SeoRouter } from "@/components/SeoRouter";
 import { useDashboardDraftPersistence } from "@/hooks/useDashboardDraftPersistence";
 
