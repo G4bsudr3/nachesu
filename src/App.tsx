@@ -146,37 +146,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/app/prework"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Prework />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/missoes"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Missions />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              {/* alias novo (eletiva): /app/entregas → mesma página, atrás da mesma gate */}
-              <Route
-                path="/app/entregas"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Missions />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
+              {/* rotas /app/prework, /app/missoes e /app/entregas removidas junto com páginas legadas */}
               <Route
                 path="/app/eletivas"
                 element={
