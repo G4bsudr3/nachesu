@@ -291,57 +291,16 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              {/* rotas do hub: HubLayout garante MobileNav + ChoraBotFab + paddingBottom: var(--mobile-nav-h) */}
-              <Route
-                element={
-                  <ProtectedRoute>
-                    <HubLayout />
-                  </ProtectedRoute>
-                }
-              >
                 <Route path="/app/hub" element={<HubIndex />} />
-                <Route path="/app/hub/galeria" element={<ExtrasGate><HubGallery /></ExtrasGate>} />
                 <Route path="/app/hub/materiais" element={<HubMateriais />} />
-                <Route path="/app/hub/projetos" element={<ExtrasGate><HubProjetos /></ExtrasGate>} />
-                <Route path="/app/hub/projetos/ranking" element={<ExtrasGate><HubProjetosRanking /></ExtrasGate>} />
-                <Route path="/app/hub/album" element={<ExtrasGate><HubAlbum /></ExtrasGate>} />
-                <Route path="/app/hub/turma" element={<ExtrasGate><HubTurma /></ExtrasGate>} />
-                <Route path="/app/hub/builder/:slug" element={<ExtrasGate><HubBuilder /></ExtrasGate>} />
+                {/* rotas legadas do hub (galeria, projetos, ranking, album, turma, builder) removidas */}
                 {/* tutor ia: rota canônica é /app/tutor. /app/chora-bot é alias legado
                     que redireciona pra não quebrar bookmarks antigos. */}
                 <Route path="/app/tutor" element={<TutorPage />} />
                 <Route path="/app/chora-bot" element={<Navigate to="/app/tutor" replace />} />
               </Route>
-              <Route
-                path="/app/feedback-final"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <FeedbackFinal />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/certificado"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Certificado />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/dinamica/carta-futuro"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <FutureLetter />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
+              {/* rotas /app/feedback-final, /app/certificado e /app/dinamica/carta-futuro removidas junto com as páginas legadas */}
+
               {/* rota antiga sandbox: redireciona pra novo path (mantém compat) */}
               <Route
                 path="/admin/preview/feedback-final"
