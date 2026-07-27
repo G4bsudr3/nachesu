@@ -1,0 +1,1 @@
+UPDATE module_pills SET video_url='/__l5e/assets-v1/987ce81c-ada2-46f7-b47b-39d603a44519/modulo-17-abertura.mov', interaction_schema = (interaction_schema - 'video_placeholder') || jsonb_build_object('video_url','/__l5e/assets-v1/987ce81c-ada2-46f7-b47b-39d603a44519/modulo-17-abertura.mov') WHERE id='55e87c07-a3c1-4b1a-9810-98ee574bd3f6';
