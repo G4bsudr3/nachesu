@@ -160,7 +160,10 @@ export const useEletivaProgress = (courseId?: string | null) => {
         return isAvailable(m);
       };
       const publishedModules = allModules.filter(isReleased);
-      const totalCompleted = publishedModules.filter(
+      // conta qualquer módulo desta eletiva já concluído pelo estudante,
+      // mesmo que depois tenha saído da janela de release (evita "5/20"
+      // fantasma quando a coordenação despublica módulos após conclusão).
+      const totalCompleted = allModules.filter(
         (m) => progressByModuleId[m.id]?.completed_at,
       ).length;
       // a plataforma comunica o total de módulos da eletiva (20),
