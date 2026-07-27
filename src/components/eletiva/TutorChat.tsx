@@ -524,12 +524,7 @@ export const TutorChat = ({
                           )
                         ) : (
                           <span className="inline-flex items-center gap-2 text-perestroika-preto/50">
-                            <motion.span
-                              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                              transition={{ repeat: Infinity, duration: 1.2 }}
-                            >
-                              <EletivaSymbol size={16} pose="thinking" />
-                            </motion.span>
+                            <Loader2 className="h-4 w-4 animate-spin" />
                             amassando o barro da resposta...
                           </span>
                         )}
