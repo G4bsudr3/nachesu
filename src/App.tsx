@@ -54,24 +54,11 @@ const AdminEletivaModulo19 = lazy(() => import("./pages/AdminEletivaModulo19.tsx
 const AdminEletivaModulo20 = lazy(() => import("./pages/AdminEletivaModulo20.tsx"));
 const DossieAluno = lazy(() => import("./pages/DossieAluno.tsx"));
 const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
-const MinhaCarta = lazy(() => import("./pages/legacy/MinhaCarta.tsx"));
-const CartaPublica = lazy(() => import("./pages/legacy/CartaPublica.tsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
-const Tutorial = lazy(() => import("./pages/Tutorial.tsx"));
-const Onboarding = lazy(() => import("./pages/Onboarding.tsx"));
-const OnboardingDialogPage = lazy(() => import("./pages/OnboardingDialogPage.tsx"));
 const HubIndex = lazy(() => import("./pages/HubIndex.tsx"));
-const HubGallery = lazy(() => import("./pages/legacy/HubGallery.tsx"));
-const HubBuilder = lazy(() => import("./pages/legacy/HubBuilder.tsx"));
-const HubTurma = lazy(() => import("./pages/legacy/HubTurma.tsx"));
 const HubMateriais = lazy(() => import("./pages/HubMateriais.tsx"));
-const HubProjetos = lazy(() => import("./pages/legacy/HubProjetos.tsx"));
-const HubProjetosRanking = lazy(() => import("./pages/legacy/HubProjetosRanking.tsx"));
-const HubAlbum = lazy(() => import("./pages/legacy/HubAlbum.tsx"));
-const FeedbackFinal = lazy(() => import("./pages/legacy/FeedbackFinal.tsx"));
-const Certificado = lazy(() => import("./pages/legacy/Certificado.tsx"));
 const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandbox.tsx"));
-const FutureLetter = lazy(() => import("./pages/legacy/FutureLetter.tsx"));
+
 const TutorPage = lazy(() => import("./pages/TutorPage.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
