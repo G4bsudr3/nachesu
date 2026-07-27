@@ -236,6 +236,7 @@ const EletivaHome = () => {
   const totalPublished = snapshot?.totalPublished ?? 0;
   const progressPct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const tutorTo = current ? `/app/tutor?module=${current.number}` : "/app/tutor";
+  const courseAccent = course.slug === "economia-circular" ? "#8A85BF" : "#f756a6";
   return (
     <div
       data-eletiva={course.slug === "economia-circular" ? "ecc" : undefined}
@@ -252,7 +253,8 @@ const EletivaHome = () => {
         >
           <div
             aria-hidden
-            className="absolute top-0 inset-x-0 h-1.5 sm:h-2 bg-perestroika-rosa"
+            className="absolute top-0 inset-x-0 h-1.5 sm:h-2"
+            style={{ backgroundColor: courseAccent }}
           />
 
           {/* mascote do tutor no topo do hero */}
