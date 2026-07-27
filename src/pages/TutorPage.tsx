@@ -385,41 +385,45 @@ const TutorPage = () => {
 
       {/* trail switcher */}
       {activeTrail && trails && trails.length > 1 && (
-        <div className="px-4 py-2 border-b border-perestroika-preto/5 bg-perestroika-bege flex justify-center">
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-perestroika-bege/60 px-3 py-1.5 font-body text-xs text-perestroika-preto/80 hover:border-perestroika-preto/40 transition-colors"
-              >
-                <span className="opacity-60">trilha</span>
-                <span className="font-semibold lowercase">{activeTrail.title}</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="center" className="bg-perestroika-bege border-perestroika-preto/20 p-2 w-64">
-              {trailsByCourse.map((group, gi) => (
-                <div key={gi} className={gi > 0 ? "mt-2 pt-2 border-t border-perestroika-preto/10" : ""}>
-                  <p className="px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
-                    {group.title.toLowerCase()}
-                  </p>
-                  {group.trails.map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => setTrailId(t.id)}
-                      className={`w-full text-left rounded-md px-2 py-1.5 font-body text-sm lowercase hover:bg-perestroika-preto/5 transition-colors ${
-                        t.id === trailId ? "bg-perestroika-preto/5 font-semibold" : ""
-                      }`}
-                    >
-                      {t.title}
-                    </button>
-                  ))}
-                </div>
-              ))}
-            </PopoverContent>
-          </Popover>
-
+        <div className="px-4 py-2 border-b border-perestroika-preto/5 bg-perestroika-bege">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2">
+            <p className="text-[10px] sm:text-xs text-perestroika-preto/55 lowercase font-body text-center sm:text-right leading-tight">
+              escolha a trilha para contextualizar sua dúvida
+            </p>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-perestroika-bege/60 px-3 py-1.5 font-body text-xs text-perestroika-preto/80 hover:border-perestroika-preto/40 transition-colors"
+                >
+                  <span className="opacity-60">trilha</span>
+                  <span className="font-semibold lowercase">{activeTrail.title}</span>
+                  <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="center" className="bg-perestroika-bege border-perestroika-preto/20 p-2 w-64">
+                {trailsByCourse.map((group, gi) => (
+                  <div key={gi} className={gi > 0 ? "mt-2 pt-2 border-t border-perestroika-preto/10" : ""}>
+                    <p className="px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
+                      {group.title.toLowerCase()}
+                    </p>
+                    {group.trails.map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setTrailId(t.id)}
+                        className={`w-full text-left rounded-md px-2 py-1.5 font-body text-sm lowercase hover:bg-perestroika-preto/5 transition-colors ${
+                          t.id === trailId ? "bg-perestroika-preto/5 font-semibold" : ""
+                        }`}
+                      >
+                        {t.title}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
       )}
 

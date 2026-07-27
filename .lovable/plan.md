@@ -1,35 +1,22 @@
-# Aula 12 · escolher é abandonar
+## Contexto
 
-Segunda pílula da Trilha 3 "Criar". Mesma anatomia das aulas 6-11: 5 blocos, pull da aula anterior, tela de conclusão dedicada e dashboard admin.
+Na página `/app/tutor` o estudante pode trocar de trilha pelo botão "trilha [nome da trilha]". Hoje não fica claro que essa troca muda o contexto das respostas do tutor IA. Vamos adicionar um microcopy indicativo ao lado do seletor.
 
-## Blocos
+## O que será feito
 
-1. **Abertura (`video_with_transcript`)** — "escolher é abandonar", transcrição sobre impacto × viabilidade + raridade + refinamento
-2. **Conteúdo curado (`curated_content_with_questions`)** — 2 cards (matriz priorização impacto × esforço + intro Sebrae ao Lean Startup) + 3 perguntas (2 single_choice + 1 long_text sobre "e se fossem 4 semanas?")
-3. **PBL Matriz + Refinamento (`selecao_ideia`, novo schema)** — três partes num único componente: (a) drag-drop das 20 ideias da aula 11 nos 4 quadrantes impacto × viabilidade, (b) escolha final entre as do quadrante IDEAL com filtro de raridade (radio a/b/c + confirmação extra se "óbvia mesmo"), (c) refinamento em 3 versões (A original, B escala, C ângulo) com validação de distinção textual (similaridade simples via tokens)
-4. **Checagem (`quiz`)** — cenário lixeiras coloridas, multi-select variação de escala, long_text plano B
-5. **Bônus (`bonus_text`)** — artigo "22 tipos de MVP" (Evolve MVP)
+1. **Localizar o seletor de trilha** em `src/pages/TutorPage.tsx` (linhas ~387-424).
+2. **Adicionar texto indicativo** logo acima ou ao lado do botão, explicando que a trilha selecionada contextualiza a dúvida.
+   - Sugestão de copy: "escolha a trilha para contextualizar sua dúvida" ou "mude a trilha para direcionar a resposta do tutor".
+   - Estilo: lowercase, fonte Urbanist, cor `text-perestroika-preto/55`, tamanho `text-[10px]` ou `text-xs`, alinhado com o botão.
+3. **Manter a responsividade**: em telas pequenas o texto pode quebrar em duas linhas ou ficar acima do botão; em desktop pode ficar ao lado.
+4. **Não alterar comportamento**: o Popover e a lógica de troca de trilha permanecem iguais.
 
-## Novos arquivos
+## Critério de aceite
 
-- `src/components/eletiva/pills/PillSelecaoIdeia.tsx` — pill com pull das 20 ideias da aula 11 (via `useQuery` em `module_deliverables` do módulo 11, campo `ideias_aula11`). Interface em 3 abas: MATRIZ → ESCOLHA → REFINAMENTO. Drag-drop desktop + fallback dropdown mobile (padrão já usado em outras aulas). Similaridade textual: normaliza e compara sobreposição de tokens; se >70% entre B ou C e A, mostra aviso. CTA "entregar seleção" só habilita quando: 1 ideia final + raridade respondida + 3 versões preenchidas e distintas
-- `src/components/eletiva/modulo/ModuloConclusaoSelecaoIdeia.tsx` — resumo com ideia escolhida em destaque, tag de raridade e as 3 versões lado a lado
-- `src/pages/AdminEletivaModulo12.tsx` — KPIs (matriculados, entregas, distribuição por quadrante, distribuição de raridade a/b/c) + amostras (ideia final por aluno)
+- O estudante vê, ao abrir o tutor, uma indicação clara de que pode trocar a trilha para mudar o contexto da pergunta.
+- O texto respeita a paleta Perestroika/NachesU, tipografia Urbanist e diretriz de copy lowercase.
+- Nenhuma regressão no layout mobile (sem sobreposição, sem quebra visual).
 
-## Wiring
+## Arquivos envolvidos
 
-- `src/components/eletiva/pills/index.ts` — exporta `PillSelecaoIdeia` + `SelecaoIdeiaValue`
-- `src/components/eletiva/modulo/ModuloPillList.tsx` — registra schema `selecao_ideia` e mapa `selecao_aula12`
-- `src/pages/Modulo.tsx` — renderiza `ModuloConclusaoSelecaoIdeia` quando `courseSlug === "economia-circular" && number === 12`
-- `src/App.tsx` — rota `/admin/eletiva/economia-circular/modulo/12`
-
-## Migração
-
-- RPC `admin_module12_selecao_stats` no padrão da aula 11 (só admin, agrega distribuição de quadrante, raridade e amostras)
-- Atualiza `modules.title/objective` do encontro 12
-- `DELETE` + `INSERT` das 5 pílulas do módulo 12 com `interaction_schema` completo, incluindo `ideias_source_module_id` (aula 11)
-
-## Fora de escopo
-
-- Ranking/pitch — isso é aula 13+
-- Análise semântica pesada de similaridade (usar heurística de tokens simples)
+- `src/pages/TutorPage.tsx`
