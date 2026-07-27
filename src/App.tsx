@@ -55,9 +55,13 @@ const AdminEletivaModulo20 = lazy(() => import("./pages/AdminEletivaModulo20.tsx
 const DossieAluno = lazy(() => import("./pages/DossieAluno.tsx"));
 const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
+const Tutorial = lazy(() => import("./pages/Tutorial.tsx"));
+const Onboarding = lazy(() => import("./pages/Onboarding.tsx"));
+const OnboardingDialogPage = lazy(() => import("./pages/OnboardingDialogPage.tsx"));
 const HubIndex = lazy(() => import("./pages/HubIndex.tsx"));
 const HubMateriais = lazy(() => import("./pages/HubMateriais.tsx"));
 const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandbox.tsx"));
+
 
 const TutorPage = lazy(() => import("./pages/TutorPage.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
