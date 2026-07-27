@@ -215,36 +215,7 @@ const App = () => (
               />
               {/* rota /app/carta removida junto com MinhaCarta legada */}
 
-              <Route
-                path="/app/tutorial"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Tutorial />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/inicio"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Onboarding />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/onboarding"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <OnboardingDialogPage />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
+              {/* /app/tutorial, /app/inicio, /app/onboarding removidas junto com páginas legadas */}
               {/* rotas do hub: HubLayout garante MobileNav + ChoraBotFab + paddingBottom: var(--mobile-nav-h) */}
               <Route
                 element={
