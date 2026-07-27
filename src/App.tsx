@@ -259,16 +259,8 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/app/carta"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <MinhaCarta />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
+              {/* rota /app/carta removida junto com MinhaCarta legada */}
+
               <Route
                 path="/app/tutorial"
                 element={
