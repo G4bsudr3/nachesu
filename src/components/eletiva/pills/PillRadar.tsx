@@ -175,7 +175,7 @@ export function PillRadar({
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                  o que vi
+                  o que vi <span className="text-[#fd4644]">*</span>
                 </label>
                 <input
                   type="text"
@@ -188,7 +188,7 @@ export function PillRadar({
               </div>
               <div>
                 <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                  onde
+                  onde <span className="text-[#fd4644]">*</span>
                 </label>
                 <input
                   type="text"
@@ -203,7 +203,7 @@ export function PillRadar({
 
             <div>
               <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                fluxo
+                fluxo <span className="text-[#fd4644]">*</span>
               </label>
               <select
                 value={item.fluxo}
@@ -221,7 +221,7 @@ export function PillRadar({
 
             <div>
               <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1.5">
-                evidência
+                evidência <span className="text-[#fd4644]">*</span>
               </label>
               <EvidenceUploader
                 itemId={item.id}
