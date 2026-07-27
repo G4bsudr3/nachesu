@@ -194,10 +194,13 @@ export const useEletivaProgress = (courseId?: string | null) => {
           continue;
         }
         const prev = sortedAll.find((p) => p.number === m.number - 1);
-        if (!prev || !isReleased(prev)) {
+        if (!prev) {
           unlockedModuleIds.add(m.id);
           continue;
         }
+        // sequencial de verdade: só desbloqueia se o anterior estiver
+        // concluído. se o anterior nem foi liberado, este fica travado
+        // também (evita pular módulo por causa de despublicação/atraso).
         if (progressByModuleId[prev.id]?.completed_at) {
           unlockedModuleIds.add(m.id);
         }
