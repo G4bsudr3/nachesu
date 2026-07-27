@@ -291,6 +291,14 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              {/* rotas do hub: HubLayout garante MobileNav + ChoraBotFab + paddingBottom: var(--mobile-nav-h) */}
+              <Route
+                element={
+                  <ProtectedRoute>
+                    <HubLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route path="/app/hub" element={<HubIndex />} />
                 <Route path="/app/hub/materiais" element={<HubMateriais />} />
                 {/* rotas legadas do hub (galeria, projetos, ranking, album, turma, builder) removidas */}
@@ -300,6 +308,7 @@ const App = () => (
                 <Route path="/app/chora-bot" element={<Navigate to="/app/tutor" replace />} />
               </Route>
               {/* rotas /app/feedback-final, /app/certificado e /app/dinamica/carta-futuro removidas junto com as páginas legadas */}
+
 
               {/* rota antiga sandbox: redireciona pra novo path (mantém compat) */}
               <Route
