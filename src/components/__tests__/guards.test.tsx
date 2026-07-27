@@ -6,18 +6,16 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 vi.mock("@/contexts/AuthContext", () => ({ useAuth: vi.fn() }));
 vi.mock("@/hooks/useUserRole", () => ({ useUserRole: vi.fn() }));
 vi.mock("@/hooks/useProfileStatus", () => ({ useProfileStatus: vi.fn() }));
-vi.mock("@/features/hub/useEletivaExtras", () => ({ useActiveEletivaExtras: vi.fn() }));
 vi.mock("@/components/brand/EletivaSymbol", () => ({ EletivaSymbol: () => null }));
 vi.mock("sonner", () => ({ toast: { error: vi.fn(), info: vi.fn(), success: vi.fn() } }));
 
 import { AdminRoute } from "@/components/AdminRoute";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { ExtrasGate } from "@/components/ExtrasGate";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useProfileStatus } from "@/hooks/useProfileStatus";
-import { useActiveEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { toast } from "sonner";
+
 
 const asMock = <T,>(fn: T) => fn as unknown as ReturnType<typeof vi.fn>;
 
