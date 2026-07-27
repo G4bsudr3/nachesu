@@ -134,8 +134,8 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/forms" element={<PublicForm />} />
-              <Route path="/carta/:token" element={<CartaPublica />} />
-              <Route path="/c/:token" element={<CartaPublica />} />
+              {/* rotas /carta/:token e /c/:token removidas junto com a página CartaPublica legada */}
+
               <Route
                 path="/app"
                 element={
