@@ -118,8 +118,7 @@ const App = () => (
               <Route path="/comecar" element={<Comecar />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
-              <Route path="/forms" element={<PublicForm />} />
-              {/* rotas /carta/:token e /c/:token removidas junto com a página CartaPublica legada */}
+              {/* /forms removida junto com PublicForm (FBI legado) */}
 
               <Route
                 path="/app"
