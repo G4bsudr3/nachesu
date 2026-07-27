@@ -2,8 +2,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useMyEnrollments } from "@/hooks/useCourses";
-import { usePostEventStatus } from "@/hooks/usePostEventStatus";
-import { useEletivaExtras } from "@/features/hub/useEletivaExtras";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -11,9 +9,6 @@ import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
-import { NextActionHero } from "@/components/dashboard/NextActionHero";
-import { JourneyChips } from "@/components/dashboard/JourneyChips";
-import { ArchiveSection } from "@/components/dashboard/ArchiveSection";
 import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
