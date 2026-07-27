@@ -25,8 +25,6 @@ const Pending = lazy(() => import("./pages/Pending.tsx"));
 
 // rotas secundárias: lazy (cada página vira chunk separado)
 const AccountSettings = lazy(() => import("./pages/AccountSettings.tsx"));
-const Prework = lazy(() => import("./pages/Prework.tsx"));
-const Missions = lazy(() => import("./pages/Missions.tsx"));
 const AdminFbi = lazy(() => import("./pages/AdminFbi.tsx"));
 const AdminHome = lazy(() => import("./pages/AdminHome.tsx"));
 const AdminLayout = lazy(() =>
@@ -53,11 +51,7 @@ const AdminEletivaModulo18 = lazy(() => import("./pages/AdminEletivaModulo18.tsx
 const AdminEletivaModulo19 = lazy(() => import("./pages/AdminEletivaModulo19.tsx"));
 const AdminEletivaModulo20 = lazy(() => import("./pages/AdminEletivaModulo20.tsx"));
 const DossieAluno = lazy(() => import("./pages/DossieAluno.tsx"));
-const PublicForm = lazy(() => import("./pages/PublicForm.tsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
-const Tutorial = lazy(() => import("./pages/Tutorial.tsx"));
-const Onboarding = lazy(() => import("./pages/Onboarding.tsx"));
-const OnboardingDialogPage = lazy(() => import("./pages/OnboardingDialogPage.tsx"));
 const HubIndex = lazy(() => import("./pages/HubIndex.tsx"));
 const HubMateriais = lazy(() => import("./pages/HubMateriais.tsx"));
 const AdminCertificateSandbox = lazy(() => import("./pages/AdminCertificateSandbox.tsx"));
@@ -76,12 +70,6 @@ const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx")
 const Marco = lazy(() => import("./pages/Marco.tsx"));
 const Comecar = lazy(() => import("./pages/Comecar.tsx"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
-const GlobalVotingBanner = lazy(() =>
-  import("./components/hub/GlobalVotingBanner").then((m) => ({ default: m.GlobalVotingBanner })),
-);
-// FeedbackFinalGlobalNudge removido do fluxo do aluno (resíduo da imersão Chŏra).
-// GlobalVotingBanner agora vive atrás de <ExtrasGate>: só aparece quando a flag
-// `eletiva_extras_enabled` estiver ligada (admin reativa quando precisar).
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -122,9 +110,6 @@ const App = () => (
         <AuthProvider>
           <SeoRouter />
           <DashboardDraftPersistence />
-          <Suspense fallback={null}>
-            <GlobalVotingBanner />
-          </Suspense>
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -133,8 +118,7 @@ const App = () => (
               <Route path="/comecar" element={<Comecar />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
-              <Route path="/forms" element={<PublicForm />} />
-              {/* rotas /carta/:token e /c/:token removidas junto com a página CartaPublica legada */}
+              {/* /forms removida junto com PublicForm (FBI legado) */}
 
               <Route
                 path="/app"
@@ -162,37 +146,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/app/prework"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Prework />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/missoes"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Missions />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              {/* alias novo (eletiva): /app/entregas → mesma página, atrás da mesma gate */}
-              <Route
-                path="/app/entregas"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Missions />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
+              {/* rotas /app/prework, /app/missoes e /app/entregas removidas junto com páginas legadas */}
               <Route
                 path="/app/eletivas"
                 element={
@@ -261,36 +215,7 @@ const App = () => (
               />
               {/* rota /app/carta removida junto com MinhaCarta legada */}
 
-              <Route
-                path="/app/tutorial"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Tutorial />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/inicio"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <Onboarding />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/onboarding"
-                element={
-                  <ProtectedRoute>
-                    <ExtrasGate>
-                      <OnboardingDialogPage />
-                    </ExtrasGate>
-                  </ProtectedRoute>
-                }
-              />
+              {/* /app/tutorial, /app/inicio, /app/onboarding removidas junto com páginas legadas */}
               {/* rotas do hub: HubLayout garante MobileNav + ChoraBotFab + paddingBottom: var(--mobile-nav-h) */}
               <Route
                 element={

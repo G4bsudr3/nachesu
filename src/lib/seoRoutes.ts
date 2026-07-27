@@ -34,11 +34,6 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     description: "acesse sua eletiva nachesu pra continuar a trilha.",
     index: true,
   },
-  "/forms": {
-    title: "formulário · nachesu",
-    description: "responda o formulário pra entrar numa eletiva nachesu.",
-    index: true,
-  },
   "/app": {
     title: "meu painel · nachesu",
     description: "seu progresso na eletiva escolhida e o próximo módulo liberado.",
