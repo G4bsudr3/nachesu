@@ -91,6 +91,7 @@ export function AdminEletivas() {
             </div>
           ))}
         </div>
+        </>
       )}
     </div>
   );
