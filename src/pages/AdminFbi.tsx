@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight, Copy } from "lucide-react";
+import { ChevronRight, Link2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
