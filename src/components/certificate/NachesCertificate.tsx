@@ -152,7 +152,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               >
                 {courseTitle.toLowerCase()}
               </strong>
-              , {workload} de prática em turma online do 1º ano do ensino médio na escola sebrae.
+              , de prática em turma online do 1º ano do ensino médio na escola sebrae.
               {courseSubtitle ? ` ${courseSubtitle.toLowerCase()}.` : ""}
             </p>
 
