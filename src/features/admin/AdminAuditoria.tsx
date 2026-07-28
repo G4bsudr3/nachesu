@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
-import { Download } from "lucide-react";
+import { Download, Filter, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useAdminAuditLog, type AuditEntry } from "@/hooks/useAdminAuditLog";
 
 const ACTIONS = [
