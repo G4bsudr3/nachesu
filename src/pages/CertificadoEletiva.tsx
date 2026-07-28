@@ -131,12 +131,24 @@ const CertificadoEletiva = () => {
         height: NACHES_CERTIFICATE_DIMENSIONS.height,
         cacheBust: true,
       });
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = `certificado-${slugify(course.title)}-${slugify(fullName)}.png`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      // A4 landscape em mm (297 x 210), mesma proporção 1414x1000 ≈ 1.414
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      // encaixa mantendo proporção, centralizado
+      const imgRatio = NACHES_CERTIFICATE_DIMENSIONS.width / NACHES_CERTIFICATE_DIMENSIONS.height;
+      const pageRatio = pageW / pageH;
+      let w = pageW;
+      let h = pageH;
+      if (imgRatio > pageRatio) {
+        h = pageW / imgRatio;
+      } else {
+        w = pageH * imgRatio;
+      }
+      const x = (pageW - w) / 2;
+      const y = (pageH - h) / 2;
+      pdf.addImage(dataUrl, "PNG", x, y, w, h, undefined, "FAST");
+      pdf.save(`certificado-${slugify(course.title)}-${slugify(fullName)}.pdf`);
       toast({ title: "certificado baixado", description: "boa, chegou até o fim." });
     } catch (err) {
       logger.error("[CertificadoEletiva] falha ao gerar png", err);
