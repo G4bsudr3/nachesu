@@ -22,14 +22,18 @@ export const EletivaFooter = ({ className, tone = "muted" }: EletivaFooterProps)
         : "text-muted-foreground";
 
   return (
-    <p
+    <div
       className={cn(
-        "text-center text-[10px] sm:text-xs font-body uppercase tracking-[0.14em] sm:tracking-[0.18em] leading-relaxed px-4 text-balance",
+        "w-full flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4 font-body uppercase text-[9px] sm:text-xs tracking-[0.12em] sm:tracking-[0.18em] leading-relaxed text-center",
         toneClass,
         className,
       )}
     >
-      NACHESU · UMA PLATAFORMA NACHES · EM PARCERIA COM ESCOLA SEBRAE
-    </p>
+      <span className="whitespace-nowrap">nachesu</span>
+      <span aria-hidden className="opacity-50">·</span>
+      <span className="whitespace-nowrap">uma plataforma naches</span>
+      <span aria-hidden className="opacity-50">·</span>
+      <span className="whitespace-nowrap">em parceria com escola sebrae</span>
+    </div>
   );
 };
