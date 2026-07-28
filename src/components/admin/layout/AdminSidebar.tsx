@@ -74,6 +74,8 @@ const SECTIONS: Section[] = [
   },
 ];
 
+export const ADMIN_NAV_ITEMS: Item[] = SECTIONS.flatMap((s) => s.items);
+
 export const AdminSidebar = ({
   onNavigate,
 }: {
