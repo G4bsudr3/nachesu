@@ -21,7 +21,7 @@ const formatDatePtBr = (d = new Date()) =>
  * princípios:
  *  - nome do estudante é protagonista absoluto (League Gothic gigante)
  *  - cor da eletiva vira faixa superior + inferior + accent no nome do curso
- *  - assinatura NachesU no rodapé, com selo de conclusão 100%
+ *  - assinatura NachesU no rodapé
  *  - dimensão landscape A4 (1414x1000) pra impressão nítida
  */
 export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificateProps>(
@@ -55,19 +55,19 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
           style={{ position: "absolute", top: 0, left: 0, right: 0, height: 18, background: accentColor }}
         />
 
-        {/* mascote no canto superior direito */}
-        <div
-          aria-hidden
-          style={{ position: "absolute", top: 42, right: 78 }}
-        >
-          <EletivaSymbol pose="celebrating" size={150} />
-        </div>
-
         {/* faixa inferior */}
         <div
           aria-hidden
           style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 18, background: accentColor }}
         />
+
+        {/* mascote no canto superior direito, dentro da moldura */}
+        <div
+          aria-hidden
+          style={{ position: "absolute", top: 108, right: 128, zIndex: 2 }}
+        >
+          <EletivaSymbol pose="celebrating" size={128} />
+        </div>
 
         {/* moldura interna */}
         <div
@@ -79,40 +79,47 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             bottom: 56,
             border: "1.5px solid rgba(9,9,9,0.9)",
             borderRadius: 20,
-            padding: "68px 92px 56px",
+            padding: "72px 96px 56px",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
           }}
         >
-          {/* header: logo + rótulo */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <NachesULogo variant="ink" height={40} showSelo={false} />
+          {/* header: logo + rótulo, alinhados à esquerda */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 14 }}>
+            <NachesULogo variant="ink" height={38} showSelo={false} />
             <div
               className="uppercase font-body"
               style={{
-                fontSize: 15,
+                fontSize: 14,
                 letterSpacing: "0.42em",
-                color: "rgba(9,9,9,0.62)",
+                color: "rgba(9,9,9,0.55)",
                 fontWeight: 600,
-                marginTop: 8,
-                textAlign: "center",
               }}
             >
               certificado de conclusão
             </div>
           </div>
 
-          {/* miolo: certifica-se que + nome + curso */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+          {/* miolo cresce e centraliza verticalmente entre header e rodapé */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              flex: 1,
+              justifyContent: "center",
+              marginTop: 32,
+              marginBottom: 28,
+            }}
+          >
             <div
               className="uppercase"
               style={{
-                fontSize: 18,
+                fontSize: 16,
                 letterSpacing: "0.34em",
-                color: "rgba(9,9,9,0.6)",
+                color: "rgba(9,9,9,0.55)",
                 fontWeight: 600,
-                marginBottom: 22,
+                marginBottom: 18,
               }}
             >
               certifica-se que
@@ -121,11 +128,11 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             <h1
               className="font-display uppercase"
               style={{
-                fontSize: fullName.length > 26 ? 128 : 156,
-                lineHeight: 0.88,
+                fontSize: fullName.length > 26 ? 122 : 148,
+                lineHeight: 0.9,
                 letterSpacing: "-0.005em",
                 margin: 0,
-                marginBottom: 34,
+                marginBottom: 40,
                 color: "#090909",
                 wordBreak: "break-word",
                 maxWidth: "100%",
@@ -137,12 +144,12 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             <p
               className="font-body"
               style={{
-                fontSize: 26,
-                lineHeight: 1.4,
-                color: "rgba(9,9,9,0.86)",
+                fontSize: 24,
+                lineHeight: 1.45,
+                color: "rgba(9,9,9,0.84)",
                 margin: 0,
-                marginBottom: 18,
-                maxWidth: 1080,
+                marginBottom: 28,
+                maxWidth: 980,
                 fontWeight: 400,
               }}
             >
@@ -152,7 +159,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
                 style={{
                   fontWeight: 700,
                   color: accentColor,
-                  fontSize: 34,
+                  fontSize: 32,
                   letterSpacing: "0.005em",
                   verticalAlign: "baseline",
                 }}
@@ -163,21 +170,17 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               {courseSubtitle ? ` ${courseSubtitle.toLowerCase()}.` : ""}
             </p>
 
-            {/* metadados inline */}
+            {/* metadados alinhados à esquerda, mesmo eixo do miolo */}
             <div
               className="font-body uppercase"
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                alignSelf: "center",
-                gap: 20,
-                fontSize: 16,
-                letterSpacing: "0.24em",
-                color: "rgba(9,9,9,0.62)",
+                gap: 18,
+                fontSize: 14,
+                letterSpacing: "0.26em",
+                color: "rgba(9,9,9,0.6)",
                 fontWeight: 600,
-                marginTop: 6,
-                width: "100%",
               }}
             >
               <span>guiado por {professorName.toLowerCase()}</span>
@@ -194,16 +197,15 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 28,
-              paddingTop: 24,
+              paddingTop: 22,
               borderTop: "1px solid rgba(9,9,9,0.14)",
             }}
           >
             <span
               className="font-display uppercase"
               style={{
-                fontSize: 20,
-                letterSpacing: "0.08em",
+                fontSize: 18,
+                letterSpacing: "0.1em",
                 color: "#090909",
                 textAlign: "center",
               }}
