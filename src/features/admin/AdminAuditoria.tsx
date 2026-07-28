@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
-import { Download } from "lucide-react";
+import { Download, Filter, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useAdminAuditLog, type AuditEntry } from "@/hooks/useAdminAuditLog";
 
 const ACTIONS = [
@@ -130,30 +132,46 @@ export const AdminAuditoria = () => {
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {ACTIONS.map((a) => (
-            <button
-              key={a}
-              type="button"
-              onClick={() => toggleAction(a)}
-              className={`text-[10px] uppercase tracking-wide rounded-full border px-2.5 py-1 ${
-                actions.includes(a)
-                  ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                  : "border-perestroika-preto/20 hover:bg-perestroika-preto/5"
-              }`}
-            >
-              {ACTION_LABEL[a] ?? a}
-            </button>
-          ))}
-          {actions.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setActions([])}
-              className="text-[10px] uppercase underline ml-2"
-            >
-              limpar
-            </button>
-          )}
+        <div>
+          <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1.5">
+            filtrar por ação
+          </label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="h-9 inline-flex items-center gap-2 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
+              >
+                <Filter className="w-3.5 h-3.5" />
+                {actions.length === 0 ? "todas as ações" : `${actions.length} ação${actions.length > 1 ? "ões" : ""}`}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-3 border-perestroika-preto/15 bg-perestroika-bege">
+              <div className="space-y-2">
+                {ACTIONS.map((a) => (
+                  <label
+                    key={a}
+                    className="flex items-center gap-2 text-sm cursor-pointer hover:bg-perestroika-preto/5 rounded px-1 py-1"
+                  >
+                    <Checkbox
+                      checked={actions.includes(a)}
+                      onCheckedChange={() => toggleAction(a)}
+                    />
+                    <span className="text-perestroika-preto/90">{ACTION_LABEL[a] ?? a}</span>
+                  </label>
+                ))}
+              </div>
+              {actions.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setActions([])}
+                  className="mt-3 flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto"
+                >
+                  <X className="w-3 h-3" /> limpar filtros
+                </button>
+              )}
+            </PopoverContent>
+          </Popover>
         </div>
       </section>
 
