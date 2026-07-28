@@ -68,11 +68,19 @@ const CertificadoEletiva = () => {
   const trimmedName = nameInput.trim();
   const fullName = trimmedName || defaultName;
 
+  // pré-preenche o input com o nome padrão do perfil pra evitar que o botão
+  // apareça desabilitado e crie confusão. usuário pode editar livremente.
+  useEffect(() => {
+    if (nameInput === "" && !nameTouched && defaultName && defaultName !== "estudante") {
+      setNameInput(defaultName);
+    }
+  }, [defaultName, nameInput, nameTouched]);
+
   const totalPublished = snapshot?.totalPublished ?? 0;
   const totalCompleted = snapshot?.totalCompleted ?? 0;
   const pct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const isComplete = totalPublished > 0 && totalCompleted >= totalPublished;
-  const canDownload = isComplete && trimmedName.length >= 2;
+  const canDownload = isComplete && fullName.trim().length >= 2;
 
   const accent = useMemo(() => accentFor(slug), [slug]);
 

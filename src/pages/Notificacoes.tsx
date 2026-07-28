@@ -110,7 +110,7 @@ const Notificacoes = () => {
                         !n.read_at && "font-semibold",
                       )}
                     >
-                      {n.title}
+                      {n.title.toLowerCase()}
                     </p>
                     {n.body && (
                       <p className="font-body text-sm text-perestroika-preto/70 mt-1">
