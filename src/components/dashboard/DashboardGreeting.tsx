@@ -45,11 +45,14 @@ export const DashboardGreeting = ({
   totalPublished,
   daysSinceLastActivity,
   loading = false,
-  hasMultiple = false,
+  enrollmentCount = 0,
 }: Props) => {
-  const contextLine = hasMultiple
-    ? "você tem duas eletivas liberadas. qual vamos estudar hoje?"
-    : buildContextLine(totalCompleted, totalPublished, daysSinceLastActivity);
+  const contextLine =
+    enrollmentCount > 1
+      ? `você tem ${enrollmentCount === 2 ? "duas" : enrollmentCount} eletivas liberadas. qual vamos estudar hoje?`
+      : enrollmentCount === 1
+        ? "você tem uma eletiva liberada. qual vamos estudar hoje?"
+        : buildContextLine(totalCompleted, totalPublished, daysSinceLastActivity);
 
 
   return (
