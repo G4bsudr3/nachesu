@@ -99,7 +99,7 @@ export const AdminAuditoria = () => {
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[200px]">
             <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1">
-              filtrar por admin (email)
+              FILTRAR POR EMAIL
             </label>
             <Input
               value={actorEmail}
