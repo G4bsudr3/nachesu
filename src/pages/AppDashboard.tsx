@@ -9,14 +9,13 @@ import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
-import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
 import { DashboardCommandPanel } from "@/components/dashboard/DashboardCommandPanel";
-import { DualEletivasHero } from "@/components/dashboard/DualEletivasHero";
+import { EletivasHero } from "@/components/dashboard/EletivasHero";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
