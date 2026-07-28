@@ -40,21 +40,38 @@ const CertificadoEletiva = () => {
   const previewBoxRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [previewScale, setPreviewScale] = useState(0.42);
+  const [nameInput, setNameInput] = useState("");
+  const [nameTouched, setNameTouched] = useState(false);
 
   if (!slug) return <Navigate to="/app" replace />;
 
   const loading = courseLoading || enrollLoading || (!!course?.id && snapLoading && !snapshot);
 
-  const fullName =
+  const defaultName =
     dashData?.profile?.display_name?.trim() ||
     dashData?.nicknameDisplay ||
     user?.email?.split("@")[0] ||
     "estudante";
 
+  const storageKey = user?.id && slug ? `naches:cert-name:${user.id}:${slug}` : null;
+
+  useEffect(() => {
+    if (!storageKey) return;
+    const saved = typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null;
+    if (saved && saved.trim()) {
+      setNameInput(saved);
+      setNameTouched(true);
+    }
+  }, [storageKey]);
+
+  const trimmedName = nameInput.trim();
+  const fullName = trimmedName || defaultName;
+
   const totalPublished = snapshot?.totalPublished ?? 0;
   const totalCompleted = snapshot?.totalCompleted ?? 0;
   const pct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const isComplete = totalPublished > 0 && totalCompleted >= totalPublished;
+  const canDownload = isComplete && trimmedName.length >= 2;
 
   const accent = useMemo(() => accentFor(slug), [slug]);
 
