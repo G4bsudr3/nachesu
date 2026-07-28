@@ -190,18 +190,16 @@ const CertificadoEletiva = () => {
         {isComplete && (
           <>
             <div
-              className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mb-6 overflow-hidden"
-              style={{
-                // escala responsiva: nunca ultrapassa a largura disponível.
-                // altura do wrapper acompanha a escala aplicada.
-                ["--cert-scale" as string]: "min(1, (100vw - 96px) / 1414)",
-              }}
+              className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mb-6"
+              style={{ containerType: "inline-size" }}
             >
               <div
                 style={{
-                  width: "calc(1414px * var(--cert-scale))",
+                  // escala pela largura do container (cqw), garantindo que o certificado
+                  // inteiro caiba sempre — sem scroll horizontal, sem corte.
+                  ["--cert-scale" as string]: "calc(100cqw / 1414)",
+                  width: "100%",
                   height: "calc(1000px * var(--cert-scale))",
-                  margin: "0 auto",
                   position: "relative",
                 }}
               >
