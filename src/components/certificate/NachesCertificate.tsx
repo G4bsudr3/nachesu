@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 export interface NachesCertificateProps {
   fullName: string;
