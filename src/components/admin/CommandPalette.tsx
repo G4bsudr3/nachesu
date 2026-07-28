@@ -118,7 +118,7 @@ export const CommandPalette = ({
               key={i.to}
               value={`op ${i.label} ${i.to}`}
               onSelect={run(() => navigate(i.to))}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text exactly text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
             >
               <i.icon className="w-4 h-4" />
               {i.label}
