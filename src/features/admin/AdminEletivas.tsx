@@ -59,6 +59,10 @@ export function AdminEletivas() {
       {isLoading ? (
         <p className="font-body text-sm">carregando...</p>
       ) : (
+        <>
+        <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+          {courses.length} {courses.length === 1 ? "eletiva" : "eletivas"}
+        </p>
         <div className="space-y-2">
           {courses.map((c) => (
             <div
