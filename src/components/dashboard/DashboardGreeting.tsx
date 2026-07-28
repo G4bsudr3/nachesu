@@ -51,7 +51,7 @@ export const DashboardGreeting = ({
     enrollmentCount > 1
       ? `você tem ${enrollmentCount === 2 ? "duas" : enrollmentCount} eletivas liberadas. qual vamos estudar hoje?`
       : enrollmentCount === 1
-        ? "você tem uma eletiva liberada. qual vamos estudar hoje?"
+        ? "você tem uma eletiva liberada. bora estudar hoje?"
         : buildContextLine(totalCompleted, totalPublished, daysSinceLastActivity);
 
 
