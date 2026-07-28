@@ -63,6 +63,7 @@ const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
 const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
 const Eletivas = lazy(() => import("./pages/Eletivas.tsx"));
 const EletivaHome = lazy(() => import("./pages/EletivaHome.tsx"));
+const CertificadoEletiva = lazy(() => import("./pages/CertificadoEletiva.tsx"));
 const Notificacoes = lazy(() => import("./pages/Notificacoes.tsx"));
 const AdminRisco = lazy(() => import("./pages/AdminRisco.tsx"));
 const AdminTurma = lazy(() => import("./pages/AdminTurma.tsx"));
@@ -198,6 +199,17 @@ const App = () => (
                   <ProtectedRoute>
                     <RootErrorBoundary scope="modulo">
                       <Modulo />
+                    </RootErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
+              {/* certificado por eletiva: liberado só com 100% de conclusão (gate na própria página) */}
+              <Route
+                path="/app/eletiva/:slug/certificado"
+                element={
+                  <ProtectedRoute>
+                    <RootErrorBoundary scope="certificado-eletiva">
+                      <CertificadoEletiva />
                     </RootErrorBoundary>
                   </ProtectedRoute>
                 }
