@@ -59,30 +59,31 @@ export function AdminEletivas() {
       {isLoading ? (
         <p className="font-body text-sm">carregando...</p>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-2">
           {courses.map((c) => (
             <div
               key={c.id}
-              className="p-5 rounded-lg border border-perestroika-preto/10 bg-perestroika-bege cursor-pointer hover:bg-perestroika-bege/40 transition"
+              className="flex items-center justify-between gap-4 p-4 rounded-lg border border-perestroika-preto/10 bg-perestroika-bege cursor-pointer hover:bg-perestroika-bege/40 transition"
               onClick={() => setSelected(c)}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="font-display text-xl uppercase">{c.title}</h3>
-                  <p className="font-body text-xs text-perestroika-preto/60">
-                    prof. {c.professor_name}
-                  </p>
-                  {c.subtitle && (
-                    <p className="font-body text-sm mt-2">{c.subtitle}</p>
+                  {c.published ? (
+                    <Badge variant="secondary">publicada</Badge>
+                  ) : (
+                    <Badge variant="outline">rascunho</Badge>
                   )}
                 </div>
-                {c.published ? (
-                  <Badge variant="secondary">publicada</Badge>
-                ) : (
-                  <Badge variant="outline">rascunho</Badge>
+                <p className="font-body text-xs text-perestroika-preto/60">
+                  prof. {c.professor_name}
+                </p>
+                {c.subtitle && (
+                  <p className="font-body text-sm mt-1 text-perestroika-preto/70">{c.subtitle}</p>
                 )}
+                <p className="font-body text-[11px] text-perestroika-preto/55 mt-1">slug: {c.slug}</p>
               </div>
-              <p className="font-body text-xs text-perestroika-preto/55 mt-3">slug: {c.slug}</p>
+              <ChevronLeft className="h-5 w-5 shrink-0 -rotate-180 text-perestroika-preto/40" />
             </div>
           ))}
         </div>
