@@ -91,7 +91,7 @@ const AppDashboard = () => {
             totalPublished={eletiva?.totalPublished ?? 0}
             daysSinceLastActivity={daysSinceLastActivity}
             loading={!!activeCourseId && eletivaLoading && !eletiva}
-            hasMultiple={hasMultiple}
+            enrollmentCount={enrollments?.length ?? 0}
           />
 
 
