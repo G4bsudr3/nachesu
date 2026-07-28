@@ -40,21 +40,38 @@ const CertificadoEletiva = () => {
   const previewBoxRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [previewScale, setPreviewScale] = useState(0.42);
+  const [nameInput, setNameInput] = useState("");
+  const [nameTouched, setNameTouched] = useState(false);
 
   if (!slug) return <Navigate to="/app" replace />;
 
   const loading = courseLoading || enrollLoading || (!!course?.id && snapLoading && !snapshot);
 
-  const fullName =
+  const defaultName =
     dashData?.profile?.display_name?.trim() ||
     dashData?.nicknameDisplay ||
     user?.email?.split("@")[0] ||
     "estudante";
 
+  const storageKey = user?.id && slug ? `naches:cert-name:${user.id}:${slug}` : null;
+
+  useEffect(() => {
+    if (!storageKey) return;
+    const saved = typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null;
+    if (saved && saved.trim()) {
+      setNameInput(saved);
+      setNameTouched(true);
+    }
+  }, [storageKey]);
+
+  const trimmedName = nameInput.trim();
+  const fullName = trimmedName || defaultName;
+
   const totalPublished = snapshot?.totalPublished ?? 0;
   const totalCompleted = snapshot?.totalCompleted ?? 0;
   const pct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const isComplete = totalPublished > 0 && totalCompleted >= totalPublished;
+  const canDownload = isComplete && trimmedName.length >= 2;
 
   const accent = useMemo(() => accentFor(slug), [slug]);
 
@@ -90,6 +107,17 @@ const CertificadoEletiva = () => {
 
   const handleDownload = async () => {
     if (!captureRef.current || !course) return;
+    if (!canDownload) {
+      toast({
+        title: "escreva seu nome completo",
+        description: "o nome vai aparecer no certificado.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (storageKey) {
+      try { window.localStorage.setItem(storageKey, trimmedName); } catch { /* ignore */ }
+    }
     setDownloading(true);
     try {
       if (document.fonts?.ready) await document.fonts.ready;
@@ -221,6 +249,29 @@ const CertificadoEletiva = () => {
         {/* prévia + ação (só quando 100%) */}
         {isComplete && (
           <>
+            <div className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8 mb-6 mx-auto w-full max-w-3xl">
+              <label htmlFor="cert-name" className="block font-display uppercase text-2xl leading-tight mb-1">
+                seu nome completo
+              </label>
+              <p className="font-body text-sm text-perestroika-preto/70 mb-4">
+                é assim que vai aparecer impresso no certificado. capriche na grafia.
+              </p>
+              <input
+                id="cert-name"
+                type="text"
+                value={nameInput}
+                onChange={(e) => { setNameInput(e.target.value); setNameTouched(true); }}
+                placeholder={defaultName}
+                maxLength={80}
+                autoComplete="name"
+                className="w-full rounded-2xl border-2 border-perestroika-preto/20 bg-white px-4 py-3 font-body text-base text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto transition-colors"
+              />
+              {nameTouched && trimmedName.length > 0 && trimmedName.length < 2 && (
+                <p className="mt-2 font-body text-xs text-perestroika-vermelho">nome muito curto.</p>
+              )}
+            </div>
+
+
             <div
               className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mb-6 mx-auto w-full max-w-3xl"
             >
@@ -274,7 +325,7 @@ const CertificadoEletiva = () => {
               <button
                 type="button"
                 onClick={handleDownload}
-                disabled={downloading}
+                disabled={downloading || !canDownload}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {downloading ? (
