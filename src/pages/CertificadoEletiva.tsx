@@ -331,7 +331,10 @@ const CertificadoEletiva = () => {
                 <div>
                   <p className="font-display uppercase text-2xl leading-tight">certificado pronto</p>
                   <p className="font-body text-sm text-perestroika-preto/70">
-                    arquivo png em alta resolução (3x), fiel à prévia acima.
+                    arquivo pdf em alta resolução (a4 paisagem), fiel à prévia acima.
+                  </p>
+                </div>
+              </div>
                   </p>
                 </div>
               </div>
