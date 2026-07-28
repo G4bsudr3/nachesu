@@ -45,17 +45,12 @@ const AdminCorrecoes = () => {
         <span className="text-perestroika-preto font-semibold">correções</span>
       </nav>
 
-      <div className="flex items-end justify-between gap-4 mb-6 flex-wrap">
-        <div>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.9]">
-            fila de correção
-          </h1>
-          <p className="text-sm text-perestroika-preto/60 mt-1">
-            entregas aguardando resposta, da mais antiga pra mais recente.
-          </p>
-        </div>
-        <p className="font-display uppercase text-4xl tabular-nums">
-          {sorted.length}
+      <div className="mb-6">
+        <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.9]">
+          fila de correção
+        </h1>
+        <p className="text-sm text-perestroika-preto/60 mt-1">
+          entregas aguardando resposta, da mais antiga pra mais recente.
         </p>
       </div>
 
@@ -73,6 +68,10 @@ const AdminCorrecoes = () => {
           </p>
         </div>
       )}
+
+      <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
+        {sorted.length} {sorted.length === 1 ? "entrega" : "entregas"} na fila
+      </p>
 
       <ul className="space-y-2">
         {sorted.map((d) => {
