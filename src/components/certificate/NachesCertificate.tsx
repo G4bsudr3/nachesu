@@ -9,8 +9,6 @@ export interface NachesCertificateProps {
   accentColor: string;
   /** data curta (ex: "março de 2026"). se ausente, usa hoje. */
   issuedAt?: string;
-  /** total de horas do curso. default "16h40min". */
-  workload?: string;
 }
 
 const formatDatePtBr = (d = new Date()) =>
