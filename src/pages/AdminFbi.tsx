@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { ChevronRight, Copy } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 // Cada aba é code-split: só o bundle da aba ativa é baixado.
 const AdminPending = lazy(() => import("@/features/admin/AdminPending").then((m) => ({ default: m.AdminPending })));
@@ -101,13 +100,6 @@ const AdminFbi = () => {
     }
   }, [currentTab, navigate, routePrefix]);
 
-  const handleTabChange = (v: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.delete("tab");
-    const qs = params.toString();
-    navigate(`${routePrefix}/${v}${qs ? `?${qs}` : ""}`, { replace: true });
-  };
-
   const ActiveTab = TAB_COMPONENTS[currentTab];
 
   return (
@@ -146,29 +138,9 @@ const AdminFbi = () => {
             </button>
           </div>
 
-          <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="bg-perestroika-preto/5 mb-6 inline-flex flex-wrap h-auto">
-              <TabsTrigger value="eletivas" className="uppercase tracking-wide text-xs">eletivas</TabsTrigger>
-              <TabsTrigger value="convites" className="uppercase tracking-wide text-xs">convites</TabsTrigger>
-              <TabsTrigger value="review" className="uppercase tracking-wide text-xs">revisão</TabsTrigger>
-              <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
-              <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
-              <TabsTrigger value="respostas" className="uppercase tracking-wide text-xs">respostas</TabsTrigger>
-              <TabsTrigger value="materiais" className="uppercase tracking-wide text-xs">materiais</TabsTrigger>
-              <TabsTrigger value="pending" className="uppercase tracking-wide text-xs">pendentes</TabsTrigger>
-              <TabsTrigger value="usuarios" className="uppercase tracking-wide text-xs">usuários</TabsTrigger>
-              <TabsTrigger value="nudges" className="uppercase tracking-wide text-xs">nudges</TabsTrigger>
-              <TabsTrigger value="rubricas" className="uppercase tracking-wide text-xs">rubricas</TabsTrigger>
-              <TabsTrigger value="copy-audit" className="uppercase tracking-wide text-xs">auditoria copy</TabsTrigger>
-              <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">settings</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value={currentTab} forceMount>
-              <Suspense fallback={<TabFallback />}>
-                <ActiveTab />
-              </Suspense>
-            </TabsContent>
-          </Tabs>
+          <Suspense fallback={<TabFallback />}>
+            <ActiveTab />
+          </Suspense>
         </motion.div>
       </main>
     </div>
