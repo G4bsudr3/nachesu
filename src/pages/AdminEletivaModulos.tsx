@@ -163,6 +163,9 @@ const AdminEletivaModulos = () => {
                 trilha {trail.order_index}
               </p>
               <h2 className="font-display uppercase text-2xl leading-none">{trail.title}</h2>
+              <span className="ml-auto text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+                {modules.length} {modules.length === 1 ? "módulo" : "módulos"}
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
