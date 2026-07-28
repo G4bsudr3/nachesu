@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Menu, Command as CommandIcon } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { AdminSidebar, OPERACAO } from "./AdminSidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { CommandPalette, useCommandPaletteHotkey } from "../CommandPalette";
