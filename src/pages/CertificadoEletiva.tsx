@@ -335,9 +335,6 @@ const CertificadoEletiva = () => {
                   </p>
                 </div>
               </div>
-                  </p>
-                </div>
-              </div>
               <button
                 type="button"
                 onClick={handleDownload}
