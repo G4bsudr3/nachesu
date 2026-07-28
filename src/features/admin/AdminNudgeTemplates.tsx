@@ -91,6 +91,9 @@ export const AdminNudgeTemplates = () => {
           variáveis entre chaves são substituídas em runtime.
         </p>
       </div>
+      <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 -mb-2">
+        {rows.length} {rows.length === 1 ? "template" : "templates"}
+      </p>
       <div className="space-y-6">
         {rows.map((row) => (
           <TemplateForm
