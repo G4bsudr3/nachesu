@@ -73,27 +73,19 @@ const AdminCorrecoes = () => {
         {sorted.length} {sorted.length === 1 ? "entrega" : "entregas"} na fila
       </p>
 
-      <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white overflow-hidden">
+      <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left">
-            <thead className="bg-perestroika-preto/[0.04]">
+          <table className="w-full min-w-[640px] text-sm">
+            <thead className="bg-perestroika-preto/5 text-[10px] uppercase tracking-wide text-perestroika-preto/60">
               <tr>
-                <th className="px-4 py-3 text-[10px] uppercase tracking-wide text-perestroika-preto/55 font-semibold">
-                  estudante
-                </th>
-                <th className="px-4 py-3 text-[10px] uppercase tracking-wide text-perestroika-preto/55 font-semibold">
-                  eletiva · módulo
-                </th>
-                <th className="px-4 py-3 text-[10px] uppercase tracking-wide text-perestroika-preto/55 font-semibold">
-                  enviado
-                </th>
-                <th className="px-4 py-3 text-[10px] uppercase tracking-wide text-perestroika-preto/55 font-semibold text-right">
-                  esperando
-                </th>
-                <th className="px-4 py-3 w-16" aria-hidden="true" />
+                <th className="text-left px-3 py-2 font-semibold">estudante</th>
+                <th className="text-left px-3 py-2 font-semibold">eletiva · módulo</th>
+                <th className="text-left px-3 py-2 font-semibold">enviado</th>
+                <th className="text-left px-3 py-2 font-semibold text-right">esperando</th>
+                <th className="px-3 py-2 w-12" aria-hidden="true" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-perestroika-preto/10">
+            <tbody className="divide-y divide-perestroika-preto/5">
               {sorted.map((d) => {
                 const dias = daysAgo(d.submitted_at);
                 const late = dias > 7;
@@ -107,16 +99,16 @@ const AdminCorrecoes = () => {
                     key={d.id}
                     onClick={() => setSelected(d)}
                     className={cn(
-                      "group cursor-pointer transition-colors hover:bg-perestroika-preto/[0.02]",
+                      "group cursor-pointer transition-colors hover:bg-perestroika-preto/5",
                       late && "bg-rose-50/40",
                     )}
                   >
-                    <td className="px-4 py-3 align-middle">
+                    <td className="px-3 py-2 align-middle">
                       <p className="font-display uppercase text-base leading-none truncate">
                         {name}
                       </p>
                     </td>
-                    <td className="px-4 py-3 align-middle">
+                    <td className="px-3 py-2 align-middle">
                       <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
                         {courseTitle}
                       </p>
@@ -127,7 +119,7 @@ const AdminCorrecoes = () => {
                         </p>
                       )}
                     </td>
-                    <td className="px-4 py-3 align-middle">
+                    <td className="px-3 py-2 align-middle">
                       <div className="flex items-center gap-1.5 text-xs text-perestroika-preto/75 tabular-nums">
                         <Clock className="w-3 h-3 text-perestroika-preto/40" />
                         {d.submitted_at
@@ -135,10 +127,10 @@ const AdminCorrecoes = () => {
                           : "—"}
                       </div>
                     </td>
-                    <td className="px-4 py-3 align-middle text-right">
+                    <td className="px-3 py-2 align-middle text-right">
                       <span
                         className={cn(
-                          "inline-flex items-center justify-end gap-1 rounded-lg px-2.5 py-1.5 text-xs tabular-nums",
+                          "inline-flex items-center justify-end gap-1 rounded-lg px-2.5 py-1 text-xs tabular-nums",
                           late
                             ? "bg-rose-100 text-rose-800"
                             : "bg-perestroika-preto/5 text-perestroika-preto/75",
@@ -148,7 +140,7 @@ const AdminCorrecoes = () => {
                         {dias}d
                       </span>
                     </td>
-                    <td className="px-4 py-3 align-middle text-right">
+                    <td className="px-3 py-2 align-middle text-right">
                       <ChevronRight className="w-4 h-4 text-perestroika-preto/30 group-hover:text-perestroika-preto/60 transition-colors" />
                     </td>
                   </tr>
