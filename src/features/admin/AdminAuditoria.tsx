@@ -95,7 +95,7 @@ export const AdminAuditoria = () => {
         </p>
       </header>
 
-      <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4">
+      <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4 space-y-3">
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[200px]">
             <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1">
@@ -121,7 +121,7 @@ export const AdminAuditoria = () => {
               <option value={7}>últimos 7 dias</option>
               <option value={30}>últimos 30 dias</option>
               <option value={90}>últimos 90 dias</option>
-            </select>
+            </>select>
           </div>
           <div>
             <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1">
@@ -164,12 +164,14 @@ export const AdminAuditoria = () => {
               </PopoverContent>
             </Popover>
           </div>
+        </div>
+        <div className="flex justify-end">
           <button
             type="button"
             onClick={downloadCSV}
             className="h-9 inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
           >
-            <Download className="w-3.5 h-3.5" /> CSV
+            <Download className="w-3.5 h-3.5" /> exportar CSV
           </button>
         </div>
       </section>
