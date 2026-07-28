@@ -95,13 +95,8 @@ const AppDashboard = () => {
           />
 
 
-          {/* 2+ matrículas → hero paralelo com as duas eletivas em peso equivalente */}
-          {hasMultiple && <DualEletivasHero />}
-
-          {/* 1 matrícula → hero direto (CTA leva pro módulo atual) */}
-          {!hasMultiple && activeCourseId && (
-            <EletivaCard snapshot={eletiva ?? undefined} />
-          )}
+          {/* hero de eletivas: 1 card (largura cheia) ou 2 (grid) com mesmo tratamento */}
+          {enrollments && enrollments.length > 0 && <EletivasHero />}
 
           {/* painel de comando: só na visão de eletiva única (evita fixar em uma das duas) */}
           {!hasMultiple && activeCourseId && (
