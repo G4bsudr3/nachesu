@@ -151,7 +151,7 @@ const CertificadoEletiva = () => {
       pdf.save(`certificado-${slugify(course.title)}-${slugify(fullName)}.pdf`);
       toast({ title: "certificado baixado", description: "boa, chegou até o fim." });
     } catch (err) {
-      logger.error("[CertificadoEletiva] falha ao gerar png", err);
+      logger.error("[CertificadoEletiva] falha ao gerar pdf", err);
       toast({
         title: "não consegui gerar agora",
         description: "tenta de novo em alguns segundos.",
