@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Star } from "lucide-react";
+import { ArrowRight, Check, Star } from "lucide-react";
 import { useMyEnrollments } from "@/hooks/useCourses";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -29,13 +29,6 @@ const MinhasEletivas = () => {
         style={{ paddingBottom: "calc(var(--mobile-nav-h, 0px) + 5rem)" }}
       >
         <div className="container max-w-4xl pt-6 sm:pt-10 space-y-8">
-          <Link
-            to="/app"
-            className="inline-flex items-center gap-2 font-body text-sm text-perestroika-preto/70 hover:text-perestroika-preto"
-          >
-            <ArrowLeft className="h-4 w-4" /> voltar ao painel
-          </Link>
-
           <header>
             <p className="font-body text-xs uppercase tracking-[0.3em] text-perestroika-preto/60 mb-2">
               minhas matrículas

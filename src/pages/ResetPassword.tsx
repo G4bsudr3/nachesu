@@ -115,10 +115,8 @@ const ResetPassword = () => {
             </div>
           ) : (
             <>
-              <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none mb-3">
-                nova
-                <br />
-                senha
+              <h1 className="font-display uppercase text-5xl sm:text-6xl leading-[0.9] mb-3">
+                nova senha
               </h1>
               <p className="font-body text-base text-perestroika-preto/70 mb-10">
                 escolhe uma senha boa. mínimo 8 caracteres, mistura letra e número.

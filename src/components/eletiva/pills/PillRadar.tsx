@@ -135,7 +135,7 @@ export function PillRadar({
 
       {/* contador no topo */}
       <div
-        className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 p-4"
+        className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-2 sm:gap-3 rounded-2xl border-2 p-4"
         style={{ borderColor: accent, backgroundColor: `${accent}10` }}
       >
         <p className="font-body text-sm text-perestroika-preto">
@@ -145,7 +145,7 @@ export function PillRadar({
           de {minItems} itens · {validation.distinctFlows} fluxo{validation.distinctFlows === 1 ? "" : "s"} distinto
           {validation.distinctFlows === 1 ? "" : "s"}
         </p>
-        <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60">
+        <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 leading-snug">
           mín {minFlows} fluxos diferentes · evidência em todos
         </p>
       </div>
