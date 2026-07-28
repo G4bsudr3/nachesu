@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, Award, Download, Loader2, Lock } from "lucide-react";
 import { toPng } from "html-to-image";
+import { jsPDF } from "jspdf";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -130,15 +131,27 @@ const CertificadoEletiva = () => {
         height: NACHES_CERTIFICATE_DIMENSIONS.height,
         cacheBust: true,
       });
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = `certificado-${slugify(course.title)}-${slugify(fullName)}.png`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      // A4 landscape em mm (297 x 210), mesma proporção 1414x1000 ≈ 1.414
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      // encaixa mantendo proporção, centralizado
+      const imgRatio = NACHES_CERTIFICATE_DIMENSIONS.width / NACHES_CERTIFICATE_DIMENSIONS.height;
+      const pageRatio = pageW / pageH;
+      let w = pageW;
+      let h = pageH;
+      if (imgRatio > pageRatio) {
+        h = pageW / imgRatio;
+      } else {
+        w = pageH * imgRatio;
+      }
+      const x = (pageW - w) / 2;
+      const y = (pageH - h) / 2;
+      pdf.addImage(dataUrl, "PNG", x, y, w, h, undefined, "FAST");
+      pdf.save(`certificado-${slugify(course.title)}-${slugify(fullName)}.pdf`);
       toast({ title: "certificado baixado", description: "boa, chegou até o fim." });
     } catch (err) {
-      logger.error("[CertificadoEletiva] falha ao gerar png", err);
+      logger.error("[CertificadoEletiva] falha ao gerar pdf", err);
       toast({
         title: "não consegui gerar agora",
         description: "tenta de novo em alguns segundos.",
@@ -318,7 +331,7 @@ const CertificadoEletiva = () => {
                 <div>
                   <p className="font-display uppercase text-2xl leading-tight">certificado pronto</p>
                   <p className="font-body text-sm text-perestroika-preto/70">
-                    arquivo png em alta resolução (3x), fiel à prévia acima.
+                    arquivo pdf em alta resolução (a4 paisagem), fiel à prévia acima.
                   </p>
                 </div>
               </div>
