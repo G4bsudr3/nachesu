@@ -249,6 +249,29 @@ const CertificadoEletiva = () => {
         {/* prévia + ação (só quando 100%) */}
         {isComplete && (
           <>
+            <div className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8 mb-6 mx-auto w-full max-w-3xl">
+              <label htmlFor="cert-name" className="block font-display uppercase text-2xl leading-tight mb-1">
+                seu nome completo
+              </label>
+              <p className="font-body text-sm text-perestroika-preto/70 mb-4">
+                é assim que vai aparecer impresso no certificado. capriche na grafia.
+              </p>
+              <input
+                id="cert-name"
+                type="text"
+                value={nameInput}
+                onChange={(e) => { setNameInput(e.target.value); setNameTouched(true); }}
+                placeholder={defaultName}
+                maxLength={80}
+                autoComplete="name"
+                className="w-full rounded-2xl border-2 border-perestroika-preto/20 bg-white px-4 py-3 font-body text-base text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto transition-colors"
+              />
+              {nameTouched && trimmedName.length > 0 && trimmedName.length < 2 && (
+                <p className="mt-2 font-body text-xs text-perestroika-vermelho">nome muito curto.</p>
+              )}
+            </div>
+
+
             <div
               className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mb-6 mx-auto w-full max-w-3xl"
             >
