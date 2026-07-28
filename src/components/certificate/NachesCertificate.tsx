@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { NachesULogo } from "@/components/brand/NachesULogo";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
 export interface NachesCertificateProps {
   fullName: string;
@@ -53,6 +54,15 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
           aria-hidden
           style={{ position: "absolute", top: 0, left: 0, right: 0, height: 18, background: accentColor }}
         />
+
+        {/* mascote no canto superior direito */}
+        <div
+          aria-hidden
+          style={{ position: "absolute", top: 42, right: 78 }}
+        >
+          <EletivaSymbol pose="celebrating" size={150} />
+        </div>
+
         {/* faixa inferior */}
         <div
           aria-hidden
