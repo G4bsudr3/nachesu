@@ -54,6 +54,15 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
           aria-hidden
           style={{ position: "absolute", top: 0, left: 0, right: 0, height: 18, background: accentColor }}
         />
+
+        {/* mascote no canto superior direito */}
+        <div
+          aria-hidden
+          style={{ position: "absolute", top: 34, right: 48 }}
+        >
+          <EletivaSymbol pose="celebrating" size={170} />
+        </div>
+
         {/* faixa inferior */}
         <div
           aria-hidden
