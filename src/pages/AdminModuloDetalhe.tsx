@@ -11,6 +11,7 @@ import { FeedbackReviewDrawer } from "@/features/admin/FeedbackReviewDrawer";
 import type { DeliverableInbox } from "@/features/admin/usePendingDeliverables";
 import { computeCompleteness } from "@/features/admin/deliverableRendering/completeness";
 import type { PillForResolve, PillKind } from "@/features/admin/deliverableRendering/types";
+import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
 import type { Database } from "@/integrations/supabase/types";
 
 type DeliverableRow = Database["public"]["Tables"]["module_deliverables"]["Row"];
@@ -34,6 +35,8 @@ type PillRow = {
   body_md: string | null;
   duration_min_low: number | null;
   duration_min_high: number | null;
+  video_url?: string | null;
+  attachment_url?: string | null;
   required: boolean | null;
   interaction_schema: Record<string, unknown> | null;
 };
