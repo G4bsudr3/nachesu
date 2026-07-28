@@ -189,16 +189,32 @@ const CertificadoEletiva = () => {
         {/* prévia + ação (só quando 100%) */}
         {isComplete && (
           <>
-            <div className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mb-6 overflow-hidden">
-              <div className="w-full overflow-x-auto">
+            <div
+              className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mb-6 overflow-hidden"
+              style={{
+                // escala responsiva: nunca ultrapassa a largura disponível.
+                // altura do wrapper acompanha a escala aplicada.
+                ["--cert-scale" as string]: "min(1, (100vw - 96px) / 1414)",
+              }}
+            >
+              <div
+                style={{
+                  width: "calc(1414px * var(--cert-scale))",
+                  height: "calc(1000px * var(--cert-scale))",
+                  margin: "0 auto",
+                  position: "relative",
+                }}
+              >
                 <div
-                  className="mx-auto shadow-xl rounded-lg overflow-hidden"
+                  className="shadow-xl rounded-lg overflow-hidden"
                   style={{
                     width: NACHES_CERTIFICATE_DIMENSIONS.width,
                     height: NACHES_CERTIFICATE_DIMENSIONS.height,
-                    transform: "scale(var(--cert-scale, 0.5))",
+                    transform: "scale(var(--cert-scale))",
                     transformOrigin: "top left",
-                    marginBottom: "calc((var(--cert-scale, 0.5) - 1) * 1000px)",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
                   }}
                 >
                   <NachesCertificate
@@ -210,10 +226,6 @@ const CertificadoEletiva = () => {
                   />
                 </div>
               </div>
-              <style>{`
-                @media (min-width: 640px) { .cert-preview { --cert-scale: 0.6; } }
-                @media (min-width: 1024px) { .cert-preview { --cert-scale: 0.68; } }
-              `}</style>
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6">
