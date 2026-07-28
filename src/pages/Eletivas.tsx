@@ -88,13 +88,13 @@ const Eletivas = () => {
       {/* hero */}
       <section className="container relative pt-12 pb-16 sm:pt-20 sm:pb-24">
         <motion.div
-          className="absolute right-2 top-0 sm:right-12 sm:top-6 pointer-events-none z-0"
+          className="absolute right-2 top-1 sm:right-12 sm:top-6 pointer-events-none z-0 opacity-55 sm:opacity-100"
           animate={prefersReducedMotion ? undefined : { rotate: [8, 14, 8] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           aria-hidden="true"
         >
           <span className="block sm:hidden">
-            <EletivaSymbol size={88} rotate={6} pose="thinking" />
+            <EletivaSymbol size={56} rotate={6} pose="thinking" />
           </span>
           <span className="hidden sm:block">
             <EletivaSymbol size={140} rotate={6} pose="thinking" />
