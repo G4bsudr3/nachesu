@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Menu, Command as CommandIcon } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { AdminSidebar, OPERACAO } from "./AdminSidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { CommandPalette, useCommandPaletteHotkey } from "../CommandPalette";
@@ -66,11 +66,10 @@ export const AdminLayout = () => {
             <button
               type="button"
               onClick={() => setCmdOpen(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-perestroika-bege/50 hover:bg-perestroika-bege/80 px-2.5 py-1 text-[11px] text-perestroika-preto/65 transition-colors"
+              aria-label="busca rápida"
+              className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-md border border-perestroika-preto/15 bg-perestroika-bege/50 hover:bg-perestroika-bege/80 text-perestroika-preto/65 transition-colors"
             >
-              <CommandIcon className="w-3 h-3" />
-              busca rápida
-              <kbd className="ml-1 font-mono text-[10px] text-perestroika-preto/45">⌘K</kbd>
+              <Search className="w-4 h-4" />
             </button>
             <Link
               to="/app"
