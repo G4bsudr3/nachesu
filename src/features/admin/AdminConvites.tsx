@@ -239,6 +239,9 @@ export function AdminConvites() {
           </div>
         </div>
 
+        <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
+          {filteredLog.length} {filteredLog.length === 1 ? "envio" : "envios"} no recorte
+        </p>
         <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
           <Table>
             <TableHeader>

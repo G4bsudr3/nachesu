@@ -84,6 +84,9 @@ export const AdminRubrics = () => {
         </button>
       </div>
 
+      <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
+        {rubrics.length} {rubrics.length === 1 ? "rubrica" : "rubricas"}
+      </p>
       <ul className="space-y-3">
         {rubrics.map((r) => (
           <li

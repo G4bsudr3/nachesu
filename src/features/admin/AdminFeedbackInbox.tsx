@@ -377,6 +377,9 @@ export const AdminFeedbackInbox = () => {
         />
       </div>
 
+      <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
+        {isLoading ? "carregando…" : `${filteredData.length} ${filteredData.length === 1 ? "entrega" : "entregas"} nesse recorte`}
+      </p>
       <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
