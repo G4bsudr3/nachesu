@@ -9,14 +9,13 @@ import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 
 import { DefinirSenhaCard } from "@/components/DefinirSenhaCard";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
-import { EletivaCard } from "@/components/dashboard/EletivaCard";
 import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { MyCoursesList } from "@/components/dashboard/MyCoursesList";
 import { DashboardCommandPanel } from "@/components/dashboard/DashboardCommandPanel";
-import { DualEletivasHero } from "@/components/dashboard/DualEletivasHero";
+import { EletivasHero } from "@/components/dashboard/EletivasHero";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 
 const AppDashboard = () => {
@@ -96,13 +95,8 @@ const AppDashboard = () => {
           />
 
 
-          {/* 2+ matrículas → hero paralelo com as duas eletivas em peso equivalente */}
-          {hasMultiple && <DualEletivasHero />}
-
-          {/* 1 matrícula → hero direto (CTA leva pro módulo atual) */}
-          {!hasMultiple && activeCourseId && (
-            <EletivaCard snapshot={eletiva ?? undefined} />
-          )}
+          {/* hero de eletivas: 1 card (largura cheia) ou 2 (grid) com mesmo tratamento */}
+          {enrollments && enrollments.length > 0 && <EletivasHero />}
 
           {/* painel de comando: só na visão de eletiva única (evita fixar em uma das duas) */}
           {!hasMultiple && activeCourseId && (
