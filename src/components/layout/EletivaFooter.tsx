@@ -24,12 +24,12 @@ export const EletivaFooter = ({ className, tone = "muted" }: EletivaFooterProps)
   return (
     <p
       className={cn(
-        "text-center text-xs font-body uppercase tracking-[0.18em]",
+        "text-center text-[10px] sm:text-xs font-body uppercase tracking-[0.14em] sm:tracking-[0.18em] leading-relaxed px-4 text-balance",
         toneClass,
         className,
       )}
     >
-      NACHESU · UMA PLATAFORMA NACHES&nbsp; EM PARCERIA COM ESCOLA SEBRAE
+      NACHESU · UMA PLATAFORMA NACHES · EM PARCERIA COM ESCOLA SEBRAE
     </p>
   );
 };
