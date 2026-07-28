@@ -182,6 +182,8 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             >
               <span>guiado por {professorName.toLowerCase()}</span>
               <span style={{ opacity: 0.4 }}>·</span>
+              <span>carga horária 20h</span>
+              <span style={{ opacity: 0.4 }}>·</span>
               <span>{dateLabel}</span>
             </div>
           </div>
