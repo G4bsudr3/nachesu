@@ -91,9 +91,6 @@ export const AdminSidebar = ({
       <div className="px-3 py-3 border-t border-perestroika-preto/10 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-[11px] text-perestroika-preto/55">
           <EletivaSymbol pose="thinking" size={28} />
-          <kbd className="rounded border border-perestroika-preto/20 px-1.5 py-0.5 text-[10px] font-mono">
-            ⌘K
-          </kbd>
         </div>
         <button
           type="button"
