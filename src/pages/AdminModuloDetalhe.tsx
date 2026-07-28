@@ -242,72 +242,44 @@ const AdminModuloDetalhe = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="conteudo" className="space-y-3">
+        <TabsContent value="conteudo" className="space-y-4">
           {missingSchema.length > 0 && (
             <div className="rounded-lg bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 text-sm flex items-center gap-2">
               <FileWarning className="w-4 h-4" />
-              {missingSchema.length} pílula(s) sem interaction_schema.
+              {missingSchema.length} pílula(s) sem interaction_schema. o estudante vê só o body_md nelas.
             </div>
           )}
-          {pills.map((p, i) => {
-            const hasSchema = !!p.interaction_schema;
-            return (
-              <article
-                key={p.id}
-                className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-5"
-              >
-                <header className="flex flex-wrap items-baseline gap-2 mb-3">
-                  <span
-                    className="font-display uppercase text-2xl leading-none tabular-nums"
-                    style={{ color }}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">
-                    {pillKindLabel[p.kind] ?? p.kind}
-                  </p>
-                  <h3 className="font-display uppercase text-xl leading-none flex-1">
-                    {p.title}
-                  </h3>
-                  {p.required && (
-                    <Badge className="bg-perestroika-preto text-perestroika-bege uppercase text-[9px]">
-                      obrigatória
-                    </Badge>
-                  )}
-                  {hasSchema ? (
-                    <Badge className="bg-emerald-100 text-emerald-800 uppercase text-[9px]">
-                      interativa
-                    </Badge>
-                  ) : (
-                    <Badge className="bg-rose-100 text-rose-800 uppercase text-[9px]">
-                      sem interaction_schema
-                    </Badge>
-                  )}
-                </header>
-                {p.body_md && (
-                  <p className="text-sm text-perestroika-preto/80 whitespace-pre-wrap leading-relaxed">
-                    {p.body_md}
-                  </p>
-                )}
-                {hasSchema && (
-                  <details className="mt-3">
-                    <summary className="cursor-pointer text-[11px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto">
-                      ver interaction_schema
-                    </summary>
-                    <pre className="mt-2 max-h-64 overflow-auto rounded bg-perestroika-preto/5 p-3 text-[11px] leading-snug">
-                      {JSON.stringify(p.interaction_schema, null, 2)}
-                    </pre>
-                  </details>
-                )}
-                {!hasSchema && (
-                  <p className="mt-3 text-[12px] text-rose-700">
-                    esta pílula ainda não tem conteúdo estruturado — o estudante vê apenas o body_md acima.
-                  </p>
-                )}
-              </article>
-            );
-          })}
-          <div className="pt-4">
+
+          {/* reaproveita o dispatcher do estudante: mesmo visual, mesmos componentes
+              (PillEditorial, PillPBLEstruturado, PillChecklistPacto, etc.).
+              tudo desbloqueado pra admin, sem gate sequencial. */}
+          <ModuloPillList
+            pills={pills.map<ModuloPill>((p) => ({
+              id: p.id,
+              module_id: p.module_id,
+              order_index: p.order_index,
+              kind: p.kind as ModuloPill["kind"],
+              title: p.title,
+              body_md: p.body_md ?? "",
+              duration_min_low: p.duration_min_low,
+              duration_min_high: p.duration_min_high,
+              video_url: p.video_url ?? null,
+              attachment_url: p.attachment_url ?? null,
+              required: !!p.required,
+              interaction_schema: p.interaction_schema as ModuloPill["interaction_schema"],
+            }))}
+            loading={false}
+            completedPillIds={new Set()}
+            unlockedPillIds={new Set(pills.map((p) => p.id))}
+            trailColor={color}
+            hasTrail={!!trail}
+            moduleId={module.id}
+            onTogglePill={() => {}}
+            togglePending={false}
+            onOpenTutor={() => {}}
+          />
+
+          <div className="pt-2">
             <Link
               to={`/app/eletiva/${slug}/modulo/${module.number}`}
               className="text-[11px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto underline"
@@ -316,6 +288,7 @@ const AdminModuloDetalhe = () => {
             </Link>
           </div>
         </TabsContent>
+
 
         <TabsContent value="turma">
           <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white overflow-hidden">
