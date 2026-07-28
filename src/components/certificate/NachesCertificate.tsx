@@ -9,8 +9,6 @@ export interface NachesCertificateProps {
   accentColor: string;
   /** data curta (ex: "março de 2026"). se ausente, usa hoje. */
   issuedAt?: string;
-  /** total de horas do curso. default "16h40min". */
-  workload?: string;
 }
 
 const formatDatePtBr = (d = new Date()) =>
@@ -34,7 +32,6 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
       professorName,
       accentColor,
       issuedAt,
-      workload = "16h40min",
     },
     ref,
   ) => {
@@ -152,7 +149,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               >
                 {courseTitle.toLowerCase()}
               </strong>
-              , {workload} de prática em turma online do 1º ano do ensino médio na escola sebrae.
+              , de prática em turma online do 1º ano do ensino médio na escola sebrae.
               {courseSubtitle ? ` ${courseSubtitle.toLowerCase()}.` : ""}
             </p>
 
@@ -176,8 +173,6 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               <span>guiado por {professorName.toLowerCase()}</span>
               <span style={{ opacity: 0.4 }}>·</span>
               <span>{dateLabel}</span>
-              <span style={{ opacity: 0.4 }}>·</span>
-              <span>{workload}</span>
             </div>
           </div>
 
