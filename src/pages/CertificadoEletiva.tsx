@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, Award, Download, Loader2, Lock } from "lucide-react";
 import { toPng } from "html-to-image";
@@ -37,7 +37,9 @@ const CertificadoEletiva = () => {
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress(course?.id ?? null);
   const { data: dashData } = useDashboardData();
   const captureRef = useRef<HTMLDivElement>(null);
+  const previewBoxRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const [previewScale, setPreviewScale] = useState(0.42);
 
   if (!slug) return <Navigate to="/app" replace />;
 
@@ -55,6 +57,36 @@ const CertificadoEletiva = () => {
   const isComplete = totalPublished > 0 && totalCompleted >= totalPublished;
 
   const accent = useMemo(() => accentFor(slug), [slug]);
+
+  useEffect(() => {
+    if (!isComplete) return;
+
+    const updateScale = () => {
+      const box = previewBoxRef.current;
+      if (!box) return;
+
+      const availableWidth = box.clientWidth;
+      const availableHeight = Math.max(window.innerHeight * 0.42, 240);
+      const scale = Math.min(
+        availableWidth / NACHES_CERTIFICATE_DIMENSIONS.width,
+        availableHeight / NACHES_CERTIFICATE_DIMENSIONS.height,
+        0.5,
+      );
+
+      setPreviewScale(Math.max(scale, 0.18));
+    };
+
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    const box = previewBoxRef.current;
+    if (box) observer.observe(box);
+    window.addEventListener("resize", updateScale);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateScale);
+    };
+  }, [isComplete]);
 
   const handleDownload = async () => {
     if (!captureRef.current || !course) return;
@@ -191,17 +223,13 @@ const CertificadoEletiva = () => {
           <>
             <div
               className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mb-6 mx-auto w-full max-w-3xl"
-              style={{ containerType: "inline-size" }}
             >
               <div
+                ref={previewBoxRef}
+                className="w-full overflow-hidden"
                 style={{
-                  // escala responsiva: usa o menor entre largura do container e
-                  // 70% da altura da viewport, mantendo proporção 1414x1000
-                  // sem distorcer nem cortar em nenhuma tela.
-                  ["--cert-scale" as string]:
-                    "min(calc(100cqw / 1414), calc(70vh / 1000))",
-                  width: "calc(1414px * var(--cert-scale))",
-                  height: "calc(1000px * var(--cert-scale))",
+                  width: "100%",
+                  height: NACHES_CERTIFICATE_DIMENSIONS.height * previewScale,
                   position: "relative",
                   marginInline: "auto",
                 }}
@@ -211,11 +239,12 @@ const CertificadoEletiva = () => {
                   style={{
                     width: NACHES_CERTIFICATE_DIMENSIONS.width,
                     height: NACHES_CERTIFICATE_DIMENSIONS.height,
-                    transform: "scale(var(--cert-scale))",
+                    transform: `scale(${previewScale})`,
                     transformOrigin: "top left",
                     position: "absolute",
                     top: 0,
-                    left: 0,
+                    left: "50%",
+                    marginLeft: -(NACHES_CERTIFICATE_DIMENSIONS.width * previewScale) / 2,
                   }}
                 >
                   <NachesCertificate
