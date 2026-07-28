@@ -1,5 +1,4 @@
 import { forwardRef } from "react";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 
 export interface NachesCertificateProps {
