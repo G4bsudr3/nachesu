@@ -157,7 +157,7 @@ const ResetPassword = () => {
                 <button
                   type="submit"
                   disabled={submitting || !password || !confirm}
-                  className="w-full h-14 rounded-2xl bg-perestroika-preto text-perestroika-bege font-body font-medium uppercase tracking-wide flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 transition-transform"
+                  className="w-full h-14 rounded-2xl bg-perestroika-preto text-perestroika-bege font-body font-medium uppercase tracking-wide flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] disabled:bg-perestroika-preto/15 disabled:text-perestroika-preto/45 disabled:hover:scale-100 disabled:cursor-not-allowed transition-all"
                 >
                   {submitting ? "salvando…" : (
                     <>
