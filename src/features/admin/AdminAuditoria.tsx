@@ -165,16 +165,17 @@ export const AdminAuditoria = () => {
             </Popover>
           </div>
         </div>
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={downloadCSV}
-            className="h-9 inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
-          >
-            <Download className="w-3.5 h-3.5" /> exportar CSV
-          </button>
-        </div>
       </section>
+
+      <div className="flex justify-end -mt-3">
+        <button
+          type="button"
+          onClick={downloadCSV}
+          className="h-9 inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
+        >
+          <Download className="w-3.5 h-3.5" /> exportar CSV
+        </button>
+      </div>
 
       <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
         {isLoading ? (
