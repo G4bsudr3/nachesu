@@ -24,7 +24,7 @@ export const EletivaFooter = ({ className, tone = "muted" }: EletivaFooterProps)
   return (
     <div
       className={cn(
-        "w-full flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4 font-body uppercase text-[9px] sm:text-xs tracking-[0.12em] sm:tracking-[0.18em] leading-relaxed text-center",
+        "w-full flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4 font-body uppercase text-[9px] sm:text-xs tracking-[0.12em] sm:tracking-[0.18em] leading-relaxed text-center mt-8 mb-6",
         toneClass,
         className,
       )}
