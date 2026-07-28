@@ -257,22 +257,23 @@ const EletivaHome = () => {
             style={{ backgroundColor: courseAccent }}
           />
 
-          {/* mascote do tutor no topo do hero */}
+          {/* mascote do tutor no topo do hero — reduzido no mobile pra não colidir com o h1 */}
           <div
             aria-hidden
-            className="absolute top-2 right-2 sm:top-6 sm:right-6 pointer-events-none"
+            className="absolute top-2 right-2 sm:top-6 sm:right-6 pointer-events-none z-0"
           >
-            <EletivaSymbol
-              size={80}
-              pose="talking"
-              className="opacity-90 sm:opacity-100"
-            />
+            <span className="block sm:hidden">
+              <EletivaSymbol size={52} pose="talking" className="opacity-60" />
+            </span>
+            <span className="hidden sm:block">
+              <EletivaSymbol size={80} pose="talking" />
+            </span>
           </div>
 
-          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
+          <p className="relative z-10 font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
             sua eletiva
           </p>
-          <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.85] mb-3 max-w-[12ch] sm:max-w-[14ch] text-perestroika-preto">
+          <h1 className="relative z-10 font-display uppercase text-[42px] sm:text-7xl leading-[0.9] sm:leading-[0.85] mb-3 max-w-[9ch] sm:max-w-[14ch] text-perestroika-preto">
             {course.title.toLowerCase()}
           </h1>
           {course.subtitle && (
