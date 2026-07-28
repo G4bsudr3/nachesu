@@ -287,7 +287,7 @@ function Certificado({ nome, geradoEm }: { nome: string; geradoEm: string | null
           {nome}
         </h1>
         <p className="font-body text-sm sm:text-base text-perestroika-preto/75 max-w-lg leading-relaxed">
-          concluiu a eletiva <strong>economia circular e negócios regenerativos</strong> na plataforma nachesu, em parceria com a escola sebrae bh, com carga horária de <strong>16h40min</strong>.
+          concluiu a eletiva <strong>economia circular e negócios regenerativos</strong> na plataforma nachesu, em parceria com a escola sebrae bh, com carga horária de <strong>20h</strong>.
         </p>
         <div className="pt-4 space-y-1">
           <p className="font-display uppercase text-lg tracking-wide text-perestroika-preto">
