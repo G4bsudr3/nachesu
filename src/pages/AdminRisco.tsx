@@ -237,38 +237,38 @@ const AdminRisco = () => {
                 </p>
               </div>
             ) : (
-              <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
+              <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-perestroika-bege/60">
-                    <tr className="text-left font-body text-[11px] uppercase tracking-wide text-perestroika-preto/65">
-                      <th className="px-4 py-3">estudante</th>
-                      <th className="px-4 py-3 hidden sm:table-cell">eletiva</th>
-                      <th className="px-4 py-3">parado</th>
-                      <th className="px-4 py-3">nível</th>
-                      <th className="px-4 py-3"></th>
+                  <thead className="bg-perestroika-preto/5 text-[10px] uppercase tracking-wide text-perestroika-preto/60">
+                    <tr>
+                      <th className="text-left px-3 py-2 font-semibold">estudante</th>
+                      <th className="text-left px-3 py-2 font-semibold hidden sm:table-cell">eletiva</th>
+                      <th className="text-left px-3 py-2 font-semibold">parado</th>
+                      <th className="text-left px-3 py-2 font-semibold">nível</th>
+                      <th className="px-3 py-2"></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-perestroika-preto/10">
+                  <tbody className="divide-y divide-perestroika-preto/5">
                     {filteredRisk.map((r) => {
                       const profile = profiles[r.user_id];
                       const course = courses.find((c) => c.id === r.course_id);
                       const name = profile?.nickname || profile?.display_name || r.user_id.slice(0, 8);
                       return (
-                        <tr key={`${r.user_id}-${r.course_id}`} className="font-body text-sm">
-                          <td className="px-4 py-3 text-perestroika-preto">
+                        <tr key={`${r.user_id}-${r.course_id}`} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
+                          <td className="px-3 py-2 text-perestroika-preto">
                             {name}
                             {profile?.is_test && (
                               <span className="ml-2 text-[10px] uppercase tracking-wide text-perestroika-preto/40">teste</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 hidden sm:table-cell text-perestroika-preto/70">{course?.title ?? "–"}</td>
-                          <td className="px-4 py-3 text-perestroika-preto/70">
+                          <td className="px-3 py-2 hidden sm:table-cell text-perestroika-preto/70">{course?.title ?? "–"}</td>
+                          <td className="px-3 py-2 text-perestroika-preto/70">
                             {r.days_inactive}d
                             <span className="block text-[11px] text-perestroika-preto/45">
                               {formatDistanceToNow(new Date(r.last_activity_at), { locale: ptBR })}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-3 py-2">
                             <span className={cn(
                               "inline-block px-2 py-0.5 rounded-full text-[11px] uppercase tracking-wide font-semibold",
                               LEVEL_STYLE[r.risk_level],
@@ -276,7 +276,7 @@ const AdminRisco = () => {
                               {LEVEL_LABEL[r.risk_level]}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right">
+                          <td className="px-3 py-2 text-right">
                             <Link
                               to={`/admin/aluno/${r.user_id}`}
                               className="text-xs font-body uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto"
@@ -307,38 +307,38 @@ const AdminRisco = () => {
                 </p>
               </div>
             ) : (
-              <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
+              <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-perestroika-bege/60">
-                    <tr className="text-left font-body text-[11px] uppercase tracking-wide text-perestroika-preto/65">
-                      <th className="px-4 py-3">estudante</th>
-                      <th className="px-4 py-3 hidden sm:table-cell">eletiva</th>
-                      <th className="px-4 py-3">matriculou há</th>
-                      <th className="px-4 py-3"></th>
+                  <thead className="bg-perestroika-preto/5 text-[10px] uppercase tracking-wide text-perestroika-preto/60">
+                    <tr>
+                      <th className="text-left px-3 py-2 font-semibold">estudante</th>
+                      <th className="text-left px-3 py-2 font-semibold hidden sm:table-cell">eletiva</th>
+                      <th className="text-left px-3 py-2 font-semibold">matriculou há</th>
+                      <th className="px-3 py-2"></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-perestroika-preto/10">
+                  <tbody className="divide-y divide-perestroika-preto/5">
                     {filteredActivation.map((a) => {
                       const profile = profiles[a.user_id];
                       const course = courses.find((c) => c.id === a.course_id);
                       const name = profile?.nickname || profile?.display_name || a.user_id.slice(0, 8);
                       return (
-                        <tr key={`${a.user_id}-${a.course_id}`} className="font-body text-sm">
-                          <td className="px-4 py-3 text-perestroika-preto">
+                        <tr key={`${a.user_id}-${a.course_id}`} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
+                          <td className="px-3 py-2 text-perestroika-preto">
                             <UserPlus className="inline-block h-3.5 w-3.5 mr-1.5 text-perestroika-preto/40" />
                             {name}
                             {profile?.is_test && (
                               <span className="ml-2 text-[10px] uppercase tracking-wide text-perestroika-preto/40">teste</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 hidden sm:table-cell text-perestroika-preto/70">{course?.title ?? "–"}</td>
-                          <td className="px-4 py-3 text-perestroika-preto/70">
+                          <td className="px-3 py-2 hidden sm:table-cell text-perestroika-preto/70">{course?.title ?? "–"}</td>
+                          <td className="px-3 py-2 text-perestroika-preto/70">
                             {a.days_since_enroll}d
                             <span className="block text-[11px] text-perestroika-preto/45">
                               {formatDistanceToNow(new Date(a.enrolled_at), { locale: ptBR })}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right">
+                          <td className="px-3 py-2 text-right">
                             <Link
                               to={`/admin/aluno/${a.user_id}`}
                               className="text-xs font-body uppercase tracking-wide text-perestroika-preto/70 hover:text-perestroika-preto"

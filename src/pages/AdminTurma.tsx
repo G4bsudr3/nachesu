@@ -263,23 +263,23 @@ const AdminTurma = () => {
           ) : moduleAgg.length === 0 ? (
             <EmptyBlock title="ninguém começou ainda" sub="quando estudantes abrirem os módulos, o ritmo aparece aqui." />
           ) : (
-            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
+            <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-perestroika-bege/60">
-                  <tr className="text-left font-body text-[11px] uppercase tracking-wide text-perestroika-preto/65">
-                    <th className="px-4 py-3">módulo</th>
-                    <th className="px-4 py-3 text-center hidden sm:table-cell">iniciados</th>
-                    <th className="px-4 py-3 text-center">concluídos</th>
-                    <th className="px-4 py-3 text-center">tempo médio</th>
-                    <th className="px-4 py-3 w-[30%] hidden md:table-cell">conclusão</th>
+                <thead className="bg-perestroika-preto/5 text-[10px] uppercase tracking-wide text-perestroika-preto/60">
+                  <tr>
+                    <th className="text-left px-3 py-2 font-semibold">módulo</th>
+                    <th className="text-center px-3 py-2 font-semibold hidden sm:table-cell">iniciados</th>
+                    <th className="text-center px-3 py-2 font-semibold">concluídos</th>
+                    <th className="text-center px-3 py-2 font-semibold">tempo médio</th>
+                    <th className="text-left px-3 py-2 font-semibold w-[30%] hidden md:table-cell">conclusão</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-perestroika-preto/10">
+                <tbody className="divide-y divide-perestroika-preto/5">
                   {moduleAgg.map((m) => {
                     const pct = m.started > 0 ? Math.round((m.completed / m.started) * 100) : 0;
                     return (
-                      <tr key={m.module_id} className="font-body text-sm">
-                        <td className="px-4 py-3">
+                      <tr key={m.module_id} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
+                        <td className="px-3 py-2">
                           <p className="text-perestroika-preto">
                             <span className="text-perestroika-preto/45 mr-2">#{m.number}</span>
                             {m.title}
@@ -290,16 +290,16 @@ const AdminTurma = () => {
                             </p>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-center text-perestroika-preto/70 hidden sm:table-cell">
+                        <td className="px-3 py-2 text-center text-perestroika-preto/70 hidden sm:table-cell">
                           {m.started}
                         </td>
-                        <td className="px-4 py-3 text-center text-perestroika-preto">
+                        <td className="px-3 py-2 text-center text-perestroika-preto">
                           <span className="font-display text-xl">{m.completed}</span>
                         </td>
-                        <td className="px-4 py-3 text-center text-perestroika-preto/70">
+                        <td className="px-3 py-2 text-center text-perestroika-preto/70">
                           {fmtHours(m.avg_hours)}
                         </td>
-                        <td className="px-4 py-3 hidden md:table-cell">
+                        <td className="px-3 py-2 hidden md:table-cell">
                           <div className="h-1.5 rounded-full bg-perestroika-preto/10 overflow-hidden">
                             <div
                               className="h-full bg-primary"
@@ -336,22 +336,22 @@ const AdminTurma = () => {
           ) : risks.length === 0 ? (
             <EmptyBlock title="turma respirando" sub="ninguém parado há mais de 7 dias por aqui." />
           ) : (
-            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
+            <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
               <table className="w-full text-sm">
-                <tbody className="divide-y divide-perestroika-preto/10">
+                <tbody className="divide-y divide-perestroika-preto/5">
                   {risks.slice(0, 10).map((r) => {
                     const p = profiles[r.user_id];
                     const name = p?.nickname || p?.full_name || r.user_id.slice(0, 8);
                     return (
-                      <tr key={r.user_id} className="font-body text-sm">
-                        <td className="px-4 py-3 text-perestroika-preto">{name}</td>
-                        <td className="px-4 py-3 text-perestroika-preto/70">
+                      <tr key={r.user_id} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
+                        <td className="px-3 py-2 text-perestroika-preto">{name}</td>
+                        <td className="px-3 py-2 text-perestroika-preto/70">
                           {r.days_inactive}d
                           <span className="block text-[11px] text-perestroika-preto/45">
                             {formatDistanceToNow(new Date(r.last_activity_at), { locale: ptBR })}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-3 py-2 text-right">
                           <span
                             className={cn(
                               "inline-block px-2 py-0.5 rounded-full text-[11px] uppercase tracking-wide font-semibold",
@@ -379,29 +379,29 @@ const AdminTurma = () => {
           ) : deliverables.length === 0 ? (
             <EmptyBlock title="fila vazia" sub="nenhuma entrega esperando feedback agora." />
           ) : (
-            <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege overflow-hidden">
+            <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
               <table className="w-full text-sm">
-                <tbody className="divide-y divide-perestroika-preto/10">
+                <tbody className="divide-y divide-perestroika-preto/5">
                   {deliverables.map((d) => {
                     const p = profiles[d.user_id];
                     const name = p?.nickname || p?.full_name || d.user_id.slice(0, 8);
                     const num = d.modules?.number;
                     return (
-                      <tr key={d.id} className="font-body text-sm">
-                        <td className="px-4 py-3 text-perestroika-preto">
+                      <tr key={d.id} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
+                        <td className="px-3 py-2 text-perestroika-preto">
                           {name}
                           <span className="block text-[11px] text-perestroika-preto/45">
                             módulo {num ?? "?"} · {d.modules?.title ?? ""}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-perestroika-preto/70 text-right">
+                        <td className="px-3 py-2 text-perestroika-preto/70 text-right">
                           {d.submitted_at && (
                             <span className="text-[11px]">
                               enviado {formatDistanceToNow(new Date(d.submitted_at), { locale: ptBR })}
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-3 py-2 text-right">
                           {num != null && (
                             <Link
                               to={`/admin/aula/${num}`}
