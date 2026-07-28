@@ -325,7 +325,7 @@ const CertificadoEletiva = () => {
               <button
                 type="button"
                 onClick={handleDownload}
-                disabled={downloading}
+                disabled={downloading || !canDownload}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {downloading ? (
