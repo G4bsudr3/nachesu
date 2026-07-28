@@ -8,7 +8,7 @@ import { NachesULogo } from "@/components/brand/NachesULogo";
 import { Badge } from "@/components/ui/badge";
 
 const findLabel = (pathname: string) => {
-  const all = [...OPERACAO];
+  const all = [...ADMIN_NAV_ITEMS];
   // priorize match mais específico
   const sorted = [...all].sort((a, b) => b.to.length - a.to.length);
   const hit = sorted.find((i) =>
