@@ -6,9 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import {
+  AdminTableWrapper,
+  AdminTable,
+  AdminTHead,
+  AdminTBody,
+  AdminTR,
+  AdminTH,
+  AdminTD,
+} from "@/components/admin/ui/AdminTable";
 
 import { toast } from "sonner";
-import { ChevronLeft, Mail, Lock, Unlock, Send } from "lucide-react";
+import { ChevronLeft, Mail, Lock, Unlock, Send, ChevronRight } from "lucide-react";
 
 type Course = {
   id: string;
