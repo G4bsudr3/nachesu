@@ -164,7 +164,7 @@ const AccountSettings = () => {
             </h2>
           </div>
           <p className="font-body text-sm text-perestroika-preto/70 mb-5">
-            se preencher, aparece em <Link to="/app/hub/turma" className="underline decoration-perestroika-laranja decoration-2 underline-offset-4">redes da turma</Link> e fica fácil o seu pessoal te achar.
+            se preencher, aparece em <Link to="/app/hub/turma" className="font-medium underline decoration-perestroika-preto/40 decoration-1 underline-offset-4 hover:decoration-perestroika-preto transition-colors">redes da turma</Link> e fica fácil o seu pessoal te achar.
           </p>
           <div className="space-y-3">
             <div>
