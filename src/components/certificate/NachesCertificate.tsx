@@ -89,6 +89,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
                 color: "rgba(9,9,9,0.62)",
                 fontWeight: 600,
                 marginTop: 8,
+                textAlign: "center",
               }}
             >
               certificado de conclusão
