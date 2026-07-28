@@ -349,6 +349,37 @@ const EletivaHome = () => {
             </div>
           )}
 
+          {/* certificado liberado: aparece só quando 100% dos módulos publicados foram concluídos */}
+          {!snapLoading && totalPublished > 0 && totalCompleted >= totalPublished && (
+            <div
+              className="rounded-2xl border-2 p-5 sm:p-6 shadow-sm"
+              style={{
+                borderColor: slug === "economia-circular" ? "#8A85BF" : "#f756a6",
+                background:
+                  slug === "economia-circular"
+                    ? "linear-gradient(135deg, rgba(138,133,191,0.16), rgba(242,228,216,0.6))"
+                    : "linear-gradient(135deg, rgba(247,86,166,0.16), rgba(242,228,216,0.6))",
+              }}
+            >
+              <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/70 mb-2">
+                você chegou até o fim
+              </p>
+              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
+                seu certificado tá liberado
+              </h2>
+              <p className="font-body text-sm text-perestroika-preto/80 mb-4 max-w-lg">
+                100% da eletiva concluída. baixe seu certificado oficial em alta resolução.
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate(`/app/eletiva/${slug}/certificado`)}
+                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+              >
+                baixar certificado <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
         </motion.section>
 
         {/* mapa de módulos com estado */}
