@@ -146,7 +146,7 @@ const CertificadoEletiva = () => {
             seu certificado
           </p>
           <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.88] mb-3">
-            {isComplete ? "chegou lá." : "quase lá."}
+            {isComplete ? "BOA! VOCÊ CHEGOU LÁ." : "quase lá."}
           </h1>
           <p className="font-body text-base sm:text-lg text-perestroika-preto/75">
             {isComplete
