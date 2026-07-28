@@ -71,6 +71,9 @@ const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx")
 const Marco = lazy(() => import("./pages/Marco.tsx"));
 const Comecar = lazy(() => import("./pages/Comecar.tsx"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
+const AdminEletivaModulos = lazy(() => import("./pages/AdminEletivaModulos.tsx"));
+const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
+const AdminCorrecoes = lazy(() => import("./pages/AdminCorrecoes.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
