@@ -95,7 +95,7 @@ export const AdminAuditoria = () => {
         </p>
       </header>
 
-      <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4 space-y-3">
+      <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4">
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[200px]">
             <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1">
@@ -123,6 +123,47 @@ export const AdminAuditoria = () => {
               <option value={90}>últimos 90 dias</option>
             </select>
           </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1">
+              filtrar por ação
+            </label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="h-9 inline-flex items-center gap-2 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
+                >
+                  <Filter className="w-3.5 h-3.5" />
+                  {actions.length === 0 ? "todas as ações" : `${actions.length} ação${actions.length > 1 ? "ões" : ""}`}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-3 border-perestroika-preto/15 bg-perestroika-bege">
+                <div className="space-y-2">
+                  {ACTIONS.map((a) => (
+                    <label
+                      key={a}
+                      className="flex items-center gap-2 text-sm cursor-pointer hover:bg-perestroika-preto/5 rounded px-1 py-1"
+                    >
+                      <Checkbox
+                        checked={actions.includes(a)}
+                        onCheckedChange={() => toggleAction(a)}
+                      />
+                      <span className="text-perestroika-preto/90">{ACTION_LABEL[a] ?? a}</span>
+                    </label>
+                  ))}
+                </div>
+                {actions.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setActions([])}
+                    className="mt-3 flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto"
+                  >
+                    <X className="w-3 h-3" /> limpar filtros
+                  </button>
+                )}
+              </PopoverContent>
+            </Popover>
+          </div>
           <button
             type="button"
             onClick={downloadCSV}
@@ -130,48 +171,6 @@ export const AdminAuditoria = () => {
           >
             <Download className="w-3.5 h-3.5" /> CSV
           </button>
-        </div>
-
-        <div>
-          <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1.5">
-            filtrar por ação
-          </label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className="h-9 inline-flex items-center gap-2 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
-              >
-                <Filter className="w-3.5 h-3.5" />
-                {actions.length === 0 ? "todas as ações" : `${actions.length} ação${actions.length > 1 ? "ões" : ""}`}
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-64 p-3 border-perestroika-preto/15 bg-perestroika-bege">
-              <div className="space-y-2">
-                {ACTIONS.map((a) => (
-                  <label
-                    key={a}
-                    className="flex items-center gap-2 text-sm cursor-pointer hover:bg-perestroika-preto/5 rounded px-1 py-1"
-                  >
-                    <Checkbox
-                      checked={actions.includes(a)}
-                      onCheckedChange={() => toggleAction(a)}
-                    />
-                    <span className="text-perestroika-preto/90">{ACTION_LABEL[a] ?? a}</span>
-                  </label>
-                ))}
-              </div>
-              {actions.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setActions([])}
-                  className="mt-3 flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto"
-                >
-                  <X className="w-3 h-3" /> limpar filtros
-                </button>
-              )}
-            </PopoverContent>
-          </Popover>
         </div>
       </section>
 
