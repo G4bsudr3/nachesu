@@ -69,6 +69,10 @@ const AdminCorrecoes = () => {
         </div>
       )}
 
+      <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
+        {sorted.length} {sorted.length === 1 ? "entrega" : "entregas"} na fila
+      </p>
+
       <ul className="space-y-2">
         {sorted.map((d) => {
           const dias = daysAgo(d.submitted_at);
