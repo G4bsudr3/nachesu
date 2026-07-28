@@ -121,7 +121,7 @@ export const AdminAuditoria = () => {
               <option value={7}>últimos 7 dias</option>
               <option value={30}>últimos 30 dias</option>
               <option value={90}>últimos 90 dias</option>
-            </>select>
+            </select>
           </div>
           <div>
             <label className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 block mb-1">
