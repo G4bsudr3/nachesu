@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Step {
   pose: "talking" | "thinking" | "celebrating" | "building";
@@ -17,27 +19,79 @@ interface Props {
   professorName?: string | null;
 }
 
-const STORAGE_KEY = (slug: string) => `eletiva:onboarded:${slug}`;
+// step_id compartilhado com tutorial_progress. persiste por usuário no db
+// (não em localStorage) pra não reaparecer em outro dispositivo/navegador.
+const stepId = (slug: string) => `eletiva-welcome:${slug}`;
+const LEGACY_LS_KEY = (slug: string) => `eletiva:onboarded:${slug}`;
 
 export const EletivaOnboardingOverlay = ({ slug, courseTitle, professorName }: Props) => {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.localStorage.getItem(STORAGE_KEY(slug))) return;
-    // pequena demora pra não competir com a entrada da página
-    const t = setTimeout(() => setOpen(true), 350);
-    return () => clearTimeout(t);
-  }, [slug]);
+    if (!user?.id) return;
+    let cancelled = false;
 
-  const close = () => {
+    (async () => {
+      // migração transparente: se já tem flag antiga no localStorage,
+      // grava no db e não abre.
+      let alreadySeen = false;
+      try {
+        if (typeof window !== "undefined" && window.localStorage.getItem(LEGACY_LS_KEY(slug))) {
+          alreadySeen = true;
+        }
+      } catch {
+        /* private mode */
+      }
+
+      if (!alreadySeen) {
+        const { data } = await supabase
+          .from("tutorial_progress")
+          .select("step_id")
+          .eq("user_id", user.id)
+          .eq("step_id", stepId(slug))
+          .maybeSingle();
+        alreadySeen = !!data;
+      }
+
+      if (cancelled) return;
+
+      if (alreadySeen) {
+        // garante upsert pra consolidar a flag no db em qualquer caminho
+        void supabase
+          .from("tutorial_progress")
+          .upsert(
+            { user_id: user.id, step_id: stepId(slug) },
+            { onConflict: "user_id,step_id" }
+          );
+        return;
+      }
+
+      const t = setTimeout(() => setOpen(true), 350);
+      return () => clearTimeout(t);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, user?.id]);
+
+  const close = async () => {
+    setOpen(false);
     try {
-      window.localStorage.setItem(STORAGE_KEY(slug), "1");
+      window.localStorage.setItem(LEGACY_LS_KEY(slug), "1");
     } catch {
       /* private mode */
     }
-    setOpen(false);
+    if (user?.id) {
+      await supabase
+        .from("tutorial_progress")
+        .upsert(
+          { user_id: user.id, step_id: stepId(slug) },
+          { onConflict: "user_id,step_id" }
+        );
+    }
   };
 
   const steps: Step[] = [
