@@ -32,7 +32,6 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
       professorName,
       accentColor,
       issuedAt,
-      workload = "16h40min",
     },
     ref,
   ) => {
