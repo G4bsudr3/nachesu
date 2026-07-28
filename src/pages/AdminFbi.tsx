@@ -100,13 +100,6 @@ const AdminFbi = () => {
     }
   }, [currentTab, navigate, routePrefix]);
 
-  const handleTabChange = (v: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.delete("tab");
-    const qs = params.toString();
-    navigate(`${routePrefix}/${v}${qs ? `?${qs}` : ""}`, { replace: true });
-  };
-
   const ActiveTab = TAB_COMPONENTS[currentTab];
 
   return (
