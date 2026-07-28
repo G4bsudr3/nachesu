@@ -146,29 +146,9 @@ const AdminFbi = () => {
             </button>
           </div>
 
-          <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="bg-perestroika-preto/5 mb-6 inline-flex flex-wrap h-auto">
-              <TabsTrigger value="eletivas" className="uppercase tracking-wide text-xs">eletivas</TabsTrigger>
-              <TabsTrigger value="convites" className="uppercase tracking-wide text-xs">convites</TabsTrigger>
-              <TabsTrigger value="review" className="uppercase tracking-wide text-xs">revisão</TabsTrigger>
-              <TabsTrigger value="trilha" className="uppercase tracking-wide text-xs">trilha</TabsTrigger>
-              <TabsTrigger value="tutor" className="uppercase tracking-wide text-xs">tutor IA</TabsTrigger>
-              <TabsTrigger value="respostas" className="uppercase tracking-wide text-xs">respostas</TabsTrigger>
-              <TabsTrigger value="materiais" className="uppercase tracking-wide text-xs">materiais</TabsTrigger>
-              <TabsTrigger value="pending" className="uppercase tracking-wide text-xs">pendentes</TabsTrigger>
-              <TabsTrigger value="usuarios" className="uppercase tracking-wide text-xs">usuários</TabsTrigger>
-              <TabsTrigger value="nudges" className="uppercase tracking-wide text-xs">nudges</TabsTrigger>
-              <TabsTrigger value="rubricas" className="uppercase tracking-wide text-xs">rubricas</TabsTrigger>
-              <TabsTrigger value="copy-audit" className="uppercase tracking-wide text-xs">auditoria copy</TabsTrigger>
-              <TabsTrigger value="eletiva" className="uppercase tracking-wide text-xs">settings</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value={currentTab} forceMount>
-              <Suspense fallback={<TabFallback />}>
-                <ActiveTab />
-              </Suspense>
-            </TabsContent>
-          </Tabs>
+          <Suspense fallback={<TabFallback />}>
+            <ActiveTab />
+          </Suspense>
         </motion.div>
       </main>
     </div>
