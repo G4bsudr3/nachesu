@@ -192,25 +192,17 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               borderTop: "1px solid rgba(9,9,9,0.14)",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: 4, textAlign: "center" }}>
-              <span
-                className="font-body uppercase"
-                style={{
-                  fontSize: 11,
-                  letterSpacing: "0.3em",
-                  color: "rgba(9,9,9,0.55)",
-                  fontWeight: 600,
-                }}
-              >
-                uma realização
-              </span>
-              <span
-                className="font-display uppercase"
-                style={{ fontSize: 22, letterSpacing: "0.02em", color: "#090909" }}
-              >
-                naches · em parceria com escola sebrae
-              </span>
-            </div>
+            <span
+              className="font-display uppercase"
+              style={{
+                fontSize: 20,
+                letterSpacing: "0.08em",
+                color: "#090909",
+                textAlign: "center",
+              }}
+            >
+              uma realização naches · em parceria com escola sebrae
+            </span>
           </div>
         </div>
       </div>
