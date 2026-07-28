@@ -69,37 +69,58 @@ export function AdminEletivas() {
         <p className="font-body text-sm">carregando...</p>
       ) : (
         <>
-        <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
-          {courses.length} {courses.length === 1 ? "eletiva" : "eletivas"}
-        </p>
-        <div className="space-y-2">
-          {courses.map((c) => (
-            <div
-              key={c.id}
-              className="flex items-center justify-between gap-4 p-4 rounded-lg border border-perestroika-preto/10 bg-perestroika-bege cursor-pointer hover:bg-perestroika-bege/40 transition"
-              onClick={() => setSelected(c)}
-            >
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-display text-xl uppercase">{c.title}</h3>
-                  {c.published ? (
-                    <Badge variant="secondary">publicada</Badge>
-                  ) : (
-                    <Badge variant="outline">rascunho</Badge>
-                  )}
-                </div>
-                <p className="font-body text-xs text-perestroika-preto/60">
-                  prof. {c.professor_name}
-                </p>
-                {c.subtitle && (
-                  <p className="font-body text-sm mt-1 text-perestroika-preto/70">{c.subtitle}</p>
-                )}
-                <p className="font-body text-[11px] text-perestroika-preto/55 mt-1">slug: {c.slug}</p>
-              </div>
-              <ChevronLeft className="h-5 w-5 shrink-0 -rotate-180 text-perestroika-preto/40" />
-            </div>
-          ))}
-        </div>
+          <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+            {courses.length} {courses.length === 1 ? "eletiva" : "eletivas"}
+          </p>
+          <AdminTableWrapper scroll>
+            <AdminTable>
+              <AdminTHead>
+                <tr>
+                  <AdminTH>eletiva</AdminTH>
+                  <AdminTH>status</AdminTH>
+                  <AdminTH>educador</AdminTH>
+                  <AdminTH>slug</AdminTH>
+                  <AdminTH className="w-10"></AdminTH>
+                </tr>
+              </AdminTHead>
+              <AdminTBody>
+                {courses.map((c) => (
+                  <AdminTR key={c.id} onClick={() => setSelected(c)} className="cursor-pointer">
+                    <AdminTD>
+                      <div className="min-w-0">
+                        <p className="font-display text-lg uppercase">{c.title}</p>
+                        {c.subtitle && (
+                          <p className="font-body text-xs text-perestroika-preto/60 truncate max-w-[280px]">
+                            {c.subtitle}
+                          </p>
+                        )}
+                      </div>
+                    </AdminTD>
+                    <AdminTD>
+                      {c.published ? (
+                        <Badge variant="secondary">publicada</Badge>
+                      ) : (
+                        <Badge variant="outline">rascunho</Badge>
+                      )}
+                    </AdminTD>
+                    <AdminTD>
+                      <span className="font-body text-sm text-perestroika-preto/70">
+                        prof. {c.professor_name}
+                      </span>
+                    </AdminTD>
+                    <AdminTD>
+                      <span className="font-mono text-[11px] text-perestroika-preto/55">
+                        {c.slug}
+                      </span>
+                    </AdminTD>
+                    <AdminTD>
+                      <ChevronRight className="h-4 w-4 text-perestroika-preto/40" />
+                    </AdminTD>
+                  </AdminTR>
+                ))}
+              </AdminTBody>
+            </AdminTable>
+          </AdminTableWrapper>
         </>
       )}
     </div>
