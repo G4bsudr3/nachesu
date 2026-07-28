@@ -10,8 +10,8 @@ interface Props {
    * pra "boa, você tá construindo. 3/5 fechados." no segundo seguinte.
    */
   loading?: boolean;
-  /** aluno matriculado em 2+ eletivas — troca o convite pra escolha entre eletivas. */
-  hasMultiple?: boolean;
+  /** quantidade de eletivas ativas do aluno — define o convite de escolha. */
+  enrollmentCount?: number;
 }
 
 const buildContextLine = (
