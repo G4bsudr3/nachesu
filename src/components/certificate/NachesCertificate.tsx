@@ -162,12 +162,15 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               style={{
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "center",
+                alignSelf: "center",
                 gap: 20,
                 fontSize: 16,
                 letterSpacing: "0.24em",
                 color: "rgba(9,9,9,0.62)",
                 fontWeight: 600,
                 marginTop: 6,
+                width: "100%",
               }}
             >
               <span>guiado por {professorName.toLowerCase()}</span>
