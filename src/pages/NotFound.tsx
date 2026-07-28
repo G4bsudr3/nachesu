@@ -29,7 +29,7 @@ const NotFound = () => {
           aria-label="ir para o início"
           className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto rounded-md"
         >
-          <NachesULogo variant="preto" className="h-6 sm:h-7 w-auto" />
+          <NachesULogo variant="ink" className="h-6 sm:h-7 w-auto" />
         </Link>
       </header>
 
