@@ -3,7 +3,7 @@ import { Command } from "cmdk";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut, Link2, Sparkles, Search, UserCheck, User } from "lucide-react";
-import { OPERACAO } from "./layout/AdminSidebar";
+import { ADMIN_NAV_ITEMS } from "./layout/AdminSidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminInsight } from "@/hooks/useAdminInsight";
 import { supabase } from "@/integrations/supabase/client";

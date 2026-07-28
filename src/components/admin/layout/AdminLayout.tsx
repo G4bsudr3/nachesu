@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { Menu, Search } from "lucide-react";
-import { AdminSidebar, OPERACAO } from "./AdminSidebar";
+import { AdminSidebar, ADMIN_NAV_ITEMS } from "./AdminSidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { CommandPalette, useCommandPaletteHotkey } from "../CommandPalette";
 import { NachesULogo } from "@/components/brand/NachesULogo";
