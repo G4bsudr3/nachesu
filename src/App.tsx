@@ -283,6 +283,9 @@ const App = () => (
                 <Route path="/admin/eletiva/economia-circular/modulo/19" element={<AdminEletivaModulo19 />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/20" element={<AdminEletivaModulo20 />} />
                 <Route path="/dossie/:userId" element={<DossieAluno />} />
+                <Route path="/admin/correcoes" element={<AdminCorrecoes />} />
+                <Route path="/admin/eletiva/:slug/modulos" element={<AdminEletivaModulos />} />
+                <Route path="/admin/eletiva/:slug/modulo/:number" element={<AdminModuloDetalhe />} />
                 <Route path="/admin/:tab" element={<AdminFbi />} />
               </Route>
 
