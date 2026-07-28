@@ -1,5 +1,4 @@
 import { forwardRef } from "react";
-import { EletivaStar } from "@/components/brand/EletivaStar";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 
 export interface NachesCertificateProps {
@@ -79,11 +78,6 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             justifyContent: "space-between",
           }}
         >
-          {/* estrela ornamental no canto superior direito */}
-          <div style={{ position: "absolute", top: 44, right: 60, zIndex: 1 }}>
-            <EletivaStar size={96} color="preta" />
-          </div>
-
           {/* header: logo + rótulo */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <NachesULogo variant="ink" height={40} showSelo={false} />
