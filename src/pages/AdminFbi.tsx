@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight, Copy } from "lucide-react";
+import { ChevronRight, Link2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -123,6 +123,7 @@ const AdminFbi = () => {
             </nav>
             <button
               type="button"
+              aria-label="copiar url da aba"
               onClick={() => {
                 const qs = searchParams.toString();
                 const url = `${window.location.origin}${routePrefix}/${currentTab}${qs ? `?${qs}` : ""}`;
@@ -131,10 +132,9 @@ const AdminFbi = () => {
                   () => toast.error("não consegui copiar"),
                 );
               }}
-              className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-perestroika-preto/50 hover:text-perestroika-preto transition-colors"
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-perestroika-preto/40 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
             >
-              <Copy className="w-3 h-3" />
-              copiar link
+              <Link2 className="w-4 h-4" />
             </button>
           </div>
 
