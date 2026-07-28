@@ -95,6 +95,16 @@ export const AdminAuditoria = () => {
         </p>
       </header>
 
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={downloadCSV}
+          className="h-9 inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
+        >
+          <Download className="w-3.5 h-3.5" /> exportar CSV
+        </button>
+      </div>
+
       <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4 space-y-3">
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[200px]">
@@ -167,15 +177,6 @@ export const AdminAuditoria = () => {
         </div>
       </section>
 
-      <div className="flex justify-end -mt-3">
-        <button
-          type="button"
-          onClick={downloadCSV}
-          className="h-9 inline-flex items-center gap-1.5 rounded-md border border-perestroika-preto/15 bg-perestroika-bege px-3 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
-        >
-          <Download className="w-3.5 h-3.5" /> exportar CSV
-        </button>
-      </div>
 
       {!isLoading && filtered.length > 0 && (
         <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 -mb-4">
