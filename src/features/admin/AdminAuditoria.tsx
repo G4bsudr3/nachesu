@@ -177,6 +177,12 @@ export const AdminAuditoria = () => {
         </button>
       </div>
 
+      {!isLoading && filtered.length > 0 && (
+        <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 -mb-4">
+          {filtered.length} {filtered.length === 1 ? "evento" : "eventos"} no período
+        </p>
+      )}
+
       <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
         {isLoading ? (
           <p className="p-6 text-sm text-perestroika-preto/55">carregando…</p>
