@@ -107,6 +107,17 @@ const CertificadoEletiva = () => {
 
   const handleDownload = async () => {
     if (!captureRef.current || !course) return;
+    if (!canDownload) {
+      toast({
+        title: "escreva seu nome completo",
+        description: "o nome vai aparecer no certificado.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (storageKey) {
+      try { window.localStorage.setItem(storageKey, trimmedName); } catch { /* ignore */ }
+    }
     setDownloading(true);
     try {
       if (document.fonts?.ready) await document.fonts.ready;
