@@ -166,13 +166,7 @@
     color: hsl(var(--foreground));
   }
 
-  /* headline duduo: sora 800 quando dentro do escopo */
-  [data-eletiva="ecc"] .font-display {
-    font-family: "Sora", "League Gothic", system-ui, sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    text-transform: none;
-  }
+  /* headline unificada: economia circular usa a mesma League Gothic da ia na prática */
 
 }
 
