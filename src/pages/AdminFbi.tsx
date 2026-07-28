@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { ChevronRight, Copy } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 // Cada aba é code-split: só o bundle da aba ativa é baixado.
 const AdminPending = lazy(() => import("@/features/admin/AdminPending").then((m) => ({ default: m.AdminPending })));
