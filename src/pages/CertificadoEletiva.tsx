@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, Award, Download, Loader2, Lock } from "lucide-react";
 import { toPng } from "html-to-image";
+import { jsPDF } from "jspdf";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useDashboardData } from "@/hooks/useDashboardData";
