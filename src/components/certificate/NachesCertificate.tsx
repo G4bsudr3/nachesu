@@ -186,13 +186,13 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
+              justifyContent: "center",
               gap: 28,
               paddingTop: 24,
               borderTop: "1px solid rgba(9,9,9,0.14)",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, textAlign: "center" }}>
               <span
                 className="font-body uppercase"
                 style={{
@@ -210,20 +210,6 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               >
                 naches · em parceria com escola sebrae
               </span>
-            </div>
-            <div
-              className="font-body uppercase"
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.28em",
-                color: "rgba(9,9,9,0.5)",
-                fontWeight: 600,
-                textAlign: "right",
-              }}
-            >
-              plataforma nachesu
-              <br />
-              nachesu.lovable.app
             </div>
           </div>
         </div>
