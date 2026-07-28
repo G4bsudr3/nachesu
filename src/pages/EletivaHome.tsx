@@ -273,7 +273,7 @@ const EletivaHome = () => {
           <p className="relative z-10 font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
             sua eletiva
           </p>
-          <h1 className="relative z-10 font-display uppercase text-[42px] sm:text-7xl leading-[0.9] sm:leading-[0.85] mb-3 max-w-[9ch] sm:max-w-[14ch] text-perestroika-preto">
+          <h1 className="relative z-10 font-display uppercase text-[42px] sm:text-7xl leading-[0.9] sm:leading-[0.85] mb-3 max-w-[14ch] sm:max-w-[18ch] text-perestroika-preto">
             {course.title.toLowerCase()}
           </h1>
           {course.subtitle && (
