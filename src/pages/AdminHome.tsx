@@ -299,34 +299,6 @@ const AdminHome = () => {
           </Tile>
         </div>
 
-        {/* secondary nav – links pras seções existentes */}
-        <section className="pt-2">
-          <p className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/50 mb-2">
-            ir para
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { to: "/admin/eletivas", label: "eletivas · cursos" },
-              { to: "/admin/review", label: "revisão de eletiva" },
-              { to: "/admin/trilha", label: "trilha · módulos" },
-              { to: "/admin/tutor", label: "tutor ia" },
-              { to: "/admin/feedback", label: "feedback · inbox" },
-              { to: "/admin/materiais", label: "materiais" },
-              { to: "/admin/usuarios", label: "usuários" },
-              { to: "/admin/nudges", label: "nudges" },
-              { to: "/admin/rubricas", label: "rubricas" },
-              { to: "/admin/eletiva", label: "settings" },
-            ].map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                className="rounded-full bg-perestroika-bege/60 border border-perestroika-preto/15 px-3 py-1.5 text-[11px] uppercase tracking-wide text-perestroika-preto/70 hover:border-perestroika-preto/40 hover:text-perestroika-preto transition-colors"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
-        </section>
       </main>
     </div>
   );
