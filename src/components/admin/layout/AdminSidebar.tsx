@@ -27,6 +27,9 @@ type Item = { to: string; label: string; icon: LucideIcon; exact?: boolean };
 
 export const OPERACAO: Item[] = [
   { to: "/admin", label: "início", icon: Home, exact: true },
+  { to: "/admin/correcoes", label: "correções", icon: ClipboardCheck },
+  { to: "/admin/eletiva/ia-na-pratica/modulos", label: "ia na prática · módulos", icon: BookOpen },
+  { to: "/admin/eletiva/economia-circular/modulos", label: "economia circular · módulos", icon: BookOpen },
   { to: "/admin/publicacao", label: "publicação", icon: Eye },
   { to: "/admin/auditoria", label: "auditoria", icon: History },
   { to: "/admin/eletivas", label: "eletivas", icon: BookOpen },

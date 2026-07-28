@@ -71,6 +71,9 @@ const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx")
 const Marco = lazy(() => import("./pages/Marco.tsx"));
 const Comecar = lazy(() => import("./pages/Comecar.tsx"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
+const AdminEletivaModulos = lazy(() => import("./pages/AdminEletivaModulos.tsx"));
+const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
+const AdminCorrecoes = lazy(() => import("./pages/AdminCorrecoes.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -280,6 +283,9 @@ const App = () => (
                 <Route path="/admin/eletiva/economia-circular/modulo/19" element={<AdminEletivaModulo19 />} />
                 <Route path="/admin/eletiva/economia-circular/modulo/20" element={<AdminEletivaModulo20 />} />
                 <Route path="/dossie/:userId" element={<DossieAluno />} />
+                <Route path="/admin/correcoes" element={<AdminCorrecoes />} />
+                <Route path="/admin/eletiva/:slug/modulos" element={<AdminEletivaModulos />} />
+                <Route path="/admin/eletiva/:slug/modulo/:number" element={<AdminModuloDetalhe />} />
                 <Route path="/admin/:tab" element={<AdminFbi />} />
               </Route>
 
