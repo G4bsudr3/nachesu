@@ -73,68 +73,91 @@ const AdminCorrecoes = () => {
         {sorted.length} {sorted.length === 1 ? "entrega" : "entregas"} na fila
       </p>
 
-      <ul className="space-y-2">
-        {sorted.map((d) => {
-          const dias = daysAgo(d.submitted_at);
-          const late = dias > 7;
-          const name =
-            d.profile?.display_name ?? d.profile?.nickname ?? "sem nome";
-          const courseTitle = d.course_id ? courseById.get(d.course_id) ?? "" : "";
-          return (
-            <li key={d.id}>
-              <button
-                type="button"
-                onClick={() => setSelected(d)}
-                className={cn(
-                  "w-full text-left rounded-2xl border-2 bg-white p-4 flex flex-wrap items-center gap-4 transition-all hover:shadow-sm",
-                  late
-                    ? "border-rose-400/70 hover:border-rose-500"
-                    : "border-perestroika-preto/15 hover:border-perestroika-preto/40",
-                )}
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="font-display uppercase text-lg leading-none mb-1 truncate">
-                    {name}
-                  </p>
-                  <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
-                    {courseTitle}
-                    {d.module && (
-                      <>
-                        {" · "}módulo {String(d.module.number).padStart(2, "0")}{" "}
-                        <span className="normal-case text-perestroika-preto/70">— {d.module.title}</span>
-                      </>
+      <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left">
+            <thead className="bg-perestroika-preto/[0.04]">
+              <tr>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-wide text-perestroika-preto/55 font-semibold">
+                  estudante
+                </th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-wide text-perestroika-preto/55 font-semibold">
+                  eletiva · módulo
+                </th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-wide text-perestroika-preto/55 font-semibold">
+                  enviado
+                </th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-wide text-perestroika-preto/55 font-semibold text-right">
+                  esperando
+                </th>
+                <th className="px-4 py-3 w-16" aria-hidden="true" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-perestroika-preto/10">
+              {sorted.map((d) => {
+                const dias = daysAgo(d.submitted_at);
+                const late = dias > 7;
+                const name =
+                  d.profile?.display_name ?? d.profile?.nickname ?? "sem nome";
+                const courseTitle = d.course_id
+                  ? courseById.get(d.course_id) ?? ""
+                  : "";
+                return (
+                  <tr
+                    key={d.id}
+                    onClick={() => setSelected(d)}
+                    className={cn(
+                      "group cursor-pointer transition-colors hover:bg-perestroika-preto/[0.02]",
+                      late && "bg-rose-50/40",
                     )}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/50">
-                    enviado
-                  </p>
-                  <p className="text-xs text-perestroika-preto/75 tabular-nums">
-                    {d.submitted_at
-                      ? new Date(d.submitted_at).toLocaleDateString("pt-BR")
-                      : "—"}
-                  </p>
-                </div>
-                <div
-                  className={cn(
-                    "text-right min-w-[86px] rounded-lg px-3 py-2 tabular-nums",
-                    late ? "bg-rose-100 text-rose-800" : "bg-perestroika-preto/5",
-                  )}
-                >
-                  <p className="font-display uppercase text-xl leading-none flex items-center justify-end gap-1">
-                    {late && <AlertTriangle className="w-4 h-4" />}
-                    {dias}d
-                  </p>
-                  <p className="text-[9px] uppercase tracking-wide opacity-70">
-                    esperando
-                  </p>
-                </div>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+                  >
+                    <td className="px-4 py-3 align-middle">
+                      <p className="font-display uppercase text-base leading-none truncate">
+                        {name}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 align-middle">
+                      <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
+                        {courseTitle}
+                      </p>
+                      {d.module && (
+                        <p className="text-xs text-perestroika-preto/75 truncate">
+                          módulo {String(d.module.number).padStart(2, "0")}{" "}
+                          <span className="normal-case">— {d.module.title}</span>
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 align-middle">
+                      <div className="flex items-center gap-1.5 text-xs text-perestroika-preto/75 tabular-nums">
+                        <Clock className="w-3 h-3 text-perestroika-preto/40" />
+                        {d.submitted_at
+                          ? new Date(d.submitted_at).toLocaleDateString("pt-BR")
+                          : "—"}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 align-middle text-right">
+                      <span
+                        className={cn(
+                          "inline-flex items-center justify-end gap-1 rounded-lg px-2.5 py-1.5 text-xs tabular-nums",
+                          late
+                            ? "bg-rose-100 text-rose-800"
+                            : "bg-perestroika-preto/5 text-perestroika-preto/75",
+                        )}
+                      >
+                        {late && <AlertTriangle className="w-3 h-3" />}
+                        {dias}d
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 align-middle text-right">
+                      <ChevronRight className="w-4 h-4 text-perestroika-preto/30 group-hover:text-perestroika-preto/60 transition-colors" />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <FeedbackReviewDrawer
         open={!!selected}
