@@ -65,7 +65,7 @@ Deno.serve(async (req: Request) => {
     try {
       const { data: lookup } = await admin.rpc("lookup_user_by_email", { _email: rawEmail });
       if (Array.isArray(lookup) && lookup.length > 0) {
-        userId = (lookup[0] as { id?: string })?.id ?? null;
+        userId = (lookup[0] as { user_id?: string })?.user_id ?? null;
       }
     } catch (e) {
       console.warn(`[${FN}] lookup falhou`, e);
