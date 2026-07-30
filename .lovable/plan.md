@@ -1,35 +1,41 @@
-## o que eu verifiquei agora
+## o que as listas resolveram
 
-- o domínio do projeto agora é **aiu.guru** (`notify.aiu.guru`, verificado, auth emails ligados). o `frattz.com` continua existindo na workspace, mas não é mais o remetente do projeto.
-- a função que envia todos os emails do app ainda tem **`notify.frattz.com` escrito fixo no código** como remetente. ou seja: o app manda por um domínio que não é mais o configurado.
-- no log de envios, o último `password-reset` (30/07 13:04) aparece como `sent`, isto é, a API aceitou. não há bounce nem endereço bloqueado (lista de supressão vazia). então o email saiu, mas por um remetente desalinhado com o domínio atual, que é exatamente o cenário em que o provedor do destinatário descarta em silêncio ou joga fora da caixa de entrada.
-- o fluxo de "esqueci a senha" hoje não usa mais o caminho nativo: a tela chama a função `send-access-link`, que gera o link e manda pelo pipeline do app. então ele herda esse mesmo remetente errado.
+cruzei as duas planilhas (IA na Prática: 147 estudantes, Economia Circular: 118) com as contas ativas sem matrícula no banco.
 
-diagnóstico: o envio está funcional, o remetente é que ficou apontando para o domínio antigo.
+```text
+conta no app                     eletiva confirmada pela lista     quem é
+tiago11572@gmail.com.br       -> ia na prática                     tiago rodrigues thomaz (1E-ADM)
+isabela11501@edu.sebrae       -> ia na prática                     isabela coelho barbosa (1D-MKT)
+elisa11712@sebrae.com.br      -> economia circular                 elisa souza dutra (1B-ADM)
+maria11586@edu.sebrae.com     -> economia circular                 maria eduarda pedroso soares (1B-ADM)
+julia11697@edu.sebrae.com.br  -> não consta em nenhuma das listas   (aguardando a escola)
+lucasacabral27@edu.sebrae...  -> não consta (existe lucas alves cabral = lucas11610, ia)
+```
 
-## o que fazer
+os quatro primeiros são erro de digitação no primeiro acesso (`gmail.com.br`, `sebrae.com.br`, `edu.sebrae` sem `.com.br`, `edu.sebrae.com` sem `.br`). o convite certo nunca casou, então a conta nasceu ativa e vazia.
 
-### 1. apontar o envio do app para notify.aiu.guru
-trocar as constantes de remetente na função de envio de emails do app para o domínio atual, e ajustar o nome do remetente (hoje está "chorahub", ficaria "NachesU", igual ao que aparece nos emails de auth).
+a julia11697 é outro caso: email sintaticamente correto, mas o RA 11697 não aparece em nenhuma das duas listas. fica parada até a escola confirmar, como você pediu.
 
-### 2. atualizar os links de suporte nos templates novos
-os templates `access-link` e `password-reset` mencionam o endereço de login. confirmo que apontam para o domínio público correto do app.
+## correção de dados (uma migração só)
 
-### 3. republicar as funções afetadas
-reimplantar o envio de emails do app e a `send-access-link` para valerem as mudanças.
+1. matricular os 4 estudantes acima na eletiva confirmada pela lista
+2. marcar o convite correspondente como reivindicado (`claimed_at`, `claimed_by`), pra não gerar matrícula duplicada se depois logarem com o email certo
+3. dar as duas eletivas para as contas de admin: gabriel (`gabreda188`, hoje só IA) e dudu (`duduobregon` já tem as duas; a conta `luis.eduardo.obregon` está sem nenhuma e entra nas duas). tássia já está nas duas, nada muda pra ela
 
-### 4. testar de verdade, não só olhar o log
-- disparar um "esqueci minha senha" real
-- confirmar no log que saiu com status enviado
-- confirmar com você se chegou na caixa de entrada, e em qual pasta
+detalhe técnico: o trigger `enrollments_single_active_check` bloqueia segunda matrícula ativa quando `auth.uid()` é nulo (é o caso de execução via migração). a migração desabilita o trigger, aplica os inserts e reabilita no mesmo bloco.
 
-### 5. decisão que fica pra depois do teste
-agora que os emails de auth estão ativos em `notify.aiu.guru`, o caminho nativo do Supabase voltou a ser viável, e ele já tem template em português com a marca NachesU. se o teste do passo 4 confirmar entrega, dá pra simplificar depois: a tela de login volta a usar o fluxo nativo e a `send-access-link` fica só como reserva. não mexo nisso nesta rodada pra não trocar duas coisas ao mesmo tempo.
+## o que fica pendente (sem chute)
 
-## detalhes técnicos
+- **julia11697**: você confirma com a escola e eu matriculo depois
+- **lucasacabral27**: indício forte de ser lucas alves cabral (`lucas11610`, IA na prática), mas não matriculo sem seu ok
+- **g.sudre@g4educacao.com**: externo, fora das listas
+- **rick@press-start.gg**: conta de teste, status pending, deixo como está
 
-- arquivo: `supabase/functions/send-transactional-email/index.ts`, constantes `SITE_NAME`, `SENDER_DOMAIN` e `FROM_DOMAIN` (hoje `notify.frattz.com`) → `notify.aiu.guru`.
-- `SENDER_DOMAIN` precisa ser o subdomínio delegado exato, senão a API responde "no email domain record found".
-- redeploy: `send-transactional-email` e `send-access-link`.
-- verificação: consulta em `email_send_log` filtrando `template_name = 'password-reset'` após o teste, mais checagem da fila e da lista de supressão.
-- nenhuma migração de banco, nenhuma mudança de tela nesta rodada.
+## prevenção, pra não voltar
+
+- **backfill dos convites**: comparar os 265 emails das listas com `course_invites` (hoje 169 IA + 121 circular) e inserir o que faltar com `ON CONFLICT DO NOTHING`. assim quem ainda não logou já entra matriculado
+- **fechar o buraco no signup**: em `Auth.tsx`, quando o email é `@edu.sebrae.com.br` e não existe convite, exigir a escolha da eletiva antes de disparar o link, propagando `courseSlug` até `send-access-link` (a função já grava em `chosen_course_slug`). nenhuma conta nova nasce sem matrícula
+- **saída no /app**: o estado "você ainda não está matriculado em nenhuma eletiva" em `EletivasHero.tsx` deixa de ser beco sem saída e passa a oferecer escolha da eletiva ali mesmo, com aviso pro admin
+- **visibilidade**: bloco "contas sem matrícula" em `/admin/turma` usando o `AdminTable` padrão, com ação de matricular em um clique
+
+as planilhas ficam só como fonte de importação, não entram no repositório.
