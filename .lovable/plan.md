@@ -1,43 +1,35 @@
-## o que está errado (verificado agora)
+## o que eu verifiquei agora
 
-- o domínio `notify.frattz.com` está **verificado** e a fila de e-mails está **saudável**: 140 e-mails de app foram enviados com sucesso (último em 29/07).
-- mas a ativação do envio de e-mails de autenticação continua presa no estágio "confirmando entrega" desde o começo. essa etapa é do lado da plataforma e já foi re-rodada mais de uma vez sem destravar.
-- consequência confirmada no log de envios: **nunca saiu um único e-mail de auth pelo nosso sistema**. só existem registros de `admin-direct-message`, `course-invite`, `evasion-nudge`, `test-email`. nada de `signup`, `magiclink` ou `recovery`.
-- por isso o magic link e a confirmação saem pelo remetente genérico `no-reply@auth.lovable.cloud`, em inglês, e o Gmail marca como perigoso ou joga no spam, já que remetente e link não batem.
+- o domínio do projeto agora é **aiu.guru** (`notify.aiu.guru`, verificado, auth emails ligados). o `frattz.com` continua existindo na workspace, mas não é mais o remetente do projeto.
+- a função que envia todos os emails do app ainda tem **`notify.frattz.com` escrito fixo no código** como remetente. ou seja: o app manda por um domínio que não é mais o configurado.
+- no log de envios, o último `password-reset` (30/07 13:04) aparece como `sent`, isto é, a API aceitou. não há bounce nem endereço bloqueado (lista de supressão vazia). então o email saiu, mas por um remetente desalinhado com o domínio atual, que é exatamente o cenário em que o provedor do destinatário descarta em silêncio ou joga fora da caixa de entrada.
+- o fluxo de "esqueci a senha" hoje não usa mais o caminho nativo: a tela chama a função `send-access-link`, que gera o link e manda pelo pipeline do app. então ele herda esse mesmo remetente errado.
 
-ou seja: o problema não é DNS nem template. é que o hook de auth nunca foi ligado, e ficar esperando a ativação não está resolvendo.
+diagnóstico: o envio está funcional, o remetente é que ficou apontando para o domínio antigo.
 
-## a saída: parar de depender do hook de auth
+## o que fazer
 
-o pipeline de e-mail do app funciona perfeitamente e já sai de `noreply@notify.frattz.com`. o `admin-invite-user` já faz exatamente isso: gera o link de acesso e manda pelo nosso próprio envio. vamos usar o mesmo caminho para login e recuperação de senha, tirando o GoTrue da jogada.
+### 1. apontar o envio do app para notify.aiu.guru
+trocar as constantes de remetente na função de envio de emails do app para o domínio atual, e ajustar o nome do remetente (hoje está "chorahub", ficaria "NachesU", igual ao que aparece nos emails de auth).
 
-### 1. nova edge function `send-access-link`
+### 2. atualizar os links de suporte nos templates novos
+os templates `access-link` e `password-reset` mencionam o endereço de login. confirmo que apontam para o domínio público correto do app.
 
-- recebe `email` e o tipo (`magiclink` ou `recovery`), valida o formato e checa a lista autorizada com a mesma regra do `validate-public-email`.
-- gera o link com `auth.admin.generateLink` (mesmo padrão do `admin-invite-user`), apontando para `/app` no magic link e `/reset-password` no recovery.
-- envia via `send-transactional-email`, que já usa `notify.frattz.com`.
-- responde sempre igual, tenha o e-mail cadastrado ou não, para não vazar quem existe na base.
+### 3. republicar as funções afetadas
+reimplantar o envio de emails do app e a `send-access-link` para valerem as mudanças.
 
-### 2. dois templates novos no registry
+### 4. testar de verdade, não só olhar o log
+- disparar um "esqueci minha senha" real
+- confirmar no log que saiu com status enviado
+- confirmar com você se chegou na caixa de entrada, e em qual pasta
 
-`access-link` e `password-reset`, em português, seguindo o visual do sistema: logo NachesU, League Gothic no título, Urbanist 16px no corpo, fundo bege. copy curta e minúscula.
-
-### 3. trocar as chamadas na tela de login
-
-- `src/pages/Auth.tsx`: substituir `signInWithOtp` (linha 151) e `resetPasswordForEmail` (linha 292) por chamadas à nova função.
-- a mensagem de confirmação na tela continua igual, só muda quem envia.
-- login por senha e `/reset-password` continuam funcionando exatamente como hoje.
-
-### 4. acesso imediato enquanto isso
-
-para você não ficar travado agora, defino a senha da sua conta admin direto no banco, sem depender de e-mail nenhum. você me diz qual e-mail e qual senha usar. quero senha: tets182
-
-### 5. reenvio dos 106 pendentes
-
-100 convites de curso e 6 nudges morreram por TTL e não voltam sozinhos. depois que o novo fluxo estiver de pé, reenvio esses em lote. R: não precisa reenviar.
+### 5. decisão que fica pra depois do teste
+agora que os emails de auth estão ativos em `notify.aiu.guru`, o caminho nativo do Supabase voltou a ser viável, e ele já tem template em português com a marca NachesU. se o teste do passo 4 confirmar entrega, dá pra simplificar depois: a tela de login volta a usar o fluxo nativo e a `send-access-link` fica só como reserva. não mexo nisso nesta rodada pra não trocar duas coisas ao mesmo tempo.
 
 ## detalhes técnicos
 
-- `send-access-link` roda com `verify_jwt = false` (é chamada por quem não está logado) e valida tudo do lado servidor, com rate limit por e-mail para evitar abuso.
-- o `auth-email-hook` fica no projeto, sem ser removido. se a ativação da plataforma concluir um dia, ele passa a funcionar e o fluxo novo continua válido em paralelo.
-- nada de Resend ou serviço externo: a delegação NS de `notify.frattz.com` aponta pra Lovable e um terceiro não conseguiria verificar esse subdomínio sem quebrar o que já funciona.
+- arquivo: `supabase/functions/send-transactional-email/index.ts`, constantes `SITE_NAME`, `SENDER_DOMAIN` e `FROM_DOMAIN` (hoje `notify.frattz.com`) → `notify.aiu.guru`.
+- `SENDER_DOMAIN` precisa ser o subdomínio delegado exato, senão a API responde "no email domain record found".
+- redeploy: `send-transactional-email` e `send-access-link`.
+- verificação: consulta em `email_send_log` filtrando `template_name = 'password-reset'` após o teste, mais checagem da fila e da lista de supressão.
+- nenhuma migração de banco, nenhuma mudança de tela nesta rodada.
