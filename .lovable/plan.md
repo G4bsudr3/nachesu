@@ -1,28 +1,43 @@
-## resposta curta
+## o que está errado (verificado agora)
 
-dá pra consertar com o frattz.com. não precisa de Resend.
+- o domínio `notify.frattz.com` está **verificado** e a fila de e-mails está **saudável**: 140 e-mails de app foram enviados com sucesso (último em 29/07).
+- mas a ativação do envio de e-mails de autenticação continua presa no estágio "confirmando entrega" desde o começo. essa etapa é do lado da plataforma e já foi re-rodada mais de uma vez sem destravar.
+- consequência confirmada no log de envios: **nunca saiu um único e-mail de auth pelo nosso sistema**. só existem registros de `admin-direct-message`, `course-invite`, `evasion-nudge`, `test-email`. nada de `signup`, `magiclink` ou `recovery`.
+- por isso o magic link e a confirmação saem pelo remetente genérico `no-reply@auth.lovable.cloud`, em inglês, e o Gmail marca como perigoso ou joga no spam, já que remetente e link não batem.
 
-## o que os dados mostram
+ou seja: o problema não é DNS nem template. é que o hook de auth nunca foi ligado, e ficar esperando a ativação não está resolvendo.
 
-- `notify.frattz.com` está **verificado** e a fila de envio está **saudável**: 140 emails de admin e 200 convites saíram por ele com sucesso, o último em 29/07.
-- o que está travado é só a **ativação do caminho de envio dos emails de autenticação**: o status do projeto retorna "send path not ready, timed out waiting for email delivery path verification".
-- no histórico de envio não existe **nenhum** registro de email de auth (signup, magiclink, recovery). ou seja: o hook de auth nunca chegou a rodar, por isso o Gmail recebeu o template padrão em inglês vindo do remetente genérico da plataforma.
+## a saída: parar de depender do hook de auth
 
-conclusão: o domínio envia. o que falta é religar o hook de auth e destravar a verificação, que ficou pendurada num timeout.
+o pipeline de e-mail do app funciona perfeitamente e já sai de `noreply@notify.frattz.com`. o `admin-invite-user` já faz exatamente isso: gera o link de acesso e manda pelo nosso próprio envio. vamos usar o mesmo caminho para login e recuperação de senha, tirando o GoTrue da jogada.
 
-sobre o Resend: hoje ele **não funcionaria** nesse subdomínio, porque `notify.frattz.com` está delegado por NS para os nameservers da Lovable. usar Resend exigiria remover essa delegação (até 72h de propagação) e perderíamos os templates já prontos em português. não vale a pena.
+### 1. nova edge function `send-access-link`
 
-## plano
+- recebe `email` e o tipo (`magiclink` ou `recovery`), valida o formato e checa a lista autorizada com a mesma regra do `validate-public-email`.
+- gera o link com `auth.admin.generateLink` (mesmo padrão do `admin-invite-user`), apontando para `/app` no magic link e `/reset-password` no recovery.
+- envia via `send-transactional-email`, que já usa `notify.frattz.com`.
+- responde sempre igual, tenha o e-mail cadastrado ou não, para não vazar quem existe na base.
 
-1. rodar de novo a configuração da infraestrutura de email do projeto (é idempotente) pra refazer fila, cron e segredos e destravar o timeout de verificação.
-2. reaplicar os templates de auth já existentes preservando o visual atual (League Gothic no título, Urbanist 16px no corpo, logo NachesU) e reimplantar o `auth-email-hook`, que é o gatilho que faz o reconcile da ativação recomeçar.
-3. conferir o status da ativação depois do deploy e confirmar que o remetente passou a ser `noreply@notify.frattz.com`.
-4. teste real: pedir um magic link para uma conta de teste e verificar no histórico de envio que aparece uma linha de `magiclink` com status `sent`.
+### 2. dois templates novos no registry
 
-## pendência separada (fora desse conserto)
+`access-link` e `password-reset`, em português, seguindo o visual do sistema: logo NachesU, League Gothic no título, Urbanist 16px no corpo, fundo bege. copy curta e minúscula.
 
-106 emails morreram por TTL e não são reenviados sozinhos: 100 convites de curso e 6 nudges de evasão. posso reenviar depois que o envio de auth estiver confirmado, se você quiser.
+### 3. trocar as chamadas na tela de login
 
-## detalhe técnico
+- `src/pages/Auth.tsx`: substituir `signInWithOtp` (linha 151) e `resetPasswordForEmail` (linha 292) por chamadas à nova função.
+- a mensagem de confirmação na tela continua igual, só muda quem envia.
+- login por senha e `/reset-password` continuam funcionando exatamente como hoje.
 
-o hook `auth-email-hook` já está no código, com os 6 templates em português e enfileiramento via `enqueue_email` na fila `auth_emails`. nada precisa ser reescrito, só reimplantado para disparar o reconcile do lado da plataforma. o `FROM_DOMAIN` e o `SENDER_DOMAIN` já apontam para `notify.frattz.com`.
+### 4. acesso imediato enquanto isso
+
+para você não ficar travado agora, defino a senha da sua conta admin direto no banco, sem depender de e-mail nenhum. você me diz qual e-mail e qual senha usar. quero senha: tets182
+
+### 5. reenvio dos 106 pendentes
+
+100 convites de curso e 6 nudges morreram por TTL e não voltam sozinhos. depois que o novo fluxo estiver de pé, reenvio esses em lote. R: não precisa reenviar.
+
+## detalhes técnicos
+
+- `send-access-link` roda com `verify_jwt = false` (é chamada por quem não está logado) e valida tudo do lado servidor, com rate limit por e-mail para evitar abuso.
+- o `auth-email-hook` fica no projeto, sem ser removido. se a ativação da plataforma concluir um dia, ele passa a funcionar e o fluxo novo continua válido em paralelo.
+- nada de Resend ou serviço externo: a delegação NS de `notify.frattz.com` aponta pra Lovable e um terceiro não conseguiria verificar esse subdomínio sem quebrar o que já funciona.
