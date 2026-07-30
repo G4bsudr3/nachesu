@@ -7,6 +7,8 @@ import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ChoraBotFab } from "@/components/dashboard/ChoraBotFab";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { SemMatriculaPicker } from "@/components/dashboard/SemMatriculaPicker";
+
 
 const MinhasEletivas = () => {
   const { data: enrollments, isLoading } = useMyEnrollments();
