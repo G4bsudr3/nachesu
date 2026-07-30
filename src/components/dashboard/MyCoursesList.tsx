@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useMyEnrollments } from "@/hooks/useCourses";
-import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { SemMatriculaPicker } from "@/components/dashboard/SemMatriculaPicker";
+
 
 /**
  * lista as eletivas em que o aluno está matriculado.
@@ -25,25 +26,9 @@ export const MyCoursesList = () => {
   const items = (enrollments ?? []).filter((e) => e.course);
 
   if (items.length === 0) {
-    return (
-      <section
-        aria-label="minhas eletivas"
-        className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8"
-      >
-        <div className="flex items-center gap-4">
-          <EletivaSymbol size={56} pose="resting" />
-          <div>
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
-              minhas eletivas
-            </p>
-            <p className="font-body text-sm text-perestroika-preto/75">
-              você ainda não está matriculado em nenhuma eletiva. fala com o time da escola pra liberar seu acesso.
-            </p>
-          </div>
-        </div>
-      </section>
-    );
+    return <SemMatriculaPicker />;
   }
+
 
   return (
     <section aria-label="minhas eletivas" className="space-y-4">
