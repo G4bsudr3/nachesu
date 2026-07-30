@@ -1,7 +1,7 @@
 // send-access-link
 //
 // Envia magic link e recuperação de senha pelo NOSSO pipeline de email
-// (send-transactional-email → notify.frattz.com), sem depender do hook de auth
+// (send-transactional-email → notify.aiu.guru), sem depender do hook de auth
 // do GoTrue, que nunca foi ativado e faz os emails saírem em inglês por um
 // remetente genérico (auth.lovable.cloud) e cair no spam.
 //
