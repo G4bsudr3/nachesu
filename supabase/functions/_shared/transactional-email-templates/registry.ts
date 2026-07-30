@@ -16,6 +16,8 @@ import { template as tutorSafetyAlert } from './tutor-safety-alert.tsx'
 import { template as courseInvite } from './course-invite.tsx'
 import { template as adminInvite } from './admin-invite.tsx'
 import { template as testEmail } from './test-email.tsx'
+import { template as accessLink } from './access-link.tsx'
+import { template as passwordReset } from './password-reset.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'future-letter-delivery': futureLetterDelivery,
@@ -25,4 +27,6 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'course-invite': courseInvite,
   'admin-invite': adminInvite,
   'test-email': testEmail,
+  'access-link': accessLink,
+  'password-reset': passwordReset,
 }
