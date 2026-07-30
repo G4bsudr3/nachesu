@@ -147,19 +147,20 @@ const Auth = () => {
     const nextParam = searchParams.get("next");
     const safeNext =
       nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/app";
-    const redirect = `${window.location.origin}${safeNext}`;
-    const { error } = await supabase.auth.signInWithOtp({
-      email: targetEmail,
-      options: {
-        emailRedirectTo: redirect,
-        data: courseSlug ? { chosen_course_slug: courseSlug } : undefined,
-      },
+    // enviado pelo nosso próprio pipeline (notify.frattz.com), em português,
+    // em vez do email padrão do auth que sai em inglês e cai no spam.
+    const { data, error } = await supabase.functions.invoke("send-access-link", {
+      body: { email: targetEmail, type: "magiclink", next: safeNext, courseSlug },
     });
     if (error) throw error;
+    if (data && (data as { error?: string }).error) {
+      throw new Error((data as { message?: string }).message ?? "não consegui enviar o link");
+    }
     localStorage.setItem(EMAIL_LS_KEY, targetEmail);
     setSent(true);
     toast.success("link mágico enviado para o seu email");
   };
+
 
   const confirmSebraeChoice = async () => {
     if (!sebraeChoice || !chosenCourseSlug) return;
@@ -289,10 +290,13 @@ const Auth = () => {
       }
 
       setPhase("resetting");
-      const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
-        redirectTo: `${window.location.origin}/reset-password`,
+      const { data, error } = await supabase.functions.invoke("send-access-link", {
+        body: { email: cleanEmail, type: "recovery" },
       });
       if (error) throw error;
+      if (data && (data as { error?: string }).error) {
+        throw new Error((data as { message?: string }).message ?? t("forgot_generic_error"));
+      }
       localStorage.setItem(EMAIL_LS_KEY, cleanEmail);
       setSent(true);
       toast.success(t("forgot_link_sent"), { duration: 7000 });
