@@ -290,10 +290,13 @@ const Auth = () => {
       }
 
       setPhase("resetting");
-      const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
-        redirectTo: `${window.location.origin}/reset-password`,
+      const { data, error } = await supabase.functions.invoke("send-access-link", {
+        body: { email: cleanEmail, type: "recovery" },
       });
       if (error) throw error;
+      if (data && (data as { error?: string }).error) {
+        throw new Error((data as { message?: string }).message ?? t("forgot_generic_error"));
+      }
       localStorage.setItem(EMAIL_LS_KEY, cleanEmail);
       setSent(true);
       toast.success(t("forgot_link_sent"), { duration: 7000 });
