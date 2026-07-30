@@ -44,12 +44,8 @@ const MinhasEletivas = () => {
           {isLoading ? (
             <div className="rounded-3xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] p-8 motion-safe:animate-pulse h-40" />
           ) : items.length === 0 ? (
-            <div className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-8 text-center space-y-3">
-              <EletivaSymbol size={64} pose="resting" />
-              <p className="font-body text-sm text-perestroika-preto/75">
-                você ainda não está matriculado em nenhuma eletiva. fala com o time da escola pra liberar.
-              </p>
-            </div>
+            <SemMatriculaPicker />
+
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2">
               {items.map((e) => {
