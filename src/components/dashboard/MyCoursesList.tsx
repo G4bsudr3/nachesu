@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useMyEnrollments } from "@/hooks/useCourses";
-import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { SemMatriculaPicker } from "@/components/dashboard/SemMatriculaPicker";
+
 
 /**
  * lista as eletivas em que o aluno está matriculado.
