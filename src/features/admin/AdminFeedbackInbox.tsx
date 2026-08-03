@@ -5,6 +5,8 @@ import { Download, Inbox, Loader2, RefreshCcw, Search, Send } from "lucide-react
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { useStudentRoster } from "@/hooks/useStudentRoster";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
