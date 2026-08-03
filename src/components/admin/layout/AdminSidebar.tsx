@@ -23,7 +23,14 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
-type Item = { to: string; label: string; icon: LucideIcon; exact?: boolean };
+type Item = {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  exact?: boolean;
+  badge?: "pendentes";
+};
+
 
 type Section = { title: string; items: Item[] };
 
