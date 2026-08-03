@@ -50,6 +50,17 @@ const FALLBACK_CHIPS = [
 
 type Verdict = "aprovado" | "ajustar";
 
+interface AiAnalysis {
+  strengths: string[];
+  gaps: string[];
+  risk_note: string;
+  suggested_verdict: Verdict;
+  suggested_score: number | null;
+  score_max: number;
+  suggested_tags: string[];
+}
+
+
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
