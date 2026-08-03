@@ -102,8 +102,20 @@ export const ModuloHeader = ({
         )}
         <span className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-preto/10 px-3 py-1.5 font-body text-xs uppercase tracking-wider">
           <Clock className="h-3 w-3" aria-hidden />
-          {totalMinutes ? `${totalMinutes} min` : "tempo variável"}
+          {coreLabel ? `${coreLabel} de núcleo` : "tempo variável"}
         </span>
+        {!!bonusMinHigh && bonusMinHigh > 0 && (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65">
+            <Sparkles className="h-3 w-3" aria-hidden />
+            +{bonusMinHigh} min de bônus opcional
+          </span>
+        )}
+        {isDense && (
+          <span className="inline-flex items-center rounded-full bg-perestroika-preto/5 px-3 py-1.5 font-body text-xs text-perestroika-preto/65">
+            esse é mais denso que a média
+          </span>
+        )}
+
         {isCompleted && (
           <span
             className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto"
