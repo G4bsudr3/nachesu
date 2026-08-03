@@ -122,6 +122,8 @@ export const AdminFeedbackInbox = ({
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
   const [search, setSearch] = useState("");
   const [includeTest, setIncludeTest] = useState(false);
+  const { lookupByCode } = useStudentRoster();
+
 
   const { data: courses } = useQuery({
     queryKey: ["admin-feedback-courses"],
