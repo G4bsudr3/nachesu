@@ -30,13 +30,22 @@ export function useStudentRoster() {
 
   const byEmail = query.data ?? new Map<string, RosterEntry>();
 
+  const byCode = new Map<string, RosterEntry>();
+  byEmail.forEach((entry, email) => {
+    byCode.set(email.split("@")[0], entry);
+  });
+
   return {
     ...query,
     byEmail,
     lookup: (email?: string | null) =>
       email ? byEmail.get(email.trim().toLowerCase()) ?? null : null,
+    /** identifica pelo código do estudante (ex.: Julia11697), que é o local part do e-mail */
+    lookupByCode: (code?: string | null) =>
+      code ? byCode.get(code.trim().toLowerCase()) ?? null : null,
   };
 }
+
 
 /** nome completo quando existe no cadastro da escola, senão o apelido/código */
 export function rosterLabel(
