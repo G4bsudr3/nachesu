@@ -42,6 +42,77 @@ import { useExplicitPillProgress } from "./deliverableRendering/useExplicitPillP
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
 import { useDeliverableThread } from "@/features/hub/useDeliverableThread";
 import { useRubricForModule } from "./useRubrics";
+import {
+  clearDeliverableDraft,
+  isDraftEmpty,
+  loadDeliverableDraft,
+  saveDeliverableDraft,
+} from "./deliverableDraftStore";
+
+/** passos mostrados enquanto a ia trabalha, pra dar noção de progresso real. */
+const AI_STEPS = [
+  "lendo a entrega do estudante",
+  "cruzando com a rubrica do módulo",
+  "escrevendo a leitura crítica",
+  "quase lá, finalizando",
+];
+
+const AiProgress = ({ elapsed, label }: { elapsed: number; label: string }) => {
+  const step = Math.min(Math.floor(elapsed / 4), AI_STEPS.length - 1);
+  return (
+    <div className="mt-3" role="status" aria-live="polite">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-perestroika-preto/10">
+        <div className="h-full w-1/3 animate-[shimmer_1.4s_ease-in-out_infinite] rounded-full bg-perestroika-preto/50 motion-reduce:w-full motion-reduce:animate-none" />
+      </div>
+      <p className="mt-2 flex items-center justify-between gap-2 text-[11px] text-perestroika-preto/60">
+        <span>
+          {label}: {AI_STEPS[step]}
+          <span className="inline-block w-6">{".".repeat((elapsed % 3) + 1)}</span>
+        </span>
+        <span className="tabular-nums text-perestroika-preto/45">{elapsed}s</span>
+      </p>
+      <p className="mt-1 text-[10px] text-perestroika-preto/40">
+        costuma levar de 10 a 30 segundos. pode continuar lendo a entrega enquanto isso.
+      </p>
+    </div>
+  );
+};
+
+const AiErrorBlock = ({
+  message,
+  onRetry,
+  retrying,
+}: {
+  message: string;
+  onRetry: () => void;
+  retrying: boolean;
+}) => (
+  <div className="mt-3 rounded-xl border border-rose-300 bg-rose-50 px-3 py-2.5 text-xs text-rose-900">
+    <p className="flex items-start gap-1.5">
+      <AlertTriangle className="mt-0.5 w-3.5 h-3.5 shrink-0" />
+      <span>{message}</span>
+    </p>
+    <button
+      type="button"
+      onClick={onRetry}
+      disabled={retrying}
+      className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-rose-400 px-3 py-1 text-[10px] uppercase tracking-wide hover:bg-rose-100 disabled:opacity-50"
+    >
+      {retrying ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+      tentar de novo
+    </button>
+  </div>
+);
+
+const readableAiError = (e: unknown, fallback: string) => {
+  const raw = e instanceof Error ? e.message : String(e ?? "");
+  if (!raw) return fallback;
+  if (/non-2xx|FunctionsHttpError|Failed to send/i.test(raw)) {
+    return `${fallback}. a função de ia respondeu com erro, tenta de novo em alguns segundos.`;
+  }
+  return raw;
+};
+
 
 const FALLBACK_CHIPS = [
   { label: "clareza" },
