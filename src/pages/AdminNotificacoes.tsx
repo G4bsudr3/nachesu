@@ -218,7 +218,7 @@ const AdminNotificacoes = () => {
                   <AdminTR key={r.id} interactive={false}>
                     <AdminTD>
                       <Link
-                        to={`/admin/estudante/${r.user_id}`}
+                        to={`/admin/aluno/${r.user_id}`}
                         className="font-medium hover:underline"
                       >
                         {r.student_label}
