@@ -79,7 +79,8 @@ Deno.serve(async (req) => {
   const criteria = (rubric?.criteria ?? []) as Array<{ label: string; description?: string }>
   const studentName = (del as any).profile?.display_name ?? (del as any).profile?.nickname ?? 'estudante'
   const moduleLabel = (del as any).module ? `módulo ${(del as any).module.number} · ${(del as any).module.title}` : 'módulo'
-  const moduleSummary = (del as any).module?.summary ?? ''
+  const moduleObjective = (del as any).module?.objective ?? ''
+  const moduleDeliverable = (del as any).module?.deliverable_description ?? ''
   const scoreMax = rubric?.score_max ?? 10
 
   // serializa respostas da entrega
