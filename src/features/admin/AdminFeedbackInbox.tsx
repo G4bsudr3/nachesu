@@ -261,7 +261,8 @@ export const AdminFeedbackInbox = ({
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none">
-            respostas dos estudantes
+            {title}
+
           </h1>
           <p className="mt-3 text-perestroika-preto/70 inline-flex items-center gap-3 flex-wrap">
             <Inbox className="w-4 h-4" />
