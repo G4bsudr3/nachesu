@@ -549,9 +549,15 @@ const Modulo = () => {
           objective={moduleRow.objective}
           totalMinutes={moduleRow.total_minutes}
           isCompleted={isCompleted}
-          totalPills={totalPills}
-          donePills={donePills}
+          totalPills={requiredPills.length > 0 ? requiredPills.length : totalPills}
+          donePills={requiredPills.length > 0 ? doneRequired : donePills}
+          coreMinLow={requiredPills.reduce((a, p) => a + (p.duration_min_low ?? p.duration_min_high ?? 0), 0)}
+          coreMinHigh={requiredPills.reduce((a, p) => a + (p.duration_min_high ?? p.duration_min_low ?? 0), 0)}
+          bonusMinHigh={(pills ?? [])
+            .filter((p) => !p.required)
+            .reduce((a, p) => a + (p.duration_min_high ?? p.duration_min_low ?? 0), 0)}
         />
+
 
         {isCompleted && (
           <ModuloCelebration
