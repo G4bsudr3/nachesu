@@ -261,6 +261,7 @@ const App = () => (
               >
                 <Route path="/admin" element={<AdminHome />} />
                 <Route path="/admin/risco" element={<AdminRisco />} />
+                <Route path="/admin/notificacoes" element={<AdminNotificacoes />} />
                 <Route path="/admin/turma/:courseId" element={<AdminTurma />} />
                 <Route path="/admin/aluno/:userId" element={<AdminStudentProfile />} />
                 <Route path="/admin/aula/:n" element={<AdminAula />} />
