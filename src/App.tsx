@@ -73,7 +73,7 @@ const Comecar = lazy(() => import("./pages/Comecar.tsx"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
 const AdminEletivaModulos = lazy(() => import("./pages/AdminEletivaModulos.tsx"));
 const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
-const AdminCorrecoes = lazy(() => import("./pages/AdminCorrecoes.tsx"));
+const AdminEntregas = lazy(() => import("./pages/AdminEntregas.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
