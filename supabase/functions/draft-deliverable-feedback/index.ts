@@ -1,5 +1,5 @@
-// gera rascunho de feedback para uma entrega usando IA + rubrica
-// admin-only. retorna { draft_md, suggested_tags[] }
+// gera análise crítica, rascunho de feedback ou rascunho de resposta para uma entrega
+// admin-only. modes: "draft" (default) | "analysis" | "reply"
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
@@ -7,6 +7,15 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+const TOM = `regras de tom (não-negociáveis):
+- tudo em pt-BR, tudo minúsculo
+- usa "você", nunca "tu"
+- frases curtas (1-3 linhas)
+- zero em-dash, zero emoji, zero hashtag, zero corporativês
+- vocabulário: "estudante" não "aluno"; "educador" não "professor"
+- celebra o que ficou forte antes de pedir ajuste
+- markdown leve permitido: **negrito**, *itálico*, listas com -`
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
@@ -31,7 +40,11 @@ Deno.serve(async (req) => {
   let body: any
   try { body = await req.json() } catch { return json({ error: 'invalid json' }, 400) }
   const deliverableId: string = body?.deliverable_id
-  if (!deliverableId) return json({ error: 'deliverable_id obrigatório' }, 400)
+  if (!deliverableId || typeof deliverableId !== 'string') {
+    return json({ error: 'deliverable_id obrigatório' }, 400)
+  }
+  const mode: 'draft' | 'analysis' | 'reply' =
+    body?.mode === 'analysis' || body?.mode === 'reply' ? body.mode : 'draft'
 
   // busca entrega + módulo + perfil
   const { data: del, error: delErr } = await admin
@@ -67,35 +80,17 @@ Deno.serve(async (req) => {
   const studentName = (del as any).profile?.display_name ?? (del as any).profile?.nickname ?? 'estudante'
   const moduleLabel = (del as any).module ? `módulo ${(del as any).module.number} · ${(del as any).module.title}` : 'módulo'
   const moduleSummary = (del as any).module?.summary ?? ''
+  const scoreMax = rubric?.score_max ?? 10
 
   // serializa respostas da entrega
   const content = (del.content ?? {}) as Record<string, unknown>
   const answers = serializeAnswers(content)
 
-  const systemPrompt = `você é um educador da NachesU (Naches + Sebrae BH) ajudando a rascunhar um feedback escrito para um estudante de 14-15 anos do ensino médio.
-
-regras de tom (não-negociáveis):
-- tudo em pt-BR, tudo minúsculo
-- usa "você", nunca "tu"
-- frases curtas (1-3 linhas)
-- zero em-dash, zero emoji, zero hashtag, zero corporativês
-- vocabulário: "estudante" não "aluno"; "educador" não "professor"
-- celebra o que ficou forte antes de pedir ajuste
-- falar com a pessoa, não com "o aluno"
-- markdown leve permitido: **negrito**, *itálico*, listas com -, [link](url)
-
-estrutura sugerida do feedback (curta, 4-8 linhas no total):
-1. uma linha valorizando algo concreto da entrega
-2. uma observação específica sobre o que pode aprofundar/ajustar (cita o trecho)
-3. um próximo passo claro e acionável
-
-depois, sugira 1 a 3 tags da rubrica que melhor descrevem essa entrega.`
-
   const rubricBlock = criteria.length
     ? criteria.map((c) => `- ${c.label}${c.description ? `: ${c.description}` : ''}`).join('\n')
     : '(sem critérios definidos)'
 
-  const userPrompt = `estudante: ${studentName}
+  const baseContext = `estudante: ${studentName}
 ${moduleLabel}
 ${moduleSummary ? `contexto do módulo: ${moduleSummary}` : ''}
 
@@ -103,30 +98,126 @@ rubrica disponível:
 ${rubricBlock}
 
 entrega do estudante:
-${answers || '(entrega vazia)'}
+${answers || '(entrega vazia)'}`
+
+  let systemPrompt = ''
+  let userPrompt = ''
+  let tool: Record<string, unknown>
+
+  if (mode === 'analysis') {
+    systemPrompt = `você é um educador experiente da NachesU analisando criticamente a entrega de um estudante de 14-15 anos.
+
+sua análise é para o educador ler, não para o estudante. seja honesto e específico, citando trechos da entrega.
+
+${TOM}
+
+avalie:
+- o que está forte de verdade (nada de elogio genérico)
+- o que está frágil ou raso
+- onde falta evidência, exemplo concreto ou aprofundamento
+- se a resposta parece genérica, copiada de ia ou fora do que o módulo pediu`
+    userPrompt = `${baseContext}
+
+nota máxima da rubrica: ${scoreMax}
+
+analisa criticamente essa entrega agora.`
+    tool = {
+      type: 'function',
+      function: {
+        name: 'analyze_deliverable',
+        description: 'devolve a análise crítica da entrega para o educador',
+        parameters: {
+          type: 'object',
+          properties: {
+            strengths: { type: 'array', items: { type: 'string' }, description: 'até 3 pontos fortes concretos' },
+            gaps: { type: 'array', items: { type: 'string' }, description: 'até 3 fragilidades ou lacunas concretas' },
+            risk_note: { type: 'string', description: 'alerta curto de resposta genérica/copiada/fora de escopo, ou string vazia' },
+            suggested_verdict: { type: 'string', enum: ['aprovado', 'ajustar'], description: 'sugestão de veredito' },
+            suggested_score: { type: 'number', description: `nota sugerida de 0 a ${scoreMax}` },
+            suggested_tags: { type: 'array', items: { type: 'string' }, description: 'até 3 labels da rubrica' },
+          },
+          required: ['strengths', 'gaps', 'risk_note', 'suggested_verdict', 'suggested_score', 'suggested_tags'],
+          additionalProperties: false,
+        },
+      },
+    }
+  } else if (mode === 'reply') {
+    const { data: thread } = await admin
+      .from('deliverable_messages')
+      .select('author_role, body_md, created_at')
+      .eq('deliverable_id', deliverableId)
+      .order('created_at', { ascending: true })
+      .limit(30)
+    const threadBlock = (thread ?? []).length
+      ? (thread ?? [])
+          .map((m: any) => `${m.author_role === 'student' ? 'estudante' : 'educador'}: ${String(m.body_md).slice(0, 1200)}`)
+          .join('\n\n')
+      : '(sem mensagens ainda)'
+
+    systemPrompt = `você é um educador da NachesU respondendo a um estudante de 14-15 anos numa conversa sobre a entrega dele.
+
+${TOM}
+
+a resposta é curta (2-5 linhas), responde o que o estudante perguntou ou comentou por último, e termina com um próximo passo claro. nunca punitiva.`
+    userPrompt = `${baseContext}
+
+${del.feedback ? `feedback já dado pelo educador:\n${del.feedback}\n` : ''}
+conversa até aqui:
+${threadBlock}
+
+escreve o rascunho da próxima resposta do educador.`
+    tool = {
+      type: 'function',
+      function: {
+        name: 'draft_reply',
+        description: 'devolve o rascunho de resposta do educador ao estudante',
+        parameters: {
+          type: 'object',
+          properties: {
+            draft_md: { type: 'string', description: 'resposta curta em markdown leve, pt-BR minúsculo' },
+          },
+          required: ['draft_md'],
+          additionalProperties: false,
+        },
+      },
+    }
+  } else {
+    systemPrompt = `você é um educador da NachesU (Naches + Sebrae BH) ajudando a rascunhar um feedback escrito para um estudante de 14-15 anos do ensino médio.
+
+${TOM}
+
+estrutura sugerida do feedback (curta, 4-8 linhas no total):
+1. uma linha valorizando algo concreto da entrega
+2. uma observação específica sobre o que pode aprofundar/ajustar (cita o trecho)
+3. um próximo passo claro e acionável
+
+depois, sugira 1 a 3 tags da rubrica que melhor descrevem essa entrega.`
+    userPrompt = `${baseContext}
 
 gera o rascunho de feedback agora.`
-
-  const tools = [{
-    type: 'function',
-    function: {
-      name: 'draft_feedback',
-      description: 'devolve o feedback rascunhado em markdown e as tags sugeridas da rubrica',
-      parameters: {
-        type: 'object',
-        properties: {
-          draft_md: { type: 'string', description: 'feedback em markdown leve, 4-8 linhas, em pt-BR minúsculo' },
-          suggested_tags: {
-            type: 'array',
-            items: { type: 'string' },
-            description: 'até 3 labels da rubrica que melhor se aplicam'
-          }
+    tool = {
+      type: 'function',
+      function: {
+        name: 'draft_feedback',
+        description: 'devolve o feedback rascunhado em markdown e as tags sugeridas da rubrica',
+        parameters: {
+          type: 'object',
+          properties: {
+            draft_md: { type: 'string', description: 'feedback em markdown leve, 4-8 linhas, em pt-BR minúsculo' },
+            suggested_tags: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'até 3 labels da rubrica que melhor se aplicam',
+            },
+          },
+          required: ['draft_md', 'suggested_tags'],
+          additionalProperties: false,
         },
-        required: ['draft_md', 'suggested_tags'],
-        additionalProperties: false
-      }
+      },
     }
-  }]
+  }
+
+  const toolName = (tool as any).function.name
 
   const aiRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
     method: 'POST',
@@ -137,8 +228,8 @@ gera o rascunho de feedback agora.`
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
-      tools,
-      tool_choice: { type: 'function', function: { name: 'draft_feedback' } },
+      tools: [tool],
+      tool_choice: { type: 'function', function: { name: toolName } },
     }),
   })
 
@@ -147,26 +238,49 @@ gera o rascunho de feedback agora.`
     console.error('ai gateway error', aiRes.status, t)
     if (aiRes.status === 429) return json({ error: 'limite de uso atingido, tenta de novo daqui a pouco' }, 429)
     if (aiRes.status === 402) return json({ error: 'créditos esgotados no workspace' }, 402)
-    return json({ error: 'falha ao gerar rascunho' }, 500)
+    return json({ error: 'falha ao gerar com a ia' }, 500)
   }
 
   const data = await aiRes.json()
   const call = data?.choices?.[0]?.message?.tool_calls?.[0]
-  let parsed: { draft_md: string; suggested_tags: string[] } | null = null
-  try { parsed = JSON.parse(call?.function?.arguments ?? '{}') } catch {}
-  if (!parsed?.draft_md) return json({ error: 'rascunho vazio' }, 500)
+  let parsed: any = null
+  try { parsed = JSON.parse(call?.function?.arguments ?? '{}') } catch { /* ignora */ }
+  if (!parsed) return json({ error: 'resposta vazia da ia' }, 500)
 
-  // filtra tags pra só as válidas da rubrica
   const validLabels = new Set(criteria.map((c) => c.label.toLowerCase()))
-  const tags = (parsed.suggested_tags ?? [])
-    .map((t) => String(t).toLowerCase().trim())
-    .filter((t) => validLabels.has(t))
-    .slice(0, 3)
+  const cleanTags = (raw: unknown) =>
+    (Array.isArray(raw) ? raw : [])
+      .map((t) => String(t).toLowerCase().trim())
+      .filter((t) => validLabels.has(t))
+      .slice(0, 3)
+
+  const rubricInfo = { id: rubric?.id ?? null, slug: rubric?.slug ?? null, name: rubric?.name ?? null }
+
+  if (mode === 'analysis') {
+    const clampList = (raw: unknown) =>
+      (Array.isArray(raw) ? raw : []).map((s) => String(s).trim()).filter(Boolean).slice(0, 3)
+    const rawScore = Number(parsed.suggested_score)
+    const suggestedScore = Number.isFinite(rawScore)
+      ? Math.min(Math.max(rawScore, 0), scoreMax)
+      : null
+    return json({
+      strengths: clampList(parsed.strengths),
+      gaps: clampList(parsed.gaps),
+      risk_note: String(parsed.risk_note ?? '').trim(),
+      suggested_verdict: parsed.suggested_verdict === 'ajustar' ? 'ajustar' : 'aprovado',
+      suggested_score: suggestedScore,
+      score_max: scoreMax,
+      suggested_tags: cleanTags(parsed.suggested_tags),
+      rubric: rubricInfo,
+    })
+  }
+
+  if (!parsed.draft_md) return json({ error: 'rascunho vazio' }, 500)
 
   return json({
-    draft_md: parsed.draft_md.trim(),
-    suggested_tags: tags,
-    rubric: { id: rubric?.id ?? null, slug: rubric?.slug ?? null, name: rubric?.name ?? null },
+    draft_md: String(parsed.draft_md).trim(),
+    suggested_tags: mode === 'draft' ? cleanTags(parsed.suggested_tags) : [],
+    rubric: rubricInfo,
   })
 })
 
