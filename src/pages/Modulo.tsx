@@ -361,6 +361,25 @@ const Modulo = () => {
         .in("pill_id", required.map((p) => p.id));
       const doneCount = fresh.data?.length ?? 0;
       if (required.length > 0 && doneCount >= required.length) {
+        // o módulo tem registro/exercício obrigatório? então a entrega precisa
+        // ter conteúdo antes de fechar. sem isso, o estudante avançava com o
+        // rascunho parado e a entrega nunca chegava na fila do educador.
+        const needsWritten = required.some(
+          (p) => p.kind === "registro" || p.kind === "exercicio_pbl",
+        );
+        const { data: deliv } = await supabase
+          .from("module_deliverables")
+          .select("content")
+          .eq("user_id", user.id)
+          .eq("module_id", moduleRow.id)
+          .maybeSingle();
+        const filled = hasDeliverableAnswers(deliv?.content ?? null);
+
+        if (needsWritten && !filled && !isAdmin) {
+          toast.info("falta o seu registro. escreve sua resposta pra fechar o módulo");
+          return;
+        }
+
         const now = new Date().toISOString();
         await supabase.from("student_module_progress").upsert(
           {
@@ -371,9 +390,9 @@ const Modulo = () => {
           },
           { onConflict: "user_id,module_id" },
         );
-        // NÃO submete o deliverable aqui — submit virou ação manual via
-        // completeMutation (etapa 2 da revisão crítica). isso evita promover
-        // rascunhos em branco quando o aluno só marca leitura.
+        // entrega com conteúdo vai junto: fechar o módulo é o mesmo gesto de
+        // entregar. rascunho vazio continua rascunho.
+        if (filled) await submitDeliverableIfExists();
         const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
         const nextWasLocked =
           next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
