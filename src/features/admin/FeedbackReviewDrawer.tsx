@@ -434,6 +434,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const handleAnalyzeWithAI = async () => {
     if (!deliverable) return;
     setAnalyzing(true);
+    setAnalysisError(null);
     try {
       const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
         body: { deliverable_id: deliverable.id, mode: "analysis" },
@@ -441,7 +442,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       const a = data as AiAnalysis;
-      setAnalysis({
+      const next: AiAnalysis = {
         strengths: a.strengths ?? [],
         gaps: a.gaps ?? [],
         risk_note: a.risk_note ?? "",
@@ -449,11 +450,13 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
         suggested_score: a.suggested_score ?? null,
         score_max: a.score_max ?? 10,
         suggested_tags: a.suggested_tags ?? [],
-      });
+      };
+      setAnalysis(next);
+      analysisCache.current.set(deliverable.id, next);
       setTags((cur) => Array.from(new Set([...cur, ...(a.suggested_tags ?? [])])));
       toast.success("análise pronta, a decisão continua sua");
-    } catch (e: any) {
-      toast.error(e.message ?? "falha ao analisar entrega");
+    } catch (e: unknown) {
+      setAnalysisError(readableAiError(e, "não deu pra analisar essa entrega"));
     } finally {
       setAnalyzing(false);
     }
@@ -462,6 +465,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const handleDraftReplyWithAI = async () => {
     if (!deliverable) return;
     setReplyDrafting(true);
+    setReplyError(null);
     try {
       const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
         body: { deliverable_id: deliverable.id, mode: "reply" },
@@ -469,21 +473,22 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       const draft = (data as any)?.draft_md as string | undefined;
-      if (!draft) throw new Error("rascunho vazio");
+      if (!draft) throw new Error("a ia devolveu um rascunho vazio");
       setReply(draft.slice(0, 4000));
       toast.success("rascunho de resposta pronto, edita antes de enviar");
-    } catch (e: any) {
-      toast.error(e.message ?? "falha ao rascunhar resposta");
+    } catch (e: unknown) {
+      setReplyError(readableAiError(e, "não deu pra rascunhar a resposta"));
     } finally {
       setReplyDrafting(false);
     }
   };
 
   const handleDraftWithAI = async () => {
-
     if (!deliverable) return;
     setAiConfirmOpen(false);
     setDrafting(true);
+    setDraftError(null);
+    const previousFeedback = feedback;
     try {
       const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
         body: { deliverable_id: deliverable.id },
@@ -492,17 +497,19 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
       if ((data as any)?.error) throw new Error((data as any).error);
       const draft = (data as any)?.draft_md as string | undefined;
       const suggested = ((data as any)?.suggested_tags as string[] | undefined) ?? [];
-      if (!draft) throw new Error("rascunho vazio");
+      if (!draft) throw new Error("a ia devolveu um rascunho vazio");
       setFeedback(draft);
       setTags((cur) => {
         const merged = new Set([...cur, ...suggested]);
         return Array.from(merged);
       });
+      setPreAiFeedback(previousFeedback.trim() ? previousFeedback : null);
       setShowPreview(true);
       toast.success("rascunho gerado, revisa e ajusta antes de enviar");
-    } catch (e: any) {
-      toast.error(e.message ?? "falha ao gerar rascunho");
+    } catch (e: unknown) {
+      setDraftError(readableAiError(e, "não deu pra gerar o rascunho"));
     } finally {
+
       setDrafting(false);
     }
   };
