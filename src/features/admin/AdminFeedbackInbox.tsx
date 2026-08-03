@@ -247,12 +247,17 @@ export const AdminFeedbackInbox = ({
   const filteredData = useMemo(() => {
     if (!searchTerm) return data;
     return data.filter((d) => {
+      const roster = lookupByCode(d.profile?.nickname ?? d.profile?.display_name ?? null);
       const haystack = [
         d.profile?.display_name,
         d.profile?.nickname,
+        roster?.full_name,
+        roster?.ra,
+        roster?.turma,
         d.module?.title,
         d.user_id,
       ]
+
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
