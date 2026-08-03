@@ -157,7 +157,9 @@ interface ReviewHistoryEntry {
 
 export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, onNext, position }: Props) => {
   const { user } = useAuth();
+  const { lookupByCode } = useStudentRoster();
   const qc = useQueryClient();
+
   const [feedback, setFeedback] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
