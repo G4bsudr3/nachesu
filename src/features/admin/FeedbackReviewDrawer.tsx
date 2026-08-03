@@ -824,9 +824,21 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             rows={3}
             className="bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
           />
-          <div className="mt-2 flex items-center justify-between">
+          <div className="mt-2 flex items-center justify-between gap-2 flex-wrap">
             <span className="text-[10px] text-perestroika-preto/40">{reply.length}/4000</span>
+            <div className="flex items-center gap-2">
             <button
+              type="button"
+              disabled={replyDrafting}
+              onClick={() => void handleDraftReplyWithAI()}
+              className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-2 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50 min-h-[36px]"
+              title="rascunha uma resposta com base na entrega e na conversa"
+            >
+              {replyDrafting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+              rascunhar com ia
+            </button>
+            <button
+
               type="button"
               disabled={sending || replyMutation.isPending || reply.trim().length < 1}
               onClick={() => replyMutation.mutate()}
