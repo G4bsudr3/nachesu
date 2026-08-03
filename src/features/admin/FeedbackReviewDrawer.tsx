@@ -278,7 +278,56 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
   };
 
+  const handleAnalyzeWithAI = async () => {
+    if (!deliverable) return;
+    setAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
+        body: { deliverable_id: deliverable.id, mode: "analysis" },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const a = data as AiAnalysis;
+      setAnalysis({
+        strengths: a.strengths ?? [],
+        gaps: a.gaps ?? [],
+        risk_note: a.risk_note ?? "",
+        suggested_verdict: a.suggested_verdict === "ajustar" ? "ajustar" : "aprovado",
+        suggested_score: a.suggested_score ?? null,
+        score_max: a.score_max ?? 10,
+        suggested_tags: a.suggested_tags ?? [],
+      });
+      setTags((cur) => Array.from(new Set([...cur, ...(a.suggested_tags ?? [])])));
+      toast.success("análise pronta, a decisão continua sua");
+    } catch (e: any) {
+      toast.error(e.message ?? "falha ao analisar entrega");
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const handleDraftReplyWithAI = async () => {
+    if (!deliverable) return;
+    setReplyDrafting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
+        body: { deliverable_id: deliverable.id, mode: "reply" },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const draft = (data as any)?.draft_md as string | undefined;
+      if (!draft) throw new Error("rascunho vazio");
+      setReply(draft.slice(0, 4000));
+      toast.success("rascunho de resposta pronto, edita antes de enviar");
+    } catch (e: any) {
+      toast.error(e.message ?? "falha ao rascunhar resposta");
+    } finally {
+      setReplyDrafting(false);
+    }
+  };
+
   const handleDraftWithAI = async () => {
+
     if (!deliverable) return;
     setAiConfirmOpen(false);
     setDrafting(true);
