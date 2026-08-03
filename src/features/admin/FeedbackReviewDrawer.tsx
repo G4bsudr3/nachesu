@@ -346,6 +346,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const approveMutation = useMutation({
     mutationFn: () => persistReview("aprovado"),
     onSuccess: () => {
+      if (deliverableId) clearDeliverableDraft(deliverableId);
+      setRestoredFromLocal(false);
       toast.success("feedback enviado, estudante notificado");
       qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
       onOpenChange(false);
@@ -356,6 +358,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const ajustarMutation = useMutation({
     mutationFn: () => persistReview("ajustar"),
     onSuccess: () => {
+      if (deliverableId) clearDeliverableDraft(deliverableId);
+      setRestoredFromLocal(false);
       toast.success("ajuste solicitado, estudante pode reabrir e re-enviar");
       qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
       onOpenChange(false);
