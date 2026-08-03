@@ -947,10 +947,12 @@ export const ModuloPillList = ({
                 bodyMd={pill.body_md}
                 schema={pill.interaction_schema as never}
                 accent={trailColor}
+                optional={!pill.required}
                 isCompleted={done}
                 isCompleting={togglePending}
                 onComplete={() => !done && onTogglePill(pill)}
               />
+
             </PillCardShell>
           );
         }
