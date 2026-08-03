@@ -15,6 +15,9 @@ import {
   ChevronRight,
   Check,
   X,
+  AlertTriangle,
+  RefreshCw,
+  Undo2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
