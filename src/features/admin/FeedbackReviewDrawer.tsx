@@ -127,6 +127,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     setTags((c.review_tags as string[]) ?? []);
     setShowPreview(false);
     setReply("");
+    setAnalysis(null);
+
     const existingScore = (deliverable as unknown as { score?: number | null }).score;
     setScore(existingScore !== undefined && existingScore !== null ? String(existingScore) : "");
   }, [deliverable]);
