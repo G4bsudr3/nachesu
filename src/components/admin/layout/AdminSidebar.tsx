@@ -90,6 +90,20 @@ export const AdminSidebar = ({
 }) => {
   const { signOut } = useAuth();
 
+  // contagem de entregas aguardando correção, pra sinalizar trabalho pendente
+  const { data: pendentes = 0 } = useQuery({
+    queryKey: ["admin-entregas-pendentes"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("module_deliverables")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "enviado");
+      if (error) throw error;
+      return count ?? 0;
+    },
+    staleTime: 60_000,
+  });
+
   const renderItem = (i: Item) => (
     <NavLink
       key={i.to}
@@ -106,8 +120,15 @@ export const AdminSidebar = ({
     >
       <i.icon className="w-4 h-4 shrink-0" />
       <span className="truncate">{i.label}</span>
+      {i.badge === "pendentes" && pendentes > 0 && (
+        <span className="ml-auto shrink-0 rounded-full bg-perestroika-laranja text-perestroika-bege px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
+          {pendentes}
+        </span>
+      )}
     </NavLink>
   );
+
+
 
   return (
     <div className="h-full flex flex-col bg-perestroika-bege border-r border-perestroika-preto/10">
