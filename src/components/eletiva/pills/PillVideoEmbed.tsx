@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 
 type Schema = {
   type?: "video_embed";
@@ -11,6 +11,8 @@ interface Props {
   bodyMd?: string | null;
   schema: Schema;
   accent: string;
+  /** quando true, é referência extra: não conta no tempo nem no progresso do módulo */
+  optional?: boolean;
   onComplete: () => void;
   isCompleted: boolean;
   isCompleting?: boolean;
@@ -26,6 +28,7 @@ export function PillVideoEmbed({
   bodyMd,
   schema,
   accent,
+  optional,
   onComplete,
   isCompleted,
   isCompleting,
@@ -35,6 +38,11 @@ export function PillVideoEmbed({
   return (
     <div className="space-y-5">
       <header>
+        {optional && (
+          <p className="inline-flex items-center gap-1.5 mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-perestroika-preto/55">
+            <Sparkles className="h-3 w-3" aria-hidden /> bônus opcional
+          </p>
+        )}
         <h3 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] mb-2">
           {title}
         </h3>
@@ -43,7 +51,14 @@ export function PillVideoEmbed({
             {bodyMd}
           </p>
         )}
+        {optional && (
+          <p className="mt-2 font-body text-xs text-perestroika-preto/55">
+            isso aqui é referência extra. dá pra seguir o módulo sem ver, e o tempo dele não entra
+            nos 50 min.
+          </p>
+        )}
       </header>
+
 
       {url && (
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/95">
