@@ -50,6 +50,17 @@ const FALLBACK_CHIPS = [
 
 type Verdict = "aprovado" | "ajustar";
 
+interface AiAnalysis {
+  strengths: string[];
+  gaps: string[];
+  risk_note: string;
+  suggested_verdict: Verdict;
+  suggested_score: number | null;
+  score_max: number;
+  suggested_tags: string[];
+}
+
+
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -78,8 +89,13 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const [showPreview, setShowPreview] = useState(false);
   const [reply, setReply] = useState("");
   const [drafting, setDrafting] = useState(false);
+  const [replyDrafting, setReplyDrafting] = useState(false);
+
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState<AiAnalysis | null>(null);
   const [aiConfirmOpen, setAiConfirmOpen] = useState(false);
   const [score, setScore] = useState<string>("");
+
 
   const { data: rubric } = useRubricForModule(deliverable?.module?.id ?? null);
   const chips: Array<{ label: string; description?: string }> =
@@ -111,6 +127,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     setTags((c.review_tags as string[]) ?? []);
     setShowPreview(false);
     setReply("");
+    setAnalysis(null);
+
     const existingScore = (deliverable as unknown as { score?: number | null }).score;
     setScore(existingScore !== undefined && existingScore !== null ? String(existingScore) : "");
   }, [deliverable]);
@@ -264,7 +282,56 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     setTags((cur) => (cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]));
   };
 
+  const handleAnalyzeWithAI = async () => {
+    if (!deliverable) return;
+    setAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
+        body: { deliverable_id: deliverable.id, mode: "analysis" },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const a = data as AiAnalysis;
+      setAnalysis({
+        strengths: a.strengths ?? [],
+        gaps: a.gaps ?? [],
+        risk_note: a.risk_note ?? "",
+        suggested_verdict: a.suggested_verdict === "ajustar" ? "ajustar" : "aprovado",
+        suggested_score: a.suggested_score ?? null,
+        score_max: a.score_max ?? 10,
+        suggested_tags: a.suggested_tags ?? [],
+      });
+      setTags((cur) => Array.from(new Set([...cur, ...(a.suggested_tags ?? [])])));
+      toast.success("análise pronta, a decisão continua sua");
+    } catch (e: any) {
+      toast.error(e.message ?? "falha ao analisar entrega");
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const handleDraftReplyWithAI = async () => {
+    if (!deliverable) return;
+    setReplyDrafting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
+        body: { deliverable_id: deliverable.id, mode: "reply" },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const draft = (data as any)?.draft_md as string | undefined;
+      if (!draft) throw new Error("rascunho vazio");
+      setReply(draft.slice(0, 4000));
+      toast.success("rascunho de resposta pronto, edita antes de enviar");
+    } catch (e: any) {
+      toast.error(e.message ?? "falha ao rascunhar resposta");
+    } finally {
+      setReplyDrafting(false);
+    }
+  };
+
   const handleDraftWithAI = async () => {
+
     if (!deliverable) return;
     setAiConfirmOpen(false);
     setDrafting(true);
@@ -438,7 +505,109 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
 
         {!isDraft && (
         <>
+        <div className="mt-6 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/50 p-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 inline-flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3" /> análise da ia
+            </p>
+            <button
+              type="button"
+              disabled={analyzing}
+              onClick={() => void handleAnalyzeWithAI()}
+              className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-1 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50"
+              title="lê a entrega com a rubrica e devolve leitura crítica pra você"
+            >
+              {analyzing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+              {analysis ? "analisar de novo" : "analisar com ia"}
+            </button>
+          </div>
+
+          {!analysis && !analyzing && (
+            <p className="mt-2 text-xs text-perestroika-preto/55">
+              a ia lê a entrega junto com a rubrica e devolve o que está forte, o
+              que está frágil e uma sugestão de veredito. quem decide é você.
+            </p>
+          )}
+
+          {analysis && (
+            <div className="mt-3 space-y-3 text-xs text-perestroika-preto/80">
+              {analysis.strengths.length > 0 && (
+                <div>
+                  <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/50 mb-1">
+                    está forte
+                  </p>
+                  <ul className="space-y-1">
+                    {analysis.strengths.map((s, i) => (
+                      <li key={i} className="flex gap-1.5">
+                        <Check className="w-3 h-3 mt-0.5 shrink-0 text-emerald-700" />
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {analysis.gaps.length > 0 && (
+                <div>
+                  <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/50 mb-1">
+                    dá pra aprofundar
+                  </p>
+                  <ul className="space-y-1">
+                    {analysis.gaps.map((g, i) => (
+                      <li key={i} className="flex gap-1.5">
+                        <X className="w-3 h-3 mt-0.5 shrink-0 text-perestroika-laranja" />
+                        <span>{g}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {analysis.risk_note && (
+                <p className="rounded-lg bg-rose-100 text-rose-900 border border-rose-300 px-3 py-2">
+                  {analysis.risk_note}
+                </p>
+              )}
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="uppercase text-[10px]">
+                  sugestão: {analysis.suggested_verdict}
+                </Badge>
+                {analysis.suggested_score !== null && (
+                  <Badge variant="outline" className="uppercase text-[10px] tabular-nums">
+                    nota sugerida {analysis.suggested_score}/{analysis.score_max}
+                  </Badge>
+                )}
+                <span className="text-[10px] text-perestroika-preto/45">
+                  sugestão, não decisão. revisa antes de enviar.
+                </span>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  disabled={drafting}
+                  onClick={() => {
+                    if (feedback.trim().length > 0) setAiConfirmOpen(true);
+                    else void handleDraftWithAI();
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-preto text-perestroika-bege px-3 py-1.5 text-[10px] uppercase tracking-wide hover:opacity-90 disabled:opacity-50"
+                >
+                  {drafting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                  usar como rascunho
+                </button>
+                {usesScore && analysis.suggested_score !== null && (
+                  <button
+                    type="button"
+                    onClick={() => setScore(String(analysis.suggested_score))}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-1.5 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10"
+                  >
+                    aplicar nota sugerida
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="mt-6">
+
           <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
             <div className="min-w-0">
               <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
@@ -655,8 +824,19 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             rows={3}
             className="bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
           />
-          <div className="mt-2 flex items-center justify-between">
+          <div className="mt-2 flex items-center justify-between gap-2 flex-wrap">
             <span className="text-[10px] text-perestroika-preto/40">{reply.length}/4000</span>
+            <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={replyDrafting}
+              onClick={() => void handleDraftReplyWithAI()}
+              className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/30 px-3 py-2 text-[10px] uppercase tracking-wide hover:bg-perestroika-preto/10 disabled:opacity-50 min-h-[36px]"
+              title="rascunha uma resposta com base na entrega e na conversa"
+            >
+              {replyDrafting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+              rascunhar com ia
+            </button>
             <button
               type="button"
               disabled={sending || replyMutation.isPending || reply.trim().length < 1}
@@ -670,8 +850,10 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               )}
               enviar
             </button>
+            </div>
           </div>
         </div>
+
         </>
         )}
 

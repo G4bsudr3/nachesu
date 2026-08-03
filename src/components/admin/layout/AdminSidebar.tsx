@@ -1,4 +1,7 @@
 import { NavLink } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
 import {
   Home,
   BookOpen,
@@ -23,7 +26,14 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 
-type Item = { to: string; label: string; icon: LucideIcon; exact?: boolean };
+type Item = {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  exact?: boolean;
+  badge?: "pendentes";
+};
+
 
 type Section = { title: string; items: Item[] };
 
@@ -42,20 +52,20 @@ const SECTIONS: Section[] = [
       { to: "/admin/eletiva/ia-na-pratica/modulos", label: "ia na prática · módulos", icon: BookOpen },
       { to: "/admin/eletiva/economia-circular/modulos", label: "economia circular · módulos", icon: BookOpen },
       { to: "/admin/publicacao", label: "publicação", icon: Eye },
+      { to: "/admin/review", label: "revisão de conteúdo", icon: ClipboardCheck },
       { to: "/admin/trilha", label: "trilha", icon: Compass },
       { to: "/admin/materiais", label: "materiais", icon: Package },
     ],
   },
   {
-    title: "correção & acompanhamento",
+    title: "entregas dos estudantes",
     items: [
-      { to: "/admin/correcoes", label: "correções", icon: ClipboardCheck },
-      { to: "/admin/review", label: "revisão", icon: ClipboardCheck },
-      { to: "/admin/respostas", label: "respostas", icon: Inbox },
+      { to: "/admin/entregas", label: "entregas", icon: Inbox, badge: "pendentes" },
       { to: "/admin/pending", label: "pendentes", icon: Hourglass },
       { to: "/admin/risco", label: "risco", icon: AlertTriangle },
     ],
   },
+
   {
     title: "comunicação",
     items: [
@@ -83,6 +93,20 @@ export const AdminSidebar = ({
 }) => {
   const { signOut } = useAuth();
 
+  // contagem de entregas aguardando correção, pra sinalizar trabalho pendente
+  const { data: pendentes = 0 } = useQuery({
+    queryKey: ["admin-entregas-pendentes"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("module_deliverables")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "enviado");
+      if (error) throw error;
+      return count ?? 0;
+    },
+    staleTime: 60_000,
+  });
+
   const renderItem = (i: Item) => (
     <NavLink
       key={i.to}
@@ -99,8 +123,15 @@ export const AdminSidebar = ({
     >
       <i.icon className="w-4 h-4 shrink-0" />
       <span className="truncate">{i.label}</span>
+      {i.badge === "pendentes" && pendentes > 0 && (
+        <span className="ml-auto shrink-0 rounded-full bg-perestroika-laranja text-perestroika-bege px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
+          {pendentes}
+        </span>
+      )}
     </NavLink>
   );
+
+
 
   return (
     <div className="h-full flex flex-col bg-perestroika-bege border-r border-perestroika-preto/10">

@@ -107,9 +107,16 @@ const useNow = () => {
   }, []);
 };
 
-export const AdminFeedbackInbox = () => {
+export const AdminFeedbackInbox = ({
+  title = "respostas dos estudantes",
+  defaultStatus = "todos",
+}: {
+  title?: string;
+  defaultStatus?: InboxFilter;
+} = {}) => {
   useNow();
-  const [statusFilter, setStatusFilter] = useState<InboxFilter>("todos");
+  const [statusFilter, setStatusFilter] = useState<InboxFilter>(defaultStatus);
+
   const [courseId, setCourseId] = useState<string | null>(null);
   const [moduleId, setModuleId] = useState<string | null>(null);
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
@@ -254,7 +261,8 @@ export const AdminFeedbackInbox = () => {
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none">
-            respostas dos estudantes
+            {title}
+
           </h1>
           <p className="mt-3 text-perestroika-preto/70 inline-flex items-center gap-3 flex-wrap">
             <Inbox className="w-4 h-4" />
