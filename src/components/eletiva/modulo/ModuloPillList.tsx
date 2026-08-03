@@ -169,21 +169,31 @@ const PillCardShell = ({
             >
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/70">
-              {pill.order_index === 0 && !pill.required
-                ? "opcional"
-                : `${pillKindLabel[pill.kind]}${!pill.required ? " · opcional" : ""}`}
-            </span>
+            {pill.required ? (
+              <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/70">
+                {pillKindLabel[pill.kind]}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/25 px-2 py-0.5 font-body text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-perestroika-preto/60">
+                <Sparkles className="h-3 w-3" aria-hidden /> bônus opcional
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {(pill.duration_min_low || pill.duration_min_high) && (
-              <span className="hidden sm:inline-flex items-center gap-1 font-body text-xs text-perestroika-preto/55">
+              <span
+                className={`hidden sm:inline-flex items-center gap-1 font-body text-xs ${
+                  pill.required ? "text-perestroika-preto/55" : "text-perestroika-preto/35"
+                }`}
+              >
                 <Clock className="h-3 w-3" />
                 {pill.duration_min_low === pill.duration_min_high || !pill.duration_min_high
                   ? `${pill.duration_min_low ?? pill.duration_min_high} min`
                   : `${pill.duration_min_low}-${pill.duration_min_high} min`}
+                {!pill.required && " fora do tempo do módulo"}
               </span>
             )}
+
             <span
               className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border border-perestroika-preto/15 text-perestroika-preto/70"
               aria-hidden
@@ -937,10 +947,12 @@ export const ModuloPillList = ({
                 bodyMd={pill.body_md}
                 schema={pill.interaction_schema as never}
                 accent={trailColor}
+                optional={!pill.required}
                 isCompleted={done}
                 isCompleting={togglePending}
                 onComplete={() => !done && onTogglePill(pill)}
               />
+
             </PillCardShell>
           );
         }

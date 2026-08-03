@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, Layers } from "lucide-react";
+import { CheckCircle2, Clock, Layers, Sparkles } from "lucide-react";
 
 interface Props {
   courseTitle?: string | null;
@@ -12,7 +12,20 @@ interface Props {
   isCompleted: boolean;
   totalPills?: number;
   donePills?: number;
+  /** soma das pílulas obrigatórias (piso e teto), em minutos */
+  coreMinLow?: number;
+  coreMinHigh?: number;
+  /** soma das pílulas opcionais (teto), em minutos */
+  bonusMinHigh?: number;
 }
+
+const formatRange = (low?: number, high?: number) => {
+  const l = low || 0;
+  const h = high || 0;
+  if (!l && !h) return null;
+  if (!l || !h || l === h) return `${l || h} min`;
+  return `${l}-${h} min`;
+};
 
 export const ModuloHeader = ({
   courseTitle,
@@ -26,8 +39,14 @@ export const ModuloHeader = ({
   isCompleted,
   totalPills,
   donePills,
+  coreMinLow,
+  coreMinHigh,
+  bonusMinHigh,
 }: Props) => {
   const pct = totalPills && totalPills > 0 ? Math.round(((donePills ?? 0) / totalPills) * 100) : 0;
+  const coreLabel = formatRange(coreMinLow, coreMinHigh) ?? (totalMinutes ? `${totalMinutes} min` : null);
+  const isDense = (coreMinLow ?? 0) > 50;
+
   return (
     <section
       aria-label="cabeçalho do módulo"
@@ -83,8 +102,20 @@ export const ModuloHeader = ({
         )}
         <span className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-preto/10 px-3 py-1.5 font-body text-xs uppercase tracking-wider">
           <Clock className="h-3 w-3" aria-hidden />
-          {totalMinutes ? `${totalMinutes} min` : "tempo variável"}
+          {coreLabel ? `${coreLabel} de núcleo` : "tempo variável"}
         </span>
+        {!!bonusMinHigh && bonusMinHigh > 0 && (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65">
+            <Sparkles className="h-3 w-3" aria-hidden />
+            +{bonusMinHigh} min de bônus opcional
+          </span>
+        )}
+        {isDense && (
+          <span className="inline-flex items-center rounded-full bg-perestroika-preto/5 px-3 py-1.5 font-body text-xs text-perestroika-preto/65">
+            esse é mais denso que a média
+          </span>
+        )}
+
         {isCompleted && (
           <span
             className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto"
