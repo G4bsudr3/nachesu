@@ -42,20 +42,20 @@ const SECTIONS: Section[] = [
       { to: "/admin/eletiva/ia-na-pratica/modulos", label: "ia na prática · módulos", icon: BookOpen },
       { to: "/admin/eletiva/economia-circular/modulos", label: "economia circular · módulos", icon: BookOpen },
       { to: "/admin/publicacao", label: "publicação", icon: Eye },
+      { to: "/admin/review", label: "revisão de conteúdo", icon: ClipboardCheck },
       { to: "/admin/trilha", label: "trilha", icon: Compass },
       { to: "/admin/materiais", label: "materiais", icon: Package },
     ],
   },
   {
-    title: "correção & acompanhamento",
+    title: "entregas dos estudantes",
     items: [
-      { to: "/admin/correcoes", label: "correções", icon: ClipboardCheck },
-      { to: "/admin/review", label: "revisão", icon: ClipboardCheck },
-      { to: "/admin/respostas", label: "respostas", icon: Inbox },
+      { to: "/admin/entregas", label: "entregas", icon: Inbox, badge: "pendentes" },
       { to: "/admin/pending", label: "pendentes", icon: Hourglass },
       { to: "/admin/risco", label: "risco", icon: AlertTriangle },
     ],
   },
+
   {
     title: "comunicação",
     items: [
