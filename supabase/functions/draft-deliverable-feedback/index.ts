@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
   // busca entrega + módulo + perfil
   const { data: del, error: delErr } = await admin
     .from('module_deliverables')
-    .select('id, user_id, module_id, content, feedback, module:modules(id, number, title, summary, rubric_id)')
+    .select('id, user_id, module_id, content, feedback, module:modules(id, number, title, objective, deliverable_description, rubric_id)')
     .eq('id', deliverableId)
     .maybeSingle()
   if (delErr || !del) {
