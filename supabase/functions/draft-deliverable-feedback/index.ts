@@ -93,7 +93,8 @@ Deno.serve(async (req) => {
 
   const baseContext = `estudante: ${studentName}
 ${moduleLabel}
-${moduleSummary ? `contexto do módulo: ${moduleSummary}` : ''}
+${moduleObjective ? `objetivo do módulo: ${moduleObjective}` : ''}
+${moduleDeliverable ? `o que o módulo pediu de entrega: ${moduleDeliverable}` : ''}
 
 rubrica disponível:
 ${rubricBlock}
