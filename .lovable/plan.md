@@ -1,41 +1,59 @@
-## o que as listas resolveram
+# reorganizar "correção & acompanhamento" + análise crítica com IA
 
-cruzei as duas planilhas (IA na Prática: 147 estudantes, Economia Circular: 118) com as contas ativas sem matrícula no banco.
+## o que o diagnóstico mostrou
 
-```text
-conta no app                     eletiva confirmada pela lista     quem é
-tiago11572@gmail.com.br       -> ia na prática                     tiago rodrigues thomaz (1E-ADM)
-isabela11501@edu.sebrae       -> ia na prática                     isabela coelho barbosa (1D-MKT)
-elisa11712@sebrae.com.br      -> economia circular                 elisa souza dutra (1B-ADM)
-maria11586@edu.sebrae.com     -> economia circular                 maria eduarda pedroso soares (1B-ADM)
-julia11697@edu.sebrae.com.br  -> não consta em nenhuma das listas   (aguardando a escola)
-lucasacabral27@edu.sebrae...  -> não consta (existe lucas alves cabral = lucas11610, ia)
-```
+- **correções** (`/admin/correcoes`) e **respostas** (`/admin/respostas`) leem exatamente a mesma fonte (`usePendingDeliverables`) e abrem o mesmo painel de correção (`FeedbackReviewDrawer`). a única diferença é o filtro: correções mostra só `pendentes`, respostas mostra tudo com busca, filtros e export csv. são duas portas pro mesmo lugar.
+- **revisão** (`/admin/review`) não é sobre estudante: é `AdminEletivaReview`, um checador de qualidade do conteúdo publicado da eletiva (pílulas, textos, espelho da landing). está na seção errada, o que é a maior causa da confusão.
+- já existe "rascunhar com IA" dentro do painel de correção (edge function `draft-deliverable-feedback`, usa a rubrica do módulo). o que falta é a **análise crítica visível** antes do rascunho, e o mesmo apoio de IA na **resposta em thread** pro estudante.
 
-os quatro primeiros são erro de digitação no primeiro acesso (`gmail.com.br`, `sebrae.com.br`, `edu.sebrae` sem `.com.br`, `edu.sebrae.com` sem `.br`). o convite certo nunca casou, então a conta nasceu ativa e vazia.
+## reorganização da sidebar
 
-a julia11697 é outro caso: email sintaticamente correto, mas o RA 11697 não aparece em nenhuma das duas listas. fica parada até a escola confirmar, como você pediu.
+seção **eletivas & conteúdo** (ganha o item que estava fora de lugar):
+- eletivas
+- ia na prática · módulos
+- economia circular · módulos
+- publicação
+- **revisão de conteúdo** (era "revisão")
+- trilha
+- materiais
 
-## correção de dados (uma migração só)
+seção **entregas dos estudantes** (era "correção & acompanhamento"):
+- **entregas** → `/admin/entregas`, uma página só, com contador de pendentes no item
+- pendentes (aprovação de conta)
+- risco
 
-1. matricular os 4 estudantes acima na eletiva confirmada pela lista
-2. marcar o convite correspondente como reivindicado (`claimed_at`, `claimed_by`), pra não gerar matrícula duplicada se depois logarem com o email certo
-3. dar as duas eletivas para as contas de admin: gabriel (`gabreda188`, hoje só IA) e dudu (`duduobregon` já tem as duas; a conta `luis.eduardo.obregon` está sem nenhuma e entra nas duas). tássia já está nas duas, nada muda pra ela
+`correções` e `respostas` deixam de ser dois itens. `/admin/correcoes` e `/admin/respostas` passam a redirecionar pra `/admin/entregas` (nada quebra em link salvo).
 
-detalhe técnico: o trigger `enrollments_single_active_check` bloqueia segunda matrícula ativa quando `auth.uid()` é nulo (é o caso de execução via migração). a migração desabilita o trigger, aplica os inserts e reabilita no mesmo bloco.
+## página única de entregas
 
-## o que fica pendente (sem chute)
+uma lista em tabela (padrão `AdminTable` já usado no admin), com:
 
-- **julia11697**: você confirma com a escola e eu matriculo depois
-- **lucasacabral27**: indício forte de ser lucas alves cabral (`lucas11610`, IA na prática), mas não matriculo sem seu ok
-- **g.sudre@g4educacao.com**: externo, fora das listas
-- **rick@press-start.gg**: conta de teste, status pending, deixo como está
+- filtros inline por status: **aguardando correção** (default), **ajustes pedidos**, **corrigidas**, **todas**
+- filtro por eletiva e por módulo, busca por estudante
+- contagem acima da lista + destaque de espera > 7 dias (comportamento que já existe em correções)
+- export csv (mantém o que existe em respostas)
+- clique na linha abre o mesmo painel de correção, agora com navegação anterior/próxima dentro do filtro ativo
 
-## prevenção, pra não voltar
+isso mantém tudo que as duas telas faziam, sem duplicar a leitura mental.
 
-- **backfill dos convites**: comparar os 265 emails das listas com `course_invites` (hoje 169 IA + 121 circular) e inserir o que faltar com `ON CONFLICT DO NOTHING`. assim quem ainda não logou já entra matriculado
-- **fechar o buraco no signup**: em `Auth.tsx`, quando o email é `@edu.sebrae.com.br` e não existe convite, exigir a escolha da eletiva antes de disparar o link, propagando `courseSlug` até `send-access-link` (a função já grava em `chosen_course_slug`). nenhuma conta nova nasce sem matrícula
-- **saída no /app**: o estado "você ainda não está matriculado em nenhuma eletiva" em `EletivasHero.tsx` deixa de ser beco sem saída e passa a oferecer escolha da eletiva ali mesmo, com aviso pro admin
-- **visibilidade**: bloco "contas sem matrícula" em `/admin/turma` usando o `AdminTable` padrão, com ação de matricular em um clique
+## apoio de IA na correção
 
-as planilhas ficam só como fonte de importação, não entram no repositório.
+no painel de correção, um bloco novo **"análise da IA"**, acima do campo de feedback:
+
+1. botão `analisar com IA` gera, a partir da entrega + rubrica do módulo:
+   - leitura crítica em tópicos: o que está forte, o que está frágil, o que falta evidência
+   - sinalização de risco de cópia/resposta genérica quando for o caso
+   - sugestão de veredito (aprovado / ajustar) e de nota, sempre como sugestão
+2. botão `usar como rascunho` joga o texto no campo de feedback, já em tom NachesU (minúsculo, direto, sem punição), totalmente editável antes de enviar
+3. nada é enviado ao estudante automaticamente: o envio continua sendo uma ação explícita do educador
+4. o mesmo botão passa a existir na **resposta em thread** (`deliverable_messages`), gerando um rascunho curto de réplica considerando o histórico da conversa
+
+## detalhes técnicos
+
+- `src/components/admin/layout/AdminSidebar.tsx`: mover item, renomear, nova seção, badge de contagem de pendentes.
+- `src/App.tsx`: rota `/admin/entregas`; `/admin/correcoes` e `/admin/respostas` viram `<Navigate replace>`.
+- nova `src/pages/AdminEntregas.tsx` fundindo `AdminCorrecoes.tsx` + `AdminFeedbackInbox.tsx` (filtros, csv, drawer, navegação prev/next). os dois arquivos antigos saem depois que a rota nova estiver validada.
+- edge function `draft-deliverable-feedback` ganha `mode: "analysis" | "draft" | "reply"` no body, mantendo o comportamento atual como default (`draft`). retorno da análise: `{ strengths[], gaps[], suggested_verdict, suggested_score, notes_md }`. continua admin-only via `has_role`, validando o body.
+- IA pela Lovable AI (gateway já configurado, `LOVABLE_API_KEY`), sem chave nova. erros 429/402 aparecem como toast claro no painel, sem virar feedback vazio.
+- sem mudança de schema: `module_deliverables` e `deliverable_messages` já cobrem o fluxo.
+- checagem no browser: fila com filtros, análise, rascunho, envio e thread, em desktop e mobile.
