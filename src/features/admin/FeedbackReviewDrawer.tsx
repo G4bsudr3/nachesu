@@ -1032,12 +1032,20 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               ))}
             </ul>
           )}
+          {replyDrafting && <AiProgress elapsed={elapsed} label="rascunhando resposta" />}
+          {replyError && !replyDrafting && (
+            <AiErrorBlock
+              message={replyError}
+              retrying={replyDrafting}
+              onRetry={() => void handleDraftReplyWithAI()}
+            />
+          )}
           <Textarea
             value={reply}
             onChange={(e) => setReply(e.target.value.slice(0, 4000))}
             placeholder="responder ao estudante..."
             rows={3}
-            className="bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
+            className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
           />
           <div className="mt-2 flex items-center justify-between gap-2 flex-wrap">
             <span className="text-[10px] text-perestroika-preto/40">{reply.length}/4000</span>
