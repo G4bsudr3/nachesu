@@ -62,7 +62,7 @@ const AiProgress = ({ elapsed, label }: { elapsed: number; label: string }) => {
   return (
     <div className="mt-3" role="status" aria-live="polite">
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-perestroika-preto/10">
-        <div className="h-full w-1/3 animate-[shimmer_1.4s_ease-in-out_infinite] rounded-full bg-perestroika-preto/50 motion-reduce:w-full motion-reduce:animate-none" />
+        <div className="h-full w-full animate-pulse rounded-full bg-perestroika-preto/45 motion-reduce:animate-none" />
       </div>
       <p className="mt-2 flex items-center justify-between gap-2 text-[11px] text-perestroika-preto/60">
         <span>
