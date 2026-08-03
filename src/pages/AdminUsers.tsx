@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/table";
 import { logger } from "@/lib/logger";
 import { AdminInviteUserForm } from "@/components/admin/AdminInviteUserForm";
+import { useStudentRoster } from "@/hooks/useStudentRoster";
+
 
 type AdminUser = {
   user_id: string;
@@ -63,6 +65,8 @@ const AdminUsers = () => {
   const [domainFilter, setDomainFilter] = useState<string>("all");
   const [hideTest, setHideTest] = useState(true);
   const [busyUserId, setBusyUserId] = useState<string | null>(null);
+  const { lookup: lookupRoster } = useStudentRoster();
+
 
   const mergeTestFlags = async (list: AdminUser[]): Promise<AdminUser[]> => {
     if (list.length === 0) return list;
@@ -173,13 +177,15 @@ const AdminUsers = () => {
         if (d !== domainFilter) return false;
       }
       if (!q) return true;
-      const haystack = [item.email, item.display_name, item.nickname, item.status, item.roles.join(" "), item.courses.join(" ")]
+      const roster = lookupRoster(item.email);
+      const haystack = [item.email, item.display_name, item.nickname, item.status, item.roles.join(" "), item.courses.join(" "), roster?.full_name, roster?.ra, roster?.turma]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [users, search, courseFilter, domainFilter, hideTest]);
+  }, [users, search, courseFilter, domainFilter, hideTest, lookupRoster]);
+
 
 
   const grantAdmin = async (target: AdminUser) => {
@@ -350,7 +356,9 @@ const AdminUsers = () => {
               </TableRow>
             )}
 
-            {!loading && filtered.map((item) => (
+            {!loading && filtered.map((item) => {
+              const roster = lookupRoster(item.email);
+              return (
               <TableRow key={item.user_id} className="hover:bg-perestroika-preto/5">
                 <TableCell className="min-w-64">
                   <div className="flex items-center gap-3">
@@ -359,17 +367,28 @@ const AdminUsers = () => {
                     </div>
                     <div>
                       <p className="font-medium text-perestroika-preto">
-                        {item.display_name || item.nickname || item.email}
+                        {roster?.full_name || item.display_name || item.nickname || item.email}
                         {item.is_test && (
                           <span className="ml-2 inline-flex items-center gap-1 align-middle rounded-full bg-perestroika-preto/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-perestroika-preto/70">
                             <FlaskConical className="h-3 w-3" /> teste
                           </span>
                         )}
                       </p>
-                      <p className="text-xs text-perestroika-preto/60">{item.email}</p>
+                      <p className="text-xs text-perestroika-preto/60">
+                        {roster && (item.nickname || item.display_name) ? (
+                          <span className="uppercase tracking-wide mr-2">{item.nickname || item.display_name}</span>
+                        ) : null}
+                        {item.email}
+                      </p>
+                      {roster && (roster.ra || roster.turma) && (
+                        <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/45">
+                          {[roster.turma, roster.ra ? `ra ${roster.ra}` : null].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </TableCell>
+
                 <TableCell>
                   {item.courses.length === 0 ? (
                     <span className="text-xs text-perestroika-preto/40">sem matrícula</span>
@@ -460,7 +479,9 @@ const AdminUsers = () => {
                   </div>
                 </TableCell>
               </TableRow>
-            ))}
+              );
+            })}
+
           </TableBody>
         </Table>
       </div>

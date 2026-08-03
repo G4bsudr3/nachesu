@@ -2260,6 +2260,36 @@ export type Database = {
           },
         ]
       }
+      student_roster: {
+        Row: {
+          course_hint: string | null
+          created_at: string
+          email_normalized: string
+          full_name: string
+          ra: string | null
+          turma: string | null
+          updated_at: string
+        }
+        Insert: {
+          course_hint?: string | null
+          created_at?: string
+          email_normalized: string
+          full_name: string
+          ra?: string | null
+          turma?: string | null
+          updated_at?: string
+        }
+        Update: {
+          course_hint?: string | null
+          created_at?: string
+          email_normalized?: string
+          full_name?: string
+          ra?: string | null
+          turma?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string

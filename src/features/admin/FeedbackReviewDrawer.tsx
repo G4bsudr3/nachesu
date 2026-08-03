@@ -24,6 +24,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
+import { useStudentRoster } from "@/hooks/useStudentRoster";
+
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import {
@@ -157,7 +159,9 @@ interface ReviewHistoryEntry {
 
 export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, onNext, position }: Props) => {
   const { user } = useAuth();
+  const { lookupByCode } = useStudentRoster();
   const qc = useQueryClient();
+
   const [feedback, setFeedback] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
@@ -522,8 +526,14 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   };
 
   if (!deliverable) return null;
+  const studentCode = deliverable.profile?.nickname ?? deliverable.profile?.display_name ?? null;
+  const studentRoster = lookupByCode(studentCode);
   const studentName =
-    deliverable.profile?.display_name ?? deliverable.profile?.nickname ?? "estudante";
+    studentRoster?.full_name ??
+    deliverable.profile?.display_name ??
+    deliverable.profile?.nickname ??
+    "estudante";
+
   const moduleLabel = deliverable.module
     ? `módulo ${String(deliverable.module.number).padStart(2, "0")} · ${deliverable.module.title}`
     : "módulo";
@@ -548,7 +558,15 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               <SheetTitle className="font-display uppercase text-3xl text-left">
                 {studentName}
               </SheetTitle>
+              {studentRoster && studentCode && (
+                <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/50 text-left">
+                  {[studentCode, studentRoster.turma, studentRoster.ra ? `ra ${studentRoster.ra}` : null]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              )}
               <p className="text-sm text-perestroika-preto/70 text-left">{moduleLabel}</p>
+
             </div>
             {(onPrev || onNext) && (
               <div className="flex items-center gap-1 shrink-0">

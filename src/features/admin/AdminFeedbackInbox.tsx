@@ -5,6 +5,8 @@ import { Download, Inbox, Loader2, RefreshCcw, Search, Send } from "lucide-react
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { useStudentRoster } from "@/hooks/useStudentRoster";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -122,6 +124,8 @@ export const AdminFeedbackInbox = ({
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
   const [search, setSearch] = useState("");
   const [includeTest, setIncludeTest] = useState(false);
+  const { lookupByCode } = useStudentRoster();
+
 
   const { data: courses } = useQuery({
     queryKey: ["admin-feedback-courses"],
@@ -243,18 +247,23 @@ export const AdminFeedbackInbox = ({
   const filteredData = useMemo(() => {
     if (!searchTerm) return data;
     return data.filter((d) => {
+      const roster = lookupByCode(d.profile?.nickname ?? d.profile?.display_name ?? null);
       const haystack = [
         d.profile?.display_name,
         d.profile?.nickname,
+        roster?.full_name,
+        roster?.ra,
+        roster?.turma,
         d.module?.title,
         d.user_id,
       ]
+
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
       return haystack.includes(searchTerm);
     });
-  }, [data, searchTerm]);
+  }, [data, searchTerm, lookupByCode]);
 
   return (
     <div>
@@ -418,8 +427,11 @@ export const AdminFeedbackInbox = ({
             )}
             {!isLoading &&
               filteredData.map((d) => {
+                const code = d.profile?.nickname ?? d.profile?.display_name ?? null;
+                const roster = lookupByCode(code);
                 const name =
-                  d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8);
+                  roster?.full_name ?? d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8);
+
                 const isDraft = d.submitted_at === null && d.status === "rascunho";
                 const waitingDays = d.submitted_at && !d.reviewed_at
                   ? Math.floor((Date.now() - new Date(d.submitted_at).getTime()) / (1000 * 60 * 60 * 24))
@@ -441,8 +453,14 @@ export const AdminFeedbackInbox = ({
                       >
                         {name}
                       </Link>
+                      {roster && code && (
+                        <span className="block text-[11px] font-normal uppercase tracking-wide text-perestroika-preto/50">
+                          {[code, roster.turma].filter(Boolean).join(" · ")}
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="text-sm">
+
                       {d.module
                         ? `${String(d.module.number).padStart(2, "0")} · ${d.module.title}`
                         : "–"}
