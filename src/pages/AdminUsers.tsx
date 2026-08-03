@@ -323,10 +323,63 @@ const AdminUsers = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/50" />
           <Input
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="buscar por email, nome, nickname, papel ou eletiva…"
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setSuggestionPicked(false);
+              setSuggestOpen(true);
+            }}
+            onFocus={() => setSuggestOpen(true)}
+            onBlur={() => window.setTimeout(() => setSuggestOpen(false), 120)}
+            onKeyDown={(event) => {
+              if (!suggestOpen || suggestions.length === 0) return;
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setHighlighted((i) => (i + 1) % suggestions.length);
+              } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                setHighlighted((i) => (i - 1 + suggestions.length) % suggestions.length);
+              } else if (event.key === "Enter") {
+                event.preventDefault();
+                pickSuggestion(suggestions[highlighted]?.user.email ?? "");
+              } else if (event.key === "Escape") {
+                setSuggestOpen(false);
+              }
+            }}
+            role="combobox"
+            aria-expanded={suggestOpen && suggestions.length > 0}
+            aria-autocomplete="list"
+            placeholder="buscar por nome, ra, turma, email ou eletiva…"
             className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
           />
+          {suggestOpen && suggestions.length > 0 && (
+            <ul
+              role="listbox"
+              className="absolute z-30 mt-1 w-full max-h-[60vh] overflow-auto rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege shadow-lg py-1"
+            >
+              {suggestions.map((s, i) => (
+                <li key={s.user.user_id}>
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={i === highlighted}
+                    onMouseEnter={() => setHighlighted(i)}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => pickSuggestion(s.user.email)}
+                    className={`w-full text-left px-3 py-2 transition-colors ${
+                      i === highlighted ? "bg-perestroika-preto/10" : "hover:bg-perestroika-preto/5"
+                    }`}
+                  >
+                    <span className="block text-sm font-medium text-perestroika-preto">{s.name}</span>
+                    <span className="block text-xs text-perestroika-preto/60">
+                      {[s.code, s.ra ? `ra ${s.ra}` : null, s.turma ? `turma ${s.turma}` : null]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <Select value={courseFilter} onValueChange={setCourseFilter}>
           <SelectTrigger className="w-full md:w-56 bg-perestroika-bege/60 border-perestroika-preto/20">
