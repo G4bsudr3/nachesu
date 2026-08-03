@@ -446,8 +446,14 @@ export const AdminFeedbackInbox = ({
                       >
                         {name}
                       </Link>
+                      {roster && code && (
+                        <span className="block text-[11px] font-normal uppercase tracking-wide text-perestroika-preto/50">
+                          {[code, roster.turma].filter(Boolean).join(" · ")}
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="text-sm">
+
                       {d.module
                         ? `${String(d.module.number).padStart(2, "0")} · ${d.module.title}`
                         : "–"}
