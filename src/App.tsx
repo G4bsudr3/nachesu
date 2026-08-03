@@ -75,6 +75,7 @@ const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
 const AdminEletivaModulos = lazy(() => import("./pages/AdminEletivaModulos.tsx"));
 const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
 const AdminEntregas = lazy(() => import("./pages/AdminEntregas.tsx"));
+const AdminPulso = lazy(() => import("./pages/AdminPulso.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -286,6 +287,7 @@ const App = () => (
                 <Route path="/admin/eletiva/economia-circular/modulo/20" element={<AdminEletivaModulo20 />} />
                 <Route path="/dossie/:userId" element={<DossieAluno />} />
                 <Route path="/admin/entregas" element={<AdminEntregas />} />
+                <Route path="/admin/pulso" element={<AdminPulso />} />
                 <Route path="/admin/correcoes" element={<Navigate to="/admin/entregas" replace />} />
                 <Route path="/admin/respostas" element={<Navigate to="/admin/entregas" replace />} />
 

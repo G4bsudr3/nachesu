@@ -20,6 +20,7 @@ import {
   LogOut,
   Eye,
   History,
+  Star,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -63,6 +64,7 @@ const SECTIONS: Section[] = [
       { to: "/admin/entregas", label: "entregas", icon: Inbox, badge: "pendentes" },
       { to: "/admin/pending", label: "pendentes", icon: Hourglass },
       { to: "/admin/risco", label: "risco", icon: AlertTriangle },
+      { to: "/admin/pulso", label: "pulso · feedback", icon: Star },
     ],
   },
 
