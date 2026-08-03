@@ -335,7 +335,7 @@ export const AdminFeedbackInbox = ({
           <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="curso" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper" sideOffset={6} className="max-h-[60vh] overflow-y-auto">
             <SelectItem value="todos">todos os cursos</SelectItem>
             {(courses ?? []).map((c) => (
               <SelectItem key={c.id} value={c.id}>
@@ -351,7 +351,7 @@ export const AdminFeedbackInbox = ({
           <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
             <SelectValue placeholder="módulo" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper" sideOffset={6} className="max-h-[60vh] overflow-y-auto">
             <SelectItem value="todos">todos os módulos</SelectItem>
             {(modules ?? []).map((m) => (
               <SelectItem key={m.id} value={m.id}>
