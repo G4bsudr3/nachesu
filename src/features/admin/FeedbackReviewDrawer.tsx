@@ -89,6 +89,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const [showPreview, setShowPreview] = useState(false);
   const [reply, setReply] = useState("");
   const [drafting, setDrafting] = useState(false);
+  const [replyDrafting, setReplyDrafting] = useState(false);
+
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<AiAnalysis | null>(null);
   const [aiConfirmOpen, setAiConfirmOpen] = useState(false);
