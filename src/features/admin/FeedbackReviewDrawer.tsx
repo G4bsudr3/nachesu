@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import {
@@ -15,6 +15,9 @@ import {
   ChevronRight,
   Check,
   X,
+  AlertTriangle,
+  RefreshCw,
+  Undo2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,6 +42,77 @@ import { useExplicitPillProgress } from "./deliverableRendering/useExplicitPillP
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
 import { useDeliverableThread } from "@/features/hub/useDeliverableThread";
 import { useRubricForModule } from "./useRubrics";
+import {
+  clearDeliverableDraft,
+  isDraftEmpty,
+  loadDeliverableDraft,
+  saveDeliverableDraft,
+} from "./deliverableDraftStore";
+
+/** passos mostrados enquanto a ia trabalha, pra dar noção de progresso real. */
+const AI_STEPS = [
+  "lendo a entrega do estudante",
+  "cruzando com a rubrica do módulo",
+  "escrevendo a leitura crítica",
+  "quase lá, finalizando",
+];
+
+const AiProgress = ({ elapsed, label }: { elapsed: number; label: string }) => {
+  const step = Math.min(Math.floor(elapsed / 4), AI_STEPS.length - 1);
+  return (
+    <div className="mt-3" role="status" aria-live="polite">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-perestroika-preto/10">
+        <div className="h-full w-full animate-pulse rounded-full bg-perestroika-preto/45 motion-reduce:animate-none" />
+      </div>
+      <p className="mt-2 flex items-center justify-between gap-2 text-[11px] text-perestroika-preto/60">
+        <span>
+          {label}: {AI_STEPS[step]}
+          <span className="inline-block w-6">{".".repeat((elapsed % 3) + 1)}</span>
+        </span>
+        <span className="tabular-nums text-perestroika-preto/45">{elapsed}s</span>
+      </p>
+      <p className="mt-1 text-[10px] text-perestroika-preto/40">
+        costuma levar de 10 a 30 segundos. pode continuar lendo a entrega enquanto isso.
+      </p>
+    </div>
+  );
+};
+
+const AiErrorBlock = ({
+  message,
+  onRetry,
+  retrying,
+}: {
+  message: string;
+  onRetry: () => void;
+  retrying: boolean;
+}) => (
+  <div className="mt-3 rounded-xl border border-rose-300 bg-rose-50 px-3 py-2.5 text-xs text-rose-900">
+    <p className="flex items-start gap-1.5">
+      <AlertTriangle className="mt-0.5 w-3.5 h-3.5 shrink-0" />
+      <span>{message}</span>
+    </p>
+    <button
+      type="button"
+      onClick={onRetry}
+      disabled={retrying}
+      className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-rose-400 px-3 py-1 text-[10px] uppercase tracking-wide hover:bg-rose-100 disabled:opacity-50"
+    >
+      {retrying ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+      tentar de novo
+    </button>
+  </div>
+);
+
+const readableAiError = (e: unknown, fallback: string) => {
+  const raw = e instanceof Error ? e.message : String(e ?? "");
+  if (!raw) return fallback;
+  if (/non-2xx|FunctionsHttpError|Failed to send/i.test(raw)) {
+    return `${fallback}. a função de ia respondeu com erro, tenta de novo em alguns segundos.`;
+  }
+  return raw;
+};
+
 
 const FALLBACK_CHIPS = [
   { label: "clareza" },
@@ -96,6 +170,21 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const [aiConfirmOpen, setAiConfirmOpen] = useState(false);
   const [score, setScore] = useState<string>("");
 
+  // erros da ia ficam visíveis no próprio bloco, com botão de tentar de novo
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [draftError, setDraftError] = useState<string | null>(null);
+  const [replyError, setReplyError] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0);
+
+  // rascunho local: sinaliza quando o texto veio do que ficou salvo
+  const [restoredFromLocal, setRestoredFromLocal] = useState(false);
+  // texto que existia antes da ia sobrescrever, pra permitir desfazer
+  const [preAiFeedback, setPreAiFeedback] = useState<string | null>(null);
+  const hydratedFor = useRef<string | null>(null);
+  // análise por entrega, pra não sumir ao ir e voltar na lista
+  const analysisCache = useRef<Map<string, AiAnalysis>>(new Map());
+
+  const deliverableId = deliverable?.id ?? null;
 
   const { data: rubric } = useRubricForModule(deliverable?.module?.id ?? null);
   const chips: Array<{ label: string; description?: string }> =
@@ -120,18 +209,81 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
 
   const { messages, send, sending, markRead } = useDeliverableThread(deliverable?.id);
 
+  // hidrata os campos UMA vez por entrega (id), nunca a cada refetch da lista,
+  // pra não apagar o que o educador está escrevendo. se existir rascunho local
+  // salvo, ele vence o valor do banco.
   useEffect(() => {
-    if (!deliverable) return;
-    setFeedback(deliverable.feedback ?? "");
-    const c = (deliverable.content ?? {}) as Record<string, unknown>;
-    setTags((c.review_tags as string[]) ?? []);
-    setShowPreview(false);
-    setReply("");
-    setAnalysis(null);
+    if (!deliverable || !deliverableId) return;
+    if (hydratedFor.current === deliverableId) return;
+    hydratedFor.current = deliverableId;
 
+    const c = (deliverable.content ?? {}) as Record<string, unknown>;
+    const serverFeedback = deliverable.feedback ?? "";
+    const serverTags = (c.review_tags as string[]) ?? [];
     const existingScore = (deliverable as unknown as { score?: number | null }).score;
+    const serverScore =
+      existingScore !== undefined && existingScore !== null ? String(existingScore) : "";
+
+    const saved = loadDeliverableDraft(deliverableId);
+    const savedIsDifferent =
+      !!saved &&
+      !isDraftEmpty(saved) &&
+      (saved.feedback !== serverFeedback ||
+        saved.score !== serverScore ||
+        saved.reply.trim() !== "" ||
+        saved.tags.join("|") !== serverTags.join("|"));
+
+    if (saved && savedIsDifferent) {
+      setFeedback(saved.feedback);
+      setTags(saved.tags);
+      setScore(saved.score);
+      setReply(saved.reply);
+      setRestoredFromLocal(true);
+    } else {
+      setFeedback(serverFeedback);
+      setTags(serverTags);
+      setScore(serverScore);
+      setReply("");
+      setRestoredFromLocal(false);
+    }
+
+    setShowPreview(false);
+    setAnalysisError(null);
+    setDraftError(null);
+    setReplyError(null);
+    setPreAiFeedback(null);
+    setAnalysis(analysisCache.current.get(deliverableId) ?? null);
+  }, [deliverable, deliverableId]);
+
+  // salva o rascunho local a cada mudança (inclui troca de entrega e reload)
+  useEffect(() => {
+    if (!deliverableId || hydratedFor.current !== deliverableId) return;
+    saveDeliverableDraft(deliverableId, { feedback, tags, score, reply });
+  }, [deliverableId, feedback, tags, score, reply]);
+
+  const aiBusy = analyzing || drafting || replyDrafting;
+  useEffect(() => {
+    if (!aiBusy) {
+      setElapsed(0);
+      return;
+    }
+    setElapsed(0);
+    const t = window.setInterval(() => setElapsed((s) => s + 1), 1000);
+    return () => window.clearInterval(t);
+  }, [aiBusy]);
+
+  const discardLocalDraft = useCallback(() => {
+    if (!deliverable || !deliverableId) return;
+    clearDeliverableDraft(deliverableId);
+    const c = (deliverable.content ?? {}) as Record<string, unknown>;
+    const existingScore = (deliverable as unknown as { score?: number | null }).score;
+    setFeedback(deliverable.feedback ?? "");
+    setTags((c.review_tags as string[]) ?? []);
     setScore(existingScore !== undefined && existingScore !== null ? String(existingScore) : "");
-  }, [deliverable]);
+    setReply("");
+    setRestoredFromLocal(false);
+  }, [deliverable, deliverableId]);
+
 
   useEffect(() => {
     if (open && deliverable) markRead();
@@ -194,6 +346,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const approveMutation = useMutation({
     mutationFn: () => persistReview("aprovado"),
     onSuccess: () => {
+      if (deliverableId) clearDeliverableDraft(deliverableId);
+      setRestoredFromLocal(false);
       toast.success("feedback enviado, estudante notificado");
       qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
       onOpenChange(false);
@@ -204,6 +358,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const ajustarMutation = useMutation({
     mutationFn: () => persistReview("ajustar"),
     onSuccess: () => {
+      if (deliverableId) clearDeliverableDraft(deliverableId);
+      setRestoredFromLocal(false);
       toast.success("ajuste solicitado, estudante pode reabrir e re-enviar");
       qc.invalidateQueries({ queryKey: ["admin-deliverables-inbox"] });
       onOpenChange(false);
@@ -285,6 +441,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const handleAnalyzeWithAI = async () => {
     if (!deliverable) return;
     setAnalyzing(true);
+    setAnalysisError(null);
     try {
       const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
         body: { deliverable_id: deliverable.id, mode: "analysis" },
@@ -292,7 +449,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       const a = data as AiAnalysis;
-      setAnalysis({
+      const next: AiAnalysis = {
         strengths: a.strengths ?? [],
         gaps: a.gaps ?? [],
         risk_note: a.risk_note ?? "",
@@ -300,11 +457,13 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
         suggested_score: a.suggested_score ?? null,
         score_max: a.score_max ?? 10,
         suggested_tags: a.suggested_tags ?? [],
-      });
+      };
+      setAnalysis(next);
+      analysisCache.current.set(deliverable.id, next);
       setTags((cur) => Array.from(new Set([...cur, ...(a.suggested_tags ?? [])])));
       toast.success("análise pronta, a decisão continua sua");
-    } catch (e: any) {
-      toast.error(e.message ?? "falha ao analisar entrega");
+    } catch (e: unknown) {
+      setAnalysisError(readableAiError(e, "não deu pra analisar essa entrega"));
     } finally {
       setAnalyzing(false);
     }
@@ -313,6 +472,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const handleDraftReplyWithAI = async () => {
     if (!deliverable) return;
     setReplyDrafting(true);
+    setReplyError(null);
     try {
       const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
         body: { deliverable_id: deliverable.id, mode: "reply" },
@@ -320,21 +480,22 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       const draft = (data as any)?.draft_md as string | undefined;
-      if (!draft) throw new Error("rascunho vazio");
+      if (!draft) throw new Error("a ia devolveu um rascunho vazio");
       setReply(draft.slice(0, 4000));
       toast.success("rascunho de resposta pronto, edita antes de enviar");
-    } catch (e: any) {
-      toast.error(e.message ?? "falha ao rascunhar resposta");
+    } catch (e: unknown) {
+      setReplyError(readableAiError(e, "não deu pra rascunhar a resposta"));
     } finally {
       setReplyDrafting(false);
     }
   };
 
   const handleDraftWithAI = async () => {
-
     if (!deliverable) return;
     setAiConfirmOpen(false);
     setDrafting(true);
+    setDraftError(null);
+    const previousFeedback = feedback;
     try {
       const { data, error } = await supabase.functions.invoke("draft-deliverable-feedback", {
         body: { deliverable_id: deliverable.id },
@@ -343,17 +504,19 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
       if ((data as any)?.error) throw new Error((data as any).error);
       const draft = (data as any)?.draft_md as string | undefined;
       const suggested = ((data as any)?.suggested_tags as string[] | undefined) ?? [];
-      if (!draft) throw new Error("rascunho vazio");
+      if (!draft) throw new Error("a ia devolveu um rascunho vazio");
       setFeedback(draft);
       setTags((cur) => {
         const merged = new Set([...cur, ...suggested]);
         return Array.from(merged);
       });
+      setPreAiFeedback(previousFeedback.trim() ? previousFeedback : null);
       setShowPreview(true);
       toast.success("rascunho gerado, revisa e ajusta antes de enviar");
-    } catch (e: any) {
-      toast.error(e.message ?? "falha ao gerar rascunho");
+    } catch (e: unknown) {
+      setDraftError(readableAiError(e, "não deu pra gerar o rascunho"));
     } finally {
+
       setDrafting(false);
     }
   };
@@ -522,12 +685,24 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             </button>
           </div>
 
-          {!analysis && !analyzing && (
+          {!analysis && !analyzing && !analysisError && (
             <p className="mt-2 text-xs text-perestroika-preto/55">
               a ia lê a entrega junto com a rubrica e devolve o que está forte, o
               que está frágil e uma sugestão de veredito. quem decide é você.
             </p>
           )}
+
+          {analyzing && <AiProgress elapsed={elapsed} label="analisando" />}
+
+          {analysisError && !analyzing && (
+            <AiErrorBlock
+              message={analysisError}
+              retrying={analyzing}
+              onRetry={() => void handleAnalyzeWithAI()}
+            />
+          )}
+
+
 
           {analysis && (
             <div className="mt-3 space-y-3 text-xs text-perestroika-preto/80">
@@ -657,21 +832,60 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
         </div>
 
         <div className="mt-5">
+          {restoredFromLocal && (
+            <div className="mb-2 flex items-start justify-between gap-3 rounded-xl border border-perestroika-preto/20 bg-perestroika-bege/60 px-3 py-2">
+              <p className="text-[11px] text-perestroika-preto/70">
+                recuperamos o rascunho que você tinha escrito nessa entrega. ele fica
+                salvo aqui no navegador enquanto você navega entre entregas.
+              </p>
+              <button
+                type="button"
+                onClick={discardLocalDraft}
+                className="shrink-0 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
+              >
+                descartar
+              </button>
+            </div>
+          )}
           <div className="flex items-center justify-between mb-2">
             <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
               feedback (markdown leve)
             </label>
-            <button
-              type="button"
-              onClick={() => setShowPreview((p) => !p)}
-              className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
-            >
-              {showPreview ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              {showPreview ? "editar" : "preview"}
-            </button>
+            <div className="flex items-center gap-3">
+              {preAiFeedback !== null && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFeedback(preAiFeedback);
+                    setPreAiFeedback(null);
+                    setShowPreview(false);
+                  }}
+                  className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
+                  title="volta o texto que existia antes do rascunho da ia"
+                >
+                  <Undo2 className="w-3 h-3" /> desfazer ia
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setShowPreview((p) => !p)}
+                className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
+              >
+                {showPreview ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                {showPreview ? "editar" : "preview"}
+              </button>
+            </div>
           </div>
+          {drafting && <AiProgress elapsed={elapsed} label="rascunhando feedback" />}
+          {draftError && !drafting && (
+            <AiErrorBlock
+              message={draftError}
+              retrying={drafting}
+              onRetry={() => void handleDraftWithAI()}
+            />
+          )}
           {showPreview ? (
-            <div className="min-h-[12rem] rounded-md border border-perestroika-preto/20 bg-perestroika-bege/60 p-3">
+            <div className="mt-2 min-h-[12rem] rounded-md border border-perestroika-preto/20 bg-perestroika-bege/60 p-3">
               {feedback.trim() ? (
                 <FeedbackMarkdown>{feedback}</FeedbackMarkdown>
               ) : (
@@ -684,13 +898,14 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               onChange={(e) => setFeedback(e.target.value.slice(0, 2000))}
               placeholder="o que ficou forte, o que pode ajustar, o próximo passo... aceita **negrito**, *itálico*, listas, [link](url)"
               rows={8}
-              className="bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
+              className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
             />
           )}
           <p className="mt-1 text-[10px] text-perestroika-preto/40 text-right">
             {feedback.length}/2000
           </p>
         </div>
+
 
         {usesScore && (
           <div className="mt-5">
@@ -817,12 +1032,20 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               ))}
             </ul>
           )}
+          {replyDrafting && <AiProgress elapsed={elapsed} label="rascunhando resposta" />}
+          {replyError && !replyDrafting && (
+            <AiErrorBlock
+              message={replyError}
+              retrying={replyDrafting}
+              onRetry={() => void handleDraftReplyWithAI()}
+            />
+          )}
           <Textarea
             value={reply}
             onChange={(e) => setReply(e.target.value.slice(0, 4000))}
             placeholder="responder ao estudante..."
             rows={3}
-            className="bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
+            className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
           />
           <div className="mt-2 flex items-center justify-between gap-2 flex-wrap">
             <span className="text-[10px] text-perestroika-preto/40">{reply.length}/4000</span>
