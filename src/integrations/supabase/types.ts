@@ -2723,6 +2723,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_access_log: {
+        Row: {
+          access_date: string
+          created_at: string
+          device_kind: string
+          first_seen_at: string
+          hits: number
+          id: string
+          last_seen_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_date?: string
+          created_at?: string
+          device_kind?: string
+          first_seen_at?: string
+          hits?: number
+          id?: string
+          last_seen_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_date?: string
+          created_at?: string
+          device_kind?: string
+          first_seen_at?: string
+          hits?: number
+          id?: string
+          last_seen_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_module_overrides: {
         Row: {
           course_id: string | null
@@ -2846,6 +2882,16 @@ export type Database = {
       }
     }
     Functions: {
+      admin_access_sessions: {
+        Args: { _user_id: string }
+        Returns: {
+          is_active: boolean
+          last_active_at: string
+          session_id: string
+          started_at: string
+          user_agent: string
+        }[]
+      }
       admin_get_profile: {
         Args: { _user_id: string }
         Returns: {
@@ -3370,6 +3416,7 @@ export type Database = {
           submitted_at: string
         }[]
       }
+      touch_access: { Args: { _device_kind?: string }; Returns: undefined }
       write_audit_log: {
         Args: {
           _action: string
