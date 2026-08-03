@@ -685,12 +685,24 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             </button>
           </div>
 
-          {!analysis && !analyzing && (
+          {!analysis && !analyzing && !analysisError && (
             <p className="mt-2 text-xs text-perestroika-preto/55">
               a ia lê a entrega junto com a rubrica e devolve o que está forte, o
               que está frágil e uma sugestão de veredito. quem decide é você.
             </p>
           )}
+
+          {analyzing && <AiProgress elapsed={elapsed} label="analisando" />}
+
+          {analysisError && !analyzing && (
+            <AiErrorBlock
+              message={analysisError}
+              retrying={analyzing}
+              onRetry={() => void handleAnalyzeWithAI()}
+            />
+          )}
+
+
 
           {analysis && (
             <div className="mt-3 space-y-3 text-xs text-perestroika-preto/80">
