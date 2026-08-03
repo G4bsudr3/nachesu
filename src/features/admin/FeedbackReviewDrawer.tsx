@@ -170,6 +170,19 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const [aiConfirmOpen, setAiConfirmOpen] = useState(false);
   const [score, setScore] = useState<string>("");
 
+  // erros da ia ficam visíveis no próprio bloco, com botão de tentar de novo
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [draftError, setDraftError] = useState<string | null>(null);
+  const [replyError, setReplyError] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0);
+
+  // rascunho local: sinaliza quando o texto veio do que ficou salvo
+  const [restoredFromLocal, setRestoredFromLocal] = useState(false);
+  const hydratedFor = useRef<string | null>(null);
+  // análise por entrega, pra não sumir ao ir e voltar na lista
+  const analysisCache = useRef<Map<string, AiAnalysis>>(new Map());
+
+  const deliverableId = deliverable?.id ?? null;
 
   const { data: rubric } = useRubricForModule(deliverable?.module?.id ?? null);
   const chips: Array<{ label: string; description?: string }> =
@@ -194,18 +207,80 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
 
   const { messages, send, sending, markRead } = useDeliverableThread(deliverable?.id);
 
+  // hidrata os campos UMA vez por entrega (id), nunca a cada refetch da lista,
+  // pra não apagar o que o educador está escrevendo. se existir rascunho local
+  // salvo, ele vence o valor do banco.
   useEffect(() => {
-    if (!deliverable) return;
-    setFeedback(deliverable.feedback ?? "");
-    const c = (deliverable.content ?? {}) as Record<string, unknown>;
-    setTags((c.review_tags as string[]) ?? []);
-    setShowPreview(false);
-    setReply("");
-    setAnalysis(null);
+    if (!deliverable || !deliverableId) return;
+    if (hydratedFor.current === deliverableId) return;
+    hydratedFor.current = deliverableId;
 
+    const c = (deliverable.content ?? {}) as Record<string, unknown>;
+    const serverFeedback = deliverable.feedback ?? "";
+    const serverTags = (c.review_tags as string[]) ?? [];
     const existingScore = (deliverable as unknown as { score?: number | null }).score;
+    const serverScore =
+      existingScore !== undefined && existingScore !== null ? String(existingScore) : "";
+
+    const saved = loadDeliverableDraft(deliverableId);
+    const savedIsDifferent =
+      !!saved &&
+      !isDraftEmpty(saved) &&
+      (saved.feedback !== serverFeedback ||
+        saved.score !== serverScore ||
+        saved.reply.trim() !== "" ||
+        saved.tags.join("|") !== serverTags.join("|"));
+
+    if (saved && savedIsDifferent) {
+      setFeedback(saved.feedback);
+      setTags(saved.tags);
+      setScore(saved.score);
+      setReply(saved.reply);
+      setRestoredFromLocal(true);
+    } else {
+      setFeedback(serverFeedback);
+      setTags(serverTags);
+      setScore(serverScore);
+      setReply("");
+      setRestoredFromLocal(false);
+    }
+
+    setShowPreview(false);
+    setAnalysisError(null);
+    setDraftError(null);
+    setReplyError(null);
+    setAnalysis(analysisCache.current.get(deliverableId) ?? null);
+  }, [deliverable, deliverableId]);
+
+  // salva o rascunho local a cada mudança (inclui troca de entrega e reload)
+  useEffect(() => {
+    if (!deliverableId || hydratedFor.current !== deliverableId) return;
+    saveDeliverableDraft(deliverableId, { feedback, tags, score, reply });
+  }, [deliverableId, feedback, tags, score, reply]);
+
+  const aiBusy = analyzing || drafting || replyDrafting;
+  useEffect(() => {
+    if (!aiBusy) {
+      setElapsed(0);
+      return;
+    }
+    setElapsed(0);
+    const t = window.setInterval(() => setElapsed((s) => s + 1), 1000);
+    return () => window.clearInterval(t);
+  }, [aiBusy]);
+
+  const discardLocalDraft = useCallback(() => {
+    if (!deliverable || !deliverableId) return;
+    clearDeliverableDraft(deliverableId);
+    const c = (deliverable.content ?? {}) as Record<string, unknown>;
+    const existingScore = (deliverable as unknown as { score?: number | null }).score;
+    setFeedback(deliverable.feedback ?? "");
+    setTags((c.review_tags as string[]) ?? []);
     setScore(existingScore !== undefined && existingScore !== null ? String(existingScore) : "");
-  }, [deliverable]);
+    setReply("");
+    setRestoredFromLocal(false);
+  }, [deliverable, deliverableId]);
+
 
   useEffect(() => {
     if (open && deliverable) markRead();
