@@ -61,6 +61,9 @@ const AdminUsers = () => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [suggestOpen, setSuggestOpen] = useState(false);
+  const [suggestionPicked, setSuggestionPicked] = useState(false);
+  const [highlighted, setHighlighted] = useState(0);
   const [courseFilter, setCourseFilter] = useState<string>("all");
   const [domainFilter, setDomainFilter] = useState<string>("all");
   const [hideTest, setHideTest] = useState(true);
