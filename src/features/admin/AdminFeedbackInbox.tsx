@@ -107,9 +107,16 @@ const useNow = () => {
   }, []);
 };
 
-export const AdminFeedbackInbox = () => {
+export const AdminFeedbackInbox = ({
+  title = "respostas dos estudantes",
+  defaultStatus = "todos",
+}: {
+  title?: string;
+  defaultStatus?: InboxFilter;
+} = {}) => {
   useNow();
-  const [statusFilter, setStatusFilter] = useState<InboxFilter>("todos");
+  const [statusFilter, setStatusFilter] = useState<InboxFilter>(defaultStatus);
+
   const [courseId, setCourseId] = useState<string | null>(null);
   const [moduleId, setModuleId] = useState<string | null>(null);
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
