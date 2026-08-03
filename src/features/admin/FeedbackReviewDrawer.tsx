@@ -832,21 +832,60 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
         </div>
 
         <div className="mt-5">
+          {restoredFromLocal && (
+            <div className="mb-2 flex items-start justify-between gap-3 rounded-xl border border-perestroika-preto/20 bg-perestroika-bege/60 px-3 py-2">
+              <p className="text-[11px] text-perestroika-preto/70">
+                recuperamos o rascunho que você tinha escrito nessa entrega. ele fica
+                salvo aqui no navegador enquanto você navega entre entregas.
+              </p>
+              <button
+                type="button"
+                onClick={discardLocalDraft}
+                className="shrink-0 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
+              >
+                descartar
+              </button>
+            </div>
+          )}
           <div className="flex items-center justify-between mb-2">
             <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
               feedback (markdown leve)
             </label>
-            <button
-              type="button"
-              onClick={() => setShowPreview((p) => !p)}
-              className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
-            >
-              {showPreview ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              {showPreview ? "editar" : "preview"}
-            </button>
+            <div className="flex items-center gap-3">
+              {preAiFeedback !== null && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFeedback(preAiFeedback);
+                    setPreAiFeedback(null);
+                    setShowPreview(false);
+                  }}
+                  className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
+                  title="volta o texto que existia antes do rascunho da ia"
+                >
+                  <Undo2 className="w-3 h-3" /> desfazer ia
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setShowPreview((p) => !p)}
+                className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-perestroika-preto/55 hover:text-perestroika-preto"
+              >
+                {showPreview ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                {showPreview ? "editar" : "preview"}
+              </button>
+            </div>
           </div>
+          {drafting && <AiProgress elapsed={elapsed} label="rascunhando feedback" />}
+          {draftError && !drafting && (
+            <AiErrorBlock
+              message={draftError}
+              retrying={drafting}
+              onRetry={() => void handleDraftWithAI()}
+            />
+          )}
           {showPreview ? (
-            <div className="min-h-[12rem] rounded-md border border-perestroika-preto/20 bg-perestroika-bege/60 p-3">
+            <div className="mt-2 min-h-[12rem] rounded-md border border-perestroika-preto/20 bg-perestroika-bege/60 p-3">
               {feedback.trim() ? (
                 <FeedbackMarkdown>{feedback}</FeedbackMarkdown>
               ) : (
@@ -859,13 +898,14 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               onChange={(e) => setFeedback(e.target.value.slice(0, 2000))}
               placeholder="o que ficou forte, o que pode ajustar, o próximo passo... aceita **negrito**, *itálico*, listas, [link](url)"
               rows={8}
-              className="bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
+              className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
             />
           )}
           <p className="mt-1 text-[10px] text-perestroika-preto/40 text-right">
             {feedback.length}/2000
           </p>
         </div>
+
 
         {usesScore && (
           <div className="mt-5">
