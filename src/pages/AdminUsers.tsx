@@ -528,6 +528,9 @@ const AdminUsers = () => {
                     ))}
                   </div>
                 </TableCell>
+                <TableCell className="text-xs text-perestroika-preto/70 whitespace-nowrap">
+                  {formatDate(item.created_at)}
+                </TableCell>
                 <TableCell className="text-xs whitespace-nowrap">
                   {(() => {
                     const iso = lastAccess.get(item.user_id) ?? null;
