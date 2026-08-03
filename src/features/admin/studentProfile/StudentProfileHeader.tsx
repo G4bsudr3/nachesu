@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { KeyRound, UserRound, Mail, Calendar, ShieldCheck } from "lucide-react";
+import { KeyRound, UserRound, Mail, Calendar, ShieldCheck, Hash, IdCard, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +7,8 @@ import { fnErrorInfo, refSuffix } from "@/lib/fnError";
 import { Badge } from "@/components/ui/badge";
 import type { StudentProfile } from "./useStudentProfile";
 import { logger } from "@/lib/logger";
+import { useStudentRoster } from "@/hooks/useStudentRoster";
+
 
 const formatDate = (iso: string | null) => {
   if (!iso) return "–";
@@ -24,7 +26,11 @@ interface Props {
 
 export const StudentProfileHeader = ({ userId, profile }: Props) => {
   const [busy, setBusy] = useState(false);
+  const { lookup } = useStudentRoster();
+  const roster = lookup(profile.email);
+  const codigo = profile.profile?.nickname ?? profile.profile?.display_name ?? null;
   const name =
+    roster?.full_name ??
     profile.profile?.display_name ??
     profile.profile?.nickname ??
     profile.email ??
@@ -34,6 +40,7 @@ export const StudentProfileHeader = ({ userId, profile }: Props) => {
     .slice(0, 2)
     .map((s) => s[0]?.toUpperCase() ?? "")
     .join("");
+
 
   const resetPassword = async () => {
     if (
@@ -91,6 +98,21 @@ export const StudentProfileHeader = ({ userId, profile }: Props) => {
             {name}
           </h1>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-perestroika-preto/70">
+            {codigo && roster?.full_name && (
+              <span className="inline-flex items-center gap-1.5 uppercase tracking-wide">
+                <Hash className="h-3.5 w-3.5" /> {codigo}
+              </span>
+            )}
+            {roster?.ra && (
+              <span className="inline-flex items-center gap-1.5 uppercase tracking-wide">
+                <IdCard className="h-3.5 w-3.5" /> ra {roster.ra}
+              </span>
+            )}
+            {roster?.turma && (
+              <span className="inline-flex items-center gap-1.5 uppercase tracking-wide">
+                <GraduationCap className="h-3.5 w-3.5" /> {roster.turma}
+              </span>
+            )}
             {profile.email && (
               <span className="inline-flex items-center gap-1.5">
                 <Mail className="h-3.5 w-3.5" /> {profile.email}
@@ -100,6 +122,7 @@ export const StudentProfileHeader = ({ userId, profile }: Props) => {
               <Calendar className="h-3.5 w-3.5" /> entrou em {formatDate(profile.profile?.created_at ?? null)}
             </span>
           </div>
+
 
           <div className="mt-3 flex flex-wrap gap-1.5">
             <Badge className="bg-perestroika-preto/5 text-perestroika-preto">
