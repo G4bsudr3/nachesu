@@ -418,8 +418,11 @@ export const AdminFeedbackInbox = ({
             )}
             {!isLoading &&
               filteredData.map((d) => {
+                const code = d.profile?.nickname ?? d.profile?.display_name ?? null;
+                const roster = lookupByCode(code);
                 const name =
-                  d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8);
+                  roster?.full_name ?? d.profile?.display_name ?? d.profile?.nickname ?? d.user_id.slice(0, 8);
+
                 const isDraft = d.submitted_at === null && d.status === "rascunho";
                 const waitingDays = d.submitted_at && !d.reviewed_at
                   ? Math.floor((Date.now() - new Date(d.submitted_at).getTime()) / (1000 * 60 * 60 * 24))
