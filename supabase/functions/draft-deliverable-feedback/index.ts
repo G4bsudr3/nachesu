@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
   // busca entrega + módulo + perfil
   const { data: del, error: delErr } = await admin
     .from('module_deliverables')
-    .select('id, user_id, module_id, content, feedback, module:modules(id, number, title, summary, rubric_id)')
+    .select('id, user_id, module_id, content, feedback, module:modules(id, number, title, objective, deliverable_description, rubric_id)')
     .eq('id', deliverableId)
     .maybeSingle()
   if (delErr || !del) {
@@ -79,7 +79,8 @@ Deno.serve(async (req) => {
   const criteria = (rubric?.criteria ?? []) as Array<{ label: string; description?: string }>
   const studentName = (del as any).profile?.display_name ?? (del as any).profile?.nickname ?? 'estudante'
   const moduleLabel = (del as any).module ? `módulo ${(del as any).module.number} · ${(del as any).module.title}` : 'módulo'
-  const moduleSummary = (del as any).module?.summary ?? ''
+  const moduleObjective = (del as any).module?.objective ?? ''
+  const moduleDeliverable = (del as any).module?.deliverable_description ?? ''
   const scoreMax = rubric?.score_max ?? 10
 
   // serializa respostas da entrega
@@ -92,7 +93,8 @@ Deno.serve(async (req) => {
 
   const baseContext = `estudante: ${studentName}
 ${moduleLabel}
-${moduleSummary ? `contexto do módulo: ${moduleSummary}` : ''}
+${moduleObjective ? `objetivo do módulo: ${moduleObjective}` : ''}
+${moduleDeliverable ? `o que o módulo pediu de entrega: ${moduleDeliverable}` : ''}
 
 rubrica disponível:
 ${rubricBlock}
