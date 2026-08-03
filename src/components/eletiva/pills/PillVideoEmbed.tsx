@@ -72,7 +72,14 @@ export function PillVideoEmbed({
         </div>
       )}
 
-      <div className="flex justify-end pt-1">
+      <div className="flex items-center justify-between gap-3 pt-1">
+        {optional ? (
+          <p className="font-body text-xs text-perestroika-preto/55">
+            pode pular sem prejuízo nenhum.
+          </p>
+        ) : (
+          <span />
+        )}
         <button
           type="button"
           onClick={() => !isCompleted && onComplete()}
@@ -86,6 +93,11 @@ export function PillVideoEmbed({
               <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
               já vi
             </>
+          ) : optional ? (
+            <>
+              vi esse bônus
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </>
           ) : (
             <>
               vi, bora pra missão
@@ -94,6 +106,7 @@ export function PillVideoEmbed({
           )}
         </button>
       </div>
+
     </div>
   );
 }
