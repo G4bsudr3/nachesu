@@ -78,8 +78,11 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   const [showPreview, setShowPreview] = useState(false);
   const [reply, setReply] = useState("");
   const [drafting, setDrafting] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState<AiAnalysis | null>(null);
   const [aiConfirmOpen, setAiConfirmOpen] = useState(false);
   const [score, setScore] = useState<string>("");
+
 
   const { data: rubric } = useRubricForModule(deliverable?.module?.id ?? null);
   const chips: Array<{ label: string; description?: string }> =
