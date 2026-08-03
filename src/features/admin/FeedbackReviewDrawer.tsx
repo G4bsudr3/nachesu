@@ -251,6 +251,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
     setAnalysisError(null);
     setDraftError(null);
     setReplyError(null);
+    setPreAiFeedback(null);
     setAnalysis(analysisCache.current.get(deliverableId) ?? null);
   }, [deliverable, deliverableId]);
 
