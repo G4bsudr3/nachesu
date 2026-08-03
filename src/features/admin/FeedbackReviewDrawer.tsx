@@ -526,8 +526,14 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
   };
 
   if (!deliverable) return null;
+  const studentCode = deliverable.profile?.nickname ?? deliverable.profile?.display_name ?? null;
+  const studentRoster = lookupByCode(studentCode);
   const studentName =
-    deliverable.profile?.display_name ?? deliverable.profile?.nickname ?? "estudante";
+    studentRoster?.full_name ??
+    deliverable.profile?.display_name ??
+    deliverable.profile?.nickname ??
+    "estudante";
+
   const moduleLabel = deliverable.module
     ? `módulo ${String(deliverable.module.number).padStart(2, "0")} · ${deliverable.module.title}`
     : "módulo";
