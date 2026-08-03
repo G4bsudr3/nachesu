@@ -47,6 +47,7 @@ import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableSt
 import { TrailTransitionBanner } from "@/components/eletiva/modulo/TrailTransitionBanner";
 import { scopeModuleNavigation } from "@/lib/moduleNavigation";
 import { resolvePill } from "@/features/admin/deliverableRendering/resolvers";
+import { hasDeliverableAnswers } from "@/lib/deliverableContent";
 import type {
   DeliverableContent,
   PillKind,
