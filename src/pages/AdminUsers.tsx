@@ -186,6 +186,39 @@ const AdminUsers = () => {
     });
   }, [users, search, courseFilter, domainFilter, hideTest, lookupRoster]);
 
+  // ---- auto-complete da busca (nome, ra, turma, código, email) ----
+  const suggestions = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (q.length < 2 || suggestionPicked) return [];
+    return filtered
+      .map((item) => {
+        const roster = lookupRoster(item.email);
+        return {
+          user: item,
+          name: roster?.full_name || item.display_name || item.nickname || item.email,
+          code: item.email?.split("@")[0] ?? "",
+          ra: roster?.ra ?? null,
+          turma: roster?.turma ?? null,
+        };
+      })
+      .filter((s) =>
+        [s.name, s.code, s.ra, s.turma, s.user.email]
+          .filter(Boolean)
+          .some((v) => String(v).toLowerCase().includes(q)),
+      )
+      .slice(0, 8);
+  }, [filtered, search, suggestionPicked, lookupRoster]);
+
+  useEffect(() => {
+    setHighlighted(0);
+  }, [search]);
+
+  const pickSuggestion = (email: string) => {
+    setSearch(email);
+    setSuggestionPicked(true);
+    setSuggestOpen(false);
+  };
+
 
 
   const grantAdmin = async (target: AdminUser) => {
