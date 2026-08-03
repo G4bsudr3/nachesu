@@ -8,6 +8,7 @@ import { StudentProgressPanel } from "@/features/admin/studentProfile/StudentPro
 import { StudentDeliverableTimeline } from "@/features/admin/studentProfile/StudentDeliverableTimeline";
 import { StudentTutorTranscripts } from "@/features/admin/studentProfile/StudentTutorTranscripts";
 import { StudentCommunicationLog } from "@/features/admin/studentProfile/StudentCommunicationLog";
+import { StudentAccessHistory } from "@/features/admin/studentProfile/StudentAccessHistory";
 import { StudentInternalNotes } from "@/features/admin/studentProfile/StudentInternalNotes";
 import { StudentMessageComposer } from "@/features/admin/studentProfile/StudentMessageComposer";
 
