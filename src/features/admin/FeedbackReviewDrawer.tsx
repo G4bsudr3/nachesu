@@ -558,7 +558,15 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               <SheetTitle className="font-display uppercase text-3xl text-left">
                 {studentName}
               </SheetTitle>
+              {studentRoster && studentCode && (
+                <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/50 text-left">
+                  {[studentCode, studentRoster.turma, studentRoster.ra ? `ra ${studentRoster.ra}` : null]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              )}
               <p className="text-sm text-perestroika-preto/70 text-left">{moduleLabel}</p>
+
             </div>
             {(onPrev || onNext) && (
               <div className="flex items-center gap-1 shrink-0">
