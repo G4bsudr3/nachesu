@@ -68,6 +68,7 @@ const AdminUsers = () => {
   const [domainFilter, setDomainFilter] = useState<string>("all");
   const [hideTest, setHideTest] = useState(true);
   const [busyUserId, setBusyUserId] = useState<string | null>(null);
+  const [lastAccess, setLastAccess] = useState<Map<string, string | null>>(new Map());
   const { lookup: lookupRoster } = useStudentRoster();
 
 
@@ -83,6 +84,19 @@ const AdminUsers = () => {
     );
     return list.map((u) => ({ ...u, is_test: map.get(u.user_id) ?? false }));
   };
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase.rpc("admin_last_sign_in" as never, {} as never);
+      if (cancelled) return;
+      const rows = (data ?? []) as Array<{ user_id: string; last_sign_in_at: string | null }>;
+      setLastAccess(new Map(rows.map((r) => [r.user_id, r.last_sign_in_at])));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const loadUsers = async () => {
     setLoading(true);
@@ -425,13 +439,14 @@ const AdminUsers = () => {
               <TableHead className="uppercase text-xs tracking-wide">status</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">papéis</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">criado</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">último acesso</TableHead>
               <TableHead className="uppercase text-xs tracking-wide text-right">ação</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={7} className="text-center py-12 text-perestroika-preto/50">
                   carregando usuários…
                 </TableCell>
               </TableRow>
@@ -439,7 +454,7 @@ const AdminUsers = () => {
 
             {!loading && filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={7} className="text-center py-12 text-perestroika-preto/50">
                   nenhum usuário com esse filtro.
                 </TableCell>
               </TableRow>
@@ -515,6 +530,21 @@ const AdminUsers = () => {
                 </TableCell>
                 <TableCell className="text-xs text-perestroika-preto/70 whitespace-nowrap">
                   {formatDate(item.created_at)}
+                </TableCell>
+                <TableCell className="text-xs whitespace-nowrap">
+                  {(() => {
+                    const iso = lastAccess.get(item.user_id) ?? null;
+                    if (!iso) return <span className="text-perestroika-preto/40">nunca entrou</span>;
+                    const dias = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+                    return (
+                      <span className={dias > 14 ? "text-perestroika-laranja" : "text-perestroika-preto/70"}>
+                        {formatDate(iso)}
+                        <span className="ml-1 text-[10px] text-perestroika-preto/45">
+                          {dias === 0 ? "hoje" : `há ${dias}d`}
+                        </span>
+                      </span>
+                    );
+                  })()}
                 </TableCell>
                 <TableCell className="text-right whitespace-nowrap">
                   <div className="inline-flex items-center gap-2">

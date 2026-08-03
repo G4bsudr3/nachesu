@@ -8,6 +8,7 @@ import { StudentProgressPanel } from "@/features/admin/studentProfile/StudentPro
 import { StudentDeliverableTimeline } from "@/features/admin/studentProfile/StudentDeliverableTimeline";
 import { StudentTutorTranscripts } from "@/features/admin/studentProfile/StudentTutorTranscripts";
 import { StudentCommunicationLog } from "@/features/admin/studentProfile/StudentCommunicationLog";
+import { StudentAccessHistory } from "@/features/admin/studentProfile/StudentAccessHistory";
 import { StudentInternalNotes } from "@/features/admin/studentProfile/StudentInternalNotes";
 import { StudentMessageComposer } from "@/features/admin/studentProfile/StudentMessageComposer";
 
@@ -38,6 +39,12 @@ const AdminStudentProfile = () => {
               <SectionHeader title="progresso" sub="ritmo por curso, módulo atual e último sinal de vida" />
               <StudentProgressPanel userId={userId} />
             </section>
+
+            <section>
+              <SectionHeader title="histórico de acesso" sub="quando entrou, de qual dispositivo e com que frequência" />
+              <StudentAccessHistory userId={userId} />
+            </section>
+
 
             <section>
               <SectionHeader title="entregas & feedback" sub="histórico completo, expande para ler conversa" />

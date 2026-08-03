@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { useAccessPing } from "@/hooks/useAccessPing";
 
 interface AuthContextValue {
   session: Session | null;
@@ -49,6 +50,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // registra um acesso por dia (histórico de acesso no admin)
+  useAccessPing(user?.id);
 
   const signOut = async () => {
     await supabase.auth.signOut();
