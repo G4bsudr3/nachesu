@@ -41,6 +41,12 @@ const AdminStudentProfile = () => {
             </section>
 
             <section>
+              <SectionHeader title="histórico de acesso" sub="quando entrou, de qual dispositivo e com que frequência" />
+              <StudentAccessHistory userId={userId} />
+            </section>
+
+
+            <section>
               <SectionHeader title="entregas & feedback" sub="histórico completo, expande para ler conversa" />
               <StudentDeliverableTimeline userId={userId} />
             </section>
