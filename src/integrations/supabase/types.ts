@@ -2903,6 +2903,14 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_last_sign_in: {
+        Args: { _user_ids?: string[] }
+        Returns: {
+          email: string
+          last_sign_in_at: string
+          user_id: string
+        }[]
+      }
       admin_list_pending_profiles: {
         Args: never
         Returns: {

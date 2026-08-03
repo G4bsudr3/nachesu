@@ -18,6 +18,7 @@ import { template as adminInvite } from './admin-invite.tsx'
 import { template as testEmail } from './test-email.tsx'
 import { template as accessLink } from './access-link.tsx'
 import { template as passwordReset } from './password-reset.tsx'
+import { template as deliverableReviewed } from './deliverable-reviewed.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'future-letter-delivery': futureLetterDelivery,
@@ -29,4 +30,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'test-email': testEmail,
   'access-link': accessLink,
   'password-reset': passwordReset,
+  'deliverable-reviewed': deliverableReviewed,
 }

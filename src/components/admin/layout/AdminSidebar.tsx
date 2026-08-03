@@ -70,6 +70,7 @@ const SECTIONS: Section[] = [
     title: "comunicação",
     items: [
       { to: "/admin/convites", label: "convites · email", icon: Mail },
+      { to: "/admin/notificacoes", label: "notificações & e-mails", icon: Bell },
       { to: "/admin/nudges", label: "nudges", icon: Bell },
     ],
   },
