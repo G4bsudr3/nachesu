@@ -178,6 +178,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
 
   // rascunho local: sinaliza quando o texto veio do que ficou salvo
   const [restoredFromLocal, setRestoredFromLocal] = useState(false);
+  // texto que existia antes da ia sobrescrever, pra permitir desfazer
+  const [preAiFeedback, setPreAiFeedback] = useState<string | null>(null);
   const hydratedFor = useRef<string | null>(null);
   // análise por entrega, pra não sumir ao ir e voltar na lista
   const analysisCache = useRef<Map<string, AiAnalysis>>(new Map());
