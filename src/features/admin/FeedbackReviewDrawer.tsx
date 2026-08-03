@@ -838,7 +838,6 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               rascunhar com ia
             </button>
             <button
-
               type="button"
               disabled={sending || replyMutation.isPending || reply.trim().length < 1}
               onClick={() => replyMutation.mutate()}
@@ -851,8 +850,10 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               )}
               enviar
             </button>
+            </div>
           </div>
         </div>
+
         </>
         )}
 
