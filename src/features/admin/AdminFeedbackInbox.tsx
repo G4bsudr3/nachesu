@@ -263,7 +263,7 @@ export const AdminFeedbackInbox = ({
         .toLowerCase();
       return haystack.includes(searchTerm);
     });
-  }, [data, searchTerm]);
+  }, [data, searchTerm, lookupByCode]);
 
   return (
     <div>
