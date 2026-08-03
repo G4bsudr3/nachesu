@@ -2,12 +2,17 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { ModuloRatingCard } from "@/components/eletiva/modulo/ModuloRatingCard";
+import { isRatingCheckpoint } from "@/features/hub/useModuleRating";
 
 interface Props {
   moduleNumber: number;
   courseSlug: string | null;
   /** label opcional do próximo módulo: "próximo módulo libera em 7 dias" */
   nextHint?: string;
+  /** id do módulo, pra checkpoint de pulso */
+  moduleId?: string | null;
+  trailColor?: string;
 }
 
 /**
@@ -16,7 +21,13 @@ interface Props {
  * stagger reveal. fica no topo do conteúdo, não bloqueia rolagem pro
  * material já consumido.
  */
-export function ModuloCelebration({ moduleNumber, courseSlug, nextHint }: Props) {
+export function ModuloCelebration({
+  moduleNumber,
+  courseSlug,
+  nextHint,
+  moduleId,
+  trailColor = "#fe7b02",
+}: Props) {
   const reduce = useReducedMotion();
   const fade = reduce
     ? {}
@@ -60,6 +71,14 @@ export function ModuloCelebration({ moduleNumber, courseSlug, nextHint }: Props)
       >
         {nextHint ?? "obrigado por entregar com presença. próximo módulo libera em breve."}
       </motion.p>
+      {moduleId && isRatingCheckpoint(moduleNumber) && (
+        <ModuloRatingCard
+          moduleId={moduleId}
+          moduleNumber={moduleNumber}
+          trailColor={trailColor}
+          courseSlug={courseSlug}
+        />
+      )}
       {courseSlug && (
         <Link
           to={`/app/eletiva/${courseSlug}`}

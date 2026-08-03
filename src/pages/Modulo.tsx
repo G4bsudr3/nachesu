@@ -557,6 +557,8 @@ const Modulo = () => {
           <ModuloCelebration
             moduleNumber={moduleRow.number}
             courseSlug={courseSlug ?? null}
+            moduleId={moduleRow.id}
+            trailColor={trailColor}
             nextHint={
               nextModule
                 ? "obrigado por entregar com presença. o próximo módulo já tá aí, é só seguir."
