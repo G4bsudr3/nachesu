@@ -45,7 +45,7 @@ export function EntregaChecklist({
     if (isCompleted || isCompleting) return;
     if (!ready) {
       setAttempted(true);
-      listRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      listRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
       return;
     }
     onComplete();
