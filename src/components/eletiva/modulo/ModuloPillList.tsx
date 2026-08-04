@@ -228,7 +228,7 @@ const PillCardShell = ({
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+            <div className="px-5 pb-5 sm:px-6 sm:pb-6" onFocusCapture={markHere}>
               {justUnlocked && (
                 <p className="flex items-center gap-1.5 mb-3 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-rosa font-semibold motion-safe:animate-fade-in">
                   <Sparkles className="h-3 w-3" aria-hidden /> agora é a sua vez
