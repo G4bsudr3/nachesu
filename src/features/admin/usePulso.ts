@@ -61,7 +61,9 @@ async function fetchRatings(): Promise<PulsoRating[]> {
 }
 
 /** conclusões de módulos-checkpoint, base pra taxa de resposta */
-async function fetchCheckpointCompletions(): Promise<{ module_id: string; completed_at: string }[]> {
+async function fetchCheckpointCompletions(): Promise<
+  { user_id: string; module_id: string; completed_at: string }[]
+> {
   const { data: mods, error: modErr } = await supabase
     .from("modules")
     .select("id, number")
@@ -71,21 +73,27 @@ async function fetchCheckpointCompletions(): Promise<{ module_id: string; comple
   if (!ids.length) return [];
   const { data, error } = await supabase
     .from("student_module_progress")
-    .select("module_id, completed_at")
+    .select("user_id, module_id, completed_at")
     .in("module_id", ids)
     .not("completed_at", "is", null);
   if (error) throw error;
-  return (data ?? []) as { module_id: string; completed_at: string }[];
+  return (data ?? []) as { user_id: string; module_id: string; completed_at: string }[];
 }
 
-async function fetchProfiles(): Promise<Map<string, { name: string; email: string | null }>> {
+async function fetchProfiles(): Promise<
+  Map<string, { name: string; email: string | null; is_test: boolean }>
+> {
   const { data, error } = await supabase
     .from("profiles")
-    .select("user_id, display_name, nickname");
+    .select("user_id, display_name, nickname, is_test");
   if (error) throw error;
-  const map = new Map<string, { name: string; email: string | null }>();
+  const map = new Map<string, { name: string; email: string | null; is_test: boolean }>();
   (data ?? []).forEach((p: any) => {
-    map.set(p.user_id, { name: p.display_name || p.nickname || "sem nome", email: null });
+    map.set(p.user_id, {
+      name: p.display_name || p.nickname || "sem nome",
+      email: null,
+      is_test: !!p.is_test,
+    });
   });
   return map;
 }
@@ -93,7 +101,8 @@ async function fetchProfiles(): Promise<Map<string, { name: string; email: strin
 const avg = (arr: number[]) =>
   arr.length ? Number((arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2)) : null;
 
-export function usePulso(range: string) {
+export function usePulso(range: string, includeTest = false) {
+
   const qc = useQueryClient();
 
   const ratingsQ = useQuery({ queryKey: ["pulso-ratings"], queryFn: fetchRatings, staleTime: 60_000 });
