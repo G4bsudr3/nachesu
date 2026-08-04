@@ -21,6 +21,7 @@ export interface NotificationLogRow {
 export interface NotificationLogData {
   rows: NotificationLogRow[];
   kinds: string[];
+  hiddenTestCount: number;
   stats: {
     total: number;
     read: number;
@@ -30,6 +31,7 @@ export interface NotificationLogData {
   };
 }
 
+
 const RANGE_DAYS: Record<string, number> = { "7d": 7, "30d": 30, "90d": 90 };
 
 /**
@@ -37,10 +39,11 @@ const RANGE_DAYS: Record<string, number> = { "7d": 7, "30d": 30, "90d": 90 };
  * da escola, pra o admin ver num lugar só o que foi disparado, lido e falhou.
  * o log de e-mail é deduplicado por message_id (última linha vence).
  */
-export function useNotificationLog(range: string = "30d") {
+export function useNotificationLog(range: string = "30d", includeTest = false) {
   return useQuery({
-    queryKey: ["admin-notification-log", range],
+    queryKey: ["admin-notification-log", range, includeTest],
     queryFn: async (): Promise<NotificationLogData> => {
+
       const days = RANGE_DAYS[range] ?? 30;
       const since = new Date(Date.now() - days * 86400000).toISOString();
 
@@ -58,7 +61,7 @@ export function useNotificationLog(range: string = "30d") {
           .order("created_at", { ascending: false })
           .limit(2000),
         supabase.from("student_roster").select("email_normalized, full_name, turma"),
-        supabase.from("profiles").select("id, nickname, display_name"),
+        supabase.from("profiles").select("user_id, nickname, display_name, is_test"),
         supabase.rpc("admin_last_sign_in" as never, {} as never),
       ]);
 
@@ -93,12 +96,12 @@ export function useNotificationLog(range: string = "30d") {
       const rosterByEmail = new Map(
         (rosterRes.data ?? []).map((r) => [r.email_normalized.toLowerCase(), r]),
       );
-      const profileById = new Map((profilesRes.data ?? []).map((p) => [p.id, p]));
+      const profileByUser = new Map((profilesRes.data ?? []).map((p) => [p.user_id, p]));
 
-      const rows: NotificationLogRow[] = notifs.map((n) => {
+      const allRows: Array<NotificationLogRow & { is_test: boolean }> = notifs.map((n) => {
         const email = emailByUser.get(n.user_id) ?? null;
         const roster = email ? rosterByEmail.get(email) : undefined;
-        const profile = profileById.get(n.user_id);
+        const profile = profileByUser.get(n.user_id);
         const label =
           roster?.full_name ||
           profile?.display_name ||
@@ -122,18 +125,29 @@ export function useNotificationLog(range: string = "30d") {
           email_status: match?.status ?? null,
           email_error: match?.error_message ?? null,
           email_at: match?.created_at ?? null,
+          is_test: !!profile?.is_test,
         };
       });
 
-      const emailsSent = dedupedEmails.filter((e) => e.status === "sent").length;
-      const emailsFailed = dedupedEmails.filter((e) =>
+      const hiddenTestCount = allRows.filter((r) => r.is_test).length;
+      const rows = includeTest ? allRows : allRows.filter((r) => !r.is_test);
+
+      // métricas de e-mail só contam envios ligados a estudante visível
+      const visibleEmails = new Set(rows.map((r) => (r.email ?? "").toLowerCase()));
+      const countedEmails = includeTest
+        ? dedupedEmails
+        : dedupedEmails.filter((e) => visibleEmails.has((e.recipient_email ?? "").toLowerCase()));
+
+      const emailsSent = countedEmails.filter((e) => e.status === "sent").length;
+      const emailsFailed = countedEmails.filter((e) =>
         ["dlq", "failed", "bounced"].includes(e.status),
       ).length;
-      const emailsPending = dedupedEmails.filter((e) => e.status === "pending").length;
+      const emailsPending = countedEmails.filter((e) => e.status === "pending").length;
 
       return {
         rows,
-        kinds: [...new Set(notifs.map((n) => n.kind))].sort(),
+        kinds: [...new Set(rows.map((n) => n.kind))].sort(),
+        hiddenTestCount,
         stats: {
           total: rows.length,
           read: rows.filter((r) => r.read_at).length,
@@ -142,6 +156,7 @@ export function useNotificationLog(range: string = "30d") {
           emailsPending,
         },
       };
+
     },
   });
 }

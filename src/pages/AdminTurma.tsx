@@ -48,9 +48,9 @@ interface DeliverableRow {
 }
 
 interface ProfileRow {
-  id: string;
+  user_id: string;
   nickname: string | null;
-  full_name: string | null;
+  display_name: string | null;
 }
 
 interface ModuleAggregate {
@@ -97,11 +97,11 @@ const AdminTurma = () => {
 
     const load = async () => {
       setLoading(true);
-      const [courseRes, enrollRes, riskRes, progRes, delivRes] = await Promise.all([
+      const [courseRes, enrollRes, riskRes, progRes, delivRes, testRes] = await Promise.all([
         supabase.from("courses").select("id, title, professor_name, slug").eq("id", courseId).maybeSingle(),
         supabase
           .from("enrollments")
-          .select("id", { count: "exact", head: true })
+          .select("user_id")
           .eq("course_id", courseId)
           .eq("status", "active"),
         supabase
@@ -124,17 +124,25 @@ const AdminTurma = () => {
           .eq("status", "enviado")
           .eq("modules.trails.course_id", courseId)
           .order("submitted_at", { ascending: true })
-          .limit(10),
+          .limit(20),
+        supabase.from("profiles").select("user_id").eq("is_test", true),
       ]);
 
       if (cancelled) return;
 
+      // contas de teste (hey@frattz, tassia etc) nunca contam como turma real
+      const testIds = new Set((testRes.data ?? []).map((p: { user_id: string }) => p.user_id));
+      const notTest = <T extends { user_id: string }>(rows: T[]) =>
+        rows.filter((r) => !testIds.has(r.user_id));
+
       setCourse((courseRes.data ?? null) as CourseRow | null);
-      setEnrolledCount(enrollRes.count ?? 0);
-      const riskRows = (riskRes.data ?? []) as RiskRow[];
+      setEnrolledCount(notTest((enrollRes.data ?? []) as { user_id: string }[]).length);
+      const riskRows = notTest((riskRes.data ?? []) as RiskRow[]);
       setRisks(riskRows);
-      setProgress((progRes.data ?? []) as unknown as ProgressRow[]);
-      const deliverableRows = (delivRes.data ?? []) as unknown as DeliverableRow[];
+      setProgress(notTest((progRes.data ?? []) as unknown as ProgressRow[]));
+      const deliverableRows = notTest(
+        (delivRes.data ?? []) as unknown as DeliverableRow[],
+      ).slice(0, 10);
       setDeliverables(deliverableRows);
 
       const userIds = [
@@ -146,12 +154,13 @@ const AdminTurma = () => {
       if (userIds.length > 0) {
         const { data: profs } = await supabase
           .from("profiles")
-          .select("id, nickname, full_name")
-          .in("id", userIds);
+          .select("user_id, nickname, display_name")
+          .in("user_id", userIds);
         const map: Record<string, ProfileRow> = {};
-        (profs ?? []).forEach((p: any) => { map[p.id] = p; });
+        (profs ?? []).forEach((p: any) => { map[p.user_id] = p; });
         if (!cancelled) setProfiles(map);
       }
+
 
       setLoading(false);
     };
@@ -341,7 +350,7 @@ const AdminTurma = () => {
                 <tbody className="divide-y divide-perestroika-preto/5">
                   {risks.slice(0, 10).map((r) => {
                     const p = profiles[r.user_id];
-                    const name = p?.nickname || p?.full_name || r.user_id.slice(0, 8);
+                    const name = p?.display_name || p?.nickname || r.user_id.slice(0, 8);
                     return (
                       <tr key={r.user_id} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
                         <td className="px-3 py-2 text-perestroika-preto">{name}</td>
@@ -384,7 +393,7 @@ const AdminTurma = () => {
                 <tbody className="divide-y divide-perestroika-preto/5">
                   {deliverables.map((d) => {
                     const p = profiles[d.user_id];
-                    const name = p?.nickname || p?.full_name || d.user_id.slice(0, 8);
+                    const name = p?.display_name || p?.nickname || d.user_id.slice(0, 8);
                     const num = d.modules?.number;
                     return (
                       <tr key={d.id} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">

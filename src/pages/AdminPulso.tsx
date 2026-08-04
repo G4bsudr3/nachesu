@@ -57,6 +57,7 @@ const AdminPulso = () => {
   const [courseFilter, setCourseFilter] = useState("todas");
   const [noteFilter, setNoteFilter] = useState("todas");
   const [q, setQ] = useState("");
+  const [includeTest, setIncludeTest] = useState(false);
 
   const {
     loading,
@@ -69,7 +70,9 @@ const AdminPulso = () => {
     analyze,
     analyzing,
     days,
-  } = usePulso(range);
+    hiddenTestCount,
+  } = usePulso(range, includeTest);
+
 
   const filteredComments = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -164,9 +167,21 @@ const AdminPulso = () => {
               <SelectItem value="tudo">tudo</SelectItem>
             </SelectContent>
           </Select>
+          {(hiddenTestCount > 0 || includeTest) && (
+            <Button
+              variant={includeTest ? "default" : "outline"}
+              size="sm"
+              onClick={() => setIncludeTest((v) => !v)}
+              className="text-xs"
+              title="contas marcadas como teste ficam fora das médias"
+            >
+              {includeTest ? "ocultar teste" : `incluir teste (${hiddenTestCount})`}
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={exportCsv} className="text-xs">
             <Download className="w-3.5 h-3.5 mr-1.5" /> csv
           </Button>
+
         </div>
       </div>
 
