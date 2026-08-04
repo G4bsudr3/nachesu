@@ -61,7 +61,7 @@ export function useNotificationLog(range: string = "30d", includeTest = false) {
           .order("created_at", { ascending: false })
           .limit(2000),
         supabase.from("student_roster").select("email_normalized, full_name, turma"),
-        supabase.from("profiles").select("id, nickname, display_name"),
+        supabase.from("profiles").select("user_id, nickname, display_name, is_test"),
         supabase.rpc("admin_last_sign_in" as never, {} as never),
       ]);
 
