@@ -325,7 +325,7 @@ const AdminRespostas = () => {
                       {isDraft ? "rascunho" : d.status}
                     </AdminTD>
                     <AdminTD className="text-xs">
-                      {d.completeness.filled}/{d.completeness.total}
+                      {d.completeness.requiredAnswered}/{d.completeness.requiredTotal}
                     </AdminTD>
                     <AdminTD className="w-8">
                       <ChevronDown
