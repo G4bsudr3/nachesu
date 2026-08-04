@@ -1,6 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, ChevronDown, ChevronUp, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, Sparkles } from "lucide-react";
+import { CheckCircle2, ChevronDown, ChevronUp, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, RotateCcw, Sparkles } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useModuleResume } from "@/hooks/useModuleResume";
+
+/** avisa o módulo qual bloco a pessoa abriu por último */
+const ResumeContext = createContext<((pillId: string, label: string) => void) | null>(null);
+
 import { PillVideoPlayer } from "./PillVideoPlayer";
 import { PillReflection } from "./PillReflection";
 import { PillPBL } from "./PillPBL";
