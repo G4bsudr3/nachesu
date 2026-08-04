@@ -113,6 +113,91 @@ export function PillPBLCorfTriplo({
 
   const ctaLabel = schema.completion?.label ?? "entregar e seguir";
 
+  const renderBloco = (p: PromptItem, i: number, extra = false) => {
+    const it = value.itens?.[p.id] ?? {};
+    return (
+      <div
+        key={p.id}
+        className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-6 space-y-4"
+      >
+        <header className="flex items-center justify-between gap-3">
+          <p
+            className="font-body text-[11px] uppercase tracking-[0.2em]"
+            style={{ color: accent }}
+          >
+            {extra ? "treino extra" : "entrega"} {String(i + 1).padStart(2, "0")}
+          </p>
+          <p className="font-body text-xs text-perestroika-preto/55 italic truncate">
+            "{p.prompt_ruim}"
+          </p>
+        </header>
+
+        <div>
+          <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
+            sua versão em corf
+          </label>
+          <TextareaWithVoice
+            value={it.versao_corf ?? ""}
+            onChange={(e) => updateItem(p.id, { versao_corf: e.target.value })}
+            placeholder={
+              p.placeholder_corf ??
+              "contexto: ...\nobjetivo: ...\nregras: ...\nformato: ..."
+            }
+            rows={6}
+            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            voiceAriaLabel={`gravar versão corf do prompt ${i + 1}`}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
+              print: resposta com o prompt ruim
+              {printsOpcionais && <span className="ml-2 text-perestroika-preto/45">opcional</span>}
+            </label>
+            <EvidenceUploader
+              itemId={`${pillId}-${p.id}-ruim`}
+              value={it.print_ruim ?? emptyEvidence}
+              onChange={(ev) => updateItem(p.id, { print_ruim: ev })}
+              accent={accent}
+            />
+          </div>
+          <div>
+            <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
+              print: resposta com sua versão corf
+              {printsOpcionais && <span className="ml-2 text-perestroika-preto/45">opcional</span>}
+            </label>
+            <EvidenceUploader
+              itemId={`${pillId}-${p.id}-corf`}
+              value={it.print_corf ?? emptyEvidence}
+              onChange={(ev) => updateItem(p.id, { print_corf: ev })}
+              accent={accent}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
+            {schema.comparacao?.label ?? "o que mudou"}
+          </label>
+          <TextareaWithVoice
+            value={it.o_que_mudou ?? ""}
+            onChange={(e) => updateItem(p.id, { o_que_mudou: e.target.value })}
+            placeholder={
+              schema.comparacao?.placeholder ??
+              "o que ficou diferente entre as duas respostas?"
+            }
+            rows={3}
+            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            voiceAriaLabel={`gravar comparação do prompt ${i + 1}`}
+          />
+        </div>
+      </div>
+    );
+  };
+
+
+
 
   return (
     <div className="space-y-8">
