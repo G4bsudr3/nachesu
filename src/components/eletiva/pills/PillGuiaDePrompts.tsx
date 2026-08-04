@@ -17,8 +17,8 @@ type Schema = {
   contexto_md?: string;
   templates: Template[];
   prints?: {
-    primeiro?: { label: string; por_que_label?: string };
-    segundo?: { label: string; por_que_label?: string };
+    primeiro?: { label: string; por_que_label?: string; optional?: boolean };
+    segundo?: { label: string; por_que_label?: string; optional?: boolean };
   };
   reflexao?: {
     prompt?: string;
@@ -111,11 +111,11 @@ export function PillGuiaDePrompts({
     const curr = value.modelos?.[t.id] ?? "";
     checks.push(curr.trim().length >= 20 && curr.trim() !== t.template.trim());
   });
-  if (schema.prints?.primeiro) {
+  if (schema.prints?.primeiro && !schema.prints.primeiro.optional) {
     checks.push(hasEv(value.print_1));
     if (schema.prints.primeiro.por_que_label) checks.push(minText(value.por_que_1));
   }
-  if (schema.prints?.segundo) {
+  if (schema.prints?.segundo && !schema.prints.segundo.optional) {
     checks.push(hasEv(value.print_2));
     if (schema.prints.segundo.por_que_label) checks.push(minText(value.por_que_2));
   }
@@ -189,7 +189,7 @@ export function PillGuiaDePrompts({
       {(schema.prints?.primeiro || schema.prints?.segundo) && (
         <section aria-label="prints das melhores respostas" className="space-y-5">
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-            prints das 2 melhores respostas
+            prints (opcional): mostra o que você gerou
           </p>
           {schema.prints?.primeiro && (
             <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 space-y-3">
