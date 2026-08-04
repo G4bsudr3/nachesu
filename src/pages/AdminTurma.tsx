@@ -50,7 +50,7 @@ interface DeliverableRow {
 interface ProfileRow {
   id: string;
   nickname: string | null;
-  full_name: string | null;
+  display_name: string | null;
 }
 
 interface ModuleAggregate {
@@ -350,7 +350,7 @@ const AdminTurma = () => {
                 <tbody className="divide-y divide-perestroika-preto/5">
                   {risks.slice(0, 10).map((r) => {
                     const p = profiles[r.user_id];
-                    const name = p?.nickname || p?.full_name || r.user_id.slice(0, 8);
+                    const name = p?.display_name || p?.nickname || r.user_id.slice(0, 8);
                     return (
                       <tr key={r.user_id} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
                         <td className="px-3 py-2 text-perestroika-preto">{name}</td>
@@ -393,7 +393,7 @@ const AdminTurma = () => {
                 <tbody className="divide-y divide-perestroika-preto/5">
                   {deliverables.map((d) => {
                     const p = profiles[d.user_id];
-                    const name = p?.nickname || p?.full_name || d.user_id.slice(0, 8);
+                    const name = p?.display_name || p?.nickname || d.user_id.slice(0, 8);
                     const num = d.modules?.number;
                     return (
                       <tr key={d.id} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
