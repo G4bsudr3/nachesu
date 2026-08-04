@@ -1216,5 +1216,7 @@ export const ModuloPillList = ({
         );
       })}
     </section>
+    </ResumeContext.Provider>
   );
+
 };
