@@ -292,6 +292,8 @@ export function usePulso(range: string, includeTest = false) {
   return {
     loading: ratingsQ.isLoading || complQ.isLoading,
     error: ratingsQ.error as Error | null,
+    hiddenTestCount,
+
     stats,
     byCourse,
     byTrail,
