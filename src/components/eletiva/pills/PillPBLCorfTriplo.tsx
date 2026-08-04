@@ -192,86 +192,26 @@ export function PillPBLCorfTriplo({
         </section>
       )}
 
-      {/* 3 blocos de entrega */}
+      {/* blocos de entrega obrigatórios */}
       <section aria-label="entrega" className="space-y-6">
-        {schema.prompts.map((p, i) => {
-          const it = value.itens?.[p.id] ?? {};
-          return (
-            <div
-              key={p.id}
-              className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-6 space-y-4"
-            >
-              <header className="flex items-center justify-between gap-3">
-                <p
-                  className="font-body text-[11px] uppercase tracking-[0.2em]"
-                  style={{ color: accent }}
-                >
-                  entrega {String(i + 1).padStart(2, "0")}
-                </p>
-                <p className="font-body text-xs text-perestroika-preto/55 italic truncate">
-                  "{p.prompt_ruim}"
-                </p>
-              </header>
-
-              <div>
-                <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                  sua versão em corf
-                </label>
-                <TextareaWithVoice
-                  value={it.versao_corf ?? ""}
-                  onChange={(e) => updateItem(p.id, { versao_corf: e.target.value })}
-                  placeholder={
-                    p.placeholder_corf ??
-                    "contexto: ...\nobjetivo: ...\nregras: ...\nformato: ..."
-                  }
-                  rows={6}
-                  className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
-                  voiceAriaLabel={`gravar versão corf do prompt ${i + 1}`}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                    print: resposta da ia com o prompt ruim
-                  </label>
-                  <EvidenceUploader
-                    itemId={`${pillId}-${p.id}-ruim`}
-                    value={it.print_ruim ?? emptyEvidence}
-                    onChange={(ev) => updateItem(p.id, { print_ruim: ev })}
-                    accent={accent}
-                  />
-                </div>
-                <div>
-                  <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                    print: resposta da ia com sua versão corf
-                  </label>
-                  <EvidenceUploader
-                    itemId={`${pillId}-${p.id}-corf`}
-                    value={it.print_corf ?? emptyEvidence}
-                    onChange={(ev) => updateItem(p.id, { print_corf: ev })}
-                    accent={accent}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                  o que mudou
-                </label>
-                <TextareaWithVoice
-                  value={it.o_que_mudou ?? ""}
-                  onChange={(e) => updateItem(p.id, { o_que_mudou: e.target.value })}
-                  placeholder="o que ficou diferente entre as duas respostas?"
-                  rows={3}
-                  className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
-                  voiceAriaLabel={`gravar comparação do prompt ${i + 1}`}
-                />
-              </div>
-            </div>
-          );
-        })}
+        {obrigatorios.map((p, i) => renderBloco(p, i))}
       </section>
+
+      {/* blocos opcionais, recolhidos */}
+      {opcionais.length > 0 && (
+        <details className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.02] p-4 sm:p-5">
+          <summary className="cursor-pointer font-display uppercase text-lg sm:text-xl leading-tight list-none">
+            {schema.treinar_mais_label ?? "quer treinar mais?"}
+            <span className="ml-2 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/50">
+              opcional, não trava a entrega
+            </span>
+          </summary>
+          <div className="space-y-6 pt-5">
+            {opcionais.map((p, i) => renderBloco(p, i, true))}
+          </div>
+        </details>
+      )}
+
 
       {/* conclusão geral */}
       {schema.conclusao && (
