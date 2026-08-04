@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Check } from "lucide-react";
 import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
+import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
+
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
