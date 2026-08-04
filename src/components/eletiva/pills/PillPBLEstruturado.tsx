@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
+import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+
 
 type StepLink = { label: string; url: string };
 type Step = { titulo: string; descricao: string; links?: StepLink[] };
