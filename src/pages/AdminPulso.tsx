@@ -57,6 +57,7 @@ const AdminPulso = () => {
   const [courseFilter, setCourseFilter] = useState("todas");
   const [noteFilter, setNoteFilter] = useState("todas");
   const [q, setQ] = useState("");
+  const [includeTest, setIncludeTest] = useState(false);
 
   const {
     loading,
@@ -69,7 +70,9 @@ const AdminPulso = () => {
     analyze,
     analyzing,
     days,
-  } = usePulso(range);
+    hiddenTestCount,
+  } = usePulso(range, includeTest);
+
 
   const filteredComments = useMemo(() => {
     const term = q.trim().toLowerCase();
