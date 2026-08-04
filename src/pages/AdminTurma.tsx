@@ -10,7 +10,7 @@ import { PageShell } from "@/components/layout/PageShell";
 import { cn } from "@/lib/utils";
 
 interface CourseRow {
-  id: string;
+  user_id: string;
   title: string;
   professor_name: string;
   slug: string;
@@ -40,7 +40,7 @@ interface ProgressRow {
 }
 
 interface DeliverableRow {
-  id: string;
+  user_id: string;
   user_id: string;
   module_id: string;
   submitted_at: string | null;
@@ -48,7 +48,7 @@ interface DeliverableRow {
 }
 
 interface ProfileRow {
-  id: string;
+  user_id: string;
   nickname: string | null;
   display_name: string | null;
 }
