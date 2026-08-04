@@ -176,10 +176,21 @@ const AdminNotificacoes = () => {
           </SelectContent>
         </Select>
 
+        {((data?.hiddenTestCount ?? 0) > 0 || includeTest) && (
+          <Button
+            variant={includeTest ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIncludeTest((v) => !v)}
+            title="contas marcadas como teste ficam fora por padrão"
+          >
+            {includeTest ? "ocultar teste" : `incluir teste (${data?.hiddenTestCount ?? 0})`}
+          </Button>
+        )}
         <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
           <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isFetching ? "animate-spin" : ""}`} />
           atualizar
         </Button>
+
         <Button variant="outline" size="sm" onClick={exportCsv} disabled={rows.length === 0}>
           <Download className="w-3.5 h-3.5 mr-1.5" />
           exportar csv
