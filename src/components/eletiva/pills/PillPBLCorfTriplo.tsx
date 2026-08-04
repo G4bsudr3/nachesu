@@ -103,15 +103,21 @@ export function PillPBLCorfTriplo({
   const opcionais = schema.prompts.filter((p) => p.optional);
   const printsOpcionais = schema.prints_opcionais ?? false;
 
-  const itemChecks = obrigatorios.flatMap((p) => {
+  const checklist: ChecklistItem[] = [];
+  obrigatorios.forEach((p, i) => {
     const it = value.itens?.[p.id] ?? {};
-    const base = [minText(it.versao_corf), minText(it.o_que_mudou)];
-    return printsOpcionais ? base : [...base, hasEv(it.print_ruim), hasEv(it.print_corf)];
+    const n = String(i + 1).padStart(2, "0");
+    checklist.push({ id: `${p.id}-corf`, label: `entrega ${n}: versão corf`, done: minText(it.versao_corf) });
+    checklist.push({ id: `${p.id}-mudou`, label: `entrega ${n}: o que mudou`, done: minText(it.o_que_mudou) });
+    if (!printsOpcionais) {
+      checklist.push({ id: `${p.id}-pr`, label: `entrega ${n}: print do prompt ruim`, done: hasEv(it.print_ruim) });
+      checklist.push({ id: `${p.id}-pc`, label: `entrega ${n}: print do prompt corf`, done: hasEv(it.print_corf) });
+    }
   });
-  const conclusionCheck = schema.conclusao ? [minText(value.conclusao)] : [];
-  const checks = [...itemChecks, ...conclusionCheck];
-  const ready = checks.every(Boolean);
-  const missing = checks.filter((ok) => !ok).length;
+  if (schema.conclusao) {
+    checklist.push({ id: "conclusao", label: "conclusão do exercício", done: minText(value.conclusao) });
+  }
+
 
   const ctaLabel = schema.completion?.label ?? "entregar e seguir";
 
