@@ -8,25 +8,29 @@ import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 type StepLink = { label: string; url: string };
 type Step = { titulo: string; descricao: string; links?: StepLink[] };
 
+type Campo = { label: string; placeholder?: string; optional?: boolean };
+type CampoEvidencia = { label: string; optional?: boolean };
+
 type Schema = {
   type?: "pbl_estruturado";
   contexto_md?: string;
   passos?: Step[];
   campos?: {
-    pedido_a?: { label: string; placeholder?: string };
-    print_a?: { label: string };
-    pedido_b?: { label: string; placeholder?: string };
-    print_b?: { label: string };
-    pedido_c?: { label: string; placeholder?: string };
-    print_c?: { label: string };
-    melhor?: { label: string; options: string[] };
-    por_que?: { label: string; placeholder?: string };
-    aprendi?: { label: string; placeholder?: string };
-    veredicto?: { label: string; placeholder?: string };
+    pedido_a?: Campo;
+    print_a?: CampoEvidencia;
+    pedido_b?: Campo;
+    print_b?: CampoEvidencia;
+    pedido_c?: Campo;
+    print_c?: CampoEvidencia;
+    melhor?: { label: string; options: string[]; optional?: boolean };
+    por_que?: Campo;
+    aprendi?: Campo;
+    veredicto?: Campo;
   };
   dica_md?: string;
   completion?: { label?: string };
 };
+
 
 type PblValue = {
   pedido_a?: string;
@@ -87,21 +91,23 @@ export function PillPBLEstruturado({
 
   const update = (patch: Partial<PblValue>) => setValue((prev) => ({ ...prev, ...patch }));
 
-  // pra entregar: todo campo definido no schema precisa estar preenchido.
-  // texto: ≥2 caracteres. evidência: kind != "none".
+  // pra entregar: só campo obrigatório entra na régua.
+  // campo com `optional: true` aparece igual, mas não trava o botão.
   const minText = (s?: string) => (s ?? "").trim().length >= 2;
   const hasEvidence = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
+  const req = (f?: { optional?: boolean }) => !!f && !f.optional;
   const checks: boolean[] = [];
-  if (c.pedido_a) checks.push(minText(value.pedido_a));
-  if (c.print_a) checks.push(hasEvidence(value.print_a));
-  if (c.pedido_b) checks.push(minText(value.pedido_b));
-  if (c.print_b) checks.push(hasEvidence(value.print_b));
-  if (c.pedido_c) checks.push(minText(value.pedido_c));
-  if (c.print_c) checks.push(hasEvidence(value.print_c));
-  if (c.melhor) checks.push(!!value.melhor);
-  if (c.por_que) checks.push(minText(value.por_que));
-  if (c.aprendi) checks.push(minText(value.aprendi));
-  if (c.veredicto) checks.push(minText(value.veredicto));
+  if (req(c.pedido_a)) checks.push(minText(value.pedido_a));
+  if (req(c.print_a)) checks.push(hasEvidence(value.print_a));
+  if (req(c.pedido_b)) checks.push(minText(value.pedido_b));
+  if (req(c.print_b)) checks.push(hasEvidence(value.print_b));
+  if (req(c.pedido_c)) checks.push(minText(value.pedido_c));
+  if (req(c.print_c)) checks.push(hasEvidence(value.print_c));
+  if (req(c.melhor)) checks.push(!!value.melhor);
+  if (req(c.por_que)) checks.push(minText(value.por_que));
+  if (req(c.aprendi)) checks.push(minText(value.aprendi));
+  if (req(c.veredicto)) checks.push(minText(value.veredicto));
+
   const ready = checks.length === 0 || checks.every(Boolean);
   const missing = checks.filter((ok) => !ok).length;
 
@@ -178,6 +184,7 @@ export function PillPBLEstruturado({
         {c.pedido_a && (
           <FieldText
             label={c.pedido_a.label}
+            optional={c.pedido_a.optional}
             placeholder={c.pedido_a.placeholder}
             value={value.pedido_a ?? ""}
             onChange={(v) => update({ pedido_a: v })}
@@ -186,6 +193,7 @@ export function PillPBLEstruturado({
         {c.print_a && (
           <FieldEvidence
             label={c.print_a.label}
+            optional={c.print_a.optional}
             itemId={`${pillId}-print-a`}
             value={value.print_a ?? emptyEvidence}
             onChange={(ev) => update({ print_a: ev })}
@@ -196,6 +204,7 @@ export function PillPBLEstruturado({
         {c.pedido_b && (
           <FieldText
             label={c.pedido_b.label}
+            optional={c.pedido_b.optional}
             placeholder={c.pedido_b.placeholder}
             value={value.pedido_b ?? ""}
             onChange={(v) => update({ pedido_b: v })}
@@ -204,6 +213,7 @@ export function PillPBLEstruturado({
         {c.print_b && (
           <FieldEvidence
             label={c.print_b.label}
+            optional={c.print_b.optional}
             itemId={`${pillId}-print-b`}
             value={value.print_b ?? emptyEvidence}
             onChange={(ev) => update({ print_b: ev })}
@@ -214,6 +224,7 @@ export function PillPBLEstruturado({
         {c.pedido_c && (
           <FieldText
             label={c.pedido_c.label}
+            optional={c.pedido_c.optional}
             placeholder={c.pedido_c.placeholder}
             value={value.pedido_c ?? ""}
             onChange={(v) => update({ pedido_c: v })}
@@ -222,6 +233,7 @@ export function PillPBLEstruturado({
         {c.print_c && (
           <FieldEvidence
             label={c.print_c.label}
+            optional={c.print_c.optional}
             itemId={`${pillId}-print-c`}
             value={value.print_c ?? emptyEvidence}
             onChange={(ev) => update({ print_c: ev })}
@@ -234,6 +246,7 @@ export function PillPBLEstruturado({
           <fieldset className="space-y-2">
             <legend className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
               {c.melhor.label}
+              {c.melhor.optional && <OptionalTag />}
             </legend>
             <div className="flex flex-col gap-2">
               {c.melhor.options.map((opt) => {
@@ -272,6 +285,7 @@ export function PillPBLEstruturado({
         {c.por_que && (
           <FieldTextarea
             label={c.por_que.label}
+            optional={c.por_que.optional}
             placeholder={c.por_que.placeholder}
             value={value.por_que ?? ""}
             onChange={(v) => update({ por_que: v })}
@@ -281,6 +295,7 @@ export function PillPBLEstruturado({
         {c.aprendi && (
           <FieldTextarea
             label={c.aprendi.label}
+            optional={c.aprendi.optional}
             placeholder={c.aprendi.placeholder}
             value={value.aprendi ?? ""}
             onChange={(v) => update({ aprendi: v })}
@@ -290,6 +305,7 @@ export function PillPBLEstruturado({
         {c.veredicto && (
           <FieldTextarea
             label={c.veredicto.label}
+            optional={c.veredicto.optional}
             placeholder={c.veredicto.placeholder}
             value={value.veredicto ?? ""}
             onChange={(v) => update({ veredicto: v })}
@@ -346,21 +362,32 @@ export function PillPBLEstruturado({
   );
 }
 
+function OptionalTag() {
+  return (
+    <span className="ml-2 inline-block rounded-full border border-perestroika-preto/25 px-2 py-[1px] font-body text-[9px] uppercase tracking-wider text-perestroika-preto/50">
+      opcional
+    </span>
+  );
+}
+
 function FieldText({
   label,
   placeholder,
   value,
   onChange,
+  optional,
 }: {
   label: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
+  optional?: boolean;
 }) {
   return (
     <div>
       <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {label}
+        {optional && <OptionalTag />}
       </label>
       <TextareaWithVoice
         value={value}
@@ -380,17 +407,20 @@ function FieldTextarea({
   value,
   onChange,
   rows = 3,
+  optional,
 }: {
   label: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
   rows?: number;
+  optional?: boolean;
 }) {
   return (
     <div>
       <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {label}
+        {optional && <OptionalTag />}
       </label>
       <TextareaWithVoice
         value={value}
@@ -410,17 +440,20 @@ function FieldEvidence({
   value,
   onChange,
   accent,
+  optional,
 }: {
   label: string;
   itemId: string;
   value: EvidenceValue;
   onChange: (v: EvidenceValue) => void;
   accent: string;
+  optional?: boolean;
 }) {
   return (
     <div>
       <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {label}
+        {optional && <OptionalTag />}
       </label>
       <EvidenceUploader
         itemId={itemId}
@@ -431,3 +464,4 @@ function FieldEvidence({
     </div>
   );
 }
+

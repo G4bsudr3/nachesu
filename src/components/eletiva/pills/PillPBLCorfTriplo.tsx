@@ -9,6 +9,8 @@ type PromptItem = {
   id: string;
   prompt_ruim: string;
   placeholder_corf?: string;
+  /** quando true, o bloco entra no "quer treinar mais" e não trava a entrega */
+  optional?: boolean;
 };
 
 type Schema = {
@@ -16,10 +18,16 @@ type Schema = {
   contexto_md?: string;
   passos?: { titulo: string; descricao: string }[];
   prompts: PromptItem[];
+  /** quando true, os prints viram evidência opcional e não travam a entrega */
+  prints_opcionais?: boolean;
+  treinar_mais_label?: string;
+  comparacao?: { label?: string; placeholder?: string };
+
   conclusao?: { label: string; placeholder?: string };
   dica_md?: string;
   completion?: { label?: string };
 };
+
 
 type EntregaItem = {
   versao_corf?: string;
@@ -91,9 +99,14 @@ export function PillPBLCorfTriplo({
   const minText = (s?: string) => (s ?? "").trim().length >= 2;
   const hasEv = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
 
-  const itemChecks = schema.prompts.flatMap((p) => {
+  const obrigatorios = schema.prompts.filter((p) => !p.optional);
+  const opcionais = schema.prompts.filter((p) => p.optional);
+  const printsOpcionais = schema.prints_opcionais ?? false;
+
+  const itemChecks = obrigatorios.flatMap((p) => {
     const it = value.itens?.[p.id] ?? {};
-    return [minText(it.versao_corf), hasEv(it.print_ruim), hasEv(it.print_corf), minText(it.o_que_mudou)];
+    const base = [minText(it.versao_corf), minText(it.o_que_mudou)];
+    return printsOpcionais ? base : [...base, hasEv(it.print_ruim), hasEv(it.print_corf)];
   });
   const conclusionCheck = schema.conclusao ? [minText(value.conclusao)] : [];
   const checks = [...itemChecks, ...conclusionCheck];
@@ -101,6 +114,92 @@ export function PillPBLCorfTriplo({
   const missing = checks.filter((ok) => !ok).length;
 
   const ctaLabel = schema.completion?.label ?? "entregar e seguir";
+
+  const renderBloco = (p: PromptItem, i: number, extra = false) => {
+    const it = value.itens?.[p.id] ?? {};
+    return (
+      <div
+        key={p.id}
+        className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-6 space-y-4"
+      >
+        <header className="flex items-center justify-between gap-3">
+          <p
+            className="font-body text-[11px] uppercase tracking-[0.2em]"
+            style={{ color: accent }}
+          >
+            {extra ? "treino extra" : "entrega"} {String(i + 1).padStart(2, "0")}
+          </p>
+          <p className="font-body text-xs text-perestroika-preto/55 italic truncate">
+            "{p.prompt_ruim}"
+          </p>
+        </header>
+
+        <div>
+          <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
+            sua versão em corf
+          </label>
+          <TextareaWithVoice
+            value={it.versao_corf ?? ""}
+            onChange={(e) => updateItem(p.id, { versao_corf: e.target.value })}
+            placeholder={
+              p.placeholder_corf ??
+              "contexto: ...\nobjetivo: ...\nregras: ...\nformato: ..."
+            }
+            rows={6}
+            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            voiceAriaLabel={`gravar versão corf do prompt ${i + 1}`}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
+              print: resposta com o prompt ruim
+              {printsOpcionais && <span className="ml-2 text-perestroika-preto/45">opcional</span>}
+            </label>
+            <EvidenceUploader
+              itemId={`${pillId}-${p.id}-ruim`}
+              value={it.print_ruim ?? emptyEvidence}
+              onChange={(ev) => updateItem(p.id, { print_ruim: ev })}
+              accent={accent}
+            />
+          </div>
+          <div>
+            <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
+              print: resposta com sua versão corf
+              {printsOpcionais && <span className="ml-2 text-perestroika-preto/45">opcional</span>}
+            </label>
+            <EvidenceUploader
+              itemId={`${pillId}-${p.id}-corf`}
+              value={it.print_corf ?? emptyEvidence}
+              onChange={(ev) => updateItem(p.id, { print_corf: ev })}
+              accent={accent}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
+            {schema.comparacao?.label ?? "o que mudou"}
+          </label>
+          <TextareaWithVoice
+            value={it.o_que_mudou ?? ""}
+            onChange={(e) => updateItem(p.id, { o_que_mudou: e.target.value })}
+            placeholder={
+              schema.comparacao?.placeholder ??
+              "o que ficou diferente entre as duas respostas?"
+            }
+            rows={3}
+            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            voiceAriaLabel={`gravar comparação do prompt ${i + 1}`}
+          />
+        </div>
+      </div>
+    );
+  };
+
+
+
 
   return (
     <div className="space-y-8">
@@ -115,13 +214,19 @@ export function PillPBLCorfTriplo({
         </p>
       )}
 
-      {/* 3 prompts ruins em destaque */}
-      <section aria-label="os 3 prompts pra reescrever" className="space-y-3">
+      {/* prompts obrigatórios em destaque */}
+      <section aria-label="o que você vai reescrever" className="space-y-3">
         <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-          os 3 prompts pra reescrever
+          {obrigatorios.length === 1
+            ? "o prompt pra reescrever"
+            : `os ${obrigatorios.length} prompts pra reescrever`}
         </p>
-        <ol className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {schema.prompts.map((p, i) => (
+        <ol
+          className={`grid grid-cols-1 gap-3 ${
+            obrigatorios.length > 1 ? "sm:grid-cols-3" : ""
+          }`}
+        >
+          {obrigatorios.map((p, i) => (
             <li
               key={p.id}
               className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4 flex flex-col gap-2"
@@ -139,6 +244,7 @@ export function PillPBLCorfTriplo({
           ))}
         </ol>
       </section>
+
 
       {/* passos */}
       {schema.passos && schema.passos.length > 0 && (
@@ -173,86 +279,26 @@ export function PillPBLCorfTriplo({
         </section>
       )}
 
-      {/* 3 blocos de entrega */}
+      {/* blocos de entrega obrigatórios */}
       <section aria-label="entrega" className="space-y-6">
-        {schema.prompts.map((p, i) => {
-          const it = value.itens?.[p.id] ?? {};
-          return (
-            <div
-              key={p.id}
-              className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-6 space-y-4"
-            >
-              <header className="flex items-center justify-between gap-3">
-                <p
-                  className="font-body text-[11px] uppercase tracking-[0.2em]"
-                  style={{ color: accent }}
-                >
-                  entrega {String(i + 1).padStart(2, "0")}
-                </p>
-                <p className="font-body text-xs text-perestroika-preto/55 italic truncate">
-                  "{p.prompt_ruim}"
-                </p>
-              </header>
-
-              <div>
-                <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                  sua versão em corf
-                </label>
-                <TextareaWithVoice
-                  value={it.versao_corf ?? ""}
-                  onChange={(e) => updateItem(p.id, { versao_corf: e.target.value })}
-                  placeholder={
-                    p.placeholder_corf ??
-                    "contexto: ...\nobjetivo: ...\nregras: ...\nformato: ..."
-                  }
-                  rows={6}
-                  className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
-                  voiceAriaLabel={`gravar versão corf do prompt ${i + 1}`}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                    print: resposta da ia com o prompt ruim
-                  </label>
-                  <EvidenceUploader
-                    itemId={`${pillId}-${p.id}-ruim`}
-                    value={it.print_ruim ?? emptyEvidence}
-                    onChange={(ev) => updateItem(p.id, { print_ruim: ev })}
-                    accent={accent}
-                  />
-                </div>
-                <div>
-                  <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                    print: resposta da ia com sua versão corf
-                  </label>
-                  <EvidenceUploader
-                    itemId={`${pillId}-${p.id}-corf`}
-                    value={it.print_corf ?? emptyEvidence}
-                    onChange={(ev) => updateItem(p.id, { print_corf: ev })}
-                    accent={accent}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                  o que mudou
-                </label>
-                <TextareaWithVoice
-                  value={it.o_que_mudou ?? ""}
-                  onChange={(e) => updateItem(p.id, { o_que_mudou: e.target.value })}
-                  placeholder="o que ficou diferente entre as duas respostas?"
-                  rows={3}
-                  className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
-                  voiceAriaLabel={`gravar comparação do prompt ${i + 1}`}
-                />
-              </div>
-            </div>
-          );
-        })}
+        {obrigatorios.map((p, i) => renderBloco(p, i))}
       </section>
+
+      {/* blocos opcionais, recolhidos */}
+      {opcionais.length > 0 && (
+        <details className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.02] p-4 sm:p-5">
+          <summary className="cursor-pointer font-display uppercase text-lg sm:text-xl leading-tight list-none">
+            {schema.treinar_mais_label ?? "quer treinar mais?"}
+            <span className="ml-2 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/50">
+              opcional, não trava a entrega
+            </span>
+          </summary>
+          <div className="space-y-6 pt-5">
+            {opcionais.map((p, i) => renderBloco(p, i, true))}
+          </div>
+        </details>
+      )}
+
 
       {/* conclusão geral */}
       {schema.conclusao && (
