@@ -8,25 +8,29 @@ import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 type StepLink = { label: string; url: string };
 type Step = { titulo: string; descricao: string; links?: StepLink[] };
 
+type Campo = { label: string; placeholder?: string; optional?: boolean };
+type CampoEvidencia = { label: string; optional?: boolean };
+
 type Schema = {
   type?: "pbl_estruturado";
   contexto_md?: string;
   passos?: Step[];
   campos?: {
-    pedido_a?: { label: string; placeholder?: string };
-    print_a?: { label: string };
-    pedido_b?: { label: string; placeholder?: string };
-    print_b?: { label: string };
-    pedido_c?: { label: string; placeholder?: string };
-    print_c?: { label: string };
-    melhor?: { label: string; options: string[] };
-    por_que?: { label: string; placeholder?: string };
-    aprendi?: { label: string; placeholder?: string };
-    veredicto?: { label: string; placeholder?: string };
+    pedido_a?: Campo;
+    print_a?: CampoEvidencia;
+    pedido_b?: Campo;
+    print_b?: CampoEvidencia;
+    pedido_c?: Campo;
+    print_c?: CampoEvidencia;
+    melhor?: { label: string; options: string[]; optional?: boolean };
+    por_que?: Campo;
+    aprendi?: Campo;
+    veredicto?: Campo;
   };
   dica_md?: string;
   completion?: { label?: string };
 };
+
 
 type PblValue = {
   pedido_a?: string;
