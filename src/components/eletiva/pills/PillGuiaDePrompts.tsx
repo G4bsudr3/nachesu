@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, BookmarkCheck } from "lucide-react";
+import { BookmarkCheck } from "lucide-react";
+import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
+
 import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
