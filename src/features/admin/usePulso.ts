@@ -149,7 +149,20 @@ export function usePulso(range: string, includeTest = false) {
   const since = days ? new Date(Date.now() - days * 86400000).toISOString() : null;
   const prevSince = days ? new Date(Date.now() - days * 2 * 86400000).toISOString() : null;
 
-  const all = ratingsQ.data ?? [];
+  const profiles = profilesQ.data;
+  const isTest = (userId: string) => !!profiles?.get(userId)?.is_test;
+
+  const allRaw = ratingsQ.data ?? [];
+  const all = useMemo(
+    () => (includeTest ? allRaw : allRaw.filter((r) => !isTest(r.user_id))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [allRaw, profiles, includeTest],
+  );
+  const hiddenTestCount = useMemo(
+    () => allRaw.filter((r) => isTest(r.user_id)).length,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [allRaw, profiles],
+  );
   const current = useMemo(
     () => (since ? all.filter((r) => r.created_at >= since) : all),
     [all, since],
@@ -162,7 +175,11 @@ export function usePulso(range: string, includeTest = false) {
     [all, since, prevSince],
   );
 
-  const completions = (complQ.data ?? []).filter((c) => (since ? c.completed_at >= since : true));
+  const completions = (complQ.data ?? []).filter(
+    (c) =>
+      (since ? c.completed_at >= since : true) && (includeTest || !isTest(c.user_id)),
+  );
+
 
   const notes = current.map((r) => r.rating);
   const stats = {
