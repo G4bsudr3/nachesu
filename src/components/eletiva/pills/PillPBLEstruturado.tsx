@@ -362,21 +362,32 @@ export function PillPBLEstruturado({
   );
 }
 
+function OptionalTag() {
+  return (
+    <span className="ml-2 inline-block rounded-full border border-perestroika-preto/25 px-2 py-[1px] font-body text-[9px] uppercase tracking-wider text-perestroika-preto/50 normal-case">
+      opcional
+    </span>
+  );
+}
+
 function FieldText({
   label,
   placeholder,
   value,
   onChange,
+  optional,
 }: {
   label: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
+  optional?: boolean;
 }) {
   return (
     <div>
       <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {label}
+        {optional && <OptionalTag />}
       </label>
       <TextareaWithVoice
         value={value}
@@ -396,17 +407,20 @@ function FieldTextarea({
   value,
   onChange,
   rows = 3,
+  optional,
 }: {
   label: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
   rows?: number;
+  optional?: boolean;
 }) {
   return (
     <div>
       <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {label}
+        {optional && <OptionalTag />}
       </label>
       <TextareaWithVoice
         value={value}
@@ -426,17 +440,20 @@ function FieldEvidence({
   value,
   onChange,
   accent,
+  optional,
 }: {
   label: string;
   itemId: string;
   value: EvidenceValue;
   onChange: (v: EvidenceValue) => void;
   accent: string;
+  optional?: boolean;
 }) {
   return (
     <div>
       <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {label}
+        {optional && <OptionalTag />}
       </label>
       <EvidenceUploader
         itemId={itemId}
@@ -447,3 +464,4 @@ function FieldEvidence({
     </div>
   );
 }
+
