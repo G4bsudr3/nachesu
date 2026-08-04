@@ -248,6 +248,33 @@ export function useAutoSaveField<T>(opts: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, field, debounceMs, sameAsInitial]);
 
+  // flush imediato quando a aba some / a pessoa recarrega:
+  // dispara o save (que espelha em localStorage antes de ir pra rede),
+  // então nada digitado dentro da janela de debounce se perde.
+  const dirtyRef = useRef(false);
+  dirtyRef.current = !sameAsInitial;
+  useEffect(() => {
+    const flush = () => {
+      if (!dirtyRef.current) return;
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+      void save({
+        [field]: inFlightValue.current as unknown as DeliverableContent[string],
+      }).catch(() => undefined);
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field]);
+
+
+
   // cleanup do retry pendente quando o componente desmonta
   useEffect(() => {
     return () => {
