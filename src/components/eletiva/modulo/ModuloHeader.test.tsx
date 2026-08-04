@@ -4,12 +4,10 @@ import { ModuloHeader } from "./ModuloHeader";
 import { scopeModuleNavigation } from "@/lib/moduleNavigation";
 
 /**
- * Invariante visual: o badge do cabeçalho do módulo sempre lê
- * "módulo NN/MM", onde MM é o total da eletiva atual (20, nunca 40).
- *
- * Esse teste fecha o loop com moduleNavigation.test.ts e com Modulo.tsx,
- * garantindo que o output combinado (escopo + formatação) renderiza
- * "módulo 01/20" mesmo para aluno com 2 matrículas.
+ * Invariante visual: o cabeçalho do módulo sempre lê o número da eletiva
+ * atual com zero-padding ("01", "12") e nunca expõe o total agregado de
+ * duas matrículas (40). O total da eletiva aparece só no bloco de
+ * progresso, escopado por curso.
  */
 describe("ModuloHeader — header de progresso do aluno", () => {
   const baseProps = {
@@ -21,14 +19,14 @@ describe("ModuloHeader — header de progresso do aluno", () => {
     isCompleted: false,
   };
 
-  it('renderiza "módulo 01/20" para o primeiro módulo da eletiva', () => {
+  it('renderiza "01" para o primeiro módulo da eletiva', () => {
     render(<ModuloHeader {...baseProps} moduleNumber={1} totalModules={20} />);
-    expect(screen.getByText("módulo 01/20")).toBeInTheDocument();
+    expect(screen.getByText("01")).toBeInTheDocument();
   });
 
-  it('renderiza "módulo 12/20" preservando o zero-padding', () => {
+  it("preserva o zero-padding em módulos de dois dígitos", () => {
     render(<ModuloHeader {...baseProps} moduleNumber={12} totalModules={20} />);
-    expect(screen.getByText("módulo 12/20")).toBeInTheDocument();
+    expect(screen.getByText("12")).toBeInTheDocument();
   });
 
   it("aluno em 2 eletivas: o total fica 20 (a eletiva atual), não 40 (agregado)", () => {
@@ -54,8 +52,10 @@ describe("ModuloHeader — header de progresso do aluno", () => {
       moduleNumber: 1,
     });
 
+    expect(totalModules).toBe(20);
     render(<ModuloHeader {...baseProps} moduleNumber={1} totalModules={totalModules} />);
-    expect(screen.getByText("módulo 01/20")).toBeInTheDocument();
+    expect(screen.getByText("01")).toBeInTheDocument();
     expect(screen.queryByText(/\/40/)).toBeNull();
   });
 });
+
