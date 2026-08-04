@@ -59,7 +59,9 @@ const AdminNotificacoes = () => {
   const [range, setRange] = useState("30d");
   const [kind, setKind] = useState("todas");
   const [emailStatus, setEmailStatus] = useState("todos");
-  const { data, isLoading, refetch, isFetching } = useNotificationLog(range);
+  const [includeTest, setIncludeTest] = useState(false);
+  const { data, isLoading, refetch, isFetching } = useNotificationLog(range, includeTest);
+
 
   const rows = useMemo(() => {
     let list = data?.rows ?? [];
