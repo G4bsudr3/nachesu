@@ -324,7 +324,17 @@ export const ModuloPillList = ({
 
   const safeSave = save ?? (async () => undefined);
 
+  // último bloco em que a pessoa mexeu nesse módulo (sobrevive a reload)
+  const resumeIndex = mark ? (pills?.findIndex((p) => p.id === mark.pillId) ?? -1) : -1;
+  const showResume = resumeIndex > 0 && !completedPillIds.has(mark!.pillId);
+
+  const goToResume = () => {
+    const el = document.getElementById(`pilula-${resumeIndex + 1}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
+    <ResumeContext.Provider value={remember}>
     <section aria-label="pílulas do módulo" className="space-y-4 mb-10">
       <header className="mb-4 sm:mb-6">
         <p className="font-body text-[10px] sm:text-xs uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1.5">
@@ -334,6 +344,40 @@ export const ModuloPillList = ({
           blocos
         </h2>
       </header>
+
+      {showResume && (
+        <div
+          className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-2xl border-2 p-4 sm:p-5"
+          style={{ borderColor: `${trailColor || "#090909"}55`, backgroundColor: `${trailColor || "#090909"}10` }}
+        >
+          <div className="min-w-0">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+              você parou aqui
+            </p>
+            <p className="font-body text-sm sm:text-base text-perestroika-preto truncate">
+              bloco {String(resumeIndex + 1).padStart(2, "0")} · {mark!.label}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 sm:ml-auto shrink-0">
+            <button
+              type="button"
+              onClick={goToResume}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:scale-[1.02] active:scale-95 transition-transform"
+              style={{ backgroundColor: trailColor || "#090909" }}
+            >
+              <RotateCcw className="h-3.5 w-3.5" aria-hidden /> continuar de onde parei
+            </button>
+            <button
+              type="button"
+              onClick={forget}
+              className="rounded-full border border-perestroika-preto/25 px-3 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/70 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+            >
+              dispensar
+            </button>
+          </div>
+        </div>
+      )}
+
 
       {loading && (
         <div className="space-y-3">
