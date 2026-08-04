@@ -1,6 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, ChevronDown, ChevronUp, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, Sparkles } from "lucide-react";
+import { CheckCircle2, ChevronDown, ChevronUp, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, RotateCcw, Sparkles } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useModuleResume } from "@/hooks/useModuleResume";
+
+/** avisa o módulo qual bloco a pessoa abriu por último */
+const ResumeContext = createContext<((pillId: string, label: string) => void) | null>(null);
+
 import { PillVideoPlayer } from "./PillVideoPlayer";
 import { PillReflection } from "./PillReflection";
 import { PillPBL } from "./PillPBL";
@@ -136,6 +142,13 @@ const PillCardShell = ({
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const bodyId = `pilula-body-${pill.id}`;
+  const rememberResume = useContext(ResumeContext);
+  const markHere = () => rememberResume?.(pill.id, pill.title);
+  const toggle = () =>
+    setExpanded((v) => {
+      if (!v) markHere();
+      return !v;
+    });
 
   return (
     <article
@@ -149,17 +162,18 @@ const PillCardShell = ({
       <div
         role="button"
         tabIndex={0}
-        onClick={() => setExpanded((v) => !v)}
+        onClick={toggle}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            setExpanded((v) => !v);
+            toggle();
           }
         }}
         aria-expanded={expanded}
         aria-controls={bodyId}
         className="w-full text-left p-5 sm:p-6 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa/60 focus-visible:ring-inset"
       >
+
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-wrap min-w-0">
             <span
@@ -214,7 +228,7 @@ const PillCardShell = ({
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+            <div className="px-5 pb-5 sm:px-6 sm:pb-6" onFocusCapture={markHere}>
               {justUnlocked && (
                 <p className="flex items-center gap-1.5 mb-3 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-rosa font-semibold motion-safe:animate-fade-in">
                   <Sparkles className="h-3 w-3" aria-hidden /> agora é a sua vez
@@ -324,7 +338,21 @@ export const ModuloPillList = ({
 
   const safeSave = save ?? (async () => undefined);
 
+  const { user } = useAuth();
+  const { mark, remember, forget } = useModuleResume(moduleId, user?.id);
+
+
+  // último bloco em que a pessoa mexeu nesse módulo (sobrevive a reload)
+  const resumeIndex = mark ? (pills?.findIndex((p) => p.id === mark.pillId) ?? -1) : -1;
+  const showResume = resumeIndex > 0 && !completedPillIds.has(mark!.pillId);
+
+  const goToResume = () => {
+    const el = document.getElementById(`pilula-${resumeIndex + 1}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
+    <ResumeContext.Provider value={remember}>
     <section aria-label="pílulas do módulo" className="space-y-4 mb-10">
       <header className="mb-4 sm:mb-6">
         <p className="font-body text-[10px] sm:text-xs uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1.5">
@@ -334,6 +362,40 @@ export const ModuloPillList = ({
           blocos
         </h2>
       </header>
+
+      {showResume && (
+        <div
+          className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-2xl border-2 p-4 sm:p-5"
+          style={{ borderColor: `${trailColor || "#090909"}55`, backgroundColor: `${trailColor || "#090909"}10` }}
+        >
+          <div className="min-w-0">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+              você parou aqui
+            </p>
+            <p className="font-body text-sm sm:text-base text-perestroika-preto truncate">
+              bloco {String(resumeIndex + 1).padStart(2, "0")} · {mark!.label}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 sm:ml-auto shrink-0">
+            <button
+              type="button"
+              onClick={goToResume}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-bege hover:scale-[1.02] active:scale-95 transition-transform"
+              style={{ backgroundColor: trailColor || "#090909" }}
+            >
+              <RotateCcw className="h-3.5 w-3.5" aria-hidden /> continuar de onde parei
+            </button>
+            <button
+              type="button"
+              onClick={forget}
+              className="rounded-full border border-perestroika-preto/25 px-3 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/70 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+            >
+              dispensar
+            </button>
+          </div>
+        </div>
+      )}
+
 
       {loading && (
         <div className="space-y-3">
@@ -1172,5 +1234,7 @@ export const ModuloPillList = ({
         );
       })}
     </section>
+    </ResumeContext.Provider>
   );
+
 };

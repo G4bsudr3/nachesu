@@ -6,6 +6,12 @@ import {
   recordAutosaveEvent,
   type AutosaveFieldStatus,
 } from "./autosaveTelemetry";
+import {
+  clearLocalDraft,
+  readLocalDraft,
+  writeLocalDraft,
+} from "./deliverableLocalDraft";
+
 
 // payload livre que cada pílula da aula 1 grava em module_deliverables.content.
 export type DeliverableContent = Record<string, unknown>;
@@ -37,7 +43,13 @@ export function useDeliverable(moduleId: string | undefined) {
         .eq("user_id", user!.id)
         .maybeSingle();
       if (error) throw error;
-      return (existing ?? null) as DeliverableRow | null;
+      const row = (existing ?? null) as DeliverableRow | null;
+      // rascunho local que não chegou no banco (aba fechada, rede caiu) volta por cima
+      const local = readLocalDraft(user!.id, moduleId!);
+      if (row && local && Object.keys(local.content).length > 0) {
+        return { ...row, content: { ...(row.content ?? {}), ...local.content } };
+      }
+      return row;
     },
   });
 
@@ -72,6 +84,8 @@ export function useDeliverable(moduleId: string | undefined) {
   const saveMutation = useMutation({
     mutationFn: async (patch: DeliverableContent) => {
       if (!enabled) throw new Error("sem contexto");
+      // espelha antes de subir: se der ruim no meio, o texto continua existindo
+      writeLocalDraft(user!.id, moduleId, patch);
       const row = await ensureDeliverable();
       const next = { ...(row.content ?? {}), ...patch };
       const { error } = await supabase
@@ -82,6 +96,7 @@ export function useDeliverable(moduleId: string | undefined) {
       return next;
     },
     onSuccess: (next) => {
+      clearLocalDraft(user?.id, moduleId);
       qc.setQueryData<DeliverableRow | null | undefined>(queryKey, (prev) =>
         prev ? { ...prev, content: next } : prev,
       );
@@ -90,6 +105,18 @@ export function useDeliverable(moduleId: string | undefined) {
       console.warn("[useDeliverable] falha ao salvar rascunho", err);
     },
   });
+
+  // reenvia sozinho o que ficou preso no espelho local ao abrir o módulo
+  const recoveredRef = useRef(false);
+  useEffect(() => {
+    if (!enabled || recoveredRef.current || isLoading) return;
+    const local = readLocalDraft(user!.id, moduleId!);
+    if (!local || Object.keys(local.content).length === 0) return;
+    recoveredRef.current = true;
+    saveMutation.mutate(local.content as DeliverableContent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled, isLoading, moduleId, user?.id]);
+
 
   return {
     deliverable: data ?? null,
@@ -220,6 +247,33 @@ export function useAutoSaveField<T>(opts: {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, field, debounceMs, sameAsInitial]);
+
+  // flush imediato quando a aba some / a pessoa recarrega:
+  // dispara o save (que espelha em localStorage antes de ir pra rede),
+  // então nada digitado dentro da janela de debounce se perde.
+  const dirtyRef = useRef(false);
+  dirtyRef.current = !sameAsInitial;
+  useEffect(() => {
+    const flush = () => {
+      if (!dirtyRef.current) return;
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+      void save({
+        [field]: inFlightValue.current as unknown as DeliverableContent[string],
+      }).catch(() => undefined);
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field]);
+
+
 
   // cleanup do retry pendente quando o componente desmonta
   useEffect(() => {
