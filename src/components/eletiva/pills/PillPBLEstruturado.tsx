@@ -91,21 +91,23 @@ export function PillPBLEstruturado({
 
   const update = (patch: Partial<PblValue>) => setValue((prev) => ({ ...prev, ...patch }));
 
-  // pra entregar: todo campo definido no schema precisa estar preenchido.
-  // texto: ≥2 caracteres. evidência: kind != "none".
+  // pra entregar: só campo obrigatório entra na régua.
+  // campo com `optional: true` aparece igual, mas não trava o botão.
   const minText = (s?: string) => (s ?? "").trim().length >= 2;
   const hasEvidence = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
+  const req = (f?: { optional?: boolean }) => !!f && !f.optional;
   const checks: boolean[] = [];
-  if (c.pedido_a) checks.push(minText(value.pedido_a));
-  if (c.print_a) checks.push(hasEvidence(value.print_a));
-  if (c.pedido_b) checks.push(minText(value.pedido_b));
-  if (c.print_b) checks.push(hasEvidence(value.print_b));
-  if (c.pedido_c) checks.push(minText(value.pedido_c));
-  if (c.print_c) checks.push(hasEvidence(value.print_c));
-  if (c.melhor) checks.push(!!value.melhor);
-  if (c.por_que) checks.push(minText(value.por_que));
-  if (c.aprendi) checks.push(minText(value.aprendi));
-  if (c.veredicto) checks.push(minText(value.veredicto));
+  if (req(c.pedido_a)) checks.push(minText(value.pedido_a));
+  if (req(c.print_a)) checks.push(hasEvidence(value.print_a));
+  if (req(c.pedido_b)) checks.push(minText(value.pedido_b));
+  if (req(c.print_b)) checks.push(hasEvidence(value.print_b));
+  if (req(c.pedido_c)) checks.push(minText(value.pedido_c));
+  if (req(c.print_c)) checks.push(hasEvidence(value.print_c));
+  if (req(c.melhor)) checks.push(!!value.melhor);
+  if (req(c.por_que)) checks.push(minText(value.por_que));
+  if (req(c.aprendi)) checks.push(minText(value.aprendi));
+  if (req(c.veredicto)) checks.push(minText(value.veredicto));
+
   const ready = checks.length === 0 || checks.every(Boolean);
   const missing = checks.filter((ok) => !ok).length;
 
