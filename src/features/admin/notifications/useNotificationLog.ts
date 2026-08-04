@@ -39,10 +39,11 @@ const RANGE_DAYS: Record<string, number> = { "7d": 7, "30d": 30, "90d": 90 };
  * da escola, pra o admin ver num lugar só o que foi disparado, lido e falhou.
  * o log de e-mail é deduplicado por message_id (última linha vence).
  */
-export function useNotificationLog(range: string = "30d") {
+export function useNotificationLog(range: string = "30d", includeTest = false) {
   return useQuery({
-    queryKey: ["admin-notification-log", range],
+    queryKey: ["admin-notification-log", range, includeTest],
     queryFn: async (): Promise<NotificationLogData> => {
+
       const days = RANGE_DAYS[range] ?? 30;
       const since = new Date(Date.now() - days * 86400000).toISOString();
 
