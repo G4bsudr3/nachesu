@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
+import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 import { SaveIndicator } from "./SaveIndicator";
+
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
