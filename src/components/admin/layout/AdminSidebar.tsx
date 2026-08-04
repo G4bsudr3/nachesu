@@ -62,6 +62,7 @@ const SECTIONS: Section[] = [
     title: "entregas dos estudantes",
     items: [
       { to: "/admin/entregas", label: "entregas", icon: Inbox, badge: "pendentes" },
+      { to: "/admin/respostas", label: "respostas · inspeção", icon: ClipboardList },
       { to: "/admin/pending", label: "pendentes", icon: Hourglass },
       { to: "/admin/risco", label: "risco", icon: AlertTriangle },
       { to: "/admin/pulso", label: "pulso · feedback", icon: Star },
