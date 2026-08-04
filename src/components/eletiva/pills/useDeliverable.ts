@@ -6,6 +6,12 @@ import {
   recordAutosaveEvent,
   type AutosaveFieldStatus,
 } from "./autosaveTelemetry";
+import {
+  clearLocalDraft,
+  readLocalDraft,
+  writeLocalDraft,
+} from "./deliverableLocalDraft";
+
 
 // payload livre que cada pílula da aula 1 grava em module_deliverables.content.
 export type DeliverableContent = Record<string, unknown>;
