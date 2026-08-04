@@ -364,7 +364,7 @@ export function PillPBLEstruturado({
 
 function OptionalTag() {
   return (
-    <span className="ml-2 inline-block rounded-full border border-perestroika-preto/25 px-2 py-[1px] font-body text-[9px] uppercase tracking-wider text-perestroika-preto/50 normal-case">
+    <span className="ml-2 inline-block rounded-full border border-perestroika-preto/25 px-2 py-[1px] font-body text-[9px] uppercase tracking-wider text-perestroika-preto/50">
       opcional
     </span>
   );
