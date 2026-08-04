@@ -9,6 +9,8 @@ type PromptItem = {
   id: string;
   prompt_ruim: string;
   placeholder_corf?: string;
+  /** quando true, o bloco entra no "quer treinar mais" e não trava a entrega */
+  optional?: boolean;
 };
 
 type Schema = {
@@ -16,10 +18,14 @@ type Schema = {
   contexto_md?: string;
   passos?: { titulo: string; descricao: string }[];
   prompts: PromptItem[];
+  /** quando true, os prints viram evidência opcional e não travam a entrega */
+  prints_opcionais?: boolean;
+  treinar_mais_label?: string;
   conclusao?: { label: string; placeholder?: string };
   dica_md?: string;
   completion?: { label?: string };
 };
+
 
 type EntregaItem = {
   versao_corf?: string;
