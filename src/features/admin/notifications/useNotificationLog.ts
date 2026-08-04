@@ -21,6 +21,7 @@ export interface NotificationLogRow {
 export interface NotificationLogData {
   rows: NotificationLogRow[];
   kinds: string[];
+  hiddenTestCount: number;
   stats: {
     total: number;
     read: number;
@@ -29,6 +30,7 @@ export interface NotificationLogData {
     emailsPending: number;
   };
 }
+
 
 const RANGE_DAYS: Record<string, number> = { "7d": 7, "30d": 30, "90d": 90 };
 
