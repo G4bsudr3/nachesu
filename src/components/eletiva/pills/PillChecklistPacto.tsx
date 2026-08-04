@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
+import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 import { SaveIndicator } from "./SaveIndicator";
+
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
 
@@ -62,9 +64,22 @@ export function PillChecklistPacto({
   const checked = new Set(value.checked ?? []);
   const ctaLabel = schema.completion?.label ?? "concluir";
   const requiresReflection = !!schema.reflexao?.label;
-  const ready =
-    (commitments.length === 0 || checked.size >= 1) &&
-    (!requiresReflection || (value.reflexao ?? "").trim().length >= 2);
+  const checklist: ChecklistItem[] = [];
+  if (commitments.length > 0) {
+    checklist.push({
+      id: "compromissos",
+      label: "marcar pelo menos 1 compromisso",
+      done: checked.size >= 1,
+    });
+  }
+  if (requiresReflection) {
+    checklist.push({
+      id: "reflexao",
+      label: schema.reflexao?.label ?? "reflexão",
+      done: (value.reflexao ?? "").trim().length >= 2,
+    });
+  }
+
 
   const toggle = (i: number) => {
     const next = new Set(checked);
@@ -158,31 +173,21 @@ export function PillChecklistPacto({
         </div>
       )}
 
-      <div className="flex items-center justify-between gap-3 pt-2">
-        <p className="font-body text-xs text-perestroika-preto/55">
-          {checked.size}/{commitments.length} compromissos marcados
-        </p>
-        <button
-          type="button"
-          onClick={onComplete}
-          disabled={!ready || isCompleted || isCompleting}
-          aria-busy={isCompleting}
-          className={`inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide transition-transform ${
-            !ready || isCompleted || isCompleting
-              ? "bg-perestroika-preto/15 text-perestroika-preto/45 cursor-not-allowed"
-              : "text-perestroika-bege hover:scale-105 active:scale-95"
-          }`}
-          style={!ready || isCompleted || isCompleting ? undefined : { backgroundColor: accent }}
-        >
-          {isCompleted ? (
-            <>
-              <Check className="h-4 w-4" /> módulo concluído
-            </>
-          ) : (
-            ctaLabel
-          )}
-        </button>
-      </div>
+      <p className="font-body text-xs text-perestroika-preto/55">
+        {checked.size}/{commitments.length} compromissos marcados
+      </p>
+
+      <EntregaChecklist
+        items={checklist}
+        accent={accent}
+        ctaLabel={ctaLabel}
+        completedLabel="módulo concluído"
+        heading="checklist pra concluir"
+        isCompleted={isCompleted}
+        isCompleting={isCompleting}
+        onComplete={onComplete}
+      />
+
     </div>
   );
 }

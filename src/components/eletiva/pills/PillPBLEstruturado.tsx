@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
+import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+
 
 type StepLink = { label: string; url: string };
 type Step = { titulo: string; descricao: string; links?: StepLink[] };
@@ -95,21 +97,22 @@ export function PillPBLEstruturado({
   // campo com `optional: true` aparece igual, mas não trava o botão.
   const minText = (s?: string) => (s ?? "").trim().length >= 2;
   const hasEvidence = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
-  const req = (f?: { optional?: boolean }) => !!f && !f.optional;
-  const checks: boolean[] = [];
-  if (req(c.pedido_a)) checks.push(minText(value.pedido_a));
-  if (req(c.print_a)) checks.push(hasEvidence(value.print_a));
-  if (req(c.pedido_b)) checks.push(minText(value.pedido_b));
-  if (req(c.print_b)) checks.push(hasEvidence(value.print_b));
-  if (req(c.pedido_c)) checks.push(minText(value.pedido_c));
-  if (req(c.print_c)) checks.push(hasEvidence(value.print_c));
-  if (req(c.melhor)) checks.push(!!value.melhor);
-  if (req(c.por_que)) checks.push(minText(value.por_que));
-  if (req(c.aprendi)) checks.push(minText(value.aprendi));
-  if (req(c.veredicto)) checks.push(minText(value.veredicto));
+  const checklist: ChecklistItem[] = [];
+  const addField = (id: string, f: Campo | CampoEvidencia | { label: string; optional?: boolean } | undefined, done: boolean) => {
+    if (!f || f.optional) return;
+    checklist.push({ id, label: f.label, done });
+  };
+  addField("pedido_a", c.pedido_a, minText(value.pedido_a));
+  addField("print_a", c.print_a, hasEvidence(value.print_a));
+  addField("pedido_b", c.pedido_b, minText(value.pedido_b));
+  addField("print_b", c.print_b, hasEvidence(value.print_b));
+  addField("pedido_c", c.pedido_c, minText(value.pedido_c));
+  addField("print_c", c.print_c, hasEvidence(value.print_c));
+  addField("melhor", c.melhor, !!value.melhor);
+  addField("por_que", c.por_que, minText(value.por_que));
+  addField("aprendi", c.aprendi, minText(value.aprendi));
+  addField("veredicto", c.veredicto, minText(value.veredicto));
 
-  const ready = checks.length === 0 || checks.every(Boolean);
-  const missing = checks.filter((ok) => !ok).length;
 
   return (
     <div className="space-y-8">
@@ -328,36 +331,16 @@ export function PillPBLEstruturado({
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-3 pt-2">
-        {!ready && !isCompleted && (
-          <p className="font-body text-xs text-perestroika-preto/55">
-            falta {missing === 1 ? "1 campo" : `${missing} campos`} pra entregar.
-          </p>
-        )}
-        <button
-          type="button"
-          onClick={onComplete}
-          disabled={!ready || isCompleted || isCompleting}
-          aria-busy={isCompleting}
-          className={`inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide transition-transform ${
-            !ready || isCompleted || isCompleting
-              ? "bg-perestroika-preto/15 text-perestroika-preto/45 cursor-not-allowed"
-              : "text-perestroika-bege hover:scale-105 active:scale-95"
-          }`}
-          style={!ready || isCompleted || isCompleting ? undefined : { backgroundColor: accent }}
-        >
-          {isCompleted ? (
-            <>
-              <Check className="h-4 w-4" /> exercício entregue
-            </>
-          ) : (
-            <>
-              {ctaLabel}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </>
-          )}
-        </button>
-      </div>
+      <EntregaChecklist
+        items={checklist}
+        accent={accent}
+        ctaLabel={ctaLabel}
+        completedLabel="exercício entregue"
+        isCompleted={isCompleted}
+        isCompleting={isCompleting}
+        onComplete={onComplete}
+      />
+
     </div>
   );
 }

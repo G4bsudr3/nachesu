@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, BookmarkCheck } from "lucide-react";
+import { BookmarkCheck } from "lucide-react";
+import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
+
 import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
@@ -105,24 +107,30 @@ export function PillGuiaDePrompts({
   const minText = (s?: string) => (s ?? "").trim().length >= 2;
   const hasEv = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
 
-  const checks: boolean[] = [];
+  const checklist: ChecklistItem[] = [];
   // cada template precisa ter sido editado (≥ 20 chars, ou ≠ do base)
-  schema.templates.forEach((t) => {
+  schema.templates.forEach((t, i) => {
     const curr = value.modelos?.[t.id] ?? "";
-    checks.push(curr.trim().length >= 20 && curr.trim() !== t.template.trim());
+    checklist.push({
+      id: `tpl-${t.id}`,
+      label: `modelo ${String(i + 1).padStart(2, "0")}: ${t.titulo ?? "personalizar template"}`,
+      done: curr.trim().length >= 20 && curr.trim() !== t.template.trim(),
+    });
   });
   if (schema.prints?.primeiro && !schema.prints.primeiro.optional) {
-    checks.push(hasEv(value.print_1));
-    if (schema.prints.primeiro.por_que_label) checks.push(minText(value.por_que_1));
+    checklist.push({ id: "print_1", label: schema.prints.primeiro.label ?? "primeiro print", done: hasEv(value.print_1) });
+    if (schema.prints.primeiro.por_que_label)
+      checklist.push({ id: "por_que_1", label: schema.prints.primeiro.por_que_label, done: minText(value.por_que_1) });
   }
   if (schema.prints?.segundo && !schema.prints.segundo.optional) {
-    checks.push(hasEv(value.print_2));
-    if (schema.prints.segundo.por_que_label) checks.push(minText(value.por_que_2));
+    checklist.push({ id: "print_2", label: schema.prints.segundo.label ?? "segundo print", done: hasEv(value.print_2) });
+    if (schema.prints.segundo.por_que_label)
+      checklist.push({ id: "por_que_2", label: schema.prints.segundo.por_que_label, done: minText(value.por_que_2) });
   }
-  if (schema.reflexao?.prompt) checks.push(minText(value.reflexao));
+  if (schema.reflexao?.prompt)
+    checklist.push({ id: "reflexao", label: "reflexão final", done: minText(value.reflexao) });
 
-  const ready = checks.every(Boolean);
-  const missing = checks.filter((ok) => !ok).length;
+
   const ctaLabel = schema.completion?.label ?? "concluir módulo";
 
   return (
@@ -266,36 +274,17 @@ export function PillGuiaDePrompts({
         </section>
       )}
 
-      <div className="flex items-center justify-end gap-3 pt-2">
-        {!ready && !isCompleted && (
-          <p className="font-body text-xs text-perestroika-preto/55">
-            falta {missing === 1 ? "1 campo" : `${missing} campos`} pra concluir.
-          </p>
-        )}
-        <button
-          type="button"
-          onClick={onComplete}
-          disabled={!ready || isCompleted || isCompleting}
-          aria-busy={isCompleting}
-          className={`inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide transition-transform ${
-            !ready || isCompleted || isCompleting
-              ? "bg-perestroika-preto/15 text-perestroika-preto/45 cursor-not-allowed"
-              : "text-perestroika-bege hover:scale-105 active:scale-95"
-          }`}
-          style={!ready || isCompleted || isCompleting ? undefined : { backgroundColor: accent }}
-        >
-          {isCompleted ? (
-            <>
-              <Check className="h-4 w-4" /> módulo concluído
-            </>
-          ) : (
-            <>
-              {ctaLabel}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </>
-          )}
-        </button>
-      </div>
+      <EntregaChecklist
+        items={checklist}
+        accent={accent}
+        ctaLabel={ctaLabel}
+        completedLabel="módulo concluído"
+        heading="checklist pra concluir"
+        isCompleted={isCompleted}
+        isCompleting={isCompleting}
+        onComplete={onComplete}
+      />
+
     </div>
   );
 }
