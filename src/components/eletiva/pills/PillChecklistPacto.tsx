@@ -62,9 +62,22 @@ export function PillChecklistPacto({
   const checked = new Set(value.checked ?? []);
   const ctaLabel = schema.completion?.label ?? "concluir";
   const requiresReflection = !!schema.reflexao?.label;
-  const ready =
-    (commitments.length === 0 || checked.size >= 1) &&
-    (!requiresReflection || (value.reflexao ?? "").trim().length >= 2);
+  const checklist: ChecklistItem[] = [];
+  if (commitments.length > 0) {
+    checklist.push({
+      id: "compromissos",
+      label: "marcar pelo menos 1 compromisso",
+      done: checked.size >= 1,
+    });
+  }
+  if (requiresReflection) {
+    checklist.push({
+      id: "reflexao",
+      label: schema.reflexao?.label ?? "reflexão",
+      done: (value.reflexao ?? "").trim().length >= 2,
+    });
+  }
+
 
   const toggle = (i: number) => {
     const next = new Set(checked);
