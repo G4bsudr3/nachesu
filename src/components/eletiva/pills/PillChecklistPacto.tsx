@@ -171,31 +171,21 @@ export function PillChecklistPacto({
         </div>
       )}
 
-      <div className="flex items-center justify-between gap-3 pt-2">
-        <p className="font-body text-xs text-perestroika-preto/55">
-          {checked.size}/{commitments.length} compromissos marcados
-        </p>
-        <button
-          type="button"
-          onClick={onComplete}
-          disabled={!ready || isCompleted || isCompleting}
-          aria-busy={isCompleting}
-          className={`inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide transition-transform ${
-            !ready || isCompleted || isCompleting
-              ? "bg-perestroika-preto/15 text-perestroika-preto/45 cursor-not-allowed"
-              : "text-perestroika-bege hover:scale-105 active:scale-95"
-          }`}
-          style={!ready || isCompleted || isCompleting ? undefined : { backgroundColor: accent }}
-        >
-          {isCompleted ? (
-            <>
-              <Check className="h-4 w-4" /> módulo concluído
-            </>
-          ) : (
-            ctaLabel
-          )}
-        </button>
-      </div>
+      <p className="font-body text-xs text-perestroika-preto/55">
+        {checked.size}/{commitments.length} compromissos marcados
+      </p>
+
+      <EntregaChecklist
+        items={checklist}
+        accent={accent}
+        ctaLabel={ctaLabel}
+        completedLabel="módulo concluído"
+        heading="checklist pra concluir"
+        isCompleted={isCompleted}
+        isCompleting={isCompleting}
+        onComplete={onComplete}
+      />
+
     </div>
   );
 }
