@@ -21,6 +21,8 @@ type Schema = {
   /** quando true, os prints viram evidência opcional e não travam a entrega */
   prints_opcionais?: boolean;
   treinar_mais_label?: string;
+  comparacao?: { label?: string; placeholder?: string };
+
   conclusao?: { label: string; placeholder?: string };
   dica_md?: string;
   completion?: { label?: string };
