@@ -330,6 +330,10 @@ export const ModuloPillList = ({
 
   const safeSave = save ?? (async () => undefined);
 
+  const { user } = useAuth();
+  const { mark, remember, forget } = useModuleResume(moduleId, user?.id);
+
+
   // último bloco em que a pessoa mexeu nesse módulo (sobrevive a reload)
   const resumeIndex = mark ? (pills?.findIndex((p) => p.id === mark.pillId) ?? -1) : -1;
   const showResume = resumeIndex > 0 && !completedPillIds.has(mark!.pillId);
