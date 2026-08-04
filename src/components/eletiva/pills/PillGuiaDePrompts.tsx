@@ -105,24 +105,30 @@ export function PillGuiaDePrompts({
   const minText = (s?: string) => (s ?? "").trim().length >= 2;
   const hasEv = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
 
-  const checks: boolean[] = [];
+  const checklist: ChecklistItem[] = [];
   // cada template precisa ter sido editado (≥ 20 chars, ou ≠ do base)
-  schema.templates.forEach((t) => {
+  schema.templates.forEach((t, i) => {
     const curr = value.modelos?.[t.id] ?? "";
-    checks.push(curr.trim().length >= 20 && curr.trim() !== t.template.trim());
+    checklist.push({
+      id: `tpl-${t.id}`,
+      label: `modelo ${String(i + 1).padStart(2, "0")}: ${t.titulo ?? "personalizar template"}`,
+      done: curr.trim().length >= 20 && curr.trim() !== t.template.trim(),
+    });
   });
   if (schema.prints?.primeiro && !schema.prints.primeiro.optional) {
-    checks.push(hasEv(value.print_1));
-    if (schema.prints.primeiro.por_que_label) checks.push(minText(value.por_que_1));
+    checklist.push({ id: "print_1", label: schema.prints.primeiro.label ?? "primeiro print", done: hasEv(value.print_1) });
+    if (schema.prints.primeiro.por_que_label)
+      checklist.push({ id: "por_que_1", label: schema.prints.primeiro.por_que_label, done: minText(value.por_que_1) });
   }
   if (schema.prints?.segundo && !schema.prints.segundo.optional) {
-    checks.push(hasEv(value.print_2));
-    if (schema.prints.segundo.por_que_label) checks.push(minText(value.por_que_2));
+    checklist.push({ id: "print_2", label: schema.prints.segundo.label ?? "segundo print", done: hasEv(value.print_2) });
+    if (schema.prints.segundo.por_que_label)
+      checklist.push({ id: "por_que_2", label: schema.prints.segundo.por_que_label, done: minText(value.por_que_2) });
   }
-  if (schema.reflexao?.prompt) checks.push(minText(value.reflexao));
+  if (schema.reflexao?.prompt)
+    checklist.push({ id: "reflexao", label: "reflexão final", done: minText(value.reflexao) });
 
-  const ready = checks.every(Boolean);
-  const missing = checks.filter((ok) => !ok).length;
+
   const ctaLabel = schema.completion?.label ?? "concluir módulo";
 
   return (
