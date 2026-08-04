@@ -95,21 +95,22 @@ export function PillPBLEstruturado({
   // campo com `optional: true` aparece igual, mas não trava o botão.
   const minText = (s?: string) => (s ?? "").trim().length >= 2;
   const hasEvidence = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
-  const req = (f?: { optional?: boolean }) => !!f && !f.optional;
-  const checks: boolean[] = [];
-  if (req(c.pedido_a)) checks.push(minText(value.pedido_a));
-  if (req(c.print_a)) checks.push(hasEvidence(value.print_a));
-  if (req(c.pedido_b)) checks.push(minText(value.pedido_b));
-  if (req(c.print_b)) checks.push(hasEvidence(value.print_b));
-  if (req(c.pedido_c)) checks.push(minText(value.pedido_c));
-  if (req(c.print_c)) checks.push(hasEvidence(value.print_c));
-  if (req(c.melhor)) checks.push(!!value.melhor);
-  if (req(c.por_que)) checks.push(minText(value.por_que));
-  if (req(c.aprendi)) checks.push(minText(value.aprendi));
-  if (req(c.veredicto)) checks.push(minText(value.veredicto));
+  const checklist: ChecklistItem[] = [];
+  const addField = (id: string, f: Campo | CampoEvidencia | { label: string; optional?: boolean } | undefined, done: boolean) => {
+    if (!f || f.optional) return;
+    checklist.push({ id, label: f.label, done });
+  };
+  addField("pedido_a", c.pedido_a, minText(value.pedido_a));
+  addField("print_a", c.print_a, hasEvidence(value.print_a));
+  addField("pedido_b", c.pedido_b, minText(value.pedido_b));
+  addField("print_b", c.print_b, hasEvidence(value.print_b));
+  addField("pedido_c", c.pedido_c, minText(value.pedido_c));
+  addField("print_c", c.print_c, hasEvidence(value.print_c));
+  addField("melhor", c.melhor, !!value.melhor);
+  addField("por_que", c.por_que, minText(value.por_que));
+  addField("aprendi", c.aprendi, minText(value.aprendi));
+  addField("veredicto", c.veredicto, minText(value.veredicto));
 
-  const ready = checks.length === 0 || checks.every(Boolean);
-  const missing = checks.filter((ok) => !ok).length;
 
   return (
     <div className="space-y-8">
