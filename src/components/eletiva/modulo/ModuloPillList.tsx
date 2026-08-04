@@ -142,6 +142,13 @@ const PillCardShell = ({
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const bodyId = `pilula-body-${pill.id}`;
+  const rememberResume = useContext(ResumeContext);
+  const markHere = () => rememberResume?.(pill.id, pill.title);
+  const toggle = () =>
+    setExpanded((v) => {
+      if (!v) markHere();
+      return !v;
+    });
 
   return (
     <article
@@ -155,17 +162,18 @@ const PillCardShell = ({
       <div
         role="button"
         tabIndex={0}
-        onClick={() => setExpanded((v) => !v)}
+        onClick={toggle}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            setExpanded((v) => !v);
+            toggle();
           }
         }}
         aria-expanded={expanded}
         aria-controls={bodyId}
         className="w-full text-left p-5 sm:p-6 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa/60 focus-visible:ring-inset"
       >
+
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-wrap min-w-0">
             <span
