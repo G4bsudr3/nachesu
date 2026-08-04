@@ -96,12 +96,12 @@ export function useNotificationLog(range: string = "30d", includeTest = false) {
       const rosterByEmail = new Map(
         (rosterRes.data ?? []).map((r) => [r.email_normalized.toLowerCase(), r]),
       );
-      const profileById = new Map((profilesRes.data ?? []).map((p) => [p.id, p]));
+      const profileByUser = new Map((profilesRes.data ?? []).map((p) => [p.user_id, p]));
 
-      const rows: NotificationLogRow[] = notifs.map((n) => {
+      const allRows: Array<NotificationLogRow & { is_test: boolean }> = notifs.map((n) => {
         const email = emailByUser.get(n.user_id) ?? null;
         const roster = email ? rosterByEmail.get(email) : undefined;
-        const profile = profileById.get(n.user_id);
+        const profile = profileByUser.get(n.user_id);
         const label =
           roster?.full_name ||
           profile?.display_name ||
@@ -125,18 +125,29 @@ export function useNotificationLog(range: string = "30d", includeTest = false) {
           email_status: match?.status ?? null,
           email_error: match?.error_message ?? null,
           email_at: match?.created_at ?? null,
+          is_test: !!profile?.is_test,
         };
       });
 
-      const emailsSent = dedupedEmails.filter((e) => e.status === "sent").length;
-      const emailsFailed = dedupedEmails.filter((e) =>
+      const hiddenTestCount = allRows.filter((r) => r.is_test).length;
+      const rows = includeTest ? allRows : allRows.filter((r) => !r.is_test);
+
+      // métricas de e-mail só contam envios ligados a estudante visível
+      const visibleEmails = new Set(rows.map((r) => (r.email ?? "").toLowerCase()));
+      const countedEmails = includeTest
+        ? dedupedEmails
+        : dedupedEmails.filter((e) => visibleEmails.has((e.recipient_email ?? "").toLowerCase()));
+
+      const emailsSent = countedEmails.filter((e) => e.status === "sent").length;
+      const emailsFailed = countedEmails.filter((e) =>
         ["dlq", "failed", "bounced"].includes(e.status),
       ).length;
-      const emailsPending = dedupedEmails.filter((e) => e.status === "pending").length;
+      const emailsPending = countedEmails.filter((e) => e.status === "pending").length;
 
       return {
         rows,
-        kinds: [...new Set(notifs.map((n) => n.kind))].sort(),
+        kinds: [...new Set(rows.map((n) => n.kind))].sort(),
+        hiddenTestCount,
         stats: {
           total: rows.length,
           read: rows.filter((r) => r.read_at).length,
@@ -145,6 +156,7 @@ export function useNotificationLog(range: string = "30d", includeTest = false) {
           emailsPending,
         },
       };
+
     },
   });
 }
