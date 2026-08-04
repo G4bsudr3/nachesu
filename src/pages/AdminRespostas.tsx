@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Download, Search, ChevronDown } from "lucide-react";
@@ -302,9 +302,8 @@ const AdminRespostas = () => {
               const isOpen = openId === d.id;
               const isDraft = d.submitted_at === null && d.status === "rascunho";
               return (
-                <>
+                <Fragment key={d.id}>
                   <AdminTR
-                    key={d.id}
                     onClick={() => setOpenId(isOpen ? null : d.id)}
                     className="cursor-pointer"
                   >
@@ -337,7 +336,7 @@ const AdminRespostas = () => {
                     </AdminTD>
                   </AdminTR>
                   {isOpen && (
-                    <tr key={`${d.id}-detail`}>
+                    <tr>
                       <AdminTD colSpan={5} className="bg-perestroika-bege/40">
                         <div className="py-2">
                           <DeliverableAnswersList deliverable={d} />
@@ -345,7 +344,7 @@ const AdminRespostas = () => {
                       </AdminTD>
                     </tr>
                   )}
-                </>
+                </Fragment>
               );
             })}
           </AdminTBody>
