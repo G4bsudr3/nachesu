@@ -97,9 +97,14 @@ export function PillPBLCorfTriplo({
   const minText = (s?: string) => (s ?? "").trim().length >= 2;
   const hasEv = (ev?: EvidenceValue) => !!ev && ev.evidence_kind !== "none";
 
-  const itemChecks = schema.prompts.flatMap((p) => {
+  const obrigatorios = schema.prompts.filter((p) => !p.optional);
+  const opcionais = schema.prompts.filter((p) => p.optional);
+  const printsOpcionais = schema.prints_opcionais ?? false;
+
+  const itemChecks = obrigatorios.flatMap((p) => {
     const it = value.itens?.[p.id] ?? {};
-    return [minText(it.versao_corf), hasEv(it.print_ruim), hasEv(it.print_corf), minText(it.o_que_mudou)];
+    const base = [minText(it.versao_corf), minText(it.o_que_mudou)];
+    return printsOpcionais ? base : [...base, hasEv(it.print_ruim), hasEv(it.print_corf)];
   });
   const conclusionCheck = schema.conclusao ? [minText(value.conclusao)] : [];
   const checks = [...itemChecks, ...conclusionCheck];
@@ -107,6 +112,7 @@ export function PillPBLCorfTriplo({
   const missing = checks.filter((ok) => !ok).length;
 
   const ctaLabel = schema.completion?.label ?? "entregar e seguir";
+
 
   return (
     <div className="space-y-8">
