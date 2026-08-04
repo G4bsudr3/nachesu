@@ -127,13 +127,19 @@ export function PillPBLCorfTriplo({
         </p>
       )}
 
-      {/* 3 prompts ruins em destaque */}
-      <section aria-label="os 3 prompts pra reescrever" className="space-y-3">
+      {/* prompts obrigatórios em destaque */}
+      <section aria-label="o que você vai reescrever" className="space-y-3">
         <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-          os 3 prompts pra reescrever
+          {obrigatorios.length === 1
+            ? "o prompt pra reescrever"
+            : `os ${obrigatorios.length} prompts pra reescrever`}
         </p>
-        <ol className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {schema.prompts.map((p, i) => (
+        <ol
+          className={`grid grid-cols-1 gap-3 ${
+            obrigatorios.length > 1 ? "sm:grid-cols-3" : ""
+          }`}
+        >
+          {obrigatorios.map((p, i) => (
             <li
               key={p.id}
               className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4 flex flex-col gap-2"
@@ -151,6 +157,7 @@ export function PillPBLCorfTriplo({
           ))}
         </ol>
       </section>
+
 
       {/* passos */}
       {schema.passos && schema.passos.length > 0 && (
