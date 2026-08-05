@@ -71,6 +71,7 @@ const AdminTurma = lazy(() => import("./pages/AdminTurma.tsx"));
 const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx"));
 const Marco = lazy(() => import("./pages/Marco.tsx"));
 const Comecar = lazy(() => import("./pages/Comecar.tsx"));
+const Acompanhamento = lazy(() => import("./pages/Acompanhamento.tsx"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
 const AdminEletivaModulos = lazy(() => import("./pages/AdminEletivaModulos.tsx"));
 const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
@@ -123,6 +124,8 @@ const App = () => (
               <Route path="/eletivas" element={<Eletivas />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/comecar" element={<Comecar />} />
+              {/* painel público da coordenação: senha própria, fora do auth do app */}
+              <Route path="/acompanhamento" element={<Acompanhamento />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               {/* /forms removida junto com PublicForm (FBI legado) */}

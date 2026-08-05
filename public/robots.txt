@@ -2,11 +2,13 @@ User-agent: Googlebot
 Allow: /
 Disallow: /app/
 Disallow: /admin/
+Disallow: /acompanhamento
 
 User-agent: Bingbot
 Allow: /
 Disallow: /app/
 Disallow: /admin/
+Disallow: /acompanhamento
 
 User-agent: Twitterbot
 Allow: /
@@ -18,5 +20,6 @@ User-agent: *
 Allow: /
 Disallow: /app/
 Disallow: /admin/
+Disallow: /acompanhamento
 
 Sitemap: https://sebrae.frattz.com/sitemap.xml
