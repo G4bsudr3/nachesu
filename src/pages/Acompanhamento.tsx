@@ -674,7 +674,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
                     <p className="font-body text-sm font-semibold text-perestroika-preto break-words">
                       {a.nome}
                     </p>
-                    <p className="font-body text-[11px] lowercase text-perestroika-preto/55">
+                    <p className="font-body text-[11px] text-perestroika-preto/55">
                       {a.turma || "sem turma"}
                     </p>
                   </div>
