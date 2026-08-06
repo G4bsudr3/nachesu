@@ -71,14 +71,16 @@ async function buildCourse(admin: Client, courseId: string) {
   );
   const trailIds = trails.map((r) => r.id);
 
-  const modules = trailIds.length
+  const allModules = trailIds.length
     ? await fetchAll<{ id: string; number: number; published: boolean }>((f, t) =>
         admin.from("modules").select("id, number, published").in("trail_id", trailIds).range(f, t),
       )
     : [];
+  // só módulo publicado entra na conta: é o que o estudante realmente consegue fazer
+  const modules = allModules.filter((m) => m.published);
   const moduleIds = modules.map((m) => m.id);
   const moduleNumber = new Map(modules.map((m) => [m.id, m.number]));
-  const publishedCount = modules.filter((m) => m.published).length;
+  const publishedCount = modules.length;
 
   const pills = moduleIds.length
     ? await fetchAll<{ id: string }>((f, t) =>
@@ -86,6 +88,8 @@ async function buildCourse(admin: Client, courseId: string) {
       )
     : [];
   const pillIds = new Set(pills.map((p) => p.id));
+  const pillsTotal = pillIds.size;
+
 
   // lista base: convites do curso (inclui quem nunca entrou)
   const invites = await fetchAll<{
@@ -213,10 +217,12 @@ async function buildCourse(admin: Client, courseId: string) {
     a.ultimo = maxDate(a.ultimo, r.completed_at, r.started_at);
   }
   for (const r of pillProgress) {
+    if (!r.completed_at) continue;
     const a = get(r.user_id);
     a.pilulas += 1;
     a.ultimo = maxDate(a.ultimo, r.completed_at);
   }
+
   for (const r of deliverables) {
     const a = get(r.user_id);
     if (r.submitted_at) a.entregas += 1;
@@ -242,10 +248,11 @@ async function buildCourse(admin: Client, courseId: string) {
 
 
       const a = inv.claimed_by ? agg.get(inv.claimed_by) : undefined;
-      const concluidos = a?.concluidos ?? 0;
-      const pilulas = a?.pilulas ?? 0;
+      const concluidos = Math.min(a?.concluidos ?? 0, publishedCount || (a?.concluidos ?? 0));
+      const pilulas = Math.min(a?.pilulas ?? 0, pillsTotal || (a?.pilulas ?? 0));
       const ultimo = a?.ultimo ?? null;
       const entrou = !!inv.claimed_at;
+      const ativo7d = !!ultimo && now - new Date(ultimo).getTime() <= 7 * DAY;
 
       let status:
         | "nao_entrou"
@@ -264,22 +271,45 @@ async function buildCourse(admin: Client, courseId: string) {
         turma: rost?.turma ?? null,
         entrou,
         modulos_concluidos: concluidos,
+        pct: publishedCount > 0 ? Math.round((concluidos / publishedCount) * 100) : 0,
         ultimo_modulo: a?.ultimoModulo ?? null,
         pilulas_concluidas: pilulas,
         entregas_enviadas: a?.entregas ?? 0,
         ultimo_acesso: ultimo,
+        ativo_7d: ativo7d,
         status,
       };
     })
     .filter(Boolean) as Record<string, unknown>[];
 
   const count = (s: string) => alunos.filter((a) => a.status === s).length;
-  const turmas = new Map<string, { turma: string; total: number; entraram: number; nao_entraram: number; em_andamento: number; parados: number }>();
+  const turmas = new Map<
+    string,
+    {
+      turma: string;
+      total: number;
+      entraram: number;
+      nao_entraram: number;
+      em_andamento: number;
+      parados: number;
+      ativos_7d: number;
+      media_modulos: number;
+    }
+  >();
   for (const al of alunos) {
     const key = (al.turma as string) || "sem turma";
     let t = turmas.get(key);
     if (!t) {
-      t = { turma: key, total: 0, entraram: 0, nao_entraram: 0, em_andamento: 0, parados: 0 };
+      t = {
+        turma: key,
+        total: 0,
+        entraram: 0,
+        nao_entraram: 0,
+        em_andamento: 0,
+        parados: 0,
+        ativos_7d: 0,
+        media_modulos: 0,
+      };
       turmas.set(key, t);
     }
     t.total += 1;
@@ -287,6 +317,11 @@ async function buildCourse(admin: Client, courseId: string) {
     else t.nao_entraram += 1;
     if (al.status === "em_andamento") t.em_andamento += 1;
     if (al.status === "parado") t.parados += 1;
+    if (al.ativo_7d) t.ativos_7d += 1;
+    t.media_modulos += al.modulos_concluidos as number;
+  }
+  for (const t of turmas.values()) {
+    t.media_modulos = t.total ? Number((t.media_modulos / t.total).toFixed(1)) : 0;
   }
 
   const somaConcluidos = alunos.reduce((s, a) => s + (a.modulos_concluidos as number), 0);
@@ -301,8 +336,10 @@ async function buildCourse(admin: Client, courseId: string) {
       em_andamento: count("em_andamento"),
       parados: count("parado"),
       concluiram: count("concluiu"),
+      ativos_7d: alunos.filter((a) => a.ativo_7d).length,
       media_modulos: alunos.length ? Number((somaConcluidos / alunos.length).toFixed(1)) : 0,
       modulos_publicados: publishedCount,
+      pilulas_publicadas: pillsTotal,
       por_turma: [...turmas.values()].sort((a, b) => a.turma.localeCompare(b.turma)),
     },
   };

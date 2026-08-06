@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDown, ArrowUp, Download, RefreshCw, Search } from "lucide-react";
+import { ArrowDown, ArrowUp, Download, RefreshCw, Search, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSeo } from "@/hooks/useSeo";
 import { cn } from "@/lib/utils";
@@ -18,10 +18,12 @@ type Aluno = {
   turma: string | null;
   entrou: boolean;
   modulos_concluidos: number;
+  pct: number;
   ultimo_modulo: number | null;
   pilulas_concluidas: number;
   entregas_enviadas: number;
   ultimo_acesso: string | null;
+  ativo_7d: boolean;
   status: Status;
 };
 
@@ -32,6 +34,8 @@ type TurmaResumo = {
   nao_entraram: number;
   em_andamento: number;
   parados: number;
+  ativos_7d: number;
+  media_modulos: number;
 };
 
 type Eletiva = {
@@ -47,8 +51,10 @@ type Eletiva = {
     em_andamento: number;
     parados: number;
     concluiram: number;
+    ativos_7d: number;
     media_modulos: number;
     modulos_publicados: number;
+    pilulas_publicadas: number;
     por_turma: TurmaResumo[];
   };
 };
@@ -209,31 +215,57 @@ function Gate({ onOk }: { onOk: (senha: string) => void }) {
 /* blocos visuais                                                      */
 /* ------------------------------------------------------------------ */
 
-function BigNumber({
+/** cartão de número que também funciona como filtro rápido de status */
+function StatCard({
   valor,
   rotulo,
-  heroi,
+  detalhe,
+  ativo,
+  onClick,
+  destaque,
 }: {
   valor: number | string;
   rotulo: string;
-  heroi?: boolean;
+  detalhe?: string;
+  ativo?: boolean;
+  onClick?: () => void;
+  destaque?: "alerta" | "ok";
 }) {
+  const Comp = onClick ? "button" : "div";
   return (
-    <div className="min-w-0">
+    <Comp
+      type={onClick ? "button" : undefined}
+      onClick={onClick}
+      aria-pressed={onClick ? !!ativo : undefined}
+      className={cn(
+        "text-left rounded-2xl border px-4 py-3 transition-colors min-w-0",
+        ativo
+          ? "border-perestroika-preto bg-perestroika-preto/[0.06]"
+          : "border-perestroika-preto/15",
+        onClick && "hover:border-perestroika-preto/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa",
+      )}
+    >
+      <div className="font-body text-[11px] lowercase tracking-wide text-perestroika-preto/55">
+        {rotulo}
+      </div>
       <div
         className={cn(
-          "font-display leading-[0.85] tabular-nums",
-          heroi
-            ? "text-[3.5rem] sm:text-[4.5rem] text-perestroika-vermelho"
-            : "text-[2.5rem] sm:text-[3.25rem] text-perestroika-preto",
+          "font-display leading-[0.85] tabular-nums text-[2.5rem] sm:text-[3rem] mt-1",
+          destaque === "alerta"
+            ? "text-perestroika-vermelho"
+            : destaque === "ok"
+              ? "text-perestroika-azul"
+              : "text-perestroika-preto",
         )}
       >
         {valor}
       </div>
-      <div className="font-body text-[11px] sm:text-xs lowercase tracking-wide text-perestroika-preto/60 mt-1">
-        {rotulo}
-      </div>
-    </div>
+      {detalhe && (
+        <div className="font-body text-[11px] lowercase text-perestroika-preto/50 mt-1">
+          {detalhe}
+        </div>
+      )}
+    </Comp>
   );
 }
 
@@ -284,15 +316,16 @@ function StatusPill({ status }: { status: Status }) {
   );
 }
 
-function Progresso({ feitos, total }: { feitos: number; total: number }) {
-  const pct = total > 0 ? Math.min(100, (feitos / total) * 100) : 0;
+function Progresso({ feitos, total, pct }: { feitos: number; total: number; pct: number }) {
+  const w = total > 0 ? Math.min(100, (feitos / total) * 100) : 0;
   return (
-    <div className="min-w-[92px]">
+    <div className="min-w-[110px]">
       <div className="font-body text-xs text-perestroika-preto tabular-nums">
         {feitos} de {total}
+        <span className="text-perestroika-preto/45"> · {pct}%</span>
       </div>
       <div className="mt-1 h-1.5 w-full rounded-full bg-perestroika-preto/12">
-        <div className="h-full rounded-full bg-perestroika-preto" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-perestroika-preto" style={{ width: `${w}%` }} />
       </div>
     </div>
   );
@@ -319,11 +352,25 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
     [eletiva.alunos],
   );
 
+  // trava anti-filtro-fantasma: turma que sumiu dos dados volta pra "todas"
+  useEffect(() => {
+    if (turma !== "todas" && !turmas.includes(turma)) setTurma("todas");
+  }, [turma, turmas]);
+
+  const turmaAtiva = turma !== "todas" && turmas.includes(turma) ? turma : "todas";
+  const temFiltro = !!busca.trim() || turmaAtiva !== "todas" || status !== "todos";
+
+  const limpar = () => {
+    setBusca("");
+    setTurma("todas");
+    setStatus("todos");
+  };
+
   const filtrados = useMemo(() => {
     const q = busca.trim().toLowerCase();
     const base = eletiva.alunos.filter((a) => {
       if (q && !a.nome.toLowerCase().includes(q)) return false;
-      if (turma !== "todas" && (a.turma || "sem turma") !== turma) return false;
+      if (turmaAtiva !== "todas" && (a.turma || "sem turma") !== turmaAtiva) return false;
       if (status !== "todos" && a.status !== status) return false;
       return true;
     });
@@ -342,7 +389,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
       const tb = b.ultimo_acesso ? new Date(b.ultimo_acesso).getTime() : 0;
       return (ta - tb) * dir;
     });
-  }, [eletiva.alunos, busca, turma, status, ordem, asc]);
+  }, [eletiva.alunos, busca, turmaAtiva, status, ordem, asc]);
 
   const toggleOrdem = (o: Ordem) => {
     if (ordem === o) setAsc((v) => !v);
@@ -360,6 +407,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
       "status",
       "modulos_concluidos",
       "modulos_publicados",
+      "percentual",
       "ultimo_modulo",
       "pilulas_concluidas",
       "entregas_enviadas",
@@ -374,6 +422,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
         STATUS_LABEL[a.status],
         a.modulos_concluidos,
         eletiva.resumo.modulos_publicados,
+        `${a.pct}%`,
         a.ultimo_modulo ?? "",
         a.pilulas_concluidas,
         a.entregas_enviadas,
@@ -393,65 +442,118 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
     URL.revokeObjectURL(url);
   }, [filtrados, eletiva]);
 
-  const selectCls =
+  const campoCls =
     "rounded-lg border border-perestroika-preto/25 bg-transparent px-3 py-2 font-body text-sm lowercase text-perestroika-preto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa";
 
   const OrdemBtn = ({ o, children }: { o: Ordem; children: React.ReactNode }) => (
     <button
       type="button"
       onClick={() => toggleOrdem(o)}
-      className="inline-flex items-center gap-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 hover:text-perestroika-preto"
+      className={cn(
+        "inline-flex items-center gap-1 font-body text-[11px] uppercase tracking-wider",
+        ordem === o ? "text-perestroika-preto" : "text-perestroika-preto/50 hover:text-perestroika-preto",
+      )}
     >
       {children}
-      {ordem === o &&
-        (asc ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />)}
+      {ordem === o && (asc ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />)}
     </button>
   );
 
+  const filtrarStatus = (s: Status) => setStatus((atual) => (atual === s ? "todos" : s));
+
   return (
-    <section className="border-t-2 border-perestroika-preto pt-8 mt-12 first:mt-0">
+    <section>
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
         eletiva · com {eletiva.professor}
       </p>
       <h2 className="font-display uppercase text-3xl sm:text-5xl leading-[0.9] mt-1 text-perestroika-preto">
         {eletiva.titulo}
       </h2>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-8">
-        <BigNumber valor={eletiva.resumo.convidados} rotulo="convidados" />
-        <BigNumber valor={eletiva.resumo.entraram} rotulo="entraram" />
-        <BigNumber valor={eletiva.resumo.nunca_entraram} rotulo="nunca entraram" heroi />
-        <BigNumber valor={eletiva.resumo.em_andamento} rotulo="em andamento" />
-      </div>
-
-      <p className="font-body text-xs lowercase text-perestroika-preto/60 mt-4">
-        média de {eletiva.resumo.media_modulos} módulos concluídos ·{" "}
-        {eletiva.resumo.modulos_publicados} módulos publicados · {eletiva.resumo.parados} parados há
-        mais de 14 dias
+      <p className="font-body text-xs lowercase text-perestroika-preto/60 mt-3">
+        {eletiva.resumo.modulos_publicados} módulos publicados · média de{" "}
+        {eletiva.resumo.media_modulos} concluídos por estudante · {eletiva.resumo.ativos_7d} ativos
+        nos últimos 7 dias
       </p>
+
+      {/* números clicáveis: cada um filtra a lista abaixo */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+        <StatCard
+          valor={eletiva.resumo.nunca_entraram}
+          rotulo="nunca entraram"
+          detalhe={`de ${eletiva.resumo.convidados} convidados`}
+          destaque="alerta"
+          ativo={status === "nao_entrou"}
+          onClick={() => filtrarStatus("nao_entrou")}
+        />
+        <StatCard
+          valor={eletiva.resumo.entrou_sem_comecar}
+          rotulo="entraram e não começaram"
+          detalhe="sem nenhuma aula concluída"
+          ativo={status === "entrou_sem_comecar"}
+          onClick={() => filtrarStatus("entrou_sem_comecar")}
+        />
+        <StatCard
+          valor={eletiva.resumo.em_andamento}
+          rotulo="em andamento"
+          detalhe={`${eletiva.resumo.parados} parados há +14 dias`}
+          ativo={status === "em_andamento"}
+          onClick={() => filtrarStatus("em_andamento")}
+        />
+        <StatCard
+          valor={eletiva.resumo.concluiram}
+          rotulo="concluíram tudo"
+          detalhe={`${eletiva.resumo.modulos_publicados} de ${eletiva.resumo.modulos_publicados} módulos`}
+          destaque="ok"
+          ativo={status === "concluiu"}
+          onClick={() => filtrarStatus("concluiu")}
+        />
+      </div>
 
       <DistribBar alunos={eletiva.alunos} />
 
-      {/* por turma */}
+      {/* turmas: chips que filtram */}
       {eletiva.resumo.por_turma.length > 1 && (
-        <div className="mt-8 flex flex-wrap gap-3">
-          {eletiva.resumo.por_turma.map((t) => (
-            <div
-              key={t.turma}
-              className="border border-perestroika-preto/20 rounded-xl px-4 py-3 min-w-[150px]"
-            >
-              <div className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
-                {t.turma}
-              </div>
-              <div className="font-display text-3xl leading-none text-perestroika-preto mt-1 tabular-nums">
-                {t.entraram}
-                <span className="text-perestroika-preto/35 text-xl">/{t.total}</span>
-              </div>
-              <div className="font-body text-[11px] lowercase text-perestroika-preto/60 mt-1">
-                entraram · {t.nao_entraram} não
-              </div>
-            </div>
-          ))}
+        <div className="mt-8">
+          <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/45">
+            por turma · toque pra filtrar
+          </p>
+          <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {eletiva.resumo.por_turma.map((t) => {
+              const ativo = turmaAtiva === t.turma;
+              const pct = t.total ? (t.entraram / t.total) * 100 : 0;
+              return (
+                <button
+                  key={t.turma}
+                  type="button"
+                  onClick={() => setTurma(ativo ? "todas" : t.turma)}
+                  aria-pressed={ativo}
+                  className={cn(
+                    "text-left border rounded-xl px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa",
+                    ativo
+                      ? "border-perestroika-preto bg-perestroika-preto/[0.06]"
+                      : "border-perestroika-preto/15 hover:border-perestroika-preto/50",
+                  )}
+                >
+                  <div className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
+                    {t.turma}
+                  </div>
+                  <div className="font-display text-3xl leading-none text-perestroika-preto mt-1 tabular-nums">
+                    {t.entraram}
+                    <span className="text-perestroika-preto/35 text-xl">/{t.total}</span>
+                  </div>
+                  <div className="mt-2 h-1.5 w-full rounded-full bg-perestroika-preto/12">
+                    <div
+                      className="h-full rounded-full bg-perestroika-rosa"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <div className="font-body text-[11px] lowercase text-perestroika-preto/60 mt-2">
+                    entraram · {t.nao_entraram} não · média {t.media_modulos}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -463,10 +565,20 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
             placeholder="buscar por nome"
-            className={cn(selectCls, "w-full pl-9")}
+            className={cn(campoCls, "w-full pl-9 pr-9")}
           />
+          {busca && (
+            <button
+              type="button"
+              onClick={() => setBusca("")}
+              aria-label="limpar busca"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-perestroika-preto/50 hover:text-perestroika-preto"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
-        <select value={turma} onChange={(e) => setTurma(e.target.value)} className={selectCls}>
+        <select value={turmaAtiva} onChange={(e) => setTurma(e.target.value)} className={campoCls}>
           <option value="todas">todas as turmas</option>
           {turmas.map((t) => (
             <option key={t} value={t}>
@@ -477,7 +589,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value as Status | "todos")}
-          className={selectCls}
+          className={campoCls}
         >
           <option value="todos">todos os status</option>
           {STATUS_ORDER.map((s) => (
@@ -495,24 +607,58 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-4 mt-4">
+      {temFiltro && (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          {turmaAtiva !== "todas" && (
+            <span className="rounded-full border border-perestroika-preto/25 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
+              turma {turmaAtiva}
+            </span>
+          )}
+          {status !== "todos" && (
+            <span className="rounded-full border border-perestroika-preto/25 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
+              {STATUS_LABEL[status]}
+            </span>
+          )}
+          {!!busca.trim() && (
+            <span className="rounded-full border border-perestroika-preto/25 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
+              busca "{busca.trim()}"
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={limpar}
+            className="inline-flex items-center gap-1 rounded-full bg-perestroika-preto px-3 py-1 font-body text-[11px] lowercase text-perestroika-bege"
+          >
+            <X className="h-3 w-3" /> limpar filtros
+          </button>
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center gap-4 mt-5">
         <span className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/40">
           ordenar por
         </span>
         <OrdemBtn o="nome">nome</OrdemBtn>
         <OrdemBtn o="progresso">progresso</OrdemBtn>
         <OrdemBtn o="acesso">último acesso</OrdemBtn>
-        <span className="font-body text-[11px] lowercase text-perestroika-preto/45 ml-auto tabular-nums">
-          {filtrados.length} de {eletiva.alunos.length}
+        <span className="font-body text-[11px] lowercase text-perestroika-preto/55 ml-auto tabular-nums">
+          mostrando {filtrados.length} de {eletiva.alunos.length} estudantes
         </span>
       </div>
 
       {filtrados.length === 0 ? (
-        <div className="mt-10 flex flex-col items-center text-center py-10">
+        <div className="mt-8 flex flex-col items-center text-center py-12 border border-dashed border-perestroika-preto/20 rounded-2xl">
           <EletivaSymbol size={64} pose="resting" />
-          <p className="font-body text-sm lowercase text-perestroika-preto/60 mt-4">
-            nenhum estudante com esses filtros. tenta limpar a busca ou trocar a turma.
+          <p className="font-body text-sm lowercase text-perestroika-preto/65 mt-4 max-w-xs">
+            nenhum estudante com esses filtros. limpa os filtros pra ver a turma inteira.
           </p>
+          <button
+            type="button"
+            onClick={limpar}
+            className="mt-4 rounded-lg bg-perestroika-preto px-4 py-2 font-body text-sm lowercase text-perestroika-bege"
+          >
+            limpar filtros
+          </button>
         </div>
       ) : (
         <>
@@ -521,7 +667,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
             {filtrados.map((a, i) => (
               <li
                 key={`${a.nome}-${i}`}
-                className="border border-perestroika-preto/20 rounded-xl p-4"
+                className="border border-perestroika-preto/15 rounded-xl p-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -538,44 +684,52 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
                   <Progresso
                     feitos={a.modulos_concluidos}
                     total={eletiva.resumo.modulos_publicados}
+                    pct={a.pct}
                   />
                 </div>
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-body text-[11px] lowercase text-perestroika-preto/60">
-                  <span>último módulo: {a.ultimo_modulo ?? "—"}</span>
+                  <span>onde está: módulo {a.ultimo_modulo ?? "—"}</span>
                   <span>entregas: {a.entregas_enviadas}</span>
-                  <span title={absoluto(a.ultimo_acesso)}>
-                    acesso {relativo(a.ultimo_acesso)}
-                  </span>
+                  <span title={absoluto(a.ultimo_acesso)}>acesso {relativo(a.ultimo_acesso)}</span>
                 </div>
               </li>
             ))}
           </ul>
 
           {/* desktop: tabela */}
-          <div className="hidden md:block mt-6">
+          <div className="hidden md:block mt-6 overflow-x-auto">
             <table className="w-full border-collapse">
-              <thead>
+              <thead className="sticky top-0 bg-perestroika-bege z-10">
                 <tr className="border-b-2 border-perestroika-preto">
-                  {["nome", "turma", "status", "módulos", "último módulo", "entregas", "último acesso"].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="text-left font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 pb-2"
-                      >
-                        {h}
-                      </th>
-                    ),
-                  )}
+                  {[
+                    "estudante",
+                    "turma",
+                    "status",
+                    "módulos concluídos",
+                    "onde está",
+                    "entregas",
+                    "último acesso",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="text-left font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 py-2 pr-3 whitespace-nowrap"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {filtrados.map((a, i) => (
                   <tr
                     key={`${a.nome}-${i}`}
-                    className="border-b border-perestroika-preto/12 align-middle"
+                    className={cn(
+                      "border-b border-perestroika-preto/10 align-middle",
+                      i % 2 === 1 && "bg-perestroika-preto/[0.03]",
+                    )}
                   >
                     <td className="py-3 pr-3 font-body text-sm text-perestroika-preto">{a.nome}</td>
-                    <td className="py-3 pr-3 font-body text-xs lowercase text-perestroika-preto/65">
+                    <td className="py-3 pr-3 font-body text-xs lowercase text-perestroika-preto/65 whitespace-nowrap">
                       {a.turma || "sem turma"}
                     </td>
                     <td className="py-3 pr-3">
@@ -585,16 +739,17 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
                       <Progresso
                         feitos={a.modulos_concluidos}
                         total={eletiva.resumo.modulos_publicados}
+                        pct={a.pct}
                       />
                     </td>
-                    <td className="py-3 pr-3 font-body text-sm tabular-nums text-perestroika-preto/80">
-                      {a.ultimo_modulo ?? "—"}
+                    <td className="py-3 pr-3 font-body text-sm tabular-nums text-perestroika-preto/80 whitespace-nowrap">
+                      {a.ultimo_modulo ? `módulo ${a.ultimo_modulo}` : "—"}
                     </td>
                     <td className="py-3 pr-3 font-body text-sm tabular-nums text-perestroika-preto/80">
                       {a.entregas_enviadas}
                     </td>
                     <td
-                      className="py-3 font-body text-xs lowercase text-perestroika-preto/70"
+                      className="py-3 font-body text-xs lowercase text-perestroika-preto/70 whitespace-nowrap"
                       title={absoluto(a.ultimo_acesso)}
                     >
                       {relativo(a.ultimo_acesso)}
@@ -624,6 +779,7 @@ export default function Acompanhamento() {
 
   const [senha, setSenha] = useState<string | null>(() => loadSession());
   const [agora, setAgora] = useState(Date.now());
+  const [aba, setAba] = useState(0);
 
   const query = useQuery({
     queryKey: ["painel-escola"],
@@ -652,6 +808,9 @@ export default function Acompanhamento() {
     ? relativo(new Date(query.dataUpdatedAt).toISOString())
     : "carregando";
   void agora;
+
+  const eletivas = query.data?.eletivas ?? [];
+  const atual = eletivas[Math.min(aba, Math.max(eletivas.length - 1, 0))];
 
   return (
     <main className="min-h-dvh bg-perestroika-bege">
@@ -721,14 +880,42 @@ export default function Acompanhamento() {
           </div>
         )}
 
-        {query.data && (
-          <div className="mt-14">
-            {query.data.eletivas.map((el) => (
-              <EletivaBloco key={el.slug} eletiva={el} />
-            ))}
+        {atual && (
+          <div className="mt-12">
+            {/* abas: uma eletiva por vez, sem rolagem infinita */}
+            {eletivas.length > 1 && (
+              <div
+                role="tablist"
+                aria-label="eletivas"
+                className="flex flex-wrap gap-2 border-b-2 border-perestroika-preto/15 pb-3 mb-8"
+              >
+                {eletivas.map((el, i) => (
+                  <button
+                    key={el.slug}
+                    role="tab"
+                    aria-selected={i === aba}
+                    type="button"
+                    onClick={() => setAba(i)}
+                    className={cn(
+                      "rounded-full px-4 py-2 font-body text-sm lowercase transition-colors",
+                      i === aba
+                        ? "bg-perestroika-preto text-perestroika-bege"
+                        : "border border-perestroika-preto/25 text-perestroika-preto/70 hover:border-perestroika-preto",
+                    )}
+                  >
+                    {el.titulo}
+                    <span className="tabular-nums opacity-60"> · {el.resumo.convidados}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <EletivaBloco key={atual.slug} eletiva={atual} />
+
             <p className="font-body text-[11px] lowercase text-perestroika-preto/45 mt-16 border-t border-perestroika-preto/15 pt-4">
-              dados gerados em {new Date(query.data.gerado_em).toLocaleString("pt-BR")} · página
-              interna, não indexada
+              dados gerados em{" "}
+              {query.data ? new Date(query.data.gerado_em).toLocaleString("pt-BR") : "—"} · só
+              aparecem estudantes da lista da escola · página interna, não indexada
             </p>
           </div>
         )}
