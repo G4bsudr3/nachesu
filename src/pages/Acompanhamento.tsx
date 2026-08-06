@@ -729,7 +729,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
                     )}
                   >
                     <td className="py-3 pr-3 font-body text-sm text-perestroika-preto">{a.nome}</td>
-                    <td className="py-3 pr-3 font-body text-xs lowercase text-perestroika-preto/65 whitespace-nowrap">
+                    <td className="py-3 pr-3 font-body text-xs text-perestroika-preto/65 whitespace-nowrap">
                       {a.turma || "sem turma"}
                     </td>
                     <td className="py-3 pr-3">
