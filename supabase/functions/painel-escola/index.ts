@@ -260,7 +260,7 @@ async function buildCourse(admin: Client, courseId: string) {
       else status = "em_andamento";
 
       return {
-        nome: rost?.full_name || prof?.display_name || "sem nome no roster",
+        nome,
         turma: rost?.turma ?? null,
         entrou,
         modulos_concluidos: concluidos,
