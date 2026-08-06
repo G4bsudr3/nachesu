@@ -235,6 +235,12 @@ async function buildCourse(admin: Client, courseId: string) {
       const prof = inv.claimed_by ? profileByUser.get(inv.claimed_by) : null;
       if (prof?.is_test) return null;
 
+      // convite sem estudante identificável (fora do cadastro da escola e sem perfil
+      // com nome) não entra no relatório da coordenação: seria linha fantasma
+      const nome = rost?.full_name?.trim() || prof?.display_name?.trim() || "";
+      if (!nome) return null;
+
+
       const a = inv.claimed_by ? agg.get(inv.claimed_by) : undefined;
       const concluidos = a?.concluidos ?? 0;
       const pilulas = a?.pilulas ?? 0;
@@ -254,7 +260,7 @@ async function buildCourse(admin: Client, courseId: string) {
       else status = "em_andamento";
 
       return {
-        nome: rost?.full_name || prof?.display_name || "sem nome no roster",
+        nome,
         turma: rost?.turma ?? null,
         entrou,
         modulos_concluidos: concluidos,
