@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
           recipientEmail,
           idempotencyKey: `admin-msg-${user.id}-${recipientId}-${Date.now()}`,
           templateData: {
-            recipientName: profile.nickname || profile.full_name || '',
+            recipientName: profile.nickname || profile.display_name || '',
             authorName,
             subject,
             bodyMd,
