@@ -156,7 +156,7 @@ Deno.serve(async (req) => {
       skipped++
       continue
     }
-    const recipientName = profile?.nickname || profile?.full_name || ''
+    const recipientName = profile?.nickname || profile?.display_name || ''
     const level = r.risk_level as 'medium' | 'high' | 'lost'
 
     // respeita janela silenciosa do estudante: nudge fica pra próxima rodada
