@@ -78,9 +78,9 @@ Deno.serve(async (req) => {
 
   // autor (educador)
   const { data: authorProfile } = await admin
-    .from('profiles').select('full_name, nickname').eq('id', user.id).maybeSingle()
+    .from('profiles').select('display_name, nickname').eq('user_id', user.id).maybeSingle()
   const authorName =
-    authorProfile?.nickname || authorProfile?.full_name || 'educador'
+    authorProfile?.nickname || authorProfile?.display_name || 'educador'
 
   // notification in-app
   const { data: notif } = await admin
