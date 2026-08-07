@@ -84,9 +84,9 @@ Deno.serve(async (req) => {
   const userIds = [...new Set(candidates.map((r) => r.user_id))]
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, nickname, full_name, quiet_hours_start, quiet_hours_end')
-    .in('id', userIds)
-  const profileById = new Map((profiles ?? []).map((p: any) => [p.id, p]))
+    .select('user_id, nickname, display_name, quiet_hours_start, quiet_hours_end')
+    .in('user_id', userIds)
+  const profileById = new Map((profiles ?? []).map((p: any) => [p.user_id, p]))
 
   // hora atual em SP pra checar janela silenciosa por estudante
   const spHour = Number(
