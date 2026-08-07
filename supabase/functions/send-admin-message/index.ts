@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
 
   // perfil + email
   const [{ data: profile }, { data: authRow }] = await Promise.all([
-    admin.from('profiles').select('id, full_name, nickname').eq('id', recipientId).maybeSingle(),
+    admin.from('profiles').select('id, user_id, display_name, nickname').eq('user_id', recipientId).maybeSingle(),
     admin.auth.admin.getUserById(recipientId),
   ])
   if (!profile) {
@@ -78,9 +78,9 @@ Deno.serve(async (req) => {
 
   // autor (educador)
   const { data: authorProfile } = await admin
-    .from('profiles').select('full_name, nickname').eq('id', user.id).maybeSingle()
+    .from('profiles').select('display_name, nickname').eq('user_id', user.id).maybeSingle()
   const authorName =
-    authorProfile?.nickname || authorProfile?.full_name || 'educador'
+    authorProfile?.nickname || authorProfile?.display_name || 'educador'
 
   // notification in-app
   const { data: notif } = await admin
@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
           recipientEmail,
           idempotencyKey: `admin-msg-${user.id}-${recipientId}-${Date.now()}`,
           templateData: {
-            recipientName: profile.nickname || profile.full_name || '',
+            recipientName: profile.nickname || profile.display_name || '',
             authorName,
             subject,
             bodyMd,
