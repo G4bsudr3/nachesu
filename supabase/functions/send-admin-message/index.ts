@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
 
   // perfil + email
   const [{ data: profile }, { data: authRow }] = await Promise.all([
-    admin.from('profiles').select('id, full_name, nickname').eq('id', recipientId).maybeSingle(),
+    admin.from('profiles').select('id, user_id, display_name, nickname').eq('user_id', recipientId).maybeSingle(),
     admin.auth.admin.getUserById(recipientId),
   ])
   if (!profile) {
