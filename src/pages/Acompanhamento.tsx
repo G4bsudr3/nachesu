@@ -650,9 +650,11 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
         <span className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/40">
           ordenar por
         </span>
-        <OrdemBtn o="nome">nome</OrdemBtn>
+        <OrdemBtn o="atividade">atividade</OrdemBtn>
         <OrdemBtn o="progresso">progresso</OrdemBtn>
         <OrdemBtn o="acesso">último acesso</OrdemBtn>
+        <OrdemBtn o="nome">nome</OrdemBtn>
+
         <span className="font-body text-[11px] lowercase text-perestroika-preto/55 ml-auto tabular-nums">
           mostrando {filtrados.length} de {eletiva.alunos.length} estudantes
         </span>
