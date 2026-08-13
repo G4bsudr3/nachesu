@@ -372,16 +372,16 @@ Deno.serve(async (req) => {
       gerado_em: new Date().toISOString(),
       eletivas: [
         {
-          slug: "ia-na-pratica",
-          titulo: "IA na Prática",
-          professor: "frattz",
-          ...ia,
-        },
-        {
           slug: "economia-circular",
           titulo: "Economia Circular & Negócios Regenerativos",
           professor: 'Eduardo "Dudu" Obregon',
           ...ec,
+        },
+        {
+          slug: "ia-na-pratica",
+          titulo: "IA na Prática",
+          professor: "frattz",
+          ...ia,
         },
       ],
     });
