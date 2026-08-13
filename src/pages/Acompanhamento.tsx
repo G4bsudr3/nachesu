@@ -576,7 +576,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
           <input
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            placeholder="buscar por nome"
+            placeholder="buscar por nome ou turma"
             className={cn(campoCls, "w-full pl-9 pr-9")}
           />
           {busca && (
