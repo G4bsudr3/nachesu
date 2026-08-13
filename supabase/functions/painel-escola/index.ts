@@ -14,8 +14,8 @@ const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const SENHA = Deno.env.get("PAINEL_ESCOLA_SENHA") ?? "";
 
 const COURSES = [
-  { id: "c0a00000-0000-0000-0000-000000000001", slug: "ia-na-pratica" },
   { id: "c0a00000-0000-0000-0000-000000000002", slug: "economia-circular" },
+  { id: "c0a00000-0000-0000-0000-000000000001", slug: "ia-na-pratica" },
 ];
 
 const json = (cors: Record<string, string>, body: unknown, status = 200) =>
