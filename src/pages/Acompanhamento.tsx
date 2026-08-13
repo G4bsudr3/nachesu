@@ -335,14 +335,18 @@ function Progresso({ feitos, total, pct }: { feitos: number; total: number; pct:
 /* bloco por eletiva                                                   */
 /* ------------------------------------------------------------------ */
 
-type Ordem = "nome" | "progresso" | "acesso";
+type Ordem = "atividade" | "nome" | "progresso" | "acesso";
+
+const semAcento = (s: string) =>
+  s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 
 function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
   const [busca, setBusca] = useState("");
   const [turma, setTurma] = useState("todas");
   const [status, setStatus] = useState<"todos" | Status>("todos");
-  const [ordem, setOrdem] = useState<Ordem>("nome");
-  const [asc, setAsc] = useState(true);
+  const [ordem, setOrdem] = useState<Ordem>("atividade");
+  const [asc, setAsc] = useState(false);
+
 
   const turmas = useMemo(
     () =>
