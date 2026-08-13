@@ -371,27 +371,34 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
   };
 
   const filtrados = useMemo(() => {
-    const q = busca.trim().toLowerCase();
+    const q = semAcento(busca.trim());
     const base = eletiva.alunos.filter((a) => {
-      if (q && !a.nome.toLowerCase().includes(q)) return false;
+      if (q && !semAcento(`${a.nome} ${a.turma ?? ""}`).includes(q)) return false;
       if (turmaAtiva !== "todas" && (a.turma || "sem turma") !== turmaAtiva) return false;
       if (status !== "todos" && a.status !== status) return false;
       return true;
     });
 
+    const ts = (v: string | null) => (v ? new Date(v).getTime() : 0);
     const dir = asc ? 1 : -1;
     return [...base].sort((a, b) => {
+      if (ordem === "atividade") {
+        if (a.modulos_concluidos !== b.modulos_concluidos)
+          return (a.modulos_concluidos - b.modulos_concluidos) * dir;
+        const ta = ts(a.ultimo_acesso);
+        const tb = ts(b.ultimo_acesso);
+        if (ta !== tb) return (ta - tb) * dir;
+        return a.nome.localeCompare(b.nome);
+      }
       if (ordem === "nome") {
-        // padrão: status mais crítico primeiro, depois nome
+        // status mais crítico primeiro, depois nome
         const sa = STATUS_ORDER.indexOf(a.status);
         const sb = STATUS_ORDER.indexOf(b.status);
         if (sa !== sb) return (sa - sb) * dir;
         return a.nome.localeCompare(b.nome) * dir;
       }
       if (ordem === "progresso") return (a.modulos_concluidos - b.modulos_concluidos) * dir;
-      const ta = a.ultimo_acesso ? new Date(a.ultimo_acesso).getTime() : 0;
-      const tb = b.ultimo_acesso ? new Date(b.ultimo_acesso).getTime() : 0;
-      return (ta - tb) * dir;
+      return (ts(a.ultimo_acesso) - ts(b.ultimo_acesso)) * dir;
     });
   }, [eletiva.alunos, busca, turmaAtiva, status, ordem, asc]);
 
@@ -402,6 +409,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
       setAsc(o === "nome");
     }
   };
+
 
   const baixarCsv = useCallback(() => {
     const head = [
