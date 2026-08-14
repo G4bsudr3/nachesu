@@ -363,7 +363,7 @@ Deno.serve(async (req) => {
       return json(cors, { error: "senha inválida" }, 401);
     }
 
-    const [ia, ec] = await Promise.all([
+    const [ec, ia] = await Promise.all([
       buildCourse(admin, COURSES[0].id),
       buildCourse(admin, COURSES[1].id),
     ]);
