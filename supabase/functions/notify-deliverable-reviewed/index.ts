@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
   const courseSlug = course?.slug ?? null
 
   const [{ data: profile }, authRow] = await Promise.all([
-    admin.from('profiles').select('nickname, display_name').eq('id', deliverable.user_id).maybeSingle(),
+    admin.from('profiles').select('nickname, display_name').eq('user_id', deliverable.user_id).maybeSingle(),
     admin.auth.admin.getUserById(deliverable.user_id),
   ])
   const recipientEmail = authRow?.data?.user?.email ?? null

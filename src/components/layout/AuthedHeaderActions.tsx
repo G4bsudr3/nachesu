@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { Shield } from "lucide-react";
 import { UserMenu } from "@/components/layout/UserMenu";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useUserRole } from "@/hooks/useUserRole";
 
 /**
  * ações padrão do header em toda experiência logada:
- * painel admin (se aplicável) + UserMenu à direita.
+ * painel admin (se aplicável) + sino de notificações + UserMenu à direita.
+ * o sino fica oculto no mobile (sm-), onde a MobileNav já tem o item "avisos".
  */
 export const AuthedHeaderActions = ({ showAdmin = true }: { showAdmin?: boolean }) => {
   const { isAdmin } = useUserRole();
@@ -21,7 +23,11 @@ export const AuthedHeaderActions = ({ showAdmin = true }: { showAdmin?: boolean 
           <span className="hidden sm:inline">painel admin</span>
         </Link>
       )}
+      <div className="hidden sm:block">
+        <NotificationBell />
+      </div>
       <UserMenu />
     </div>
   );
 };
+
