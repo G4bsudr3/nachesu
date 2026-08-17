@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowLeft, LogOut, Lock, ArrowRight, Instagram, Linkedin, Moon, Eye } from "lucide-react";
+import { LogOut, Lock, ArrowRight, Moon, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { PasswordStrength } from "@/components/PasswordStrength";
-import { normalizeInstagram, normalizeLinkedin } from "@/lib/socialHandles";
 import { useReadingPreferences } from "@/hooks/useReadingPreferences";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
@@ -22,9 +21,6 @@ const AccountSettings = () => {
   const [submitting, setSubmitting] = useState(false);
   const [hasPassword, setHasPassword] = useState(false);
 
-  const [instagram, setInstagram] = useState("");
-  const [linkedin, setLinkedin] = useState("");
-  const [savingSocial, setSavingSocial] = useState(false);
 
   // janela silenciosa: nudges automáticos são adiados nesse intervalo
   const [quietStart, setQuietStart] = useState<number | null>(null);
@@ -36,15 +32,11 @@ const AccountSettings = () => {
     (supabase.rpc("get_my_profile").maybeSingle() as unknown as Promise<{
       data: {
         has_password: boolean | null;
-        instagram: string | null;
-        linkedin: string | null;
         quiet_hours_start: number | null;
         quiet_hours_end: number | null;
       } | null;
     }>).then(({ data }) => {
       setHasPassword(Boolean(data?.has_password));
-      setInstagram(data?.instagram ?? "");
-      setLinkedin(data?.linkedin ?? "");
       setQuietStart(
         typeof data?.quiet_hours_start === "number" ? data.quiet_hours_start : null,
       );
@@ -75,37 +67,6 @@ const AccountSettings = () => {
       toast.error(err instanceof Error ? err.message : "erro");
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  const handleSaveSocial = async () => {
-    if (!user) return;
-    const ig = normalizeInstagram(instagram);
-    const li = normalizeLinkedin(linkedin);
-
-    if (instagram.trim() && !ig) {
-      toast.error("instagram inválido. tenta só o handle, ex: frattz");
-      return;
-    }
-    if (linkedin.trim() && !li) {
-      toast.error("linkedin inválido. cola a url ou só o handle");
-      return;
-    }
-
-    setSavingSocial(true);
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ instagram: ig, linkedin: li })
-        .eq("user_id", user.id);
-      if (error) throw error;
-      setInstagram(ig ?? "");
-      setLinkedin(li ?? "");
-      toast.success("redes salvas");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "erro");
-    } finally {
-      setSavingSocial(false);
     }
   };
 
