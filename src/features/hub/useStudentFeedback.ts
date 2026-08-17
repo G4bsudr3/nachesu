@@ -40,29 +40,45 @@ export function useStudentFeedback(opts?: { moduleId?: string | null }) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // realtime: assina entregas do próprio usuário pra refletir feedback na hora
+  // realtime: assina entregas do próprio usuário pra refletir feedback na hora.
+  // o nome do canal é único por montagem: duas instâncias do hook na mesma tela
+  // (ex: card de feedback + badge da nav) não podem reusar o mesmo tópico, senão
+  // a segunda tenta registrar callback num canal já assinado e lança exceção.
   useEffect(() => {
     if (!user) return;
-    const channel = supabase
-      .channel(`student-feedback-${user.id}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "module_deliverables",
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["student-feedback"] });
-          queryClient.invalidateQueries({ queryKey: ["module-deliverable-status"] });
-        },
-      )
-      .subscribe();
+    let channel: RealtimeChannel | null = null;
+    try {
+      channel = supabase
+        .channel(`student-feedback-${user.id}-${Math.random().toString(36).slice(2)}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "module_deliverables",
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            queryClient.invalidateQueries({ queryKey: ["student-feedback"] });
+            queryClient.invalidateQueries({ queryKey: ["module-deliverable-status"] });
+          },
+        )
+        .subscribe();
+    } catch (e) {
+      // tempo real é conforto, nunca requisito de render
+      console.warn("[useStudentFeedback] tempo real indisponível", e);
+      channel = null;
+    }
     return () => {
-      void supabase.removeChannel(channel);
+      if (!channel) return;
+      try {
+        void supabase.removeChannel(channel);
+      } catch (e) {
+        console.warn("[useStudentFeedback] falha ao remover canal", e);
+      }
     };
   }, [user, queryClient]);
+
   const { moduleId = null } = opts ?? {};
   const [tick, setTick] = useState(0);
 
