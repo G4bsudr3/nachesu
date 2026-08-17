@@ -495,6 +495,39 @@ export type Database = {
         }
         Relationships: []
       }
+      client_error_log: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          route: string | null
+          scope: string | null
+          stack: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          route?: string | null
+          scope?: string | null
+          stack?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          route?: string | null
+          scope?: string | null
+          stack?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       course_invites: {
         Row: {
           claimed_at: string | null
