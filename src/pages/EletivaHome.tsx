@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
@@ -122,7 +122,15 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
                         ? "text-perestroika-preto/35"
                         : undefined;
                   return (
-                    <li key={m.id}>
+                    <li key={m.id} id={`modulo-${m.number}`} className="scroll-mt-28">
+                      {state === "current" && (
+                        <p
+                          className="mb-1 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-bege"
+                          style={{ backgroundColor: color }}
+                        >
+                          continue por aqui
+                        </p>
+                      )}
                       <button
                         type="button"
                         disabled={!clickable}
@@ -173,6 +181,20 @@ const EletivaHome = () => {
   useEffect(() => {
     if (slug) setSlug(slug);
   }, [slug, setSlug]);
+
+  // ao abrir o mapa, leva o estudante direto pro módulo onde ele parou
+  const scrolledTo = useRef<number | null>(null);
+  const currentNumber = snapshot?.currentModule?.number ?? null;
+  useEffect(() => {
+    if (currentNumber === null || scrolledTo.current === currentNumber) return;
+    const el = document.getElementById(`modulo-${currentNumber}`);
+    if (!el) return;
+    scrolledTo.current = currentNumber;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  }, [currentNumber]);
+
+
 
   if (!slug) return <Navigate to="/app" replace />;
 

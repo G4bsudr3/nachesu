@@ -51,6 +51,12 @@ const isAvailable = (m: { published: boolean; available_from: string | null }) =
   return new Date(m.available_from).getTime() <= Date.now();
 };
 
+/**
+ * eletivas em navegação livre: todos os módulos publicados abrem ao mesmo
+ * tempo e o aluno escolhe por onde continuar. a trilha marca o próximo dele.
+ */
+const FREE_NAV_COURSE_SLUGS = new Set(["ia-na-pratica"]);
+
 const ADMIN_BYPASS_EMAILS = new Set([
   "hey@frattz.com",
   "duduobregon@gmail.com",
@@ -81,6 +87,7 @@ export const useEletivaProgress = (courseId?: string | null) => {
         pillProgressRes,
         sequentialRes,
         overridesRes,
+        courseRes,
       ] = await Promise.all([
 
         trailsQuery,
@@ -107,6 +114,9 @@ export const useEletivaProgress = (courseId?: string | null) => {
               .select("scope, module_id, trail_id, course_id, visible")
               .eq("user_id", user.id)
           : Promise.resolve({ data: [] as any[] }),
+        courseId
+          ? supabase.from("courses").select("slug").eq("id", courseId).maybeSingle()
+          : Promise.resolve({ data: null as { slug: string } | null }),
       ]);
 
       const trailIds = (trails ?? []).map((t: any) => t.id);
@@ -175,8 +185,10 @@ export const useEletivaProgress = (courseId?: string | null) => {
       const emailBypass = ADMIN_BYPASS_EMAILS.has(
         (user?.email ?? "").trim().toLowerCase(),
       );
+      const freeNav = FREE_NAV_COURSE_SLUGS.has(courseRes.data?.slug ?? "");
       const sequentialUnlock =
         !emailBypass &&
+        !freeNav &&
         (sequentialRes.data?.value ?? "true").toLowerCase() !== "false";
 
       // calcula desbloqueios. ordenação por number garante "anterior".

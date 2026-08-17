@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Check } from "lucide-react";
 import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 import { SaveIndicator } from "./SaveIndicator";
@@ -32,6 +32,10 @@ interface Props {
   onComplete: () => void;
   isCompleted: boolean;
   isCompleting?: boolean;
+  /** bloco extra antes do botão de concluir (avaliação do módulo) */
+  beforeCta?: ReactNode;
+  /** itens extras que também precisam estar prontos pra concluir */
+  extraChecklistItems?: ChecklistItem[];
 }
 
 export function PillChecklistPacto({
@@ -45,6 +49,8 @@ export function PillChecklistPacto({
   onComplete,
   isCompleted,
   isCompleting,
+  beforeCta,
+  extraChecklistItems,
 }: Props) {
   const [value, setValue] = useState<ChecklistValue>(initial ?? { checked: [] });
 
@@ -178,7 +184,8 @@ export function PillChecklistPacto({
       </p>
 
       <EntregaChecklist
-        items={checklist}
+        beforeCta={beforeCta}
+        items={[...checklist, ...(extraChecklistItems ?? [])]}
         accent={accent}
         ctaLabel={ctaLabel}
         completedLabel="módulo concluído"

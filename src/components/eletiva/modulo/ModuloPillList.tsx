@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, ChevronDown, ChevronUp, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, RotateCcw, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useModuleResume } from "@/hooks/useModuleResume";
+import { ModuleRatingPrompt } from "./ModuleRatingPrompt";
 
 /** avisa o módulo qual bloco a pessoa abriu por último */
 const ResumeContext = createContext<((pillId: string, label: string) => void) | null>(null);
@@ -118,6 +119,11 @@ interface Props {
   onTogglePill: (pill: ModuloPill) => void;
   togglePending: boolean;
   onOpenTutor: (pill?: ModuloPill) => void;
+  /**
+   * quando presente, a última pílula (registro) pede a avaliação do módulo
+   * antes do botão de concluir. só a eletiva de ia na prática usa isso.
+   */
+  ratingModuleId?: string | null;
 }
 
 
@@ -265,7 +271,31 @@ export const ModuloPillList = ({
   onTogglePill,
   togglePending,
   onOpenTutor,
+  ratingModuleId,
 }: Props) => {
+  // avaliação de fim de módulo: guardada aqui pra virar item do checklist
+  // da pílula de registro sem depender de a rede ter respondido.
+  const [ratingAnswered, setRatingAnswered] = useState(false);
+  // a avaliação mora na última pílula de registro, mesmo quando existe um
+  // bônus opcional depois dela.
+  const lastRegistroId = pills
+    ? [...pills].reverse().find((p) => p.kind === "registro")?.id ?? null
+    : null;
+  const wantsRating = (pill: ModuloPill) =>
+    !!ratingModuleId && pill.id === lastRegistroId;
+
+  const ratingSlot = (pill: ModuloPill) =>
+    wantsRating(pill) ? (
+      <ModuleRatingPrompt
+        moduleId={ratingModuleId as string}
+        accent={trailColor}
+        onAnswered={(v) => setRatingAnswered(v !== null)}
+      />
+    ) : undefined;
+  const ratingChecklist = (pill: ModuloPill) =>
+    wantsRating(pill)
+      ? [{ id: "avaliacao", label: "dizer como foi o módulo", done: ratingAnswered }]
+      : undefined;
 
   // só carrega deliverable se existe pelo menos uma pílula que precisa
   const needsDeliverable = !!pills?.some(
@@ -496,6 +526,8 @@ export const ModuloPillList = ({
                 isCompleted={done}
                 isCompleting={togglePending}
                 onComplete={() => !done && onTogglePill(pill)}
+                beforeCta={ratingSlot(pill)}
+                extraChecklistItems={ratingChecklist(pill)}
               />
             </PillCardShell>
           );
@@ -532,6 +564,8 @@ export const ModuloPillList = ({
                 isCompleted={done}
                 isCompleting={togglePending}
                 onComplete={() => !done && onTogglePill(pill)}
+                beforeCta={ratingSlot(pill)}
+                extraChecklistItems={ratingChecklist(pill)}
               />
             </PillCardShell>
           );
