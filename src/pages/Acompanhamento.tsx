@@ -304,18 +304,29 @@ function DistribBar({ alunos }: { alunos: Aluno[] }) {
   );
 }
 
-function StatusPill({ status }: { status: Status }) {
+function StatusPill({ status, appNaoAbriu }: { status: Status; appNaoAbriu?: boolean }) {
   return (
-    <span
-      className={cn(
-        "inline-block rounded-full px-2.5 py-1 font-body text-[10px] uppercase tracking-wider whitespace-nowrap",
-        STATUS_STYLE[status],
+    <span className="inline-flex flex-wrap items-center gap-1 justify-end">
+      <span
+        className={cn(
+          "inline-block rounded-full px-2.5 py-1 font-body text-[10px] uppercase tracking-wider whitespace-nowrap",
+          STATUS_STYLE[status],
+        )}
+      >
+        {STATUS_LABEL[status]}
+      </span>
+      {appNaoAbriu && (
+        <span
+          title="entrou pelo link mas o app nunca abriu no aparelho dela"
+          className="inline-block rounded-full border border-perestroika-preto/25 px-2 py-1 font-body text-[10px] lowercase tracking-wide text-perestroika-preto/65 whitespace-nowrap"
+        >
+          app não abriu
+        </span>
       )}
-    >
-      {STATUS_LABEL[status]}
     </span>
   );
 }
+
 
 function Progresso({ feitos, total, pct }: { feitos: number; total: number; pct: number }) {
   const w = total > 0 ? Math.min(100, (feitos / total) * 100) : 0;
