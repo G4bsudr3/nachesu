@@ -75,6 +75,7 @@ const Acompanhamento = lazy(() => import("./pages/Acompanhamento.tsx"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
 const AdminEletivaModulos = lazy(() => import("./pages/AdminEletivaModulos.tsx"));
 const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
+const AdminAvaliacaoModulos = lazy(() => import("./pages/AdminAvaliacaoModulos.tsx"));
 const AdminEntregas = lazy(() => import("./pages/AdminEntregas.tsx"));
 const AdminRespostas = lazy(() => import("./pages/AdminRespostas.tsx"));
 const AdminPulso = lazy(() => import("./pages/AdminPulso.tsx"));
@@ -297,6 +298,7 @@ const App = () => (
 
                 <Route path="/admin/eletiva/:slug/modulos" element={<AdminEletivaModulos />} />
                 <Route path="/admin/eletiva/:slug/modulo/:number" element={<AdminModuloDetalhe />} />
+                <Route path="/admin/eletiva/:slug/avaliacoes" element={<AdminAvaliacaoModulos />} />
                 <Route path="/admin/:tab" element={<AdminFbi />} />
               </Route>
 

@@ -12,6 +12,7 @@ import type { DeliverableInbox } from "@/features/admin/usePendingDeliverables";
 import { computeCompleteness } from "@/features/admin/deliverableRendering/completeness";
 import type { PillForResolve, PillKind } from "@/features/admin/deliverableRendering/types";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
+import { AberturaVideoManager } from "@/features/admin/AberturaVideoManager";
 import type { Database } from "@/integrations/supabase/types";
 
 type DeliverableRow = Database["public"]["Tables"]["module_deliverables"]["Row"];
@@ -237,10 +238,31 @@ const AdminModuloDetalhe = () => {
           <TabsTrigger value="conteudo" className="uppercase tracking-wide text-xs">
             conteúdo
           </TabsTrigger>
+          <TabsTrigger value="abertura" className="uppercase tracking-wide text-xs">
+            abertura
+          </TabsTrigger>
           <TabsTrigger value="turma" className="uppercase tracking-wide text-xs">
             turma ({enrolled.length})
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="abertura">
+          <AberturaVideoManager
+            courseId={course.data.id}
+            slug={slug!}
+            moduleId={module.id}
+            moduleNumber={module.number}
+            accent={color}
+          />
+          <div className="pt-4">
+            <Link
+              to={`/admin/eletiva/${slug}/avaliacoes`}
+              className="text-[11px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto underline"
+            >
+              ver avaliações dos módulos ↗
+            </Link>
+          </div>
+        </TabsContent>
 
         <TabsContent value="conteudo" className="space-y-4">
           {missingSchema.length > 0 && (

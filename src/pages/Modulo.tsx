@@ -655,6 +655,8 @@ const Modulo = () => {
           trailColor={trailColor}
           hasTrail={!!trail}
           moduleId={moduleRow.id}
+          ratingModuleId={courseSlug === "ia-na-pratica" ? moduleRow.id : null}
+
           onTogglePill={(p) => togglePillMutation.mutate(p)}
           togglePending={togglePillMutation.isPending}
           onOpenTutor={(pill) => {

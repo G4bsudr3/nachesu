@@ -12,6 +12,7 @@ type Schema = {
   video_placeholder?: boolean;
   video_url?: string;
   video_poster?: string;
+  provider?: string | null;
   transcript?: string;
   transcript_collapsible?: boolean;
   completion?: { type?: string; label?: string };
@@ -27,10 +28,13 @@ interface Props {
   isCompleting?: boolean;
 }
 
+/** arquivo de vídeo tocado direto no <video>. o resto vira iframe (loom, youtube, vimeo). */
+const isDirectFile = (url: string) => /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(url);
+
 /**
- * pílula 01 — abertura: a missão.
- * placeholder de vídeo (clique não faz nada — vídeo do dudu ainda não rodou)
- * + accordion fechado com transcrição completa pra quem prefere ler.
+ * pílula de abertura: vídeo do educador + transcrição recolhida embaixo.
+ * quando não tem vídeo, a pílula fica despublicada no banco e o estudante
+ * nem chega aqui. o placeholder abaixo só aparece na pré-visualização do admin.
  */
 export function PillAbertura({
   title,
@@ -42,8 +46,9 @@ export function PillAbertura({
   isCompleting,
 }: Props) {
   const [tried, setTried] = useState(false);
-  const transcript = schema.transcript ?? "";
-  const ctaLabel = schema.completion?.label ?? "começar a missão";
+  const transcript = (schema.transcript ?? "").trim();
+  const url = (schema.video_url ?? "").trim();
+  const ctaLabel = schema.completion?.label ?? "começar o módulo";
 
   return (
     <div className="space-y-6">
@@ -58,31 +63,41 @@ export function PillAbertura({
         )}
       </header>
 
-      {/* vídeo: player real se houver url, senão placeholder */}
-      {schema.video_url ? (
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-perestroika-preto/95">
-          <video
-            controls
-            playsInline
-            preload="metadata"
-            poster={schema.video_poster}
-            className="absolute inset-0 h-full w-full"
-            src={schema.video_url}
-          >
-            seu navegador não suporta vídeo embedado.
-          </video>
+      {/* vídeo: arquivo direto, embed, ou placeholder (só admin vê) */}
+      {url ? (
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/95">
+          {isDirectFile(url) ? (
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              poster={schema.video_poster}
+              className="absolute inset-0 h-full w-full"
+              src={url}
+            >
+              seu navegador não suporta vídeo embedado.
+            </video>
+          ) : (
+            <iframe
+              src={url}
+              title={title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full"
+            />
+          )}
         </div>
       ) : (
         <div
           className="relative aspect-video w-full overflow-hidden rounded-2xl bg-perestroika-preto/95"
           role="img"
-          aria-label="vídeo de abertura — em breve"
+          aria-label="vídeo de abertura ainda não enviado"
         >
           <button
             type="button"
             onClick={() => setTried(true)}
             className="absolute inset-0 flex items-center justify-center group"
-            aria-label="reproduzir vídeo (em breve)"
+            aria-label="vídeo ainda não enviado"
           >
             <span
               className="flex h-20 w-20 items-center justify-center rounded-full transition-transform group-hover:scale-110 active:scale-95"
@@ -92,14 +107,14 @@ export function PillAbertura({
             </span>
           </button>
           <p className="absolute bottom-3 right-4 font-body text-[11px] uppercase tracking-wider text-perestroika-bege/70">
-            vídeo em breve
+            sem vídeo enviado
           </p>
           {tried && (
             <p
               className="absolute bottom-3 left-4 font-body text-[11px] uppercase tracking-wider text-perestroika-bege/85"
               role="status"
             >
-              ainda não rolou. abre a transcrição embaixo.
+              o vídeo entra por aqui quando for enviado no admin.
             </p>
           )}
         </div>
@@ -112,7 +127,7 @@ export function PillAbertura({
             <AccordionTrigger className="hover:no-underline font-body text-sm uppercase tracking-wider [&>svg]:hidden">
               <span className="inline-flex items-center gap-2">
                 <ChevronDown className="h-4 w-4 transition-transform" aria-hidden="true" />
-                ler em vez de assistir
+                ler a transcrição
               </span>
             </AccordionTrigger>
             <AccordionContent>

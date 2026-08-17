@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState , type ReactNode } from "react";
 import { BookmarkCheck } from "lucide-react";
 import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 
@@ -49,6 +49,10 @@ interface Props {
   onComplete: () => void;
   isCompleted: boolean;
   isCompleting?: boolean;
+  /** bloco extra antes do botão de concluir (avaliação do módulo) */
+  beforeCta?: ReactNode;
+  /** itens extras que também precisam estar prontos pra concluir */
+  extraChecklistItems?: ChecklistItem[];
 }
 
 const emptyEvidence: EvidenceValue = { evidence_kind: "none" };
@@ -70,7 +74,10 @@ export function PillGuiaDePrompts({
   onComplete,
   isCompleted,
   isCompleting,
+  beforeCta,
+  extraChecklistItems,
 }: Props) {
+
   const [value, setValue] = useState<GuiaPromptsValue>(() => {
     // hidrata templates não preenchidos com o texto base
     const baseModelos: Record<string, string> = {};
@@ -275,7 +282,8 @@ export function PillGuiaDePrompts({
       )}
 
       <EntregaChecklist
-        items={checklist}
+        beforeCta={beforeCta}
+        items={[...checklist, ...(extraChecklistItems ?? [])]}
         accent={accent}
         ctaLabel={ctaLabel}
         completedLabel="módulo concluído"

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AlertCircle, ArrowRight, Check, Circle } from "lucide-react";
 
 export type ChecklistItem = { id: string; label: string; done: boolean };
@@ -13,6 +13,8 @@ interface Props {
   onComplete: () => void;
   /** texto do topo da lista. default: "checklist da entrega" */
   heading?: string;
+  /** bloco extra renderizado logo antes do checklist e do botão de concluir */
+  beforeCta?: ReactNode;
 }
 
 /**
@@ -29,7 +31,9 @@ export function EntregaChecklist({
   isCompleting,
   onComplete,
   heading = "checklist da entrega",
+  beforeCta,
 }: Props) {
+
   const [attempted, setAttempted] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -53,6 +57,8 @@ export function EntregaChecklist({
 
   return (
     <div className="space-y-3 pt-2">
+      {beforeCta}
+
       {!isCompleted && items.length > 0 && (
         <div
           ref={listRef}
