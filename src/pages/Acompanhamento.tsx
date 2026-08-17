@@ -24,6 +24,7 @@ type Aluno = {
   entregas_enviadas: number;
   ultimo_acesso: string | null;
   ativo_7d: boolean;
+  app_nao_abriu?: boolean;
   status: Status;
 };
 
