@@ -277,6 +277,9 @@ async function buildCourse(admin: Client, courseId: string) {
         entregas_enviadas: a?.entregas ?? 0,
         ultimo_acesso: ultimo,
         ativo_7d: ativo7d,
+        // entrou pelo link de acesso mas o app nunca chegou a abrir
+        // (nenhum registro de acesso e nenhuma atividade)
+        app_nao_abriu: entrou && !ultimo,
         status,
       };
     })

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   children: ReactNode;
@@ -37,7 +38,30 @@ export class RootErrorBoundary extends Component<Props, State> {
       error,
       info.componentStack,
     );
+    void this.report(error, info);
   }
+
+  /**
+   * grava o erro no banco pra que a coordenação enxergue quando a tela quebra
+   * pro estudante. best-effort: qualquer falha aqui é engolida, o boundary
+   * nunca pode quebrar por causa do log.
+   */
+  private async report(error: Error, info: ErrorInfo) {
+    try {
+      const { data } = await supabase.auth.getUser();
+      await supabase.from("client_error_log").insert({
+        user_id: data.user?.id ?? null,
+        scope: this.props.scope ?? "root",
+        route: `${window.location.pathname}${window.location.search}`,
+        message: String(error?.message ?? error).slice(0, 500),
+        stack: `${error?.stack ?? ""}\n---\n${info.componentStack ?? ""}`.slice(0, 4000),
+        user_agent: navigator.userAgent.slice(0, 400),
+      });
+    } catch (e) {
+      logger.warn("[errorboundary] não consegui registrar o erro", e);
+    }
+  }
+
 
   reset = () => {
     this.setState({ error: null });

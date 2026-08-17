@@ -27,12 +27,17 @@ export function useAccessPing(userId: string | undefined) {
     void supabase
       .rpc("touch_access" as never, { _device_kind: deviceKind } as never)
       .then(({ error }) => {
-        if (error) return;
+        if (error) {
+          // sem localStorage: na próxima navegação tenta de novo
+          console.warn("[access-ping] não consegui registrar o acesso", error.message);
+          return;
+        }
         try {
           localStorage.setItem(key, "1");
         } catch {
           /* noop */
         }
       });
+
   }, [userId]);
 }
