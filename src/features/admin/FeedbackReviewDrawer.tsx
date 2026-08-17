@@ -346,14 +346,19 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
       .eq("id", deliverable.id);
     if (error) throw error;
 
-    // e-mail de aviso: falha aqui não invalida a revisão (a notificação in-app já foi criada por trigger)
+    // e-mail de aviso: falha aqui não invalida a revisão (a notificação in-app já foi criada por trigger),
+    // mas precisa ficar visível pro educador saber que o estudante não recebeu e-mail
     try {
       const { error: mailError } = await supabase.functions.invoke("notify-deliverable-reviewed", {
         body: { deliverable_id: deliverable.id },
       });
-      if (mailError) console.warn("e-mail de feedback não saiu", mailError);
+      if (mailError) {
+        console.warn("e-mail de feedback não saiu", mailError);
+        toast.warning("revisão salva, mas o e-mail não saiu. o aviso in-app foi criado.");
+      }
     } catch (e) {
       console.warn("e-mail de feedback falhou", e);
+      toast.warning("revisão salva, mas o e-mail não saiu. o aviso in-app foi criado.");
     }
   };
 
