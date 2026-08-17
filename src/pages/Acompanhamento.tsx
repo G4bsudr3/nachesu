@@ -704,7 +704,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
                       {a.turma || "sem turma"}
                     </p>
                   </div>
-                  <StatusPill status={a.status} />
+                  <StatusPill status={a.status} appNaoAbriu={a.app_nao_abriu} />
                 </div>
                 <div className="mt-3">
                   <Progresso
@@ -759,7 +759,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
                       {a.turma || "sem turma"}
                     </td>
                     <td className="py-3 pr-3">
-                      <StatusPill status={a.status} />
+                      <StatusPill status={a.status} appNaoAbriu={a.app_nao_abriu} />
                     </td>
                     <td className="py-3 pr-3">
                       <Progresso
