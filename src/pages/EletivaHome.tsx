@@ -178,6 +178,21 @@ const EletivaHome = () => {
   const { data: enrollments, isLoading: enrollmentsLoading } = useMyEnrollments();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress(course?.id ?? null);
 
+  // card de materiais só existe se houver material publicado pra essa eletiva
+  const { data: materialsCount } = useQuery({
+    queryKey: ["hub-materials-count", course?.id],
+    enabled: !!course?.id,
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("hub_materials")
+        .select("id", { count: "exact", head: true })
+        .eq("published", true)
+        .eq("course_id", course!.id);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
+
   useEffect(() => {
     if (slug) setSlug(slug);
   }, [slug, setSlug]);
