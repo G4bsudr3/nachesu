@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
 import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 
@@ -53,6 +54,9 @@ interface Props {
   onComplete: () => void;
   isCompleted: boolean;
   isCompleting?: boolean;
+  /** abre o TutorChat com essa pílula como contexto. só existe quando há trilha. */
+  onOpenTutor?: () => void;
+  hasTrail?: boolean;
 }
 
 const emptyEvidence: EvidenceValue = { evidence_kind: "none" };
@@ -73,6 +77,8 @@ export function PillPBLCorfTriplo({
   onComplete,
   isCompleted,
   isCompleting,
+  onOpenTutor,
+  hasTrail,
 }: Props) {
   const [value, setValue] = useState<PblCorfValue>(initial ?? {});
 
@@ -284,6 +290,20 @@ export function PillPBLCorfTriplo({
             ))}
           </ol>
         </section>
+      )}
+
+      {/* porta pro tutor: só aparece quando existe trilha pra dar contexto */}
+      {hasTrail && onOpenTutor && (
+        <div>
+          <button
+            type="button"
+            onClick={onOpenTutor}
+            className="inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2 font-body text-sm lowercase text-perestroika-preto/80 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+          >
+            <MessageCircle className="h-4 w-4" aria-hidden />
+            tô travado, me ajuda
+          </button>
+        </div>
       )}
 
       {/* blocos de entrega obrigatórios */}
