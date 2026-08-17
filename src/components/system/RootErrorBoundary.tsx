@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   children: ReactNode;
