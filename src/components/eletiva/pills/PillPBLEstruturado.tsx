@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, MessageCircle } from "lucide-react";
 import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
 import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 import { SaveIndicator } from "./SaveIndicator";

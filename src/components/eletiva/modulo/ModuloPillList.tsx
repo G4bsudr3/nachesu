@@ -508,6 +508,8 @@ export const ModuloPillList = ({
                 isCompleted={done}
                 isCompleting={togglePending}
                 onComplete={() => !done && onTogglePill(pill)}
+                hasTrail={hasTrail}
+                onOpenTutor={() => onOpenTutor(pill)}
               />
             </PillCardShell>
           );
@@ -546,6 +548,8 @@ export const ModuloPillList = ({
                 isCompleted={done}
                 isCompleting={togglePending}
                 onComplete={() => !done && onTogglePill(pill)}
+                hasTrail={hasTrail}
+                onOpenTutor={() => onOpenTutor(pill)}
               />
             </PillCardShell>
           );
