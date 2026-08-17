@@ -1,51 +1,44 @@
-# alunos clicam no link e voltam pro login
+# o módulo quebra: diagnóstico confirmado
 
-## o que eu confirmei no banco (hoje, 17/08)
+reproduzi o erro no navegador, logado, em `/app/eletiva/ia-na-pratica/modulo/2`. a tela cai no mesmo "o joão tá pensando" que a julia viu, e o erro real é:
 
-- bernardo pediu 2 links e criou **2 sessões** de autenticação (12:02:13 e 12:03:44). depois disso ainda disparou um **link de recuperação de senha** (12:04:01).
-- os outros 4 estudantes do mesmo horário (julia 12:07, luiz 12:12, joão 12:15, eduardo 12:17) criaram sessão **e** geraram registro em `user_access_log` 1 a 2 segundos depois.
-- bernardo não tem **nenhum** registro em `user_access_log` hoje.
+```text
+[errorboundary:modulo] Error: cannot add `postgres_changes` callbacks for
+realtime:student-feedback-<user_id> after `subscribe()`
+```
 
-isso é decisivo: o registro de acesso é disparado pelo próprio app assim que a sessão hidrata no navegador. sessão criada no servidor + zero registro no app = **o token foi consumido, mas o app nunca abriu logado no navegador dele**.
+## a) causa raiz, arquivo e linha
 
-não é diferença entre eletivas: bernardo (economia circular) falhou e julia (ia) passou, no mesmo minuto, com o mesmo navegador (chrome windows). nenhum código de login trata as duas eletivas de forma diferente.
+`src/features/hub/useStudentFeedback.ts:47` abre um canal de tempo real com **nome fixo por usuário** (`student-feedback-${user.id}`) e registra o listener depois. o cliente reaproveita o canal já existente quando o nome se repete, então o **segundo componente da mesma página que usa esse hook** tenta registrar o listener num canal já assinado, e isso **lança exceção**, derrubando a página inteira no error boundary.
 
-## por que isso acontece (causa ainda não confirmada, é o primeiro passo do plano)
+na página do módulo o hook passou a ser usado duas vezes:
 
-o email leva o estudante direto pro endereço de verificação da autenticação. esse endereço é de **uso único** e devolve a sessão num fragmento de URL. dois jeitos conhecidos de quebrar:
+- `src/pages/Modulo.tsx:565` → `ModuloFeedbackCard` (já existia, monta sempre)
+- `src/pages/Modulo.tsx:729` → `MobileNav` → `FeedbackBadge` (**adicionado hoje**) → `src/components/dashboard/FeedbackBadge.tsx:8`
 
-1. algo abre o link antes do estudante (varredura de segurança do email institucional ou proxy da escola): a sessão nasce, o token queima, e quando ele clica o link já morreu.
-2. o destino não está na lista de endereços liberados da autenticação, ou o fragmento se perde no caminho: o navegador chega no app sem sessão.
+ou seja: foi exatamente a `MobileNav` que entrou hoje no render principal do módulo. antes disso o hook só montava uma vez por página e nunca colidia.
 
-nos dois casos ele cai de volta na tela de login. e hoje **sem nenhuma mensagem**: o erro volta no endereço de `/app`, e a proteção de rota manda pra `/auth` descartando o erro. o estudante vê só o login em branco, acha que "não carregou", pede outro link, e o pedido novo invalida o anterior.
+## b) as outras suspeitas, uma a uma (todas descartadas)
 
-## o que vou fazer
+- **âncora com hash de erro**: `document.getElementById("error=access_denied&...")` não lança, só devolve `null`. o retry para em 40 tentativas. e o hash nem sobrevive: a navegação client-side pro módulo troca a URL sem fragmento. não é o culpado.
+- **ModuleRatingPrompt / module_ratings**: a leitura usa `.maybeSingle()` (`useModuleRating.ts:39`), tabela vazia devolve `null` sem erro.
+- **botão "tô travado"**: o import de `MessageCircle` em `PillPBLCorfTriplo.tsx:2` está lá, único, e o ramo `pbl_corf_triplo` de `ModuloPillList.tsx:537` recebe `hasTrail` e `onOpenTutor` corretamente. o ramo do corf triplo foi, sim, um dos dois editados.
+- **pílula de abertura vazia no módulo 2**: está `published=false`, não chega ao estudante, e `PillAbertura` já trata vídeo ausente. a lista nunca fica vazia (o módulo 2 tem 5 pílulas publicadas).
+- **login**: secundário mesmo. a julia entrou com sessão válida; o hash de erro do link não tem relação com a quebra.
 
-### 1. confirmar a causa antes de mexer no fluxo
-ligar o registro de eventos da autenticação por alguns dias e comparar, por estudante, o horário do clique com o horário do registro de acesso. isso separa "queimaram meu link antes" de "cheguei no app sem sessão".
+## c) alcance (é grave)
 
-### 2. link de acesso passa a apontar pro nosso domínio
-o email deixa de apontar pro endereço de verificação cru e passa a apontar pra uma página nossa (`/entrar`), que faz a troca do código pela sessão de forma controlada, com tela de "entrando..." e mensagem clara se falhar. isso tira o token de uso único de dentro do email e imuniza contra varredura que abre link.
+a quebra atinge **todos os módulos desbloqueados das duas eletivas**, para qualquer estudante logado, em qualquer largura de tela (a `MobileNav` monta no React independentemente de estar escondida por CSS no desktop). só não quebra a tela de módulo **bloqueado**, que não renderiza o card de feedback. isso explica os relatos de hoje: quem tentou abrir um módulo depois do deploy travou.
 
-### 3. o erro nunca mais some
-- preservar o erro ao redirecionar de `/app` pra `/auth`, pra sempre aparecer a mensagem certa (o texto já existe e é bom).
-- na tela de login, quando o erro for de link queimado, já deixar o email preenchido e o botão de novo link em destaque.
+## d) log de erro de cliente
 
-### 4. um link por vez, dito na cara
-avisar no envio que o link novo cancela o anterior e segurar o botão por alguns segundos, pra ninguém pedir três links e clicar no primeiro.
+não existe. o `RootErrorBoundary` não grava nada, nem em tabela nem em serviço externo: o erro só aparece no console do navegador do estudante. por isso ninguém viu nada no admin.
 
-### 5. saída de emergência
-oferecer, na mesma tela, a opção de entrar com senha para quem já tem, em vez de só magic link.
+## a correção que eu faria (não aplicada)
 
-## detalhes técnicos
+1. **conserto imediato, 1 linha de risco**: em `useStudentFeedback.ts`, dar nome único por instância ao canal (ex: sufixo aleatório por montagem) ou registrar o listener sempre num canal novo. isso remove a colisão em qualquer combinação de componentes, hoje e no futuro.
+2. **rede de proteção**: fazer a assinatura de tempo real dentro de `try/catch`, para que falha de tempo real nunca derrube a tela. tempo real é conforto, não pode ser requisito.
+3. **verificação**: abrir no navegador módulo 1, 2 e 11 de ia-na-pratica e módulo 2 de economia-circular, logado, e confirmar zero erro no console.
+4. **depois disso, opcional**: passar a gravar erro de cliente numa tabela leve, pra próxima quebra aparecer no admin em vez de virar relato de whatsapp.
 
-- `send-access-link`: parar de mandar `properties.action_link` no email; mandar `${APP_BASE}/entrar?...` carregando o hashed token, e trocar por sessão via `verifyOtp` na página.
-- nova rota pública `/entrar` (`AuthCallback.tsx`): troca token por sessão, trata erro com `resolveAuthError`, redireciona pro `next`.
-- `ProtectedRoute.tsx`: `Navigate` preservando `location.search` e `location.hash` ao mandar pra `/auth`.
-- conferir a lista de redirect URLs liberadas da autenticação (`https://sebrae.frattz.com/**`).
-- `useAccessPing` fica como está: ele é hoje o melhor sinal de "chegou logado de verdade".
-
-## fora do escopo
-
-- mexer em qualquer conteúdo de módulo ou nas duas eletivas.
-- trocar provedor de email.
+nada de conteúdo de módulo, nada de banco, nada de fluxo de login nessa correção.
