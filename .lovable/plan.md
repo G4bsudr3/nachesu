@@ -1,44 +1,34 @@
-# o módulo quebra: diagnóstico confirmado
+# medição do acesso e o que corrigir depois dela
 
-reproduzi o erro no navegador, logado, em `/app/eletiva/ia-na-pratica/modulo/2`. a tela cai no mesmo "o joão tá pensando" que a julia viu, e o erro real é:
+## o que a medição mostrou
 
-```text
-[errorboundary:modulo] Error: cannot add `postgres_changes` callbacks for
-realtime:student-feedback-<user_id> after `subscribe()`
-```
+Rodei as consultas antes de escrever este plano. Resultado:
 
-## a) causa raiz, arquivo e linha
+- **a correção do tempo real já está em produção.** O bundle publicado hoje é `index-B_iHhVyB.js` e contém o nome de canal com sufixo aleatório (`student-feedback-${id}-${random}`). O travamento da página do módulo está resolvido no ar.
+- **quase todo mundo que entra, entra de verdade.** Nos últimos 14 dias, de todos os logins registrados, só **2 pessoas** entraram e o app nunca chegou a registrar acesso: `bernardo11536@edu.sebrae.com.br` e `andre11529@edu.sebrae.com.br`. Hoje, dos 6 logins, 5 renderizaram normal (inclusive a Julia, com 2 acessos hoje).
+- **Bernardo:** conta ativa desde 29/05, matriculado em economia circular, login de hoje às 09:03 de Brasília, e **zero** dia de acesso, zero pílula, zero módulo, zero entrega. O login funciona; o app nunca abriu pra ele.
+- **o registro de acesso só existe desde 03/08**, então o número grande de "logou e nunca renderizou" no acumulado é ruído histórico, não falha. Filtrando por logins de 03/08 pra cá: 42 pessoas logaram, 2 sem render.
+- **10 pessoas matriculadas nunca logaram nenhuma vez.**
 
-`src/features/hub/useStudentFeedback.ts:47` abre um canal de tempo real com **nome fixo por usuário** (`student-feedback-${user.id}`) e registra o listener depois. o cliente reaproveita o canal já existente quando o nome se repete, então o **segundo componente da mesma página que usa esse hook** tenta registrar o listener num canal já assinado, e isso **lança exceção**, derrubando a página inteira no error boundary.
+Conclusão: não é falha em massa. É um buraco de observabilidade (a gente só descobriu o Bernardo porque você perguntou) mais dois casos individuais.
 
-na página do módulo o hook passou a ser usado duas vezes:
+## o que corrigir
 
-- `src/pages/Modulo.tsx:565` → `ModuloFeedbackCard` (já existia, monta sempre)
-- `src/pages/Modulo.tsx:729` → `MobileNav` → `FeedbackBadge` (**adicionado hoje**) → `src/components/dashboard/FeedbackBadge.tsx:8`
+### 1. registrar erro de cliente no banco
+Hoje, quando a tela quebra pro estudante, o erro morre no console dele e ninguém fica sabendo. Criar tabela `client_error_log` (usuário, rota, mensagem, stack curto, user agent, data) e gravar a partir do `RootErrorBoundary`. RLS: estudante só insere a própria linha, admin lê tudo. Sem PII além do que já temos.
 
-ou seja: foi exatamente a `MobileNav` que entrou hoje no render principal do módulo. antes disso o hook só montava uma vez por página e nunca colidia.
+### 2. registrar o acesso mais cedo
+O ping de acesso hoje depende de a tela `/app` renderizar. Se a tela quebra antes, some o rastro. Subir o ping pro ponto em que a sessão é confirmada no `AuthContext`, antes de qualquer tela pesada, pra que "entrou" e "conseguiu usar" virem dois sinais separados.
 
-## b) as outras suspeitas, uma a uma (todas descartadas)
+### 3. tornar o buraco visível no admin
+No painel de acompanhamento, marcar quem tem login recente e nenhum acesso registrado, com um rótulo próprio ("entrou mas o app não abriu"). Hoje essa pessoa aparece igual a quem simplesmente não entrou.
 
-- **âncora com hash de erro**: `document.getElementById("error=access_denied&...")` não lança, só devolve `null`. o retry para em 40 tentativas. e o hash nem sobrevive: a navegação client-side pro módulo troca a URL sem fragmento. não é o culpado.
-- **ModuleRatingPrompt / module_ratings**: a leitura usa `.maybeSingle()` (`useModuleRating.ts:39`), tabela vazia devolve `null` sem erro.
-- **botão "tô travado"**: o import de `MessageCircle` em `PillPBLCorfTriplo.tsx:2` está lá, único, e o ramo `pbl_corf_triplo` de `ModuloPillList.tsx:537` recebe `hasTrail` e `onOpenTutor` corretamente. o ramo do corf triplo foi, sim, um dos dois editados.
-- **pílula de abertura vazia no módulo 2**: está `published=false`, não chega ao estudante, e `PillAbertura` já trata vídeo ausente. a lista nunca fica vazia (o módulo 2 tem 5 pílulas publicadas).
-- **login**: secundário mesmo. a julia entrou com sessão válida; o hash de erro do link não tem relação com a quebra.
+### 4. os dois casos abertos
+Bernardo e André: reenviar link de acesso e confirmar pelo registro se o app abre. Com o item 1 no ar, se quebrar de novo a gente vê o erro exato em vez de adivinhar.
 
-## c) alcance (é grave)
+## detalhe técnico
 
-a quebra atinge **todos os módulos desbloqueados das duas eletivas**, para qualquer estudante logado, em qualquer largura de tela (a `MobileNav` monta no React independentemente de estar escondida por CSS no desktop). só não quebra a tela de módulo **bloqueado**, que não renderiza o card de feedback. isso explica os relatos de hoje: quem tentou abrir um módulo depois do deploy travou.
-
-## d) log de erro de cliente
-
-não existe. o `RootErrorBoundary` não grava nada, nem em tabela nem em serviço externo: o erro só aparece no console do navegador do estudante. por isso ninguém viu nada no admin.
-
-## a correção que eu faria (não aplicada)
-
-1. **conserto imediato, 1 linha de risco**: em `useStudentFeedback.ts`, dar nome único por instância ao canal (ex: sufixo aleatório por montagem) ou registrar o listener sempre num canal novo. isso remove a colisão em qualquer combinação de componentes, hoje e no futuro.
-2. **rede de proteção**: fazer a assinatura de tempo real dentro de `try/catch`, para que falha de tempo real nunca derrube a tela. tempo real é conforto, não pode ser requisito.
-3. **verificação**: abrir no navegador módulo 1, 2 e 11 de ia-na-pratica e módulo 2 de economia-circular, logado, e confirmar zero erro no console.
-4. **depois disso, opcional**: passar a gravar erro de cliente numa tabela leve, pra próxima quebra aparecer no admin em vez de virar relato de whatsapp.
-
-nada de conteúdo de módulo, nada de banco, nada de fluxo de login nessa correção.
+- nova tabela `public.client_error_log` com GRANT pra `authenticated` (insert) e `service_role`, RLS com insert `auth.uid() = user_id` e select via `has_role(auth.uid(),'admin')`
+- `src/components/system/RootErrorBoundary.tsx`: gravação best-effort em try/catch, nunca pode quebrar o boundary
+- `src/hooks/useAccessPing.ts` continua igual; muda só o ponto de chamada, pra `AuthContext` logo após a sessão hidratar
+- `src/pages/Acompanhamento.tsx` e `supabase/functions/painel-escola/index.ts`: novo estado derivado comparando último login com último acesso registrado
