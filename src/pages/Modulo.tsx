@@ -726,6 +726,7 @@ const Modulo = () => {
       )}
 
       <EletivaFooter />
+      <MobileNav />
 
       {!isCompleted && pills && pills.length > 0 && (
         <FloatingSumario

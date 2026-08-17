@@ -156,68 +156,6 @@ const AccountSettings = () => {
           {user?.email}
         </p>
 
-        <section className="rounded-3xl border border-perestroika-preto/15 p-6 mb-6">
-          <div className="flex items-center gap-2 mb-1">
-            <Instagram className="h-4 w-4" aria-hidden />
-            <h2 className="font-display uppercase text-2xl leading-none">
-              suas redes
-            </h2>
-          </div>
-          <p className="font-body text-sm text-perestroika-preto/70 mb-5">
-            se preencher, aparece em <Link to="/app/hub/turma" className="font-medium underline decoration-perestroika-preto/40 decoration-1 underline-offset-4 hover:decoration-perestroika-preto transition-colors">redes da turma</Link> e fica fácil o seu pessoal te achar.
-          </p>
-          <div className="space-y-3">
-            <div>
-              <label htmlFor="acc-instagram" className="mb-1 block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
-                instagram
-              </label>
-              <div className="flex h-12 items-center rounded-2xl border border-perestroika-preto/20 bg-transparent focus-within:border-perestroika-preto">
-                <span className="pl-4 font-body text-sm text-perestroika-preto/40" aria-hidden>@</span>
-                <input
-                  id="acc-instagram"
-                  type="text"
-                  placeholder="seu_handle"
-                  value={instagram.replace(/^@+/, "")}
-                  onChange={(e) => setInstagram(e.target.value)}
-                  disabled={savingSocial}
-                  className="flex-1 bg-transparent px-2 font-body text-base focus:outline-none"
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="acc-linkedin" className="mb-1 block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
-                linkedin
-              </label>
-              <div className="flex h-12 items-center rounded-2xl border border-perestroika-preto/20 bg-transparent focus-within:border-perestroika-preto">
-                <Linkedin className="ml-4 h-4 w-4 text-perestroika-preto/40" aria-hidden />
-                <input
-                  id="acc-linkedin"
-                  type="text"
-                  placeholder="url ou handle"
-                  value={linkedin}
-                  onChange={(e) => setLinkedin(e.target.value)}
-                  disabled={savingSocial}
-                  className="flex-1 bg-transparent px-3 font-body text-base focus:outline-none"
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={handleSaveSocial}
-              disabled={savingSocial}
-              className="w-full h-12 rounded-2xl bg-perestroika-preto text-perestroika-bege font-body font-medium uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-50 hover:scale-[1.01] transition-transform"
-            >
-              {savingSocial ? "salvando..." : (
-                <>
-                  salvar redes
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
-            </button>
-          </div>
-        </section>
 
         {/* leitura acessível */}
         <section className="rounded-3xl border border-perestroika-preto/15 p-6 mb-6">
