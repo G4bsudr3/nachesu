@@ -430,7 +430,7 @@ const EletivaHome = () => {
         )}
 
         {/* atalhos */}
-        <section className="grid gap-4 sm:grid-cols-2">
+        <section className={`grid gap-4 ${(materialsCount ?? 0) > 0 ? "sm:grid-cols-2" : ""}`}>
           <Link
             to={tutorTo}
             className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
@@ -451,6 +451,7 @@ const EletivaHome = () => {
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
           </Link>
 
+          {(materialsCount ?? 0) > 0 && (
           <Link
             to="/app/hub/materiais"
             className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
@@ -466,6 +467,7 @@ const EletivaHome = () => {
             </div>
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
           </Link>
+          )}
         </section>
       </main>
 
