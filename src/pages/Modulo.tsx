@@ -187,6 +187,31 @@ const Modulo = () => {
       });
   }, [user, moduleRow, isStarted, queryClient]);
 
+  // âncora vinda de notificação/e-mail (ex: #feedback-do-educador).
+  // o card só monta depois das queries, então tenta de novo por alguns frames.
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (!hash || pillsLoading) return;
+    let cancelled = false;
+    let tries = 0;
+    const tick = () => {
+      if (cancelled) return;
+      const el = document.getElementById(hash);
+      if (el) {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+        return;
+      }
+      if (tries++ < 40) window.setTimeout(tick, 100);
+    };
+    tick();
+    return () => {
+      cancelled = true;
+    };
+  }, [pillsLoading, moduleRow?.id]);
+
+
+
   const submitDeliverableIfExists = async () => {
     if (!user || !moduleRow) return;
     // se existe deliverable em rascunho/enviado, marca submitted_at
@@ -701,6 +726,7 @@ const Modulo = () => {
       )}
 
       <EletivaFooter />
+      <MobileNav />
 
       {!isCompleted && pills && pills.length > 0 && (
         <FloatingSumario

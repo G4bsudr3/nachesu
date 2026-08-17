@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowLeft, LogOut, Lock, ArrowRight, Instagram, Linkedin, Moon, Eye } from "lucide-react";
+import { LogOut, Lock, ArrowRight, Moon, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { PasswordStrength } from "@/components/PasswordStrength";
-import { normalizeInstagram, normalizeLinkedin } from "@/lib/socialHandles";
 import { useReadingPreferences } from "@/hooks/useReadingPreferences";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
@@ -22,9 +21,6 @@ const AccountSettings = () => {
   const [submitting, setSubmitting] = useState(false);
   const [hasPassword, setHasPassword] = useState(false);
 
-  const [instagram, setInstagram] = useState("");
-  const [linkedin, setLinkedin] = useState("");
-  const [savingSocial, setSavingSocial] = useState(false);
 
   // janela silenciosa: nudges automáticos são adiados nesse intervalo
   const [quietStart, setQuietStart] = useState<number | null>(null);
@@ -36,15 +32,11 @@ const AccountSettings = () => {
     (supabase.rpc("get_my_profile").maybeSingle() as unknown as Promise<{
       data: {
         has_password: boolean | null;
-        instagram: string | null;
-        linkedin: string | null;
         quiet_hours_start: number | null;
         quiet_hours_end: number | null;
       } | null;
     }>).then(({ data }) => {
       setHasPassword(Boolean(data?.has_password));
-      setInstagram(data?.instagram ?? "");
-      setLinkedin(data?.linkedin ?? "");
       setQuietStart(
         typeof data?.quiet_hours_start === "number" ? data.quiet_hours_start : null,
       );
@@ -75,37 +67,6 @@ const AccountSettings = () => {
       toast.error(err instanceof Error ? err.message : "erro");
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  const handleSaveSocial = async () => {
-    if (!user) return;
-    const ig = normalizeInstagram(instagram);
-    const li = normalizeLinkedin(linkedin);
-
-    if (instagram.trim() && !ig) {
-      toast.error("instagram inválido. tenta só o handle, ex: frattz");
-      return;
-    }
-    if (linkedin.trim() && !li) {
-      toast.error("linkedin inválido. cola a url ou só o handle");
-      return;
-    }
-
-    setSavingSocial(true);
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ instagram: ig, linkedin: li })
-        .eq("user_id", user.id);
-      if (error) throw error;
-      setInstagram(ig ?? "");
-      setLinkedin(li ?? "");
-      toast.success("redes salvas");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "erro");
-    } finally {
-      setSavingSocial(false);
     }
   };
 
@@ -156,68 +117,6 @@ const AccountSettings = () => {
           {user?.email}
         </p>
 
-        <section className="rounded-3xl border border-perestroika-preto/15 p-6 mb-6">
-          <div className="flex items-center gap-2 mb-1">
-            <Instagram className="h-4 w-4" aria-hidden />
-            <h2 className="font-display uppercase text-2xl leading-none">
-              suas redes
-            </h2>
-          </div>
-          <p className="font-body text-sm text-perestroika-preto/70 mb-5">
-            se preencher, aparece em <Link to="/app/hub/turma" className="font-medium underline decoration-perestroika-preto/40 decoration-1 underline-offset-4 hover:decoration-perestroika-preto transition-colors">redes da turma</Link> e fica fácil o seu pessoal te achar.
-          </p>
-          <div className="space-y-3">
-            <div>
-              <label htmlFor="acc-instagram" className="mb-1 block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
-                instagram
-              </label>
-              <div className="flex h-12 items-center rounded-2xl border border-perestroika-preto/20 bg-transparent focus-within:border-perestroika-preto">
-                <span className="pl-4 font-body text-sm text-perestroika-preto/40" aria-hidden>@</span>
-                <input
-                  id="acc-instagram"
-                  type="text"
-                  placeholder="seu_handle"
-                  value={instagram.replace(/^@+/, "")}
-                  onChange={(e) => setInstagram(e.target.value)}
-                  disabled={savingSocial}
-                  className="flex-1 bg-transparent px-2 font-body text-base focus:outline-none"
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="acc-linkedin" className="mb-1 block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
-                linkedin
-              </label>
-              <div className="flex h-12 items-center rounded-2xl border border-perestroika-preto/20 bg-transparent focus-within:border-perestroika-preto">
-                <Linkedin className="ml-4 h-4 w-4 text-perestroika-preto/40" aria-hidden />
-                <input
-                  id="acc-linkedin"
-                  type="text"
-                  placeholder="url ou handle"
-                  value={linkedin}
-                  onChange={(e) => setLinkedin(e.target.value)}
-                  disabled={savingSocial}
-                  className="flex-1 bg-transparent px-3 font-body text-base focus:outline-none"
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={handleSaveSocial}
-              disabled={savingSocial}
-              className="w-full h-12 rounded-2xl bg-perestroika-preto text-perestroika-bege font-body font-medium uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-50 hover:scale-[1.01] transition-transform"
-            >
-              {savingSocial ? "salvando..." : (
-                <>
-                  salvar redes
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
-            </button>
-          </div>
-        </section>
 
         {/* leitura acessível */}
         <section className="rounded-3xl border border-perestroika-preto/15 p-6 mb-6">

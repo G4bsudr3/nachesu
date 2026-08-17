@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress, type EletivaSnapshot } from "@/hooks/useEletivaProgress";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
@@ -177,6 +179,21 @@ const EletivaHome = () => {
   const { data: course, isLoading: courseLoading } = useCourseBySlug(slug);
   const { data: enrollments, isLoading: enrollmentsLoading } = useMyEnrollments();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress(course?.id ?? null);
+
+  // card de materiais só existe se houver material publicado pra essa eletiva
+  const { data: materialsCount } = useQuery({
+    queryKey: ["hub-materials-count", course?.id],
+    enabled: !!course?.id,
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("hub_materials")
+        .select("id", { count: "exact", head: true })
+        .eq("published", true)
+        .eq("course_id", course!.id);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
 
   useEffect(() => {
     if (slug) setSlug(slug);
@@ -413,7 +430,7 @@ const EletivaHome = () => {
         )}
 
         {/* atalhos */}
-        <section className="grid gap-4 sm:grid-cols-2">
+        <section className={`grid gap-4 ${(materialsCount ?? 0) > 0 ? "sm:grid-cols-2" : ""}`}>
           <Link
             to={tutorTo}
             className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
@@ -434,6 +451,7 @@ const EletivaHome = () => {
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
           </Link>
 
+          {(materialsCount ?? 0) > 0 && (
           <Link
             to="/app/hub/materiais"
             className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
@@ -449,6 +467,7 @@ const EletivaHome = () => {
             </div>
             <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
           </Link>
+          )}
         </section>
       </main>
 
