@@ -71,14 +71,16 @@ export function ModuloCelebration({
       >
         {nextHint ?? "obrigado por entregar com presença. próximo módulo libera em breve."}
       </motion.p>
-      {moduleId && isRatingCheckpoint(moduleNumber) && (
-        <ModuloRatingCard
-          moduleId={moduleId}
-          moduleNumber={moduleNumber}
-          trailColor={trailColor}
-          courseSlug={courseSlug}
-        />
-      )}
+      {moduleId &&
+        isRatingCheckpoint(moduleNumber) &&
+        courseSlug !== "ia-na-pratica" && (
+          <ModuloRatingCard
+            moduleId={moduleId}
+            moduleNumber={moduleNumber}
+            trailColor={trailColor}
+            courseSlug={courseSlug}
+          />
+        )}
       {courseSlug && (
         <Link
           to={`/app/eletiva/${courseSlug}`}
