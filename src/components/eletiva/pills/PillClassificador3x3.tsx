@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
 
 type Category = "linear" | "circular" | "regenerativo";
 
@@ -147,9 +148,7 @@ export function PillClassificador3x3({
       </header>
 
       {schema.intro_md && (
-        <p className="font-body text-sm sm:text-base text-perestroika-preto/80 whitespace-pre-wrap leading-relaxed">
-          {schema.intro_md}
-        </p>
+        <PillMarkdown accent={accent} className="text-perestroika-preto/80">{schema.intro_md}</PillMarkdown>
       )}
 
       {schema.destaque_md && (

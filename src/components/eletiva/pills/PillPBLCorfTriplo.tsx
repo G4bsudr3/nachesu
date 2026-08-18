@@ -6,6 +6,7 @@ import { EntregaChecklist, type ChecklistItem } from "./EntregaChecklist";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
 
 type PromptItem = {
   id: string;
@@ -222,9 +223,7 @@ export function PillPBLCorfTriplo({
       </header>
 
       {schema.contexto_md && (
-        <p className="font-body text-sm sm:text-base text-perestroika-preto/80 whitespace-pre-wrap leading-relaxed">
-          {schema.contexto_md}
-        </p>
+        <PillMarkdown accent={accent} className="text-perestroika-preto/80">{schema.contexto_md}</PillMarkdown>
       )}
 
       {/* prompts obrigatórios em destaque */}
@@ -352,9 +351,7 @@ export function PillPBLCorfTriplo({
           <p className="font-body text-[11px] uppercase tracking-wider mb-2" style={{ color: accent }}>
             dica
           </p>
-          <p className="font-body text-sm text-perestroika-preto/85 whitespace-pre-wrap leading-relaxed">
-            {schema.dica_md}
-          </p>
+          <PillMarkdown accent={accent} className="text-sm text-perestroika-preto/85">{schema.dica_md}</PillMarkdown>
         </div>
       )}
 
