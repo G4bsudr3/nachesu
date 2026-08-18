@@ -296,6 +296,7 @@ const App = () => (
                 <Route path="/admin/pulso" element={<AdminPulso />} />
                 <Route path="/admin/correcoes" element={<Navigate to="/admin/entregas" replace />} />
                 <Route path="/admin/respostas" element={<AdminRespostas />} />
+                <Route path="/admin/videos" element={<AdminVideos />} />
 
                 <Route path="/admin/eletiva/:slug/modulos" element={<AdminEletivaModulos />} />
                 <Route path="/admin/eletiva/:slug/modulo/:number" element={<AdminModuloDetalhe />} />
