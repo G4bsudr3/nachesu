@@ -149,6 +149,14 @@ const AdminModuloDetalhe = () => {
 
   const missingSchema = pills.filter((p) => !p.interaction_schema);
 
+  // aula (pílula editorial) que ficou sem vídeo: slot vazio esperando o link certo
+  const missingVideo = pills.filter((p) => {
+    const schema = (p.interaction_schema ?? {}) as Record<string, unknown>;
+    if (schema.type !== "pilula_editorial") return false;
+    const video = schema.video as { url?: string } | undefined;
+    return !video?.url && !p.video_url;
+  });
+
   const wrapDeliverable = (d: DeliverableRow, prof: ProfileRow | null): DeliverableInbox => ({
     ...d,
     module: {
