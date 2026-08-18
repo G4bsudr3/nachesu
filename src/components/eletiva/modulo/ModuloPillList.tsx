@@ -76,6 +76,7 @@ import {
   type MiniDossieValue,
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
+import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
 
 
 export type ModuloPill = {
@@ -1215,9 +1216,9 @@ export const ModuloPillList = ({
             </h3>
 
             {pill.body_md && (
-              <p className="font-body text-sm sm:text-base text-perestroika-preto/75 whitespace-pre-wrap">
+              <PillMarkdown accent={trailColor} className="text-perestroika-preto/75">
                 {pill.body_md}
-              </p>
+              </PillMarkdown>
             )}
 
             {pill.video_url && (
