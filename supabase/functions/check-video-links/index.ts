@@ -144,7 +144,14 @@ Deno.serve(async (req) => {
             const x = normalize(a);
             const y = normalize(b);
             if (!x || !y) return true;
-            return x === y || x.includes(y) || y.includes(x);
+            if (x === y || x.includes(y) || y.includes(x)) return true;
+            // último critério: maioria das palavras em comum (emoji, sufixo de canal, corte)
+            const xs = new Set(x.split(" ").filter((w) => w.length > 2));
+            const ys = new Set(y.split(" ").filter((w) => w.length > 2));
+            if (!xs.size || !ys.size) return false;
+            let hits = 0;
+            xs.forEach((w) => ys.has(w) && hits++);
+            return hits / Math.min(xs.size, ys.size) >= 0.7;
           };
           const titleMismatch = Boolean(item.db_title) && !sameText(item.db_title!, r.title);
           const channelMismatch =
