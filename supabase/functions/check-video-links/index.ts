@@ -138,10 +138,17 @@ Deno.serve(async (req) => {
               real_channel: null,
             };
           }
-          const titleMismatch =
-            Boolean(item.db_title) && normalize(item.db_title!) !== normalize(r.title);
+          // divergência de verdade é conteúdo diferente, não formatação. se um texto
+          // contém o outro (título encurtado, emoji, sufixo), é o mesmo vídeo.
+          const sameText = (a: string, b: string) => {
+            const x = normalize(a);
+            const y = normalize(b);
+            if (!x || !y) return true;
+            return x === y || x.includes(y) || y.includes(x);
+          };
+          const titleMismatch = Boolean(item.db_title) && !sameText(item.db_title!, r.title);
           const channelMismatch =
-            Boolean(item.db_channel) && normalize(item.db_channel!) !== normalize(r.channel);
+            Boolean(item.db_channel) && !sameText(item.db_channel!, r.channel);
           const missingFicha = !item.db_title || !item.db_channel;
           return {
             ...item,
