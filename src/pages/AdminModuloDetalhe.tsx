@@ -272,6 +272,23 @@ const AdminModuloDetalhe = () => {
             </div>
           )}
 
+          {missingVideo.length > 0 && (
+            <div className="rounded-lg bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 text-sm space-y-1">
+              <p className="flex items-center gap-2 font-semibold">
+                <FileWarning className="w-4 h-4" />
+                falta vídeo em {missingVideo.length} aula(s) deste módulo
+              </p>
+              <p>{missingVideo.map((p) => p.title).join(" · ")}</p>
+              <Link
+                to="/admin/videos"
+                className="underline underline-offset-4 text-[11px] uppercase tracking-wide"
+              >
+                ver a conferência de vídeos ↗
+              </Link>
+            </div>
+          )}
+
+
           {/* reaproveita o dispatcher do estudante: mesmo visual, mesmos componentes
               (PillEditorial, PillPBLEstruturado, PillChecklistPacto, etc.).
               tudo desbloqueado pra admin, sem gate sequencial. */}
