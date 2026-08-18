@@ -6,6 +6,7 @@ import { EvidenceUploader, type EvidenceValue } from "./EvidenceUploader";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
 
 type Template = {
   id: string;
@@ -148,9 +149,7 @@ export function PillGuiaDePrompts({
       </header>
 
       {schema.contexto_md && (
-        <p className="font-body text-sm sm:text-base text-perestroika-preto/80 whitespace-pre-wrap leading-relaxed">
-          {schema.contexto_md}
-        </p>
+        <PillMarkdown accent={accent} className="text-perestroika-preto/80">{schema.contexto_md}</PillMarkdown>
       )}
 
       {/* 3 templates editáveis */}

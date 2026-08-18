@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
+import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
 
 type Ator = { nome: string; descricao: string };
 
@@ -170,9 +171,7 @@ export function PillMapaAtores({
       </header>
 
       {schema.intro_md && (
-        <p className="font-body text-sm sm:text-base text-perestroika-preto/80 whitespace-pre-wrap leading-relaxed">
-          {schema.intro_md}
-        </p>
+        <PillMarkdown accent={accent} className="text-perestroika-preto/80">{schema.intro_md}</PillMarkdown>
       )}
 
       {/* âncora: problema escolhido */}
