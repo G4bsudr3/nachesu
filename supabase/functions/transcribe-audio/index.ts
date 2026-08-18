@@ -7,11 +7,6 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SYSTEM_PROMPT = `você é um transcritor de áudio em português brasileiro pra estudantes de ensino médio.
-transcreva exatamente o que a pessoa falou, preservando pontuação natural (vírgula, ponto, interrogação).
-não comente, não traduza, não corrija, não adicione introdução ou despedida.
-retorne só o texto transcrito em minúsculas, sem aspas, sem markdown.
-se o áudio estiver inaudível ou vazio, retorne string vazia.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
