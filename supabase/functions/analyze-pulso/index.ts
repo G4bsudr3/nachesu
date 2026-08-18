@@ -231,7 +231,14 @@ Deno.serve(async (req) => {
         model: MODEL,
         period_start: periodStart,
         period_end: periodEnd,
-        raw_metrics: { total: flat.length, media, por_modulo: porModulo },
+        raw_metrics: {
+          total: flat.length,
+          ritmo: ritmoResumo,
+          satisfacao: satResumo,
+          ritmo_por_modulo: porModuloRitmo,
+          satisfacao_por_modulo: porModuloSat,
+        },
+
       })
       .select("id, summary_md, generated_at, model, period_start, period_end")
       .single();
