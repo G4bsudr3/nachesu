@@ -116,8 +116,7 @@ serve(async (req) => {
     }
 
     const result = await response.json();
-    const transcript: string =
-      result?.choices?.[0]?.message?.content?.toString().trim() ?? "";
+    const transcript: string = (result?.text ?? "").toString().trim();
 
     return new Response(
       JSON.stringify({ transcript }),
