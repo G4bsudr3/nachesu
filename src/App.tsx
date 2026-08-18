@@ -111,6 +111,19 @@ const DashboardDraftPersistence = () => {
   return null;
 };
 
+/**
+ * toda troca de rota começa no topo. quando o link traz âncora (#feedback-do-educador,
+ * por exemplo), não mexe: quem cuida do scroll é o efeito de âncora da própria página.
+ */
+const ScrollToTop = () => {
+  const { pathname, hash } = useLocation();
+  useLayoutEffect(() => {
+    if (hash) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  }, [pathname, hash]);
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -118,8 +131,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ScrollToTop />
           <SeoRouter />
           <DashboardDraftPersistence />
+
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
