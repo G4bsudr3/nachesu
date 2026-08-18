@@ -7,11 +7,6 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SYSTEM_PROMPT = `você é um transcritor de áudio em português brasileiro pra estudantes de ensino médio.
-transcreva exatamente o que a pessoa falou, preservando pontuação natural (vírgula, ponto, interrogação).
-não comente, não traduza, não corrija, não adicione introdução ou despedida.
-retorne só o texto transcrito em minúsculas, sem aspas, sem markdown.
-se o áudio estiver inaudível ou vazio, retorne string vazia.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -66,48 +61,31 @@ serve(async (req) => {
       );
     }
 
-    const arrayBuffer = await audioFile.arrayBuffer();
-    const uint8 = new Uint8Array(arrayBuffer);
-    // chunked base64 pra não estourar stack em áudios grandes
-    let binary = "";
-    const chunkSize = 0x8000;
-    for (let i = 0; i < uint8.length; i += chunkSize) {
-      binary += String.fromCharCode(...uint8.subarray(i, i + chunkSize));
-    }
-    const base64Audio = btoa(binary);
+    // endpoint dedicado de transcrição (multipart). nome do arquivo tem que
+    // bater com o container real (webm no chrome/firefox, mp4 no safari).
+    const mimeType = (audioFile.type || "audio/webm").split(";")[0];
+    const ext =
+      ({
+        "audio/webm": "webm",
+        "audio/ogg": "ogg",
+        "audio/mp4": "mp4",
+        "audio/m4a": "m4a",
+        "audio/x-m4a": "m4a",
+        "audio/mpeg": "mp3",
+        "audio/mp3": "mp3",
+        "audio/wav": "wav",
+        "audio/x-wav": "wav",
+        "audio/flac": "flac",
+      } as Record<string, string>)[mimeType] ?? "webm";
 
-    const mimeType = audioFile.type || "audio/webm";
-    const format = mimeType.includes("wav")
-      ? "wav"
-      : mimeType.includes("mp3")
-        ? "mp3"
-        : "wav"; // gemini aceita "wav" como rótulo genérico
+    const upstream = new FormData();
+    upstream.append("model", "openai/gpt-4o-mini-transcribe");
+    upstream.append("file", audioFile, `recording.${ext}`);
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          {
-            role: "user",
-            content: [
-              {
-                type: "input_audio",
-                input_audio: { data: base64Audio, format },
-              },
-              {
-                type: "text",
-                text: "transcreva esse áudio em pt-br. retorne só o texto.",
-              },
-            ],
-          },
-        ],
-      }),
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}` },
+      body: upstream,
     });
 
     if (!response.ok) {
@@ -124,7 +102,7 @@ serve(async (req) => {
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
-      const errorText = await response.text();
+      const errorText = await response.text().catch(() => "");
       console.error("ai gateway error", status, errorText);
       return new Response(
         JSON.stringify({ error: "erro ao transcrever áudio." }),
@@ -133,8 +111,7 @@ serve(async (req) => {
     }
 
     const result = await response.json();
-    const transcript: string =
-      result?.choices?.[0]?.message?.content?.toString().trim() ?? "";
+    const transcript: string = (result?.text ?? "").toString().trim();
 
     return new Response(
       JSON.stringify({ transcript }),
