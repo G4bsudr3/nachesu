@@ -412,46 +412,19 @@ function CollapsibleSection({
 }
 
 /**
- * renderiza markdown bem simples: parágrafos, **negrito**, listas com `- `.
- * suficiente pro conteúdo curado das pílulas editoriais. não usamos
- * remark/marked aqui pra evitar dependência nova só pra isso.
+ * markdown editorial completo (link, itálico, subtítulo, lista, citação).
+ * linha inteira em **negrito** vira subtítulo, que é como o conteúdo curado
+ * já escreve os títulos internos dos blocos.
  */
-function RichText({ md }: { md: string }) {
-  const blocks = md.split(/\n\n+/).map((b) => b.trim()).filter(Boolean);
-  return (
-    <div className="space-y-4 font-body text-sm sm:text-base text-perestroika-preto/85 leading-relaxed">
-      {blocks.map((block, i) => {
-        if (block.startsWith("- ")) {
-          const items = block.split("\n").map((l) => l.replace(/^-\s+/, ""));
-          return (
-            <ul key={i} className="list-disc pl-5 space-y-1.5">
-              {items.map((it, j) => (
-                <li key={j}>{renderInline(it)}</li>
-              ))}
-            </ul>
-          );
-        }
-        return (
-          <p key={i} className="whitespace-pre-wrap">
-            {renderInline(block)}
-          </p>
-        );
-      })}
-    </div>
-  );
-}
+function RichText({ md, accent }: { md: string; accent?: string }) {
+  const normalized = md
+    .split("\n")
+    .map((line) => {
+      const t = line.trim();
+      const only = /^\*\*(.+)\*\*[:.]?$/.exec(t);
+      return only ? `### ${only[1]}` : line;
+    })
+    .join("\n");
 
-function renderInline(text: string) {
-  // **bold**
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return (
-        <strong key={i} className="font-semibold text-perestroika-preto">
-          {part.slice(2, -2)}
-        </strong>
-      );
-    }
-    return <span key={i}>{part}</span>;
-  });
+  return <PillMarkdown accent={accent}>{normalized}</PillMarkdown>;
 }
