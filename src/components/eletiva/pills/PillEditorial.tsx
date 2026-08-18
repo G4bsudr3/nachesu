@@ -29,7 +29,10 @@ type Schema = {
     url: string;
     instruction: string;
     duration_min?: number;
+    /** vídeo que complementa mas não é o coração da pílula: vira bônus opcional */
+    optional?: boolean;
   };
+
   aprofundamento?: {
     md?: string;
     destaque?: string;
@@ -188,7 +191,11 @@ export function PillEditorial({
         <CollapsibleSection
           pillId={pillId}
           sectionKey="video"
-          label={`momento 02 · vídeo · ${schema.video.duration_min ?? 5} min`}
+          label={
+            schema.video.optional
+              ? `bônus opcional · vídeo · ${schema.video.duration_min ?? 5} min · fora do tempo`
+              : `momento 02 · vídeo · ${schema.video.duration_min ?? 5} min`
+          }
           open={openSections.video}
           onToggle={() => toggleSection("video")}
           reveal={reveal}
@@ -200,6 +207,12 @@ export function PillEditorial({
             <p className="font-body text-xs text-perestroika-preto/55">
               canal: {schema.video.channel}
             </p>
+            {schema.video.optional && (
+              <p className="font-body text-xs text-perestroika-preto/55 mt-2">
+                esse vídeo é referência extra. dá pra seguir a pílula sem ver, e o tempo dele não
+                entra nos 50 min do módulo.
+              </p>
+            )}
           </div>
           <PillVideoPlayer url={schema.video.url} trailColor={accent} />
           {schema.video.instruction && (
@@ -209,6 +222,7 @@ export function PillEditorial({
           )}
         </CollapsibleSection>
       )}
+
 
       {/* momento 3 — texto de aprofundamento */}
       {schema.aprofundamento?.md && (
