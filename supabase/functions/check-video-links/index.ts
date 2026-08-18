@@ -86,27 +86,35 @@ Deno.serve(async (req) => {
 
     const pills = (data ?? []) as unknown as PillRow[];
 
-    const items = pills.map((p) => {
-      const schema = (p.interaction_schema ?? {}) as Record<string, any>;
-      const video = schema.video as Record<string, any> | undefined;
-      const embedUrl = typeof schema.embed_url === "string" ? schema.embed_url : null;
-      const link: string | null = video?.url ?? embedUrl ?? p.video_url ?? null;
-      const course = p.modules?.trails?.courses;
-      return {
-        pill_id: p.id,
-        course_slug: course?.slug ?? "?",
-        course_title: course?.title ?? "?",
-        module_number: p.modules?.number ?? 0,
-        module_title: p.modules?.title ?? "",
-        order_index: p.order_index,
-        pill_title: p.title,
-        published: p.published,
-        is_bonus: Boolean(embedUrl) || video?.optional === true,
-        link,
-        db_title: (video?.title as string | undefined) ?? null,
-        db_channel: (video?.channel as string | undefined) ?? null,
-      };
-    });
+    // só entra na conferência quem é aula (pílula) ou já tem algum vídeo cadastrado.
+    // exercício, registro e reflexão não têm vídeo por natureza e ficam de fora.
+    const LESSON_KINDS = new Set(["pilula_a", "pilula_b", "pilula_c"]);
+
+    const items = pills
+      .map((p) => {
+        const schema = (p.interaction_schema ?? {}) as Record<string, any>;
+        const video = schema.video as Record<string, any> | undefined;
+        const embedUrl = typeof schema.embed_url === "string" ? schema.embed_url : null;
+        const link: string | null = video?.url ?? embedUrl ?? p.video_url ?? null;
+        const course = p.modules?.trails?.courses;
+        const expectsVideo = LESSON_KINDS.has(p.kind) || Boolean(video) || Boolean(link);
+        if (!expectsVideo) return null;
+        return {
+          pill_id: p.id,
+          course_slug: course?.slug ?? "?",
+          course_title: course?.title ?? "?",
+          module_number: p.modules?.number ?? 0,
+          module_title: p.modules?.title ?? "",
+          order_index: p.order_index,
+          pill_title: p.title,
+          published: p.published,
+          is_bonus: Boolean(embedUrl) || video?.optional === true,
+          link,
+          db_title: (video?.title as string | undefined) ?? null,
+          db_channel: (video?.channel as string | undefined) ?? null,
+        };
+      })
+      .filter((i): i is NonNullable<typeof i> => i !== null);
 
     // só faz rede pros links de youtube
     const results = await Promise.all(
