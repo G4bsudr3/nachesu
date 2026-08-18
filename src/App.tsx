@@ -78,6 +78,7 @@ const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
 const AdminAvaliacaoModulos = lazy(() => import("./pages/AdminAvaliacaoModulos.tsx"));
 const AdminEntregas = lazy(() => import("./pages/AdminEntregas.tsx"));
 const AdminRespostas = lazy(() => import("./pages/AdminRespostas.tsx"));
+const AdminVideos = lazy(() => import("./pages/AdminVideos.tsx"));
 const AdminPulso = lazy(() => import("./pages/AdminPulso.tsx"));
 
 const queryClient = new QueryClient({
@@ -295,6 +296,7 @@ const App = () => (
                 <Route path="/admin/pulso" element={<AdminPulso />} />
                 <Route path="/admin/correcoes" element={<Navigate to="/admin/entregas" replace />} />
                 <Route path="/admin/respostas" element={<AdminRespostas />} />
+                <Route path="/admin/videos" element={<AdminVideos />} />
 
                 <Route path="/admin/eletiva/:slug/modulos" element={<AdminEletivaModulos />} />
                 <Route path="/admin/eletiva/:slug/modulo/:number" element={<AdminModuloDetalhe />} />

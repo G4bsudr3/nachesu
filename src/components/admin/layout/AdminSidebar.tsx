@@ -56,6 +56,7 @@ const SECTIONS: Section[] = [
       { to: "/admin/review", label: "revisão de conteúdo", icon: ClipboardCheck },
       { to: "/admin/trilha", label: "trilha", icon: Compass },
       { to: "/admin/materiais", label: "materiais", icon: Package },
+      { to: "/admin/videos", label: "vídeos · conferência", icon: Eye },
     ],
   },
   {

@@ -149,6 +149,14 @@ const AdminModuloDetalhe = () => {
 
   const missingSchema = pills.filter((p) => !p.interaction_schema);
 
+  // aula (pílula editorial) que ficou sem vídeo: slot vazio esperando o link certo
+  const missingVideo = pills.filter((p) => {
+    const schema = (p.interaction_schema ?? {}) as Record<string, unknown>;
+    if (schema.type !== "pilula_editorial") return false;
+    const video = schema.video as { url?: string } | undefined;
+    return !video?.url && !p.video_url;
+  });
+
   const wrapDeliverable = (d: DeliverableRow, prof: ProfileRow | null): DeliverableInbox => ({
     ...d,
     module: {
@@ -271,6 +279,23 @@ const AdminModuloDetalhe = () => {
               {missingSchema.length} pílula(s) sem interaction_schema. o estudante vê só o body_md nelas.
             </div>
           )}
+
+          {missingVideo.length > 0 && (
+            <div className="rounded-lg bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 text-sm space-y-1">
+              <p className="flex items-center gap-2 font-semibold">
+                <FileWarning className="w-4 h-4" />
+                falta vídeo em {missingVideo.length} aula(s) deste módulo
+              </p>
+              <p>{missingVideo.map((p) => p.title).join(" · ")}</p>
+              <Link
+                to="/admin/videos"
+                className="underline underline-offset-4 text-[11px] uppercase tracking-wide"
+              >
+                ver a conferência de vídeos ↗
+              </Link>
+            </div>
+          )}
+
 
           {/* reaproveita o dispatcher do estudante: mesmo visual, mesmos componentes
               (PillEditorial, PillPBLEstruturado, PillChecklistPacto, etc.).
