@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check, ChevronDown, ChevronUp, Sparkle } from "lucide-react";
+import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
 import { PillVideoPlayer } from "@/components/eletiva/modulo/PillVideoPlayer";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { SaveIndicator } from "./SaveIndicator";
@@ -168,7 +169,7 @@ export function PillEditorial({
               )}
             </div>
           )}
-          <RichText md={schema.gancho.md} />
+          <RichText md={schema.gancho.md} accent={accent} />
         </CollapsibleSection>
       )}
 
@@ -234,7 +235,7 @@ export function PillEditorial({
           onToggle={() => toggleSection("aprofundamento")}
           reveal={reveal}
         >
-          <RichText md={schema.aprofundamento.md} />
+          <RichText md={schema.aprofundamento.md} accent={accent} />
           {schema.aprofundamento.destaque && (
             <div
               className="mt-6 rounded-2xl border-2 p-5 sm:p-6"
