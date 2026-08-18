@@ -29,7 +29,10 @@ type Schema = {
     url: string;
     instruction: string;
     duration_min?: number;
+    /** vídeo que complementa mas não é o coração da pílula: vira bônus opcional */
+    optional?: boolean;
   };
+
   aprofundamento?: {
     md?: string;
     destaque?: string;
