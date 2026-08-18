@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
     let query = admin
       .from("module_ratings")
       .select(
-        "rating, comment, created_at, modules!inner(number, title, trails!inner(title, courses!inner(title)))",
+        "rating, comment, created_at, modules!inner(number, title, trails!inner(title, courses!inner(title, slug)))",
       )
       .order("created_at", { ascending: false })
       .limit(1000);
@@ -79,47 +79,102 @@ Deno.serve(async (req) => {
       return json({ error: "nenhuma avaliação no período selecionado" }, 400);
     }
 
-    const flat = ratings.map((r) => ({
-      nota: r.rating,
-      comentario: (r.comment ?? "").trim(),
-      eletiva: r.modules?.trails?.courses?.title ?? "",
-      trilha: r.modules?.trails?.title ?? "",
-      modulo: r.modules?.number ?? 0,
-      modulo_titulo: r.modules?.title ?? "",
-    }));
+    // duas perguntas diferentes convivem na mesma tabela. jamais somar as duas.
+    const RITMO_COURSES = new Set(["ia-na-pratica"]);
+    const RITMO_LABELS: Record<number, string> = {
+      1: "tranquilo demais",
+      2: "no ponto",
+      3: "pesado demais",
+    };
 
-    const media = Number(
-      (flat.reduce((a, b) => a + b.nota, 0) / flat.length).toFixed(2),
-    );
-    const dist = [1, 2, 3, 4, 5].map((n) => ({
-      nota: n,
-      qtd: flat.filter((f) => f.nota === n).length,
-    }));
+    const flat = ratings.map((r) => {
+      const slug = r.modules?.trails?.courses?.slug ?? "";
+      const escala = RITMO_COURSES.has(slug) ? "ritmo_1a3" : "satisfacao_1a5";
+      return {
+        escala,
+        valor: r.rating,
+        resposta:
+          escala === "ritmo_1a3"
+            ? (RITMO_LABELS[r.rating] ?? String(r.rating))
+            : `${r.rating} de 5 estrelas`,
+        comentario: (r.comment ?? "").trim(),
+        eletiva: r.modules?.trails?.courses?.title ?? "",
+        trilha: r.modules?.trails?.title ?? "",
+        modulo: r.modules?.number ?? 0,
+        modulo_titulo: r.modules?.title ?? "",
+      };
+    });
 
-    const porModulo = Object.values(
-      flat.reduce((acc: Record<string, { chave: string; notas: number[] }>, f) => {
-        const chave = `${f.eletiva} · módulo ${f.modulo} ${f.modulo_titulo}`;
-        acc[chave] = acc[chave] ?? { chave, notas: [] };
-        acc[chave].notas.push(f.nota);
-        return acc;
-      }, {}),
-    ).map((m) => ({
+    const ritmo = flat.filter((f) => f.escala === "ritmo_1a3");
+    const sat = flat.filter((f) => f.escala === "satisfacao_1a5");
+
+    const ritmoResumo = ritmo.length
+      ? {
+          total: ritmo.length,
+          tranquilo_demais: ritmo.filter((f) => f.valor === 1).length,
+          no_ponto: ritmo.filter((f) => f.valor === 2).length,
+          pesado_demais: ritmo.filter((f) => f.valor === 3).length,
+          percentual_no_ponto: Math.round(
+            (ritmo.filter((f) => f.valor === 2).length / ritmo.length) * 100,
+          ),
+        }
+      : null;
+
+    const satResumo = sat.length
+      ? {
+          total: sat.length,
+          media: Number((sat.reduce((a, b) => a + b.valor, 0) / sat.length).toFixed(2)),
+          distribuicao: [1, 2, 3, 4, 5].map((n) => ({
+            estrelas: n,
+            qtd: sat.filter((f) => f.valor === n).length,
+          })),
+        }
+      : null;
+
+    const agrupaPorModulo = (list: typeof flat) =>
+      Object.values(
+        list.reduce(
+          (acc: Record<string, { chave: string; valores: number[] }>, f) => {
+            const chave = `${f.eletiva} · módulo ${f.modulo} ${f.modulo_titulo}`;
+            acc[chave] = acc[chave] ?? { chave, valores: [] };
+            acc[chave].valores.push(f.valor);
+            return acc;
+          },
+          {},
+        ),
+      );
+
+    const porModuloRitmo = agrupaPorModulo(ritmo).map((m) => ({
       modulo: m.chave,
-      media: Number((m.notas.reduce((a, b) => a + b, 0) / m.notas.length).toFixed(2)),
-      respostas: m.notas.length,
+      respostas: m.valores.length,
+      tranquilo_demais: m.valores.filter((v) => v === 1).length,
+      no_ponto: m.valores.filter((v) => v === 2).length,
+      pesado_demais: m.valores.filter((v) => v === 3).length,
+    }));
+
+    const porModuloSat = agrupaPorModulo(sat).map((m) => ({
+      modulo: m.chave,
+      respostas: m.valores.length,
+      media: Number((m.valores.reduce((a, b) => a + b, 0) / m.valores.length).toFixed(2)),
     }));
 
     const comentarios = flat
       .filter((f) => f.comentario.length > 0)
       .slice(0, MAX_COMMENTS)
-      .map((f) => `[${f.nota}★ · ${f.eletiva} · mód ${f.modulo}] ${f.comentario}`);
+      .map((f) => `[${f.resposta} · ${f.eletiva} · mód ${f.modulo}] ${f.comentario}`);
 
     const payload = {
       periodo: days ? `últimos ${days} dias` : "histórico completo",
       total_respostas: flat.length,
-      media_geral: media,
-      distribuicao: dist,
-      por_modulo: porModulo,
+      escalas: {
+        ritmo_1a3:
+          "pergunta de ritmo do módulo, 3 opções: 1 tranquilo demais, 2 no ponto, 3 pesado demais. não é nota de qualidade. o alvo é 2. 1 significa fácil demais, 3 significa difícil demais.",
+        satisfacao_1a5: "avaliação de satisfação de 1 a 5 estrelas, quanto maior melhor.",
+      },
+      ritmo: ritmoResumo,
+      ritmo_por_modulo: porModuloRitmo,
+      satisfacao: satResumo,
+      satisfacao_por_modulo: porModuloSat,
       comentarios,
     };
 
@@ -127,7 +182,11 @@ Deno.serve(async (req) => {
       "você é analista de experiência educacional da NachesU, plataforma de eletivas pra estudantes de ensino médio (14-15 anos).",
       "escreva em português do brasil, tudo em minúsculo, frases curtas e diretas, sem emoji, sem hashtag, sem travessão, sem corporativês.",
       "diga 'estudante', nunca 'aluno'. seja concreto: cite módulo e número quando os dados apontarem.",
-      "nunca invente dado que não está no json. se a amostra é pequena, diga isso.",
+      "existem duas perguntas diferentes no json e elas nunca podem ser somadas nem comparadas entre si.",
+      "a pergunta de ritmo (1 a 3) mede calibragem, não satisfação: 1 é fácil demais, 2 é no ponto, 3 é pesado demais. jamais trate ritmo 1 como nota ruim nem fale em 'nota 4 ou 5' pra ritmo.",
+      "a pergunta de satisfação só existe quando o campo satisfacao vem preenchido. se vier nulo, diga que ainda não há avaliação de estrelas no período.",
+      "não tire conclusão de módulo com menos de 3 respostas: cite como sinal fraco.",
+      "nunca invente dado que não está no json. se a amostra é pequena, diga isso logo no começo.",
       "responda em markdown com exatamente estas seções:",
       "## o que está funcionando",
       "## principais atritos",
@@ -135,6 +194,8 @@ Deno.serve(async (req) => {
       "## o que fazer agora",
       "cada seção com 2 a 4 bullets no máximo. a última seção traz ações práticas pro educador.",
     ].join("\n");
+
+
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
