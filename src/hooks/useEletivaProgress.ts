@@ -176,9 +176,11 @@ export const useEletivaProgress = (courseId?: string | null) => {
       const totalCompleted = allModules.filter(
         (m) => progressByModuleId[m.id]?.completed_at,
       ).length;
-      // a plataforma comunica o total de módulos da eletiva (20),
-      // não apenas os já publicados, pra dar referência real de jornada.
-      const totalPublished = allModules.length;
+      // denominador de progresso/certificado = módulos PUBLICADOS (inclui os
+      // publicados com release futuro, que o aluno ainda vai concluir). módulos
+      // em rascunho (published=false) NÃO entram: senão um rascunho preso numa
+      // trilha travaria a % em <100% e impediria o certificado de todos.
+      const totalPublished = allModules.filter((m) => m.published).length;
 
 
       // sequencial: default true. setting "false" → modo livre.
