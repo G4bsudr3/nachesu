@@ -374,7 +374,7 @@ export function PillConteudoCurado({
                     <X className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: "#fd4644" }} aria-hidden />
                   )}
                   <span className="whitespace-pre-wrap">
-                    {isCorrect ? q.feedback_correct : q.feedback_wrong}
+                    {isCorrect ? q.feedback_correct : wrongFeedback(q)}
                   </span>
                 </div>
               )}
