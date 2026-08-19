@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { normOptions, correctValues, wrongFeedback, minChars } from "../choiceSchema";
 import { PillConteudoCurado } from "../PillConteudoCurado";
+
 
 // schema real da aula 16 de economia circular (formato novo: id + correct + feedback_incorrect)
 const schemaM16 = {
