@@ -106,7 +106,7 @@ export function PillQuiz({
       const a = answers[q.id];
       if (q.type === "long_text") {
         const v = (typeof a === "string" ? a : "").trim();
-        return v.length >= (q.min_chars ?? 0);
+        return v.length >= minChars(q);
       }
       // single/multi: tem que estar verificada
       if (!checked[q.id]) return false;
@@ -118,13 +118,15 @@ export function PillQuiz({
   const renderFeedback = (q: SingleQ | MultiQ) => {
     if (!checked[q.id]) return null;
     const a = answers[q.id];
+    const corrects = correctValues(q);
     let isRight = false;
     if (q.type === "single_choice") {
-      isRight = typeof a === "string" && (q.correct ?? []).includes(a);
+      isRight = typeof a === "string" && corrects.includes(a);
     } else {
-      isRight = Array.isArray(a) && sameSet(a, q.correct ?? []);
+      isRight = Array.isArray(a) && sameSet(a, corrects);
     }
-    const text = isRight ? q.feedback_correct : q.feedback_wrong;
+    const text = isRight ? q.feedback_correct : wrongFeedback(q);
+
     return (
       <div
         className="mt-2 rounded-xl border-2 p-3 font-body text-sm flex items-start gap-2 text-perestroika-preto"
