@@ -38,9 +38,13 @@ export function normOptions(options?: RawOption[]): NormOption[] {
 /** valores corretos, seja via q.correct[] ou via option.correct === true */
 export function correctValues(q: RawChoiceQuestion): string[] {
   if (Array.isArray(q.correct) && q.correct.length > 0) return q.correct.map(String);
+  // usa o índice do array COMPLETO (igual normOptions) antes de filtrar. senão,
+  // opções sem value/id caíam no índice do array já filtrado (só corretas) e o
+  // fallback divergia de normOptions -> feedback de acerto/erro invertido.
   return (q.options ?? [])
-    .filter((o) => o.correct === true)
-    .map((o, i) => String(o.value ?? o.id ?? i));
+    .map((o, i) => ({ o, i }))
+    .filter(({ o }) => o.correct === true)
+    .map(({ o, i }) => String(o.value ?? o.id ?? i));
 }
 
 /** feedback de erro em qualquer uma das duas chaves */

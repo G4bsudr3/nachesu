@@ -48,7 +48,12 @@ export const SemMatriculaPicker = ({ className = "" }: { className?: string }) =
       return;
     }
     toast.success("matrícula feita. bora começar.");
+    // invalida todo o estado derivado da matrícula/perfil, senão o aluno pode
+    // continuar vendo "sem matrícula"/pending até o refetch por staleTime.
     queryClient.invalidateQueries({ queryKey: ["my-enrollments"] });
+    queryClient.invalidateQueries({ queryKey: ["profile-status"] });
+    queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+    queryClient.invalidateQueries({ queryKey: ["dashboard-data"] });
   };
 
   return (
