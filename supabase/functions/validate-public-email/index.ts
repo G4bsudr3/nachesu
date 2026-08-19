@@ -53,8 +53,6 @@ Deno.serve(async (req: Request) => {
       .eq("email", normalizedEmail)
       .maybeSingle();
 
-    const fbiSubmitted = existing?.submitted === true;
-
     // checa se já existe conta auth via RPC (lookup direto por email, sem paginação)
     // NOTA (SEC-01): não expomos mais `account_has_password` — revelar quais contas
     // têm senha facilitava ataque direcionado e não é consumido pelo frontend.
@@ -94,8 +92,6 @@ Deno.serve(async (req: Request) => {
           valid: false,
           prefill: null,
           can_enter: canEnter,
-          already_submitted: fbiSubmitted,
-          has_user: !!existing?.user_id || accountExists,
           account_exists: accountExists,
         }),
         {
@@ -137,8 +133,6 @@ Deno.serve(async (req: Request) => {
         valid: true,
         prefill,
         invited_participant_id: invited.id,
-        already_submitted: fbiSubmitted,
-        has_user: !!existing?.user_id || accountExists,
         account_exists: accountExists,
         // invited sempre pode entrar; fbi submitted também
         can_enter: true,

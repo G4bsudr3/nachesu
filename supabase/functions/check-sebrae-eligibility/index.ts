@@ -42,7 +42,6 @@ Deno.serve(async (req) => {
       .maybeSingle()
 
     const hasPreInvite = !!invite
-    const preCourse = invite?.courses as { slug: string; title: string } | null | undefined
 
     // já tem conta auth?
     let accountExists = false
@@ -64,7 +63,6 @@ Deno.serve(async (req) => {
       is_sebrae: isSebrae,
       allowed: isSebrae || hasPreInvite,
       has_pre_invite: hasPreInvite,
-      pre_course: preCourse ?? null,
       needs_course_choice: isSebrae && !hasPreInvite && !accountExists,
       courses: courses ?? [],
     }), {
