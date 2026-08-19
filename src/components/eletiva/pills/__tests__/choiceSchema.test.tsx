@@ -48,18 +48,22 @@ describe("normalização de alternativas", () => {
 describe("PillConteudoCurado com schema novo", () => {
   it("marca a alternativa clicada e salva o valor", async () => {
     const save = vi.fn().mockResolvedValue(undefined);
+    const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     render(
-      <PillConteudoCurado
-        title="método > opinião"
-        bodyMd={null}
-        schema={schemaM16 as never}
-        accent="#8A85BF"
-        initial={{}}
-        save={save}
-        onComplete={() => {}}
-        isCompleted={false}
-      />,
+      <QueryClientProvider client={qc}>
+        <PillConteudoCurado
+          title="método > opinião"
+          bodyMd={null}
+          schema={schemaM16 as never}
+          accent="#8A85BF"
+          initial={{}}
+          save={save}
+          onComplete={() => {}}
+          isCompleted={false}
+        />
+      </QueryClientProvider>,
     );
+
     const radio = screen.getByRole("radio", { name: /landing page falsa/i }) as HTMLInputElement;
     fireEvent.click(radio);
     expect(radio.checked).toBe(true);
