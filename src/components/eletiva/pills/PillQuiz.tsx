@@ -165,7 +165,7 @@ export function PillQuiz({
         {(schema.questions ?? []).map((q, idx) => {
           if (q.type === "long_text") {
             const v = typeof answers[q.id] === "string" ? (answers[q.id] as string) : "";
-            const min = q.min_chars ?? 0;
+            const min = minChars(q);
             const remaining = Math.max(0, min - v.trim().length);
             return (
               <li key={q.id} className="space-y-2">
