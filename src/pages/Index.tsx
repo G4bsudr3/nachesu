@@ -483,7 +483,7 @@ const Index = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`linkedin de ${f.nick}`}
-                        className="text-muted-foreground hover:text-perestroika-preto transition-colors"
+                        className="inline-flex items-center justify-center h-11 w-11 -m-3 rounded-full text-muted-foreground hover:text-perestroika-preto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
                       >
                         <Linkedin className="w-4 h-4" />
                       </a>
