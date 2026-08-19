@@ -5,6 +5,13 @@ import type {
   PillSchemaType,
   ResolvedAnswer,
 } from "./types";
+import {
+  normOptions,
+  correctValues,
+  type RawOption,
+} from "@/components/eletiva/pills/choiceSchema";
+
+
 
 const EVIDENCE_BUCKET = "radar-evidences";
 
