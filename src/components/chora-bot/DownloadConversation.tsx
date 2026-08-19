@@ -226,7 +226,7 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
               {effectiveTitle}
             </button>
           )}
-          <p className="px-2 pt-1.5 text-[10px] text-perestroika-preto/40 font-body">
+          <p className="px-2 pt-1.5 text-[10px] text-perestroika-preto/60 font-body">
             {formatDateBR(new Date())}
           </p>
         </div>

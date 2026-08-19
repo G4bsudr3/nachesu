@@ -115,7 +115,7 @@ export const FirstTimeChecklist = ({
         <ul className="space-y-1.5">
           {LEARNINGS.map((l) => (
             <li key={l} className="font-body text-sm text-perestroika-preto/80 flex gap-2">
-              <span className="text-perestroika-preto/40">•</span>
+              <span className="text-perestroika-preto/60">•</span>
               <span>{l}</span>
             </li>
           ))}

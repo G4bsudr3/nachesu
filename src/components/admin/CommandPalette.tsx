@@ -77,15 +77,15 @@ export const CommandPalette = ({
       contentClassName="fixed left-1/2 top-[14vh] z-[101] w-[92vw] max-w-lg -translate-x-1/2 bg-perestroika-bege rounded-2xl border border-perestroika-preto/15 shadow-2xl overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
     >
       <div className="flex items-center gap-2 px-4 border-b border-perestroika-preto/10">
-        <Search className="w-4 h-4 text-perestroika-preto/40" />
+        <Search className="w-4 h-4 text-perestroika-preto/60" />
         <Command.Input
           value={query}
           onValueChange={setQuery}
           placeholder="busca seção, ação ou estudante (email, nome)…"
-          className="flex-1 h-12 bg-transparent outline-none font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40"
+          className="flex-1 h-12 bg-transparent outline-none font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/60"
         />
       </div>
-      <Command.List className="max-h-[60vh] overflow-y-auto p-2 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:text-perestroika-preto/40">
+      <Command.List className="max-h-[60vh] overflow-y-auto p-2 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:text-perestroika-preto/60">
         <Command.Empty className="px-3 py-6 text-center text-[12px] text-perestroika-preto/50">
           nada por aqui
         </Command.Empty>
@@ -104,7 +104,7 @@ export const CommandPalette = ({
                   <User className="w-4 h-4" />
                   <span className="truncate">{name}</span>
                   {s.email && s.email !== name && (
-                    <span className="ml-auto text-[11px] text-perestroika-preto/40 truncate max-w-[40%]">{s.email}</span>
+                    <span className="ml-auto text-[11px] text-perestroika-preto/60 truncate max-w-[40%]">{s.email}</span>
                   )}
                 </Command.Item>
               );

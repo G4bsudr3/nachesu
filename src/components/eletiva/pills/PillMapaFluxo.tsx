@@ -294,15 +294,15 @@ export function PillMapaFluxo({
         {/* setas verticais + vazamentos */}
         <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-start">
           <div className="hidden md:flex justify-center">
-            <ArrowDown className="h-6 w-6 text-perestroika-preto/40" aria-hidden />
+            <ArrowDown className="h-6 w-6 text-perestroika-preto/60" aria-hidden />
           </div>
           <div className="hidden md:block" />
           <div className="hidden md:flex justify-center">
-            <ArrowDown className="h-6 w-6 text-perestroika-preto/40" aria-hidden />
+            <ArrowDown className="h-6 w-6 text-perestroika-preto/60" aria-hidden />
           </div>
           <div className="hidden md:block" />
           <div className="hidden md:flex justify-center">
-            <ArrowDown className="h-6 w-6 text-perestroika-preto/40" aria-hidden />
+            <ArrowDown className="h-6 w-6 text-perestroika-preto/60" aria-hidden />
           </div>
         </div>
 
@@ -464,7 +464,7 @@ function BlocoCampo({
 function SetaHorizontal() {
   return (
     <div className="hidden md:flex items-center justify-center px-1">
-      <ArrowRight className="h-6 w-6 text-perestroika-preto/40" aria-hidden />
+      <ArrowRight className="h-6 w-6 text-perestroika-preto/60" aria-hidden />
     </div>
   );
 }

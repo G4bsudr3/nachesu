@@ -78,7 +78,7 @@ export const StudentAccessHistory = ({ userId }: Props) => {
             <CalendarCheck className="w-3.5 h-3.5" /> dias com acesso
           </h3>
           {days.length === 0 ? (
-            <p className="text-xs italic text-perestroika-preto/40">
+            <p className="text-xs italic text-perestroika-preto/60">
               nenhum dia registrado ainda (o registro começa no próximo login)
             </p>
           ) : (
@@ -110,7 +110,7 @@ export const StudentAccessHistory = ({ userId }: Props) => {
             <Clock className="w-3.5 h-3.5" /> sessões de login
           </h3>
           {sessions.length === 0 ? (
-            <p className="text-xs italic text-perestroika-preto/40">nenhuma sessão viva</p>
+            <p className="text-xs italic text-perestroika-preto/60">nenhuma sessão viva</p>
           ) : (
             <ul className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
               {sessions.map((s) => (

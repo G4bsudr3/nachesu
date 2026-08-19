@@ -135,7 +135,7 @@ export const ModuloHeader = ({
             </p>
             <p className="font-body text-xs tabular-nums text-perestroika-preto/85">
               <span className="font-semibold text-perestroika-preto">{donePills ?? 0}/{totalPills}</span>
-              <span className="text-perestroika-preto/40 mx-1.5">·</span>
+              <span className="text-perestroika-preto/60 mx-1.5">·</span>
               <span className="font-semibold text-perestroika-preto">{pct}%</span>
             </p>
           </div>

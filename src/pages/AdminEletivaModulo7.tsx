@@ -169,7 +169,7 @@ export default function AdminEletivaModulo7() {
                   </header>
                   {s.primeira_oportunidade && (
                     <p className="font-body text-sm text-perestroika-preto/85 flex items-start gap-1.5">
-                      <Sparkles className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 text-perestroika-preto/40" aria-hidden />
+                      <Sparkles className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 text-perestroika-preto/60" aria-hidden />
                       <span>{s.primeira_oportunidade}</span>
                     </p>
                   )}

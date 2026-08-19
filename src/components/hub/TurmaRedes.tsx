@@ -103,7 +103,7 @@ function PersonCard({ p, isMe }: { p: TurmaPessoa; isMe: boolean }) {
           adiciona tuas redes
         </Link>
       ) : (
-        <p className="font-body text-xs italic text-perestroika-preto/40">
+        <p className="font-body text-xs italic text-perestroika-preto/60">
           ainda sem rede aqui
         </p>
       )}
@@ -188,7 +188,7 @@ export function TurmaRedes() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="busca por nome, apelido ou handle"
             aria-label="buscar pessoa"
-            className="h-11 flex-1 bg-transparent font-body text-sm placeholder:text-perestroika-preto/40 focus:outline-none"
+            className="h-11 flex-1 bg-transparent font-body text-sm placeholder:text-perestroika-preto/60 focus:outline-none"
           />
           {query && (
             <button

@@ -428,7 +428,7 @@ const TutorPage = () => {
       )}
 
       <main className="flex-1 flex flex-col min-w-0">
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-10">
+        <div ref={scrollRef} role="log" aria-live="polite" aria-label="conversa com o tutor" className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-10">
           {tutorSettings && !tutorSettings.enabled ? (
             <div className="max-w-2xl mx-auto py-12">
               <TutorDisabledNotice />
@@ -500,7 +500,7 @@ const TutorPage = () => {
                 maxLength={MAX}
                 aria-label="pergunta pro tutor ia"
                 disabled={streaming || !trailId}
-                className="resize-none min-h-[44px] max-h-32 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-body text-perestroika-preto placeholder:text-perestroika-preto/40 px-2"
+                className="resize-none min-h-[44px] max-h-32 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-body text-perestroika-preto placeholder:text-perestroika-preto/60 px-2"
               />
               <button
                 onClick={() => void send()}
@@ -517,12 +517,12 @@ const TutorPage = () => {
                   <Loader2 className="w-4 h-4 animate-spin text-perestroika-bege" />
                 ) : (
                   <ArrowUp
-                    className={`w-4 h-4 ${canSend ? "text-perestroika-bege" : "text-perestroika-preto/40"}`}
+                    className={`w-4 h-4 ${canSend ? "text-perestroika-bege" : "text-perestroika-preto/60"}`}
                   />
                 )}
               </button>
             </div>
-            <p className="text-[10px] text-perestroika-preto/40 mt-1.5 px-1 text-center">
+            <p className="text-[10px] text-perestroika-preto/60 mt-1.5 px-1 text-center">
               shift + enter pra quebrar linha · histórico fica salvo por trilha
             </p>
           </div>

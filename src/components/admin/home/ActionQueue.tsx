@@ -93,7 +93,7 @@ export const ActionQueue = ({ items, loading, emptyMessage, rightSlot }: Props) 
                   </p>
                 )}
               </div>
-              <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-0.5 group-hover:text-perestroika-preto transition-all" />
+              <ArrowRight className="h-4 w-4 text-perestroika-preto/60 group-hover:translate-x-0.5 group-hover:text-perestroika-preto transition-all" />
             </Link>
           ))}
         </div>

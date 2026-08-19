@@ -165,7 +165,7 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
               <div key={b.key} className="rounded-xl border-2 border-perestroika-preto/15 bg-white p-3">
                 <div className="flex items-baseline justify-between gap-2 mb-1.5 flex-wrap">
                   <p className="font-display uppercase text-sm tracking-wide text-perestroika-preto">
-                    <span className="text-perestroika-preto/40 mr-1">{b.numero}.</span>{b.titulo}
+                    <span className="text-perestroika-preto/60 mr-1">{b.numero}.</span>{b.titulo}
                     <span className="ml-2 font-body text-[10px] text-perestroika-preto/50">{b.duracao}</span>
                   </p>
                   <span className={`font-body text-[10px] uppercase tracking-wider ${dentro ? "text-perestroika-preto/60" : "text-[#fd4644]"}`}>

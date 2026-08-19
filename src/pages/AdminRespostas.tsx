@@ -263,7 +263,7 @@ const AdminRespostas = () => {
       </div>
 
       <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/40 pointer-events-none" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-perestroika-preto/60 pointer-events-none" />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}

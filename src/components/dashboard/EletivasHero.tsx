@@ -122,7 +122,7 @@ const EletivaJourneyCard = ({ courseId, slug, title, info, featured = false }: C
   const pitch = moduleToShow
     ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a eletiva").toLowerCase()}`
     : totalPublished === 0
-      ? "o primeiro módulo abre em breve. você é avisada por aqui."
+      ? "o primeiro módulo abre em breve. você recebe um aviso por aqui."
       : "você tá em dia. revise materiais ou aguarde o próximo abrir.";
 
   return (

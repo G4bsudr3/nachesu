@@ -59,7 +59,7 @@ const TONE_CLASS: Record<string, string> = {
   bad: "bg-perestroika-vermelho/15 text-perestroika-vermelho border-perestroika-vermelho/40",
   warn: "bg-perestroika-laranja/15 text-perestroika-laranja border-perestroika-laranja/40",
   good: "bg-perestroika-preto/5 text-perestroika-preto/60 border-perestroika-preto/15",
-  muted: "bg-perestroika-preto/5 text-perestroika-preto/40 border-perestroika-preto/10",
+  muted: "bg-perestroika-preto/5 text-perestroika-preto/60 border-perestroika-preto/10",
 };
 
 const PROBLEM_STATUSES: CheckStatus[] = [
@@ -185,7 +185,7 @@ const AdminVideos = () => {
 
       {!isLoading && items.length === 0 && (
         <div className="rounded-2xl border border-perestroika-preto/10 p-8 text-center">
-          <CheckCircle2 className="h-6 w-6 mx-auto mb-3 text-perestroika-preto/40" />
+          <CheckCircle2 className="h-6 w-6 mx-auto mb-3 text-perestroika-preto/60" />
           <p className="font-display uppercase text-xl">tudo batendo</p>
           <p className="font-body text-sm text-perestroika-preto/60 mt-1">
             nenhum vídeo com título trocado, canal errado ou link fora do ar.

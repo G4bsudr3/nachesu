@@ -548,7 +548,7 @@ export function PillSprintIdeacao({
                   onChange={(e) => editIdeia(i.id, e.target.value)}
                   className="flex-1 bg-transparent font-body text-sm text-perestroika-preto/90 focus:outline-none"
                 />
-                <span className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/40 pt-1 flex-shrink-0">
+                <span className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/60 pt-1 flex-shrink-0">
                   r{i.rodada}
                 </span>
                 <button

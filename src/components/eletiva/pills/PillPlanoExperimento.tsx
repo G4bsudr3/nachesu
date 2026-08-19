@@ -410,7 +410,7 @@ function TextField({
       />
       <p
         className={`font-body text-[10px] tabular-nums text-right ${
-          ok ? "text-perestroika-preto/50" : "text-perestroika-preto/40"
+          ok ? "text-perestroika-preto/50" : "text-perestroika-preto/60"
         }`}
       >
         {len}/{min}

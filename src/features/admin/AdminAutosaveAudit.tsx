@@ -362,7 +362,7 @@ function StatCard({ label, value, hint }: { label: string; value: number; hint?:
         {label}
       </div>
       {hint && (
-        <div className="mt-0.5 font-body text-[10px] text-perestroika-preto/40">{hint}</div>
+        <div className="mt-0.5 font-body text-[10px] text-perestroika-preto/60">{hint}</div>
       )}
     </div>
   );

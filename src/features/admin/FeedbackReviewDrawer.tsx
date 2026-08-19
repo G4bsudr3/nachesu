@@ -73,7 +73,7 @@ const AiProgress = ({ elapsed, label }: { elapsed: number; label: string }) => {
         </span>
         <span className="tabular-nums text-perestroika-preto/45">{elapsed}s</span>
       </p>
-      <p className="mt-1 text-[10px] text-perestroika-preto/40">
+      <p className="mt-1 text-[10px] text-perestroika-preto/60">
         costuma levar de 10 a 30 segundos. pode continuar lendo a entrega enquanto isso.
       </p>
     </div>
@@ -923,7 +923,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               {feedback.trim() ? (
                 <FeedbackMarkdown>{feedback}</FeedbackMarkdown>
               ) : (
-                <p className="text-xs italic text-perestroika-preto/40">nada escrito ainda</p>
+                <p className="text-xs italic text-perestroika-preto/60">nada escrito ainda</p>
               )}
             </div>
           ) : (
@@ -935,7 +935,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
             />
           )}
-          <p className="mt-1 text-[10px] text-perestroika-preto/40 text-right">
+          <p className="mt-1 text-[10px] text-perestroika-preto/60 text-right">
             {feedback.length}/2000
           </p>
         </div>
@@ -979,7 +979,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
                 </>
               ) : (
                 <>
-                  <EyeOff className="w-3 h-3 text-perestroika-preto/40" />
+                  <EyeOff className="w-3 h-3 text-perestroika-preto/60" />
                   ainda não lido
                 </>
               )}
@@ -1034,7 +1034,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             <MessageSquareReply className="w-3 h-3" /> conversa ({messages.length})
           </p>
           {messages.length === 0 ? (
-            <p className="text-xs italic text-perestroika-preto/40 mb-3">
+            <p className="text-xs italic text-perestroika-preto/60 mb-3">
               nenhuma mensagem ainda. responda ao estudante se precisar.
             </p>
           ) : (
@@ -1052,7 +1052,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
                     <span className="text-[10px] uppercase tracking-wide text-perestroika-preto/55">
                       {m.author_role === "student" ? (m.author_name ?? "estudante") : (m.author_name ?? "educador")}
                     </span>
-                    <span className="text-[10px] text-perestroika-preto/40">
+                    <span className="text-[10px] text-perestroika-preto/60">
                       {new Date(m.created_at).toLocaleString("pt-BR", {
                         day: "2-digit",
                         month: "2-digit",
@@ -1082,7 +1082,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
           />
           <div className="mt-2 flex items-center justify-between gap-2 flex-wrap">
-            <span className="text-[10px] text-perestroika-preto/40">{reply.length}/4000</span>
+            <span className="text-[10px] text-perestroika-preto/60">{reply.length}/4000</span>
             <div className="flex items-center gap-2">
             <button
               type="button"

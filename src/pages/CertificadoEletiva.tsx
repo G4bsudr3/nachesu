@@ -286,7 +286,7 @@ const CertificadoEletiva = () => {
                 placeholder={defaultName}
                 maxLength={80}
                 autoComplete="name"
-                className="w-full rounded-2xl border-2 border-perestroika-preto/20 bg-white px-4 py-3 font-body text-base text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto transition-colors"
+                className="w-full rounded-2xl border-2 border-perestroika-preto/20 bg-white px-4 py-3 font-body text-base text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto transition-colors"
               />
               {nameTouched && trimmedName.length > 0 && trimmedName.length < 2 && (
                 <p className="mt-2 font-body text-xs text-perestroika-vermelho">nome muito curto.</p>

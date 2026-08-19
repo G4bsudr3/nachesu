@@ -294,7 +294,7 @@ export function PillSelecaoIdeia({
                 </header>
                 <ul className="space-y-1">
                   {porQuadrante[q.id]?.length === 0 && (
-                    <li className="font-body text-[11px] italic text-perestroika-preto/40">
+                    <li className="font-body text-[11px] italic text-perestroika-preto/60">
                       nenhuma ideia aqui ainda.
                     </li>
                   )}
@@ -315,7 +315,7 @@ export function PillSelecaoIdeia({
                             return { ...prev, quadrantes: q2 };
                           });
                         }}
-                        className="text-perestroika-preto/40 hover:text-perestroika-vermelho text-[10px] uppercase tracking-wider"
+                        className="text-perestroika-preto/60 hover:text-perestroika-vermelho text-[10px] uppercase tracking-wider"
                         aria-label="devolver ao pool"
                       >
                         devolver

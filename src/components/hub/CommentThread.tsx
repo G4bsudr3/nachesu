@@ -77,7 +77,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
                         type="button"
                         onClick={() => setEditing(true)}
                         aria-label="editar comentário"
-                        className="text-perestroika-preto/40 hover:text-perestroika-preto"
+                        className="text-perestroika-preto/60 hover:text-perestroika-preto"
                       >
                         <Pencil className="h-3.5 w-3.5" />
                       </button>
@@ -85,7 +85,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
                         type="button"
                         onClick={() => remove()}
                         aria-label="apagar comentário"
-                        className="text-perestroika-preto/40 hover:text-perestroika-vermelho"
+                        className="text-perestroika-preto/60 hover:text-perestroika-vermelho"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -109,7 +109,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
             placeholder={editing ? "edite o seu comentário…" : "deixe um comentário…"}
             maxLength={280}
             rows={2}
-            className="w-full resize-none bg-transparent font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none"
+            className="w-full resize-none bg-transparent font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none"
           />
 
           {gif?.url && (
@@ -132,7 +132,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
 
           <div className="mt-2 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="font-body text-xs text-perestroika-preto/40">{draft.length}/280</span>
+              <span className="font-body text-xs text-perestroika-preto/60">{draft.length}/280</span>
               <GifPicker
                 onPick={(g) =>
                   setGif({

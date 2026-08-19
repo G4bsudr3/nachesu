@@ -491,7 +491,7 @@ const AdminPulso = () => {
         <TabsContent value="estudantes">
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-perestroika-preto/40" />
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-perestroika-preto/60" />
               <Input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
@@ -652,7 +652,7 @@ const AdminPulso = () => {
                   <span className="text-[11px] text-perestroika-preto/50">
                     {c.course_title} · módulo {String(c.module_number).padStart(2, "0")}
                   </span>
-                  <span className="text-[11px] text-perestroika-preto/40 ml-auto">
+                  <span className="text-[11px] text-perestroika-preto/60 ml-auto">
                     {fmt(c.created_at)}
                   </span>
                 </div>

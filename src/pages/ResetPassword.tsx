@@ -124,7 +124,7 @@ const ResetPassword = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/60" />
                   <input
                     type="password"
                     required
@@ -134,14 +134,14 @@ const ResetPassword = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={submitting}
-                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/40 transition-colors"
+                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
                   />
                 </div>
 
                 <PasswordStrength password={password} />
 
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/60" />
                   <input
                     type="password"
                     required
@@ -150,7 +150,7 @@ const ResetPassword = () => {
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
                     disabled={submitting}
-                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/40 transition-colors"
+                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
                   />
                 </div>
 

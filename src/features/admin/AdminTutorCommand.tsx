@@ -405,7 +405,7 @@ export const AdminTutorCommand = () => {
             </span>
           </div>
           <p className="font-display text-4xl leading-none tabular-nums">
-            {used}<span className="text-xl text-perestroika-preto/40"> / {cap}</span>
+            {used}<span className="text-xl text-perestroika-preto/60"> / {cap}</span>
           </p>
           <div className="h-2 mt-3 rounded-full bg-perestroika-preto/5 overflow-hidden">
             <div

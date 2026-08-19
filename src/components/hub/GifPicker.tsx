@@ -32,7 +32,7 @@ export const GifPicker = ({ onPick, trigger, align = "end" }: Props) => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="busca um gif…"
-            className="w-full bg-transparent font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none"
+            className="w-full bg-transparent font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none"
             autoFocus
           />
         </div>
@@ -40,7 +40,7 @@ export const GifPicker = ({ onPick, trigger, align = "end" }: Props) => {
         <div className="relative max-h-[300px] overflow-y-auto rounded-xl">
           {loading && (
             <div className="flex h-[120px] items-center justify-center">
-              <Loader2 className="h-5 w-5 animate-spin text-perestroika-preto/40" />
+              <Loader2 className="h-5 w-5 animate-spin text-perestroika-preto/60" />
             </div>
           )}
           {!loading && error && (
@@ -79,7 +79,7 @@ export const GifPicker = ({ onPick, trigger, align = "end" }: Props) => {
           )}
         </div>
 
-        <p className="mt-2 text-center font-body text-[10px] uppercase tracking-wide text-perestroika-preto/40">
+        <p className="mt-2 text-center font-body text-[10px] uppercase tracking-wide text-perestroika-preto/60">
           powered by giphy
         </p>
       </PopoverContent>

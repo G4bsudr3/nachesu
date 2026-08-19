@@ -274,7 +274,7 @@ export const AdminCopyAudit = () => {
         <p className="text-sm text-perestroika-preto/55">carregando pílulas…</p>
       ) : audit.length === 0 ? (
         <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/50 p-8 text-center">
-          <CheckCircle2 className="w-8 h-8 mx-auto text-perestroika-preto/40 mb-3" />
+          <CheckCircle2 className="w-8 h-8 mx-auto text-perestroika-preto/60 mb-3" />
           <p className="text-perestroika-preto/70">
             nenhuma violação detectada. tom consistente em tudo.
           </p>

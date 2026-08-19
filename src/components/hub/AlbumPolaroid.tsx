@@ -69,7 +69,7 @@ export const AlbumPolaroid = ({ photo, isMine, isFresh, onClick }: Props) => {
           @{author}
         </span>
         {photo.caption && (
-          <span aria-hidden className="text-perestroika-preto/40">·</span>
+          <span aria-hidden className="text-perestroika-preto/60">·</span>
         )}
         {photo.caption && (
           <span className="truncate font-body text-[11px] italic text-perestroika-preto/55">

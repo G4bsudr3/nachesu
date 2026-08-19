@@ -495,7 +495,7 @@ const AdminUsers = () => {
 
                 <TableCell>
                   {item.courses.length === 0 ? (
-                    <span className="text-xs text-perestroika-preto/40">sem matrícula</span>
+                    <span className="text-xs text-perestroika-preto/60">sem matrícula</span>
                   ) : (
                     <div className="flex flex-wrap gap-1.5">
                       {item.courses.map((title) => (
@@ -534,7 +534,7 @@ const AdminUsers = () => {
                 <TableCell className="text-xs whitespace-nowrap">
                   {(() => {
                     const iso = lastAccess.get(item.user_id) ?? null;
-                    if (!iso) return <span className="text-perestroika-preto/40">nunca entrou</span>;
+                    if (!iso) return <span className="text-perestroika-preto/60">nunca entrou</span>;
                     const dias = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
                     return (
                       <span className={dias > 14 ? "text-perestroika-laranja" : "text-perestroika-preto/70"}>

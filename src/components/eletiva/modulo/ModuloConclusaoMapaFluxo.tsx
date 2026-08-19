@@ -148,7 +148,7 @@ function BlocoResumo({ label, text, arrow }: { label: string; text?: string; arr
       </p>
       {arrow && (
         <ArrowRight
-          className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-perestroika-preto/40"
+          className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-perestroika-preto/60"
           aria-hidden
         />
       )}

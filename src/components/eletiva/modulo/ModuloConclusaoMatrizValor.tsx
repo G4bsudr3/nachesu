@@ -127,7 +127,7 @@ export function ModuloConclusaoMatrizValor({ moduleId }: Props) {
               {l.oportunidade}
             </p>
             <p className="font-body text-sm text-perestroika-preto/70 leading-snug flex items-start gap-1.5">
-              <ArrowRight className="h-3.5 w-3.5 mt-1 flex-shrink-0 text-perestroika-preto/40" aria-hidden />
+              <ArrowRight className="h-3.5 w-3.5 mt-1 flex-shrink-0 text-perestroika-preto/60" aria-hidden />
               <span>
                 vazamento: <em className="not-italic text-perestroika-preto/75">{l.vazamento}</em>
                 {" · "}
