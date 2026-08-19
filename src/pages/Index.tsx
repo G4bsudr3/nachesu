@@ -754,7 +754,7 @@ const Index = () => {
 
           <p className="font-body text-sm text-muted-foreground max-w-md">
             já tem matrícula?{" "}
-            <Link to="/auth" className="underline underline-offset-4 hover:text-perestroika-preto">
+            <Link to="/auth" className="text-link hover:text-perestroika-preto">
               entrar direto
             </Link>
           </p>
