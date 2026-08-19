@@ -236,6 +236,10 @@ const Modulo = () => {
   const completeMutation = useMutation({
     mutationFn: async () => {
       if (!user || !moduleRow) throw new Error("sem contexto");
+      if (!(await ensureSession())) {
+        throw new Error("sua sessão expirou. entra de novo pra salvar seu progresso");
+      }
+
       // defesa em profundidade: estudante só fecha o módulo se as obrigatórias estão concluídas.
       // admin ignora (precisa pra revisar conteúdo sem ter feito tudo).
       const required = (pills ?? []).filter((p) => p.required);
