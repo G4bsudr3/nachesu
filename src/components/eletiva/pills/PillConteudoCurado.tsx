@@ -280,8 +280,10 @@ export function PillConteudoCurado({
 
           // single_choice
           const chosen = v;
-          const isCorrect = (q.correct ?? []).includes(chosen);
-          const showFeedback = chosen.length > 0 && (q.correct?.length ?? 0) > 0;
+          const opts = normOptions(q.options);
+          const corrects = correctValues(q);
+          const isCorrect = corrects.includes(chosen);
+          const showFeedback = chosen.length > 0 && corrects.length > 0;
           const showTurmaStats = turmaStats?.field_id === q.id && !!turmaQuery.data;
           const turmaTotal = turmaQuery.data?.total ?? 0;
           const turmaCounts = turmaQuery.data?.counts ?? {};
@@ -301,14 +303,14 @@ export function PillConteudoCurado({
                 </p>
               )}
               <div className="space-y-1.5">
-                {q.options.map((opt) => {
+                {opts.map((opt) => {
                   const checked = v === opt.value;
                   const optCount = turmaCounts[opt.value] ?? 0;
                   const optPct = showTurmaStats && turmaTotal > 0 ? Math.round((optCount / turmaTotal) * 100) : 0;
                   return (
                     <label
                       key={opt.value}
-                      className={`flex items-start gap-3 rounded-xl border-2 p-3 cursor-pointer transition-colors ${
+                      className={`${optionRowClass} ${
                         checked
                           ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
                           : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
@@ -322,6 +324,7 @@ export function PillConteudoCurado({
                         onChange={() => setAnswers((prev) => ({ ...prev, [q.id]: opt.value }))}
                         className="sr-only"
                       />
+
                       <span
                         className={`mt-0.5 h-4 w-4 flex-shrink-0 rounded-full border-2 ${
                           checked ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/40"
