@@ -70,7 +70,7 @@ export const FirstTimeChecklist = ({
         type="button"
         onClick={dismiss}
         aria-label="fechar"
-        className="absolute top-3 right-3 inline-flex items-center justify-center h-8 w-8 rounded-full hover:bg-perestroika-preto/5 transition-colors"
+        className="absolute top-1.5 right-1.5 inline-flex items-center justify-center h-11 w-11 rounded-full hover:bg-perestroika-preto/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
       >
         <X className="h-4 w-4 text-perestroika-preto/60" />
       </button>
