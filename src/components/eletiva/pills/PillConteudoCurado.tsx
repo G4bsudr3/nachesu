@@ -5,6 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import {
+  normOptions,
+  correctValues,
+  wrongFeedback,
+  minChars,
+  optionRowClass,
+  type RawOption,
+} from "./choiceSchema";
 
 type Card = {
   id: string;
@@ -21,17 +29,20 @@ type QuestionLong = {
   type: "long_text";
   label: string;
   min_chars?: number;
+  min_length?: number;
 };
 
 type QuestionSingle = {
   id: string;
   type: "single_choice";
   label: string;
-  options: { label: string; value: string }[];
+  options: RawOption[];
   correct?: string[];
   feedback_correct?: string;
   feedback_wrong?: string;
+  feedback_incorrect?: string;
 };
+
 
 const ICEBERG_LEVELS = [
   { id: "eventos", label: "eventos", hint: "o que se vê" },
