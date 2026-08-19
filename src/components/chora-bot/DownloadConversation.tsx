@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Download, FileText, FileDown, Check, X } from "lucide-react";
-import { jsPDF } from "jspdf";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -75,12 +74,14 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
     setOpen(false);
   };
 
-  const downloadPdf = () => {
+  const downloadPdf = async () => {
     if (messages.length === 0) {
       toast.error("conversa vazia, nada pra baixar");
       return;
     }
     const { title: t, date } = buildHeader();
+    // jsPDF sob demanda (~163KB gzip): só carrega ao baixar a conversa
+    const { jsPDF } = await import("jspdf");
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();

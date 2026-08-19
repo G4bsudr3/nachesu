@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, Award, Download, Loader2, Lock } from "lucide-react";
 import { toPng } from "html-to-image";
-import { jsPDF } from "jspdf";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -140,6 +139,8 @@ const CertificadoEletiva = () => {
         cacheBust: true,
       });
       // A4 landscape em mm (297 x 210), mesma proporção 1414x1000 ≈ 1.414
+      // jsPDF sob demanda (~163KB gzip): só carrega ao baixar o certificado
+      const { jsPDF } = await import("jspdf");
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
