@@ -178,16 +178,24 @@ const Modulo = () => {
       moduleRow.published &&
       (!moduleRow.available_from || new Date(moduleRow.available_from).getTime() <= Date.now());
     if (!available) return;
-    void supabase
-      .from("student_module_progress")
-      .upsert(
-        { user_id: user.id, module_id: moduleRow.id, started_at: new Date().toISOString() },
-        { onConflict: "user_id,module_id", ignoreDuplicates: false },
-      )
-      .then(({ error }) => {
-        if (!error) queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
-      });
+    let cancelled = false;
+    void (async () => {
+      // sem sessão válida a gravação sairia como anon e a RLS recusaria em silêncio
+      const session = await ensureSession();
+      if (cancelled || !session) return;
+      const { error } = await supabase
+        .from("student_module_progress")
+        .upsert(
+          { user_id: user.id, module_id: moduleRow.id, started_at: new Date().toISOString() },
+          { onConflict: "user_id,module_id", ignoreDuplicates: false },
+        );
+      if (!error && !cancelled) queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [user, moduleRow, isStarted, queryClient]);
+
 
   // âncora vinda de notificação/e-mail (ex: #feedback-do-educador).
   // o card só monta depois das queries, então tenta de novo por alguns frames.
