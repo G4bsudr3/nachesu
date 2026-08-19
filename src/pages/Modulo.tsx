@@ -353,6 +353,11 @@ const Modulo = () => {
         throw new Error("termine a pílula anterior pra abrir essa");
       }
       const isDone = completedPillIds.has(pill.id);
+      if (!(await ensureSession())) {
+        throw new Error("sua sessão expirou. entra de novo pra salvar seu progresso");
+      }
+
+
 
       if (isDone) {
         const { error } = await supabase
