@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { ensureSession } from "@/lib/ensureSession";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
@@ -176,16 +178,24 @@ const Modulo = () => {
       moduleRow.published &&
       (!moduleRow.available_from || new Date(moduleRow.available_from).getTime() <= Date.now());
     if (!available) return;
-    void supabase
-      .from("student_module_progress")
-      .upsert(
-        { user_id: user.id, module_id: moduleRow.id, started_at: new Date().toISOString() },
-        { onConflict: "user_id,module_id", ignoreDuplicates: false },
-      )
-      .then(({ error }) => {
-        if (!error) queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
-      });
+    let cancelled = false;
+    void (async () => {
+      // sem sessão válida a gravação sairia como anon e a RLS recusaria em silêncio
+      const session = await ensureSession();
+      if (cancelled || !session) return;
+      const { error } = await supabase
+        .from("student_module_progress")
+        .upsert(
+          { user_id: user.id, module_id: moduleRow.id, started_at: new Date().toISOString() },
+          { onConflict: "user_id,module_id", ignoreDuplicates: false },
+        );
+      if (!error && !cancelled) queryClient.invalidateQueries({ queryKey: ["eletiva-progress"] });
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [user, moduleRow, isStarted, queryClient]);
+
 
   // âncora vinda de notificação/e-mail (ex: #feedback-do-educador).
   // o card só monta depois das queries, então tenta de novo por alguns frames.
@@ -226,6 +236,10 @@ const Modulo = () => {
   const completeMutation = useMutation({
     mutationFn: async () => {
       if (!user || !moduleRow) throw new Error("sem contexto");
+      if (!(await ensureSession())) {
+        throw new Error("sua sessão expirou. entra de novo pra salvar seu progresso");
+      }
+
       // defesa em profundidade: estudante só fecha o módulo se as obrigatórias estão concluídas.
       // admin ignora (precisa pra revisar conteúdo sem ter feito tudo).
       const required = (pills ?? []).filter((p) => p.required);
@@ -339,6 +353,11 @@ const Modulo = () => {
         throw new Error("termine a pílula anterior pra abrir essa");
       }
       const isDone = completedPillIds.has(pill.id);
+      if (!(await ensureSession())) {
+        throw new Error("sua sessão expirou. entra de novo pra salvar seu progresso");
+      }
+
+
 
       if (isDone) {
         const { error } = await supabase
@@ -406,8 +425,12 @@ const Modulo = () => {
           return;
         }
 
+        if (!(await ensureSession())) {
+          toast.error("sua sessão expirou. entra de novo pra salvar seu progresso");
+          return;
+        }
         const now = new Date().toISOString();
-        await supabase.from("student_module_progress").upsert(
+        const { error: progErr } = await supabase.from("student_module_progress").upsert(
           {
             user_id: user.id,
             module_id: moduleRow.id,
@@ -416,6 +439,11 @@ const Modulo = () => {
           },
           { onConflict: "user_id,module_id" },
         );
+        if (progErr) {
+          toast.error("não deu pra salvar a conclusão agora. tenta de novo em instantes");
+          return;
+        }
+
         // entrega com conteúdo vai junto: fechar o módulo é o mesmo gesto de
         // entregar. rascunho vazio continua rascunho.
         if (filled) await submitDeliverableIfExists();
