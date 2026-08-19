@@ -83,7 +83,10 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
       if (!fb || !user) throw new Error("sem contexto");
       const { error } = await supabase
         .from("module_deliverables")
-        .update({ status: "rascunho", submitted_at: null })
+        // limpa também os marcadores de revisão: sem isso o reenvio do aluno
+        // (submitDeliverableIfExists usa `.is("reviewed_at", null)`) casa 0 linhas
+        // e a entrega fica presa em rascunho, sumindo das filas do educador.
+        .update({ status: "rascunho", submitted_at: null, reviewed_at: null, reviewer_id: null })
         .eq("id", fb.id);
       if (error) throw error;
     },
