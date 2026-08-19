@@ -44,9 +44,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     // 2. depois recupera sessão atual
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      applySession(currentSession);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data: { session: currentSession } }) => {
+        applySession(currentSession);
+      })
+      .catch(() => {
+        // se getSession rejeitar (ex.: storage corrompido), não deixa o app
+        // preso em "carregando..." — trata como sem sessão.
+        applySession(null);
+      });
 
     return () => subscription.unsubscribe();
   }, []);

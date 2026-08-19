@@ -37,6 +37,17 @@ describe("normalização de alternativas", () => {
     expect(correctValues({ id: "q", correct: ["a"] })).toEqual(["a"]);
   });
 
+  it("opção sem value/id: correta usa índice do array completo (não inverte)", () => {
+    const q = { id: "q", options: [{ label: "errada" }, { label: "certa", correct: true }] };
+    // normOptions numera pelo array completo: errada="0", certa="1"
+    expect(normOptions(q.options)).toEqual([
+      { value: "0", label: "errada" },
+      { value: "1", label: "certa" },
+    ]);
+    // a correta é a 2ª -> deve ser "1" (antes retornava "0", invertendo o feedback)
+    expect(correctValues(q as never)).toEqual(["1"]);
+  });
+
   it("lê feedback e mínimo nas duas chaves", () => {
     expect(wrongFeedback({ id: "q", feedback_incorrect: "n" })).toBe("n");
     expect(wrongFeedback({ id: "q", feedback_wrong: "n" })).toBe("n");
