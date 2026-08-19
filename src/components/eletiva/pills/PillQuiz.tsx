@@ -259,17 +259,18 @@ export function PillQuiz({
                   marque todas que se aplicam
                 </p>
                 <div className="space-y-1.5">
-                  {q.options.map((opt) => {
+                  {normOptions(q.options).map((opt) => {
                     const sel = arr.includes(opt.value);
                     return (
                       <label
                         key={opt.value}
-                        className={`flex items-start gap-3 rounded-xl border-2 p-3 cursor-pointer transition-colors ${
+                        className={`${optionRowClass} ${
                           sel
                             ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
                             : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
                         }`}
                       >
+
                         <input
                           type="checkbox"
                           checked={sel}
