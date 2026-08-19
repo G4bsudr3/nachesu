@@ -94,6 +94,17 @@ export const EletivaOnboardingOverlay = ({ slug, courseTitle, professorName }: P
     }
   };
 
+  // esc fecha o overlay: sem isso, no teclado/desktop o único jeito é o X.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") void close();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
   const steps: Step[] = [
     {
       pose: "talking",
@@ -144,7 +155,7 @@ export const EletivaOnboardingOverlay = ({ slug, courseTitle, professorName }: P
               type="button"
               onClick={close}
               aria-label="fechar boas-vindas"
-              className="absolute top-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-perestroika-preto/60 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+              className="absolute top-2 right-2 inline-flex h-11 w-11 touch-manipulation items-center justify-center rounded-full text-perestroika-preto/60 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -180,7 +191,7 @@ export const EletivaOnboardingOverlay = ({ slug, courseTitle, professorName }: P
                 <button
                   type="button"
                   onClick={close}
-                  className="rounded-full px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto"
+                  className="rounded-full px-4 min-h-11 font-body text-xs uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto touch-manipulation"
                 >
                   pular
                 </button>
@@ -188,7 +199,7 @@ export const EletivaOnboardingOverlay = ({ slug, courseTitle, professorName }: P
                   <button
                     type="button"
                     onClick={() => setStep((s) => s + 1)}
-                    className="rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+                    className="rounded-full bg-perestroika-preto text-perestroika-bege px-5 min-h-11 font-body text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform touch-manipulation"
                   >
                     próximo
                   </button>
@@ -196,7 +207,7 @@ export const EletivaOnboardingOverlay = ({ slug, courseTitle, professorName }: P
                   <button
                     type="button"
                     onClick={close}
-                    className="rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+                    className="rounded-full bg-perestroika-preto text-perestroika-bege px-5 min-h-11 font-body text-xs uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform touch-manipulation"
                   >
                     bora
                   </button>
