@@ -447,7 +447,7 @@ const Auth = () => {
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? "ocultar senha" : "mostrar senha"}
                     aria-pressed={showPassword}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full flex items-center justify-center text-perestroika-preto/60 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full flex items-center justify-center text-perestroika-preto/60 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
