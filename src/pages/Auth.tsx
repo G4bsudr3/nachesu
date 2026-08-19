@@ -348,7 +348,7 @@ const Auth = () => {
                     email
                   </label>
                   <Mail
-                    className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/60"
                     aria-hidden="true"
                   />
                   <input
@@ -365,7 +365,7 @@ const Auth = () => {
                       if (aliasHint) setAliasHint(null);
                     }}
                     disabled={submitting}
-                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/40 transition-colors"
+                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
                   />
                 </div>
 
@@ -428,7 +428,7 @@ const Auth = () => {
                     senha
                   </label>
                   <Lock
-                    className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/60"
                     aria-hidden="true"
                   />
                   <input
@@ -440,7 +440,7 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={submitting}
-                    className="w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/40 transition-colors"
+                    className="w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
                   />
                   <button
                     type="button"

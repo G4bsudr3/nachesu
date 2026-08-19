@@ -379,7 +379,7 @@ const AdminModuloDetalhe = () => {
                       }}
                     >
                       <div className="flex items-center gap-2 min-w-0">
-                        <User2 className="w-4 h-4 text-perestroika-preto/40 shrink-0" />
+                        <User2 className="w-4 h-4 text-perestroika-preto/60 shrink-0" />
                         <span className="truncate">{name}</span>
                       </div>
                       <span

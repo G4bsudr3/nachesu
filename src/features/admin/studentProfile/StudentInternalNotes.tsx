@@ -36,7 +36,7 @@ export const StudentInternalNotes = ({ userId }: Props) => {
           className="bg-transparent border-0 focus-visible:ring-0 p-0 text-sm"
         />
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-[10px] text-perestroika-preto/40">{draft.length}/4000 · privado entre admins</span>
+          <span className="text-[10px] text-perestroika-preto/60">{draft.length}/4000 · privado entre admins</span>
           <button
             type="button"
             onClick={submit}
@@ -52,7 +52,7 @@ export const StudentInternalNotes = ({ userId }: Props) => {
       {isLoading ? (
         <p className="text-xs text-perestroika-preto/55">carregando notas…</p>
       ) : notes.length === 0 ? (
-        <p className="text-xs italic text-perestroika-preto/40">nenhuma nota interna ainda</p>
+        <p className="text-xs italic text-perestroika-preto/60">nenhuma nota interna ainda</p>
       ) : (
         <ul className="space-y-2">
           {notes.map((n) => (

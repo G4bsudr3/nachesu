@@ -49,7 +49,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
             <MailWarning className="w-3.5 h-3.5" /> nudges de evasão
           </h3>
           {nudges.length === 0 ? (
-            <p className="text-xs italic text-perestroika-preto/40">nenhum nudge disparado</p>
+            <p className="text-xs italic text-perestroika-preto/60">nenhum nudge disparado</p>
           ) : (
             <ul className="space-y-1.5">
               {nudges.map((n) => (
@@ -75,7 +75,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
             <Bell className="w-3.5 h-3.5" /> notificações (90d)
           </h3>
           {notifications.length === 0 ? (
-            <p className="text-xs italic text-perestroika-preto/40">nenhuma notificação recente</p>
+            <p className="text-xs italic text-perestroika-preto/60">nenhuma notificação recente</p>
           ) : (
             <ul className="space-y-1.5 max-h-80 overflow-y-auto pr-1">
               {notifications.map((n) => (
@@ -115,7 +115,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
           )}
         </h3>
         {emails.length === 0 ? (
-          <p className="text-xs italic text-perestroika-preto/40">
+          <p className="text-xs italic text-perestroika-preto/60">
             nenhum e-mail saiu pra esse estudante ainda
           </p>
         ) : (

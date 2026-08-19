@@ -258,7 +258,7 @@ const AdminRisco = () => {
                           <td className="px-3 py-2 text-perestroika-preto">
                             {name}
                             {profile?.is_test && (
-                              <span className="ml-2 text-[10px] uppercase tracking-wide text-perestroika-preto/40">teste</span>
+                              <span className="ml-2 text-[10px] uppercase tracking-wide text-perestroika-preto/60">teste</span>
                             )}
                           </td>
                           <td className="px-3 py-2 hidden sm:table-cell text-perestroika-preto/70">{course?.title ?? "–"}</td>
@@ -325,10 +325,10 @@ const AdminRisco = () => {
                       return (
                         <tr key={`${a.user_id}-${a.course_id}`} className="font-body text-sm hover:bg-perestroika-preto/5 transition-colors">
                           <td className="px-3 py-2 text-perestroika-preto">
-                            <UserPlus className="inline-block h-3.5 w-3.5 mr-1.5 text-perestroika-preto/40" />
+                            <UserPlus className="inline-block h-3.5 w-3.5 mr-1.5 text-perestroika-preto/60" />
                             {name}
                             {profile?.is_test && (
-                              <span className="ml-2 text-[10px] uppercase tracking-wide text-perestroika-preto/40">teste</span>
+                              <span className="ml-2 text-[10px] uppercase tracking-wide text-perestroika-preto/60">teste</span>
                             )}
                           </td>
                           <td className="px-3 py-2 hidden sm:table-cell text-perestroika-preto/70">{course?.title ?? "–"}</td>

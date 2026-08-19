@@ -79,7 +79,7 @@ export const PillReflection = ({
         onChange={(e) => setText(e.target.value)}
         placeholder="escreve aqui sem filtro. ou aperta o microfone e fala."
         rows={5}
-        className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-4 py-3 font-body text-sm sm:text-base text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/60 transition-colors resize-y min-h-[120px]"
+        className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-4 py-3 font-body text-sm sm:text-base text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto/60 transition-colors resize-y min-h-[120px]"
         aria-label="sua reflexão"
         voiceAriaLabel="gravar sua reflexão por voz"
       />

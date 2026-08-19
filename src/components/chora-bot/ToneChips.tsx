@@ -12,7 +12,7 @@ interface ToneChipsProps {
 export const ToneChips = ({ value, onChange }: ToneChipsProps) => {
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/40 font-display">
+      <span className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60 font-display">
         tom
       </span>
       <div

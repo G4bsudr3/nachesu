@@ -448,7 +448,7 @@ const EletivaHome = () => {
                     : "tira dúvida de prompt, código, escopo."}
               </p>
             </div>
-            <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="h-4 w-4 text-perestroika-preto/60 group-hover:translate-x-1 transition-transform" />
           </Link>
 
           {(materialsCount ?? 0) > 0 && (
@@ -465,7 +465,7 @@ const EletivaHome = () => {
                 tudo que rola na eletiva: leitura, slide, link.
               </p>
             </div>
-            <ArrowRight className="h-4 w-4 text-perestroika-preto/40 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="h-4 w-4 text-perestroika-preto/60 group-hover:translate-x-1 transition-transform" />
           </Link>
           )}
         </section>

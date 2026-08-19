@@ -173,7 +173,7 @@ const zonaCopy: Record<Zona, { label: string; tone: string }> = {
   planoB: { label: "plano B pronto", tone: "bg-perestroika-laranja/15 text-perestroika-laranja border-perestroika-laranja/50" },
   monitorar: { label: "monitorar", tone: "bg-perestroika-preto/10 text-perestroika-preto/75 border-perestroika-preto/25" },
   aceitar: { label: "aceitar", tone: "bg-perestroika-preto/[0.04] text-perestroika-preto/55 border-perestroika-preto/15" },
-  vazio: { label: "categorize", tone: "bg-white text-perestroika-preto/40 border-perestroika-preto/15" },
+  vazio: { label: "categorize", tone: "bg-white text-perestroika-preto/60 border-perestroika-preto/15" },
 };
 
 export function PillSuposicoesRiscos({
@@ -522,7 +522,7 @@ function Field({
         </label>
         <span
           className={`font-body text-[10px] tabular-nums ${
-            ok ? "text-perestroika-preto/50" : "text-perestroika-preto/40"
+            ok ? "text-perestroika-preto/50" : "text-perestroika-preto/60"
           }`}
         >
           {len}/{min}

@@ -97,7 +97,7 @@ export function ModuloConclusaoSprintIdeacao({ moduleId }: Props) {
             <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">
               rodada {n}
             </p>
-            <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/40 mb-2">
+            <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/60 mb-2">
               {ROUND_LABEL[n]}
             </p>
             <p className="font-display text-3xl leading-none text-perestroika-preto tabular-nums">

@@ -72,7 +72,7 @@ export const ModulePill = ({
         )}
       </div>
       {state === "locked" && (
-        <Lock className="h-3.5 w-3.5 text-perestroika-preto/40 shrink-0" aria-hidden="true" />
+        <Lock className="h-3.5 w-3.5 text-perestroika-preto/60 shrink-0" aria-hidden="true" />
       )}
     </div>
   );

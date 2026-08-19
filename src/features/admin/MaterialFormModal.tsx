@@ -218,9 +218,9 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
               placeholder="o que é, pra que serve, por que vale a pena ler"
               rows={3}
               maxLength={280}
-              className="mt-1 w-full rounded-md border border-perestroika-preto/20 bg-perestroika-bege/70 px-3 py-2 font-body text-sm placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto"
+              className="mt-1 w-full rounded-md border border-perestroika-preto/20 bg-perestroika-bege/70 px-3 py-2 font-body text-sm placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto"
             />
-            <div className="mt-1 text-right font-body text-[10px] text-perestroika-preto/40">{description.length}/280</div>
+            <div className="mt-1 text-right font-body text-[10px] text-perestroika-preto/60">{description.length}/280</div>
           </div>
 
           {/* categoria */}

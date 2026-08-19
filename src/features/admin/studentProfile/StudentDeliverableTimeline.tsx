@@ -37,7 +37,7 @@ const Thread = ({ deliverableId }: { deliverableId: string }) => {
     return <p className="text-[11px] text-perestroika-preto/45">carregando conversa…</p>;
   }
   if (messages.length === 0) {
-    return <p className="text-[11px] italic text-perestroika-preto/40">sem mensagens</p>;
+    return <p className="text-[11px] italic text-perestroika-preto/60">sem mensagens</p>;
   }
   return (
     <ul className="space-y-2">

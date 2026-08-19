@@ -118,9 +118,9 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
               placeholder="conta a história em poucas linhas"
               maxLength={500}
               rows={4}
-              className="w-full rounded-md border border-perestroika-preto/15 bg-perestroika-bege/70 px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:ring-2 focus:ring-perestroika-preto/20"
+              className="w-full rounded-md border border-perestroika-preto/15 bg-perestroika-bege/70 px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:ring-2 focus:ring-perestroika-preto/20"
             />
-            <p className="mt-1 text-right font-body text-[10px] text-perestroika-preto/40">
+            <p className="mt-1 text-right font-body text-[10px] text-perestroika-preto/60">
               {description.length}/500
             </p>
           </div>

@@ -119,7 +119,7 @@ export const CartaCompleta = ({ data, embedded = false, actions, cardVisual }: C
         {!embedded && (
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 motion-safe:animate-bounce">
             <svg
-              className="w-6 h-6 text-perestroika-preto/40"
+              className="w-6 h-6 text-perestroika-preto/60"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
@@ -154,7 +154,7 @@ export const CartaCompleta = ({ data, embedded = false, actions, cardVisual }: C
                   </p>
                 ))
               ) : (
-                <p className="text-sm italic text-perestroika-preto/40">sem conteúdo ainda nesta seção.</p>
+                <p className="text-sm italic text-perestroika-preto/60">sem conteúdo ainda nesta seção.</p>
               )}
             </div>
           </section>
@@ -179,7 +179,7 @@ export const CartaCompleta = ({ data, embedded = false, actions, cardVisual }: C
               {data.full_text}
             </div>
           ) : (
-            <p className="text-sm italic text-perestroika-preto/40">mensagem ainda não escrita.</p>
+            <p className="text-sm italic text-perestroika-preto/60">mensagem ainda não escrita.</p>
           )}
         </div>
       </section>

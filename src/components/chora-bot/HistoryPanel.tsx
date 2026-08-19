@@ -123,7 +123,7 @@ export const HistoryPanel = ({
 
         <div className="px-5 py-3 space-y-3 border-b border-perestroika-preto/10">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-perestroika-preto/40" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-perestroika-preto/60" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -228,7 +228,7 @@ export const HistoryPanel = ({
                           </p>
                           <span
                             className={`shrink-0 text-[10px] font-display uppercase tracking-wider tabular-nums ${
-                              isActive ? "text-perestroika-bege/60" : "text-perestroika-preto/40"
+                              isActive ? "text-perestroika-bege/60" : "text-perestroika-preto/60"
                             }`}
                           >
                             {formatRelative(c.updated_at)}
@@ -256,7 +256,7 @@ export const HistoryPanel = ({
                         className={`shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${
                           isActive
                             ? "text-perestroika-bege/60 hover:text-perestroika-bege"
-                            : "text-perestroika-preto/40 hover:text-perestroika-vermelho"
+                            : "text-perestroika-preto/60 hover:text-perestroika-vermelho"
                         }`}
                       >
                         <Trash2 className="w-3.5 h-3.5" />

@@ -363,7 +363,7 @@ const ChoraBot = () => {
                 rows={1}
                 maxLength={MAX_PROMPT_LENGTH}
                 aria-label="pergunta pro tutor ia"
-                className="resize-none min-h-[44px] max-h-32 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-body text-perestroika-preto placeholder:text-perestroika-preto/40 px-2"
+                className="resize-none min-h-[44px] max-h-32 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-body text-perestroika-preto placeholder:text-perestroika-preto/60 px-2"
                 disabled={streaming}
               />
               <button
@@ -381,7 +381,7 @@ const ChoraBot = () => {
                   <Loader2 className="w-4 h-4 animate-spin text-perestroika-bege" />
                 ) : (
                   <ArrowUp
-                    className={`w-4 h-4 ${canSend ? "text-perestroika-bege" : "text-perestroika-preto/40"}`}
+                    className={`w-4 h-4 ${canSend ? "text-perestroika-bege" : "text-perestroika-preto/60"}`}
                   />
                 )}
               </button>

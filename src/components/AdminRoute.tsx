@@ -14,7 +14,7 @@ export const AdminRoute = ({ children }: { children: ReactNode }) => {
   if (authLoading || roleLoading) {
     return (
       <div className="min-h-dvh flex items-center justify-center bg-perestroika-bege">
-        <div className="font-display uppercase text-3xl text-perestroika-preto/40 animate-pulse">
+        <div className="font-display uppercase text-3xl text-perestroika-preto/60 animate-pulse">
           carregando...
         </div>
       </div>

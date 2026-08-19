@@ -255,7 +255,7 @@ const AdminNotificacoes = () => {
                           {badge.text}
                         </span>
                       ) : (
-                        <span className="text-perestroika-preto/40 text-[11px]">só in-app</span>
+                        <span className="text-perestroika-preto/60 text-[11px]">só in-app</span>
                       )}
                       {r.email_error && (
                         <p className="text-[10px] text-red-800/80 mt-1 max-w-xs truncate">

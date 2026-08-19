@@ -349,7 +349,7 @@ const PerUserTab = () => {
     <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4">
       <aside className="space-y-2">
         <div className="relative">
-          <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-perestroika-preto/40" />
+          <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-perestroika-preto/60" />
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}

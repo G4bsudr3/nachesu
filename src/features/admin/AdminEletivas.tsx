@@ -114,7 +114,7 @@ export function AdminEletivas() {
                       </span>
                     </AdminTD>
                     <AdminTD>
-                      <ChevronRight className="h-4 w-4 text-perestroika-preto/40" />
+                      <ChevronRight className="h-4 w-4 text-perestroika-preto/60" />
                     </AdminTD>
                   </AdminTR>
                 ))}

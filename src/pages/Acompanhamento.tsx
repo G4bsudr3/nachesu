@@ -193,7 +193,7 @@ function Gate({ onOk }: { onOk: (senha: string) => void }) {
           onChange={(e) => setSenha(e.target.value)}
           placeholder="senha"
           autoFocus
-          className="mt-6 w-full rounded-xl border-2 border-perestroika-preto bg-transparent px-4 py-3 font-body text-base text-perestroika-preto placeholder:text-perestroika-preto/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa"
+          className="mt-6 w-full rounded-xl border-2 border-perestroika-preto bg-transparent px-4 py-3 font-body text-base text-perestroika-preto placeholder:text-perestroika-preto/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa"
         />
         {erro && (
           <p className="font-body text-sm text-perestroika-vermelho mt-3" role="alert">
@@ -584,7 +584,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
       {/* filtros */}
       <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="relative flex-1 min-w-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/40" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-perestroika-preto/60" />
           <input
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
@@ -659,7 +659,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
       )}
 
       <div className="flex flex-wrap items-center gap-4 mt-5">
-        <span className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/40">
+        <span className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60">
           ordenar por
         </span>
         <OrdemBtn o="atividade">atividade</OrdemBtn>

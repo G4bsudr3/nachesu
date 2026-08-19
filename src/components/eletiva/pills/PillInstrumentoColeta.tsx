@@ -254,7 +254,7 @@ export function PillInstrumentoColeta({
                 <button
                   type="button"
                   onClick={() => removeDia(i)}
-                  className="text-perestroika-preto/40 hover:text-perestroika-vermelho"
+                  className="text-perestroika-preto/60 hover:text-perestroika-vermelho"
                   aria-label="remover dia"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -369,7 +369,7 @@ function Field({
           }`}
         />
       )}
-      <p className={`font-body text-[10px] tabular-nums text-right ${ok ? "text-perestroika-preto/50" : "text-perestroika-preto/40"}`}>
+      <p className={`font-body text-[10px] tabular-nums text-right ${ok ? "text-perestroika-preto/50" : "text-perestroika-preto/60"}`}>
         {len}/{min}
       </p>
     </div>

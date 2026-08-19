@@ -55,7 +55,7 @@ const MascoteLightbox = ({
                 className="max-h-[60vh] w-auto object-contain"
               />
             ) : (
-              <span className="font-display text-6xl uppercase text-perestroika-preto/40">
+              <span className="font-display text-6xl uppercase text-perestroika-preto/60">
                 {mascote.nome}
               </span>
             )}
@@ -179,7 +179,7 @@ export const MascoteSelector = ({
                   </span>
                 </>
               ) : (
-                <span className="font-display text-6xl uppercase text-perestroika-preto/40">
+                <span className="font-display text-6xl uppercase text-perestroika-preto/60">
                   {oficial.nome}
                 </span>
               )}
@@ -217,7 +217,7 @@ export const MascoteSelector = ({
 
         {outros.length > 0 && (
           <div className="mt-4">
-            <p className="mb-2 font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/40">
+            <p className="mb-2 font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/60">
               os que concorreram · clica pra ver grande
             </p>
             <div className="flex flex-wrap gap-3">
@@ -241,7 +241,7 @@ export const MascoteSelector = ({
                         {v} {v === 1 ? "voto" : "votos"}
                       </span>
                     )}
-                    <ZoomIn className="h-3.5 w-3.5 text-perestroika-preto/40 transition group-hover:text-perestroika-preto/80" />
+                    <ZoomIn className="h-3.5 w-3.5 text-perestroika-preto/60 transition group-hover:text-perestroika-preto/80" />
                   </button>
                 );
               })}
@@ -378,7 +378,7 @@ export const MascoteSelector = ({
                   {c.image_url ? (
                     <img src={c.image_url} alt={c.nome} className="h-full w-full object-contain p-4" />
                   ) : (
-                    <span className="font-display text-4xl uppercase text-perestroika-preto/40">{c.nome}</span>
+                    <span className="font-display text-4xl uppercase text-perestroika-preto/60">{c.nome}</span>
                   )}
                 </div>
                 <div className="flex flex-1 flex-col gap-3 border-t-2 border-perestroika-preto/10 p-5">
@@ -411,7 +411,7 @@ export const MascoteSelector = ({
                       isMine
                         ? "border-[#fe7b02] bg-[#fe7b02] text-white"
                         : jaVotou
-                          ? "border-perestroika-preto/20 text-perestroika-preto/40"
+                          ? "border-perestroika-preto/20 text-perestroika-preto/60"
                           : "border-perestroika-preto bg-perestroika-preto text-perestroika-bege hover:bg-transparent hover:text-perestroika-preto"
                     } disabled:cursor-not-allowed`}
                   >
@@ -546,7 +546,7 @@ export const MascoteSelector = ({
                 className="h-full w-full object-contain p-6"
               />
             ) : (
-              <span className="font-display text-6xl uppercase text-perestroika-preto/40">
+              <span className="font-display text-6xl uppercase text-perestroika-preto/60">
                 {active.nome}
               </span>
             )}

@@ -224,7 +224,7 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
                     <span className="text-[10px] uppercase tracking-wide text-perestroika-preto/55">
                       {m.author_role === "educator" ? (m.author_name ?? "educador") : "você"}
                     </span>
-                    <span className="text-[10px] text-perestroika-preto/40">
+                    <span className="text-[10px] text-perestroika-preto/60">
                       {new Date(m.created_at).toLocaleString("pt-BR", {
                         day: "2-digit",
                         month: "2-digit",
@@ -249,7 +249,7 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
                 autoFocus
               />
               <div className="mt-2 flex items-center justify-between">
-                <span className="text-[10px] text-perestroika-preto/40">{reply.length}/4000</span>
+                <span className="text-[10px] text-perestroika-preto/60">{reply.length}/4000</span>
                 <div className="flex gap-2">
                   <button
                     type="button"

@@ -103,7 +103,7 @@ export const PillPBL = ({
           onChange={(e) => setText(e.target.value)}
           placeholder="descreva sua abordagem, hipóteses, próximos passos. ou grave por voz."
           rows={6}
-          className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-4 py-3 font-body text-sm sm:text-base text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/60 transition-colors resize-y min-h-[140px]"
+          className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-4 py-3 font-body text-sm sm:text-base text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto/60 transition-colors resize-y min-h-[140px]"
           voiceAriaLabel="gravar sua resposta por voz"
         />
       </div>

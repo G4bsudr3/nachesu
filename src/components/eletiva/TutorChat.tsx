@@ -612,7 +612,7 @@ export const TutorChat = ({
               maxLength={2000}
               disabled={streaming}
               aria-busy={streaming}
-              className="flex-1 resize-none bg-transparent border-0 outline-none font-body text-sm placeholder:text-perestroika-preto/40 max-h-32 px-2 py-1.5 disabled:cursor-not-allowed"
+              className="flex-1 resize-none bg-transparent border-0 outline-none font-body text-sm placeholder:text-perestroika-preto/60 max-h-32 px-2 py-1.5 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
@@ -627,7 +627,7 @@ export const TutorChat = ({
               )}
             </button>
           </div>
-          <p className="text-[10px] text-perestroika-preto/40 mt-1.5 px-1 hidden sm:block">
+          <p className="text-[10px] text-perestroika-preto/60 mt-1.5 px-1 hidden sm:block">
             {streaming ? "esperando o tutor terminar..." : "shift + enter pra quebrar linha"}
           </p>
         </form>

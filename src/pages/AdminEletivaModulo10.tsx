@@ -152,7 +152,7 @@ function QuadCard({ label, hint, value }: { label: string; hint: string; value: 
       <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
         {label}
       </p>
-      <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/40 mb-1">
+      <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
         {hint}
       </p>
       <p className="font-display text-3xl leading-none text-perestroika-preto tabular-nums">{value}</p>

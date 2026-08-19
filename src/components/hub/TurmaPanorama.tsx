@@ -95,7 +95,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
             </p>
           )}
           {generatedAt && (
-            <p className="font-body text-xs uppercase tracking-wide text-perestroika-preto/40">
+            <p className="font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
               análise feita em {new Date(generatedAt).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}
             </p>
           )}
@@ -256,7 +256,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
                   <h4 className="font-display text-xl uppercase leading-tight text-perestroika-preto">
                     {c.nome}
                   </h4>
-                  <span className="font-display text-3xl leading-none text-perestroika-preto/40 tabular-nums">
+                  <span className="font-display text-3xl leading-none text-perestroika-preto/60 tabular-nums">
                     {c.count}
                   </span>
                 </div>
@@ -372,7 +372,7 @@ export const TurmaPanorama = ({ builders, levelByUser, aggregates, generatedAt, 
             <div className="flex flex-wrap gap-x-4 gap-y-1.5">
               {aggregates.top_cities.map((c) => (
                 <span key={c.city} className="font-body text-sm text-perestroika-preto/80">
-                  {c.city} <span className="text-perestroika-preto/40">{c.count}</span>
+                  {c.city} <span className="text-perestroika-preto/60">{c.count}</span>
                 </span>
               ))}
             </div>

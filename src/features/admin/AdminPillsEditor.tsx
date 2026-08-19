@@ -521,7 +521,7 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
         title="arrasta pra reordenar"
         {...attributes}
         {...listeners}
-        className="flex-shrink-0 inline-flex items-center justify-center w-6 h-12 rounded text-perestroika-preto/40 hover:text-perestroika-preto hover:bg-perestroika-preto/10 cursor-grab active:cursor-grabbing touch-none"
+        className="flex-shrink-0 inline-flex items-center justify-center w-6 h-12 rounded text-perestroika-preto/60 hover:text-perestroika-preto hover:bg-perestroika-preto/10 cursor-grab active:cursor-grabbing touch-none"
       >
         <GripVertical className="w-4 h-4" />
       </button>

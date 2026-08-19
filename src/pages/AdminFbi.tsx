@@ -132,7 +132,7 @@ const AdminFbi = () => {
                   () => toast.error("não consegui copiar"),
                 );
               }}
-              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-perestroika-preto/40 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-perestroika-preto/60 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
             >
               <Link2 className="w-4 h-4" />
             </button>

@@ -52,7 +52,7 @@ export const StudentMessageComposer = ({ userId }: Props) => {
             value={subject}
             onChange={(e) => setSubject(e.target.value.slice(0, 200))}
             placeholder="ex: gostei demais da sua entrega"
-            className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/45"
+            className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto/45"
           />
         </div>
 
@@ -65,9 +65,9 @@ export const StudentMessageComposer = ({ userId }: Props) => {
             onChange={(e) => setBody(e.target.value.slice(0, 4000))}
             rows={6}
             placeholder="escreva direto, primeira pessoa, sem corporativês"
-            className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm text-perestroika-preto placeholder:text-perestroika-preto/40 focus:outline-none focus:border-perestroika-preto/45 resize-y"
+            className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto/45 resize-y"
           />
-          <p className="text-[10px] text-perestroika-preto/40 mt-1 text-right">
+          <p className="text-[10px] text-perestroika-preto/60 mt-1 text-right">
             {body.length}/4000
           </p>
         </div>
