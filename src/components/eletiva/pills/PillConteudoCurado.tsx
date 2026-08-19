@@ -118,13 +118,14 @@ export function PillConteudoCurado({
     return (schema.questions ?? []).every((q) => {
       if (q.type === "long_text") {
         const v = answers[q.id]?.trim() ?? "";
-        return v.length >= (q.min_chars ?? 0);
+        return v.length >= minChars(q);
       }
       if (q.type === "single_choice") {
         return (answers[q.id]?.trim() ?? "").length > 0;
       }
       // iceberg_four_levels: os 4 sub-campos precisam do mínimo
-      const min = q.min_chars ?? 0;
+      const min = minChars(q);
+
       return ICEBERG_LEVELS.every((lvl) => {
         const v = answers[`${q.id}::${lvl.id}`]?.trim() ?? "";
         return v.length >= min;
