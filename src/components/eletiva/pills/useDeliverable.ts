@@ -157,10 +157,13 @@ export function useAutoSaveField<T>(opts: {
   const attemptRef = useRef(0);
   const inFlightValue = useRef<T>(value);
 
-  const sameAsInitial = useMemo(
-    () => JSON.stringify(value) === JSON.stringify(initialRef.current),
-    [value],
-  );
+  // serializa o valor pra comparar por conteúdo, não por identidade.
+  // sem isso, um objeto literal novo a cada render dispara o efeito em loop.
+  const valueKey = JSON.stringify(value);
+  const initialKey = useMemo(() => JSON.stringify(initialRef.current), []);
+  const sameAsInitial = valueKey === initialKey;
+  const latestValue = useRef(value);
+  latestValue.current = value;
 
   const runSave = async (attempt: number, payloadValue: T) => {
     attemptRef.current = attempt;
@@ -232,6 +235,7 @@ export function useAutoSaveField<T>(opts: {
 
   useEffect(() => {
     if (sameAsInitial) return;
+    const value = latestValue.current;
     inFlightValue.current = value;
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
     if (retryTimer.current) {
@@ -246,7 +250,7 @@ export function useAutoSaveField<T>(opts: {
       if (debounceTimer.current) clearTimeout(debounceTimer.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, field, debounceMs, sameAsInitial]);
+  }, [valueKey, field, debounceMs, sameAsInitial]);
 
   // flush imediato quando a aba some / a pessoa recarrega:
   // dispara o save (que espelha em localStorage antes de ir pra rede),
