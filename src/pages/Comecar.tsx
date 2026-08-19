@@ -179,7 +179,7 @@ const Comecar = () => {
           </Link>
           <p className="font-body text-xs sm:text-sm text-perestroika-preto/65">
             já tem matrícula?{" "}
-            <Link to="/auth" className="underline underline-offset-4 hover:text-perestroika-preto">
+            <Link to="/auth" className="text-link hover:text-perestroika-preto">
               entrar
             </Link>
           </p>

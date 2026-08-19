@@ -589,7 +589,7 @@ const Index = () => {
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setActiveTab(key)}
-                  className="relative z-10 px-4 sm:px-5 py-2 rounded-full font-body text-xs sm:text-sm uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                  className="relative z-10 px-4 sm:px-5 py-2 min-h-11 rounded-full font-body text-xs sm:text-sm uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
                   style={{ color: isActive ? "#f2e4d8" : undefined }}
                 >
                   {isActive && (
