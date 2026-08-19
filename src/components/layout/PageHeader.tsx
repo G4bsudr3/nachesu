@@ -62,7 +62,7 @@ export const PageHeader = ({
     <Link
       to={back.to}
       aria-label={backLabel}
-      className="inline-flex items-center gap-1.5 sm:gap-2 min-h-11 px-1 font-body text-sm uppercase tracking-wide hover:gap-2 sm:hover:gap-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
+      className="inline-flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 min-h-11 min-w-11 px-1 font-body text-sm uppercase tracking-wide hover:gap-2 sm:hover:gap-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege rounded"
     >
       <ArrowLeft className="h-4 w-4 shrink-0" />
       <span className="hidden sm:inline truncate">{backLabel}</span>

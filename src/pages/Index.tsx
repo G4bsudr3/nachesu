@@ -483,7 +483,7 @@ const Index = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`linkedin de ${f.nick}`}
-                        className="text-muted-foreground hover:text-perestroika-preto transition-colors"
+                        className="inline-flex items-center justify-center h-11 w-11 -m-3 rounded-full text-muted-foreground hover:text-perestroika-preto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
                       >
                         <Linkedin className="w-4 h-4" />
                       </a>
@@ -589,7 +589,7 @@ const Index = () => {
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setActiveTab(key)}
-                  className="relative z-10 px-4 sm:px-5 py-2 rounded-full font-body text-xs sm:text-sm uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+                  className="relative z-10 px-4 sm:px-5 py-2 min-h-11 rounded-full font-body text-xs sm:text-sm uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
                   style={{ color: isActive ? "#f2e4d8" : undefined }}
                 >
                   {isActive && (
@@ -754,7 +754,7 @@ const Index = () => {
 
           <p className="font-body text-sm text-muted-foreground max-w-md">
             já tem matrícula?{" "}
-            <Link to="/auth" className="underline underline-offset-4 hover:text-perestroika-preto">
+            <Link to="/auth" className="text-link hover:text-perestroika-preto">
               entrar direto
             </Link>
           </p>
