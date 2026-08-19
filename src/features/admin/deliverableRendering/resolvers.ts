@@ -242,7 +242,7 @@ function resolveChecklistPacto(
 
 type CuradoQuestion =
   | { id: string; type: "long_text"; label: string }
-  | { id: string; type: "single_choice"; label: string; options: { label: string; value: string }[] };
+  | { id: string; type: "single_choice"; label: string; options: RawOption[] };
 
 function resolveCuratedContent(
   pill: PillForResolve,
@@ -255,7 +255,7 @@ function resolveCuratedContent(
     const a = answers[q.id];
     if (!isFilled(a)) return { kind: "empty", question: q.label };
     if (q.type === "single_choice") {
-      const opt = q.options.find((o) => o.value === a);
+      const opt = normOptions(q.options).find((o) => o.value === a);
       return {
         kind: "choice",
         question: q.label,
@@ -272,14 +272,14 @@ type QuizQuestion =
       id: string;
       type: "single_choice";
       label: string;
-      options: { label: string; value: string }[];
+      options: RawOption[];
       correct?: string[];
     }
   | {
       id: string;
       type: "multi_choice";
       label: string;
-      options: { label: string; value: string }[];
+      options: RawOption[];
       correct?: string[];
     }
   | { id: string; type: "long_text"; label: string };
@@ -299,12 +299,14 @@ function resolveQuiz(
       return { kind: "text", question: q.label, answer: String(a) };
     }
 
+    const opts = normOptions(q.options);
+    const correctVals = correctValues(q);
+
     if (q.type === "single_choice") {
       const val = String(a);
-      const opt = q.options.find((o) => o.value === val);
-      const correctVals = q.correct ?? [];
+      const opt = opts.find((o) => o.value === val);
       const correctLabel = correctVals
-        .map((cv) => q.options.find((o) => o.value === cv)?.label ?? cv)
+        .map((cv) => opts.find((o) => o.value === cv)?.label ?? cv)
         .join(", ");
       return {
         kind: "choice",
@@ -318,7 +320,6 @@ function resolveQuiz(
 
     // multi
     const vals = Array.isArray(a) ? a : [String(a)];
-    const correctVals = q.correct ?? [];
     const correctSet = new Set(correctVals);
     const isCorrect =
       correctVals.length > 0 &&
@@ -329,16 +330,17 @@ function resolveQuiz(
       question: q.label,
       answers: vals.map((v) => ({
         value: v,
-        label: q.options.find((o) => o.value === v)?.label ?? v,
+        label: opts.find((o) => o.value === v)?.label ?? v,
       })),
       isCorrect: correctVals.length > 0 ? isCorrect : undefined,
       correctLabels:
         correctVals.length > 0
-          ? correctVals.map((cv) => q.options.find((o) => o.value === cv)?.label ?? cv)
+          ? correctVals.map((cv) => opts.find((o) => o.value === cv)?.label ?? cv)
           : undefined,
     };
   });
 }
+
 
 type RadarItem = {
   id: string;
