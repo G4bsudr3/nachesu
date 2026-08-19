@@ -440,7 +440,7 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={submitting}
-                    className="w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/40 transition-colors"
+                    className="w-full pl-11 pr-14 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/40 transition-colors"
                   />
                   <button
                     type="button"
