@@ -5,6 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import {
+  normOptions,
+  correctValues,
+  wrongFeedback,
+  minChars,
+  optionRowClass,
+  type RawOption,
+} from "./choiceSchema";
 
 type Card = {
   id: string;
@@ -21,17 +29,20 @@ type QuestionLong = {
   type: "long_text";
   label: string;
   min_chars?: number;
+  min_length?: number;
 };
 
 type QuestionSingle = {
   id: string;
   type: "single_choice";
   label: string;
-  options: { label: string; value: string }[];
+  options: RawOption[];
   correct?: string[];
   feedback_correct?: string;
   feedback_wrong?: string;
+  feedback_incorrect?: string;
 };
+
 
 const ICEBERG_LEVELS = [
   { id: "eventos", label: "eventos", hint: "o que se vê" },
@@ -107,13 +118,14 @@ export function PillConteudoCurado({
     return (schema.questions ?? []).every((q) => {
       if (q.type === "long_text") {
         const v = answers[q.id]?.trim() ?? "";
-        return v.length >= (q.min_chars ?? 0);
+        return v.length >= minChars(q);
       }
       if (q.type === "single_choice") {
         return (answers[q.id]?.trim() ?? "").length > 0;
       }
       // iceberg_four_levels: os 4 sub-campos precisam do mínimo
-      const min = q.min_chars ?? 0;
+      const min = minChars(q);
+
       return ICEBERG_LEVELS.every((lvl) => {
         const v = answers[`${q.id}::${lvl.id}`]?.trim() ?? "";
         return v.length >= min;
@@ -189,7 +201,8 @@ export function PillConteudoCurado({
         {(schema.questions ?? []).map((q, idx) => {
           const v = answers[q.id] ?? "";
           if (q.type === "long_text") {
-            const min = q.min_chars ?? 0;
+            const min = minChars(q);
+
             const remaining = Math.max(0, min - v.trim().length);
             return (
               <div key={q.id} className="space-y-2">
@@ -267,8 +280,10 @@ export function PillConteudoCurado({
 
           // single_choice
           const chosen = v;
-          const isCorrect = (q.correct ?? []).includes(chosen);
-          const showFeedback = chosen.length > 0 && (q.correct?.length ?? 0) > 0;
+          const opts = normOptions(q.options);
+          const corrects = correctValues(q);
+          const isCorrect = corrects.includes(chosen);
+          const showFeedback = chosen.length > 0 && corrects.length > 0;
           const showTurmaStats = turmaStats?.field_id === q.id && !!turmaQuery.data;
           const turmaTotal = turmaQuery.data?.total ?? 0;
           const turmaCounts = turmaQuery.data?.counts ?? {};
@@ -288,14 +303,14 @@ export function PillConteudoCurado({
                 </p>
               )}
               <div className="space-y-1.5">
-                {q.options.map((opt) => {
+                {opts.map((opt) => {
                   const checked = v === opt.value;
                   const optCount = turmaCounts[opt.value] ?? 0;
                   const optPct = showTurmaStats && turmaTotal > 0 ? Math.round((optCount / turmaTotal) * 100) : 0;
                   return (
                     <label
                       key={opt.value}
-                      className={`flex items-start gap-3 rounded-xl border-2 p-3 cursor-pointer transition-colors ${
+                      className={`${optionRowClass} ${
                         checked
                           ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
                           : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
@@ -309,6 +324,7 @@ export function PillConteudoCurado({
                         onChange={() => setAnswers((prev) => ({ ...prev, [q.id]: opt.value }))}
                         className="sr-only"
                       />
+
                       <span
                         className={`mt-0.5 h-4 w-4 flex-shrink-0 rounded-full border-2 ${
                           checked ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/40"
@@ -358,7 +374,7 @@ export function PillConteudoCurado({
                     <X className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: "#fd4644" }} aria-hidden />
                   )}
                   <span className="whitespace-pre-wrap">
-                    {isCorrect ? q.feedback_correct : q.feedback_wrong}
+                    {isCorrect ? q.feedback_correct : wrongFeedback(q)}
                   </span>
                 </div>
               )}

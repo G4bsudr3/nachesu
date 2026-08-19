@@ -3,25 +3,35 @@ import { ArrowRight, Check, X } from "lucide-react";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import {
+  normOptions,
+  correctValues,
+  wrongFeedback,
+  minChars,
+  optionRowClass,
+  type RawOption,
+} from "./choiceSchema";
 
 type SingleQ = {
   id: string;
   type: "single_choice";
   label: string;
-  options: { label: string; value: string }[];
-  correct?: string[]; // 1 valor
+  options: RawOption[];
+  correct?: string[];
   feedback_correct?: string;
   feedback_wrong?: string;
+  feedback_incorrect?: string;
 };
 
 type MultiQ = {
   id: string;
   type: "multi_choice";
   label: string;
-  options: { label: string; value: string }[];
+  options: RawOption[];
   correct?: string[];
   feedback_correct?: string;
   feedback_wrong?: string;
+  feedback_incorrect?: string;
 };
 
 type LongQ = {
@@ -29,11 +39,13 @@ type LongQ = {
   type: "long_text";
   label: string;
   min_chars?: number;
+  min_length?: number;
   no_feedback?: boolean;
   saved_for?: string;
 };
 
 type Question = SingleQ | MultiQ | LongQ;
+
 
 type Schema = {
   type?: "quiz";
@@ -94,7 +106,7 @@ export function PillQuiz({
       const a = answers[q.id];
       if (q.type === "long_text") {
         const v = (typeof a === "string" ? a : "").trim();
-        return v.length >= (q.min_chars ?? 0);
+        return v.length >= minChars(q);
       }
       // single/multi: tem que estar verificada
       if (!checked[q.id]) return false;
@@ -106,13 +118,15 @@ export function PillQuiz({
   const renderFeedback = (q: SingleQ | MultiQ) => {
     if (!checked[q.id]) return null;
     const a = answers[q.id];
+    const corrects = correctValues(q);
     let isRight = false;
     if (q.type === "single_choice") {
-      isRight = typeof a === "string" && (q.correct ?? []).includes(a);
+      isRight = typeof a === "string" && corrects.includes(a);
     } else {
-      isRight = Array.isArray(a) && sameSet(a, q.correct ?? []);
+      isRight = Array.isArray(a) && sameSet(a, corrects);
     }
-    const text = isRight ? q.feedback_correct : q.feedback_wrong;
+    const text = isRight ? q.feedback_correct : wrongFeedback(q);
+
     return (
       <div
         className="mt-2 rounded-xl border-2 p-3 font-body text-sm flex items-start gap-2 text-perestroika-preto"
@@ -151,7 +165,7 @@ export function PillQuiz({
         {(schema.questions ?? []).map((q, idx) => {
           if (q.type === "long_text") {
             const v = typeof answers[q.id] === "string" ? (answers[q.id] as string) : "";
-            const min = q.min_chars ?? 0;
+            const min = minChars(q);
             const remaining = Math.max(0, min - v.trim().length);
             return (
               <li key={q.id} className="space-y-2">
@@ -185,17 +199,18 @@ export function PillQuiz({
                     {q.label}
                   </legend>
                   <div className="space-y-1.5">
-                    {q.options.map((opt) => {
+                    {normOptions(q.options).map((opt) => {
                       const sel = v === opt.value;
                       return (
                         <label
                           key={opt.value}
-                          className={`flex items-start gap-3 rounded-xl border-2 p-3 cursor-pointer transition-colors ${
+                          className={`${optionRowClass} ${
                             sel
                               ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
                               : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
                           }`}
                         >
+
                           <input
                             type="radio"
                             name={q.id}
@@ -244,17 +259,18 @@ export function PillQuiz({
                   marque todas que se aplicam
                 </p>
                 <div className="space-y-1.5">
-                  {q.options.map((opt) => {
+                  {normOptions(q.options).map((opt) => {
                     const sel = arr.includes(opt.value);
                     return (
                       <label
                         key={opt.value}
-                        className={`flex items-start gap-3 rounded-xl border-2 p-3 cursor-pointer transition-colors ${
+                        className={`${optionRowClass} ${
                           sel
                             ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
                             : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
                         }`}
                       >
+
                         <input
                           type="checkbox"
                           checked={sel}
