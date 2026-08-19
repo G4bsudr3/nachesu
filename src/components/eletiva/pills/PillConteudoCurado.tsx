@@ -201,7 +201,8 @@ export function PillConteudoCurado({
         {(schema.questions ?? []).map((q, idx) => {
           const v = answers[q.id] ?? "";
           if (q.type === "long_text") {
-            const min = q.min_chars ?? 0;
+            const min = minChars(q);
+
             const remaining = Math.max(0, min - v.trim().length);
             return (
               <div key={q.id} className="space-y-2">
