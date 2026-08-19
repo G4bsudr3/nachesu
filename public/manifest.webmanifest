@@ -1,0 +1,26 @@
+{
+  "name": "nachesu",
+  "short_name": "nachesu",
+  "description": "eletivas de ia + economia circular pro ensino médio",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2e5d9",
+  "theme_color": "#f2e5d9",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

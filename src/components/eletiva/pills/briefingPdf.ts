@@ -1,5 +1,3 @@
-import { jsPDF } from "jspdf";
-
 export type BriefingData = {
   titulo?: string;
   hmw?: string;
@@ -35,8 +33,11 @@ function fluxoLabel(k?: string) {
 /**
  * Gera o PDF do briefing da aula 5 (economia circular).
  * Layout A4 retrato, 1 página, paleta Duduo. Devolve um Blob pronto pra download ou upload.
+ * jsPDF é importado sob demanda (~163KB gzip) pra não pesar na rota de módulo —
+ * só carrega quando o aluno realmente exporta o PDF.
  */
-export function generateBriefingPdf(data: BriefingData): Blob {
+export async function generateBriefingPdf(data: BriefingData): Promise<Blob> {
+  const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const w = 210;
   const h = 297;

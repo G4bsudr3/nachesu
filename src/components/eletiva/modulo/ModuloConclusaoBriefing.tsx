@@ -56,9 +56,9 @@ export function ModuloConclusaoBriefing({ moduleId }: Props) {
 
   const briefing = data?.briefing;
 
-  const downloadPdf = () => {
+  const downloadPdf = async () => {
     if (!briefing) return;
-    const blob = generateBriefingPdf({
+    const blob = await generateBriefingPdf({
       titulo: briefing.titulo,
       hmw: briefing.hmw,
       fluxo_principal: briefing.fluxo_principal,

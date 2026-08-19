@@ -306,8 +306,8 @@ export function PillQuatroFiltrosBriefing({
     data_iso: value.gerado_em ?? new Date().toISOString(),
   });
 
-  const downloadPdf = () => {
-    const blob = generateBriefingPdf(buildPdfData());
+  const downloadPdf = async () => {
+    const blob = await generateBriefingPdf(buildPdfData());
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
