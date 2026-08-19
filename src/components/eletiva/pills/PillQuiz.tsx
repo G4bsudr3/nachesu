@@ -3,25 +3,35 @@ import { ArrowRight, Check, X } from "lucide-react";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import { TextareaWithVoice } from "@/components/eletiva/TextareaWithVoice";
+import {
+  normOptions,
+  correctValues,
+  wrongFeedback,
+  minChars,
+  optionRowClass,
+  type RawOption,
+} from "./choiceSchema";
 
 type SingleQ = {
   id: string;
   type: "single_choice";
   label: string;
-  options: { label: string; value: string }[];
-  correct?: string[]; // 1 valor
+  options: RawOption[];
+  correct?: string[];
   feedback_correct?: string;
   feedback_wrong?: string;
+  feedback_incorrect?: string;
 };
 
 type MultiQ = {
   id: string;
   type: "multi_choice";
   label: string;
-  options: { label: string; value: string }[];
+  options: RawOption[];
   correct?: string[];
   feedback_correct?: string;
   feedback_wrong?: string;
+  feedback_incorrect?: string;
 };
 
 type LongQ = {
@@ -29,11 +39,13 @@ type LongQ = {
   type: "long_text";
   label: string;
   min_chars?: number;
+  min_length?: number;
   no_feedback?: boolean;
   saved_for?: string;
 };
 
 type Question = SingleQ | MultiQ | LongQ;
+
 
 type Schema = {
   type?: "quiz";
