@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PanelHeader } from "./PanelHeader";
 
 type Sample = {
   nickname: string;
@@ -75,17 +76,7 @@ export default function AdminEletivaModulo17() {
   return (
     <div className="space-y-8">
       <div className="space-y-8">
-        <header className="space-y-3">
-          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-            economia circular · módulo 17 · mãos à obra
-          </p>
-          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
-            registros de experimento
-          </h2>
-          <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
-            quantos estudantes estão em campo, quantos já entregaram resultado e como se saíram frente ao critério.
-          </p>
-        </header>
+        <PanelHeader title={"registros de experimento"} description={"quantos estudantes estão em campo, quantos já entregaram resultado e como se saíram frente ao critério."} />
 
         <section className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
           <KpiCard label="matriculados" value={kpis?.total_students ?? 0} />
