@@ -63,7 +63,7 @@ export function CorfSignature({ accent, letters = DEFAULT_LETTERS, caption }: Pr
                   duration: 0.55,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="block font-body text-xs sm:text-sm uppercase tracking-[0.18em] text-perestroika-preto/80"
+                className="block font-body text-[11px] sm:text-sm uppercase tracking-[0.06em] sm:tracking-[0.18em] text-perestroika-preto/80"
               >
                 {item.word}
               </motion.span>
