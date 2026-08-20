@@ -25,6 +25,7 @@ const ACCESS_STYLE: Record<FlowNode["access"], string> = {
 const AdminFluxo = () => {
   const { data: metrics } = useFluxoMetrics();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const selected = selectedId ? nodeById(selectedId) : null;
 
   const gargalos = useMemo(() => {
