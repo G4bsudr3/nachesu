@@ -14,6 +14,7 @@ import {
   type FlowNode,
 } from "@/features/admin/fluxo/flowMap";
 import { useFluxoMetrics } from "@/features/admin/fluxo/useFluxoMetrics";
+import { FluxoConnections } from "@/features/admin/fluxo/FluxoConnections";
 
 const ACCESS_STYLE: Record<FlowNode["access"], string> = {
   público: "bg-perestroika-azul/15 text-perestroika-preto",
