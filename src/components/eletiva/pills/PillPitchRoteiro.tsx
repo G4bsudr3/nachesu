@@ -429,6 +429,7 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  const [link, setLink] = useState("");
 
   // gravação
   const [recording, setRecording] = useState(false);
