@@ -232,18 +232,30 @@ export function PillMiniDossie({ pillId, schema, accent, initial, save, onComple
         )}
       </section>
 
-      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/10">
-        <SaveIndicator status={status} />
-        <button
-          type="button"
-          onClick={() => !isCompleted && value.gerado_em && onComplete()}
-          disabled={!value.gerado_em || isCompleted || isCompleting}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-display uppercase text-sm text-perestroika-bege transition-transform disabled:opacity-40 disabled:cursor-not-allowed hover:-translate-y-0.5"
-          style={{ backgroundColor: isCompleted ? "#090909" : accent }}
-        >
-          {isCompleted ? <><Check className="h-4 w-4" aria-hidden /> concluído</> : <>concluir eletiva</>}
-        </button>
+      <div className="pt-2 border-t border-perestroika-preto/10">
+        <div className="flex justify-end">
+          <SaveIndicator status={status} />
+        </div>
+        {/* mesma barra de entrega das demais pílulas: checklist nomeado,
+            mensagem do que falta e vocabulário único nas duas eletivas. */}
+        <EntregaChecklist
+          items={[
+            {
+              id: "dossie",
+              label: "mini-dossiê gerado",
+              done: !!value.gerado_em,
+            },
+          ]}
+          accent={accent}
+          heading="checklist da entrega"
+          ctaLabel="entregar eletiva"
+          completedLabel="eletiva entregue"
+          isCompleted={isCompleted}
+          isCompleting={isCompleting}
+          onComplete={onComplete}
+        />
       </div>
+
     </div>
   );
 }
