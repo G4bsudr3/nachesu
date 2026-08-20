@@ -252,7 +252,28 @@ const AdminModuloDetalhe = () => {
           <TabsTrigger value="turma" className="uppercase tracking-wide text-xs">
             turma ({enrolled.length})
           </TabsTrigger>
+          {ExercicioPanel && (
+            <TabsTrigger value="exercicio" className="uppercase tracking-wide text-xs">
+              painel do exercício
+            </TabsTrigger>
+          )}
         </TabsList>
+
+        {ExercicioPanel && (
+          <TabsContent value="exercicio">
+            <Suspense
+              fallback={
+                <p className="font-body text-sm text-perestroika-preto/60 py-8">
+                  carregando painel do exercício...
+                </p>
+              }
+            >
+              <ExercicioPanel />
+            </Suspense>
+          </TabsContent>
+        )}
+
+
 
         <TabsContent value="abertura">
           <AberturaVideoManager
