@@ -10,7 +10,7 @@ interface Props extends Omit<TextareaProps, "value" | "onChange"> {
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   /** rótulo curto pra acessibilidade do mic. ex: "gravar reflexão por voz" */
   voiceAriaLabel?: string;
-  /** padding-right extra pra acomodar o mic. default `pr-14`. */
+  /** padding-right extra pra acomodar o mic. default `pr-16`. */
   padRight?: string;
 }
 
@@ -25,7 +25,7 @@ export const TextareaWithVoice = forwardRef<HTMLTextAreaElement, Props>(function
     onChange,
     className = "",
     voiceAriaLabel,
-    padRight = "pr-14",
+    padRight = "pr-16",
     ...rest
   },
   ref,
@@ -83,7 +83,7 @@ export const TextareaWithVoice = forwardRef<HTMLTextAreaElement, Props>(function
         className={`${className} ${padRight}`}
         {...rest}
       />
-      <div className="pointer-events-none absolute bottom-2 right-2">
+      <div className="pointer-events-none absolute bottom-3 right-3">
         <div className="pointer-events-auto">
           <VoiceInput
             onAudioReady={handleAudio}
