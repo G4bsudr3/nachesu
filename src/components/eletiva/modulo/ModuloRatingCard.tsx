@@ -101,17 +101,20 @@ export const ModuloRatingCard = ({
     );
   }
 
-  if (dismissed && !forceOpen && !editing) return null;
+  if (dismissed && !forceOpen && !editing && !inline) return null;
 
   const onPick = async (n: number) => {
     setPicked(n);
+    onAnswered?.(n);
     try {
       await save({ rating: n });
     } catch {
       toast.error("não deu pra salvar agora, tenta de novo");
       setPicked(null);
+      onAnswered?.(null);
     }
   };
+
 
   const onSendComment = async () => {
     try {
