@@ -49,6 +49,7 @@ const EletivaHome = lazy(() => import("./pages/EletivaHome.tsx"));
 const CertificadoEletiva = lazy(() => import("./pages/CertificadoEletiva.tsx"));
 const Notificacoes = lazy(() => import("./pages/Notificacoes.tsx"));
 const AdminRisco = lazy(() => import("./pages/AdminRisco.tsx"));
+const AdminFluxo = lazy(() => import("./pages/AdminFluxo.tsx"));
 const AdminNotificacoes = lazy(() => import("./pages/AdminNotificacoes.tsx"));
 const AdminTurma = lazy(() => import("./pages/AdminTurma.tsx"));
 const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx"));
@@ -274,6 +275,7 @@ const App = () => (
               >
                 <Route path="/admin" element={<AdminHome />} />
                 <Route path="/admin/risco" element={<AdminRisco />} />
+                <Route path="/admin/fluxo" element={<AdminFluxo />} />
                 <Route path="/admin/notificacoes" element={<AdminNotificacoes />} />
                 <Route path="/admin/turma/:courseId" element={<AdminTurma />} />
                 <Route path="/admin/aluno/:userId" element={<AdminStudentProfile />} />
