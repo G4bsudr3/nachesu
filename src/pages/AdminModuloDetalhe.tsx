@@ -188,6 +188,8 @@ const AdminModuloDetalhe = () => {
       >
         <Link to="/admin" className="hover:text-perestroika-preto">admin</Link>
         <ChevronRight className="w-3 h-3" />
+        <Link to="/admin/eletivas" className="hover:text-perestroika-preto">eletivas</Link>
+        <ChevronRight className="w-3 h-3" />
         <Link to={`/admin/eletiva/${slug}/modulos`} className="hover:text-perestroika-preto">
           {course.data.title}
         </Link>
@@ -196,6 +198,7 @@ const AdminModuloDetalhe = () => {
           módulo {String(module.number).padStart(2, "0")}
         </span>
       </nav>
+
 
       <header
         className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-5 mb-6 flex flex-wrap items-start gap-4"
