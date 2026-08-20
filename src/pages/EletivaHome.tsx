@@ -46,10 +46,10 @@ const ModulesByTrail = ({
   return (
     <section
       aria-labelledby="modulos-title"
-      className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/55 p-6 sm:p-8"
+      className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/55 p-6 sm:p-8 space-y-8"
     >
-      <header className="mb-8">
-        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-2">
+      <header className="space-y-2">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55">
           O MAPA DA ELETIVA
         </p>
         <h2 id="modulos-title" className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
@@ -67,9 +67,9 @@ const ModulesByTrail = ({
           const done = trailModules.filter((m) => snapshot.progressByModuleId[m.id]?.completed_at).length;
           const trailPct = Math.round((done / trailModules.length) * 100);
           return (
-            <div key={trail.id}>
-              <div className="mb-4">
-                <div className="flex items-baseline justify-between gap-3 mb-2">
+            <div key={trail.id} className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between gap-3">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span aria-hidden className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
                     <h3 className="font-display uppercase text-lg sm:text-xl leading-none truncate">
