@@ -129,7 +129,13 @@ export const AberturaVideoManager = ({ courseId, slug, moduleId, moduleNumber, a
     if (!current) return;
     setTitle(current.title ?? "");
     setTranscript((current.schema.transcript as string) ?? "");
-    setVideoUrl((current.schema.video_url as string) ?? "");
+    setVideoUrl(
+      (current.schema.video_url as string) ||
+        (current.schema.embed_url as string) ||
+        current.video_url ||
+        "",
+    );
+
   }, [current?.pill_id, current?.module_id]);
 
   if (isLoading) {
