@@ -78,7 +78,7 @@ const HOOK_TIPOS: Array<{ id: NonNullable<PitchRoteiroValue["hook_tipo"]>; label
 const HOOK_PROIBIDOS = ["olá", "ola", "meu nome é", "meu nome e", "hoje vou apresentar", "hoje eu vou apresentar", "bom dia meu nome", "boa tarde meu nome"];
 
 const BUCKET = "radar-evidences";
-const MAX_MB = 100;
+const MAX_MB = 50;
 const MAX_DUR_S = 200; // 3 min + folga
 
 function countWords(s: string) {
