@@ -121,6 +121,12 @@ export default {
         "gradient-small": "var(--gradient-primary)",
         "gradient-screen": "var(--gradient-hero)",
       },
+      boxShadow: {
+        card: "0 2px 0 0 hsl(var(--foreground) / 0.12)",
+        lift: "0 6px 0 0 hsl(var(--foreground) / 0.14)",
+        float: "0 18px 40px -24px hsl(var(--foreground) / 0.45)",
+        glow: "0 10px 30px -12px hsl(var(--primary) / 0.45)",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 4px)",
