@@ -312,6 +312,7 @@ export function PillPBLEstruturado({
         {c.por_que && (
           <FieldTextarea
             label={c.por_que.label}
+            help={c.por_que.help}
             optional={c.por_que.optional}
             placeholder={c.por_que.placeholder}
             value={value.por_que ?? ""}
@@ -322,6 +323,7 @@ export function PillPBLEstruturado({
         {c.aprendi && (
           <FieldTextarea
             label={c.aprendi.label}
+            help={c.aprendi.help}
             optional={c.aprendi.optional}
             placeholder={c.aprendi.placeholder}
             value={value.aprendi ?? ""}
@@ -332,6 +334,7 @@ export function PillPBLEstruturado({
         {c.veredicto && (
           <FieldTextarea
             label={c.veredicto.label}
+            help={c.veredicto.help}
             optional={c.veredicto.optional}
             placeholder={c.veredicto.placeholder}
             value={value.veredicto ?? ""}
