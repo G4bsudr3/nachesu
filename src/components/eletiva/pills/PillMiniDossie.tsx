@@ -145,7 +145,7 @@ export function PillMiniDossie({ pillId, schema, accent, initial, save, onComple
       </section>
 
       {/* GRID dos 10 elementos */}
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
         {BLOCOS_DOSSIE.map((b) => {
           const modId = b.key === "_local" ? null : (schema[b.key as keyof Schema] as string | undefined);
           const preenchido = b.key === "_local" ? true : (modId ? artefatos.get(modId) ?? false : false);

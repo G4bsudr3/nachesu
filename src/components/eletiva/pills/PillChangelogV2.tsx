@@ -321,7 +321,7 @@ export function PillChangelogV2({
                   )}
                 </header>
                 <FieldRow label="elemento que mudou" value={it.elemento ?? ""} onChange={(v) => updateItem(it.id, { elemento: v })} placeholder="ex: público-alvo" />
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
                   <FieldRow label="antes" value={it.antes ?? ""} onChange={(v) => updateItem(it.id, { antes: v })} placeholder="ex: todos os alunos" />
                   <FieldRow label="depois" value={it.depois ?? ""} onChange={(v) => updateItem(it.id, { depois: v })} placeholder="ex: alunos que ficam >2h na escola" />
                 </div>
@@ -375,7 +375,7 @@ export function PillChangelogV2({
                       </span>
                     )}
                   </p>
-                  <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
                     <div className="rounded-xl bg-perestroika-bege p-2">
                       <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/45 mb-1">v1</p>
                       <p className="font-body text-xs text-perestroika-preto/75 leading-snug whitespace-pre-wrap">
@@ -404,7 +404,7 @@ export function PillChangelogV2({
       <section className="space-y-3">
         <SectionHeader n={4} title="MODELO DE NEGÓCIO · V2" hint="segmento e canais. o resto do BMC você refina depois." />
         {bmc.value ? (
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
             {(["segmento", "canais"] as const).map((k) => {
               const antes = bmc.value?.[k] ?? "";
               const depois = value.bmc_v2?.[k] ?? "";

@@ -287,7 +287,7 @@ export function PillRegistroResultado({
           title="HONESTIDADE"
           hint="tomou algum atalho ou mudou o experimento no meio? sem julgamento — mas com verdade."
         />
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
           {(["nao", "sim"] as Honestidade[]).map((h) => {
             const active = value.honestidade_atalho === h;
             return (

@@ -236,7 +236,7 @@ export function PillConteudoCurado({
                   <span className="text-perestroika-preto/55 mr-1">{idx + 1}.</span>
                   {q.label}
                 </label>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
                   {ICEBERG_LEVELS.map((lvl, li) => {
                     const key = `${q.id}::${lvl.id}`;
                     const val = answers[key] ?? "";

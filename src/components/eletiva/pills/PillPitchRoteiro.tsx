@@ -366,7 +366,7 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
         material das aulas anteriores · use como referência enquanto escreve
       </p>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
         {pulls.evidencias?.length ? (
           <RefCard title={`evidências (aula 4) · ${pulls.evidencias.length}`}>
             <ul className="space-y-1">

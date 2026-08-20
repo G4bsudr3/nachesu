@@ -287,7 +287,7 @@ export function PillRegrasJogo({
         <p className="font-body text-xs text-perestroika-preto/60">
           a hierarquia dos 6 R's vai do mais poderoso (recusar) ao último recurso (reciclar).
         </p>
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
           {rsOpts.map((r, i) => {
             const checked = rs.includes(r.value);
             const disabled = !checked && rs.length >= 2;

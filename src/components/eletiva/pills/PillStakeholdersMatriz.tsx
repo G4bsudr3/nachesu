@@ -229,7 +229,7 @@ export function PillStakeholdersMatriz({
       </div>
 
       {/* parte 1: 4 categorias */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 [&>*]:min-w-0">
         {categorias.map((c) => {
           const Icon = CAT_ICON[c.id] ?? Users;
           const state = perCatValid[c.id];
@@ -383,7 +383,7 @@ function StakeholderRow({
           <Trash2 className="h-3.5 w-3.5" />
         </button>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
         <input
           type="text"
           value={stakeholder.interesse}
@@ -447,7 +447,7 @@ function MatrizPreview({
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
         preview · matriz poder × interesse
       </p>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
         {quadrantes.map((q) => {
           const list = byQ[q.id] ?? [];
           return (

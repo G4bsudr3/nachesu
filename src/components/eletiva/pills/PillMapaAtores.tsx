@@ -217,7 +217,7 @@ export function PillMapaAtores({
       )}
 
       {/* grid 2x2 (1 col no mobile) */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 [&>*]:min-w-0">
         {quadrantes.map((q) => {
           const list = value[q.id] ?? [];
           const state = perQuadrantValid[q.id];
