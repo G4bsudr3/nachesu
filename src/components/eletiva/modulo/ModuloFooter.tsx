@@ -111,12 +111,12 @@ export const ModuloFooter = ({
       {prevModule ? (
         <Link
           to={moduloHref(courseSlug, prevModule.number)}
-          className="group flex-1 max-w-[48%] rounded-2xl border border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
+          className="group min-w-0 flex-1 max-w-[48%] rounded-2xl border border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
         >
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1 inline-flex items-center gap-1">
             <ArrowLeft className="h-3 w-3" /> módulo {String(prevModule.number).padStart(2, "0")}
           </p>
-          <p className="font-body text-sm text-perestroika-preto/85 line-clamp-2">{prevModule.title}</p>
+          <p className="font-body text-sm text-perestroika-preto/85 line-clamp-2 break-words">{prevModule.title}</p>
         </Link>
       ) : (
         <span className="flex-1 max-w-[48%]" />
@@ -124,12 +124,12 @@ export const ModuloFooter = ({
       {nextModule ? (
         <Link
           to={moduloHref(courseSlug, nextModule.number)}
-          className="group flex-1 max-w-[48%] text-right rounded-2xl border border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
+          className="group min-w-0 flex-1 max-w-[48%] text-right rounded-2xl border border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
         >
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1 inline-flex items-center gap-1">
             módulo {String(nextModule.number).padStart(2, "0")} <ArrowRight className="h-3 w-3" />
           </p>
-          <p className="font-body text-sm text-perestroika-preto/85 line-clamp-2">{nextModule.title}</p>
+          <p className="font-body text-sm text-perestroika-preto/85 line-clamp-2 break-words">{nextModule.title}</p>
         </Link>
       ) : (
         <span className="flex-1 max-w-[48%]" />
