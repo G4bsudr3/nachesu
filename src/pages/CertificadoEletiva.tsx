@@ -92,6 +92,7 @@ const CertificadoEletiva = () => {
   const canDownload = isComplete && fullName.trim().length >= 2;
 
   const accent = useMemo(() => accentFor(slug), [slug]);
+  const paper = useMemo(() => paperFor(slug), [slug]);
 
   useEffect(() => {
     if (!isComplete) return;
@@ -143,7 +144,7 @@ const CertificadoEletiva = () => {
       await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
       const dataUrl = await toPng(captureRef.current, {
         pixelRatio: 3,
-        backgroundColor: "#f2e4d8",
+        backgroundColor: paper,
         width: NACHES_CERTIFICATE_DIMENSIONS.width,
         height: NACHES_CERTIFICATE_DIMENSIONS.height,
         cacheBust: true,
@@ -224,7 +225,10 @@ const CertificadoEletiva = () => {
   }
 
   return (
-    <div className="relative min-h-dvh bg-background text-foreground font-body [overflow-x:clip]">
+    <div
+      className="relative min-h-dvh bg-background text-foreground font-body [overflow-x:clip]"
+      data-eletiva={slug === "economia-circular" ? "ecc" : undefined}
+    >
       <PageHeader
         showLogo
         logoLink="/app"
@@ -336,6 +340,7 @@ const CertificadoEletiva = () => {
                     courseSubtitle={course.subtitle}
                     professorName={course.professor_name}
                     accentColor={accent}
+                    paperColor={paper}
                   />
                 </div>
               </div>
@@ -391,6 +396,7 @@ const CertificadoEletiva = () => {
                 courseSubtitle={course.subtitle}
                 professorName={course.professor_name}
                 accentColor={accent}
+                paperColor={paper}
               />
             </div>
           </>
