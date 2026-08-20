@@ -89,7 +89,7 @@ export function PillBonus({
           className="inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto px-4 py-2 font-body text-sm uppercase tracking-wider hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
         >
           buscar "{schema.search_query ?? ""}" no youtube
-          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+          <ExternalLink className="h-4 w-4" aria-hidden="true" />
         </a>
       )}
 
