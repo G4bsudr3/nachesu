@@ -11,8 +11,8 @@ import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
 type StepLink = { label: string; url: string };
 type Step = { titulo: string; descricao: string; links?: StepLink[] };
 
-type Campo = { label: string; placeholder?: string; optional?: boolean };
-type CampoEvidencia = { label: string; optional?: boolean };
+type Campo = { label: string; help?: string; placeholder?: string; optional?: boolean };
+type CampoEvidencia = { label: string; help?: string; optional?: boolean };
 
 type Schema = {
   type?: "pbl_estruturado";
