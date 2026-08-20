@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, ChevronDown, ChevronUp, Circle, Clock, ExternalLink, FileText, Lock, MessageCircle, RotateCcw, Sparkles } from "lucide-react";
+import { CheckCircle2, ChevronDown, ChevronUp, Circle, ExternalLink, FileText, Lock, MessageCircle, RotateCcw, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useModuleResume } from "@/hooks/useModuleResume";
 import { ModuleRatingPrompt } from "./ModuleRatingPrompt";
