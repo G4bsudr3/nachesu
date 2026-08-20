@@ -564,7 +564,7 @@ const TERMOS: GlossarioTermo[] = [
     definicao:
       "a mudança real que a sua ação provoca em gente, lugar ou ambiente. positivo ou negativo, e de preferência medido.",
     tags: ["circular"],
-    sinonimos: ["3p", "impacto triplo"],
+    sinonimos: ["3p", "impacto triplo", "triple bottom line"],
   },
   {
     termo: "experimento de baixo custo",
