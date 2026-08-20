@@ -263,24 +263,6 @@ const AdminModuloDetalhe = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="abertura">
-          <AberturaVideoManager
-            courseId={course.data.id}
-            slug={slug!}
-            moduleId={module.id}
-            moduleNumber={module.number}
-            accent={color}
-          />
-          <div className="pt-4">
-            <Link
-              to={`/admin/eletiva/${slug}/avaliacoes`}
-              className="text-[11px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto underline"
-            >
-              ver avaliações dos módulos ↗
-            </Link>
-          </div>
-        </TabsContent>
-
         <TabsContent value="conteudo" className="space-y-4">
           {missingSchema.length > 0 && (
             <div className="rounded-xl bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 text-sm flex items-center gap-2">
@@ -345,6 +327,24 @@ const AdminModuloDetalhe = () => {
           </div>
         </TabsContent>
 
+
+        <TabsContent value="abertura">
+          <AberturaVideoManager
+            courseId={course.data.id}
+            slug={slug!}
+            moduleId={module.id}
+            moduleNumber={module.number}
+            accent={color}
+          />
+          <div className="pt-4">
+            <Link
+              to={`/admin/eletiva/${slug}/avaliacoes`}
+              className="text-[11px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto underline"
+            >
+              ver avaliações dos módulos ↗
+            </Link>
+          </div>
+        </TabsContent>
 
         <TabsContent value="turma">
           <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white overflow-hidden">
@@ -411,7 +411,9 @@ const AdminModuloDetalhe = () => {
           </div>
         </TabsContent>
         <TabsContent value="exercicio" className="space-y-8">
-          <PanelHeaderSlot show={!ExercicioPanel} />
+          {!ExercicioPanel && (
+            <PanelHeader title={"sem painel específico"} />
+          )}
           {ExercicioPanel ? (
             <Suspense
               fallback={
