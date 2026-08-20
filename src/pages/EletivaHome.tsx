@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, MessageCircle } from "lucide-react";
+import { ArrowRight, BookMarked, BookOpen, CheckCircle2, Clock, Lock, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -430,7 +430,7 @@ const EletivaHome = () => {
         )}
 
         {/* atalhos */}
-        <section className={`grid gap-4 ${(materialsCount ?? 0) > 0 ? "sm:grid-cols-2" : ""}`}>
+        <section className={`grid gap-4 sm:grid-cols-2 ${(materialsCount ?? 0) > 0 ? "lg:grid-cols-3" : ""}`}>
           <Link
             to={tutorTo}
             className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
@@ -468,6 +468,22 @@ const EletivaHome = () => {
             <ArrowRight className="h-4 w-4 text-perestroika-preto/60 group-hover:translate-x-1 transition-transform" />
           </Link>
           )}
+
+          <Link
+            to="/app/glossario"
+            className="group flex items-start gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 hover:border-perestroika-preto transition-colors"
+          >
+            <div className="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-perestroika-preto text-perestroika-bege">
+              <BookMarked className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <p className="font-display uppercase text-2xl leading-tight">glossário</p>
+              <p className="font-body text-sm text-perestroika-preto/70 mt-1">
+                travou numa palavra? definição curta, sem enrolação.
+              </p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-perestroika-preto/60 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </section>
       </main>
 

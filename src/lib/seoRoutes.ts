@@ -54,6 +54,10 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     title: "minha conta · nachesu",
     description: "atualize seus dados e preferências.",
   },
+  "/app/glossario": {
+    title: "glossário · nachesu",
+    description: "os termos que mais aparecem nas aulas das duas eletivas, explicados em uma frase.",
+  },
 };
 
 /**

@@ -97,6 +97,16 @@ export const ModuloFooter = ({
       </div>
     </section>
 
+    <p className="mb-4 text-center font-body text-xs text-perestroika-preto/55">
+      travou numa palavra?{" "}
+      <Link
+        to="/app/glossario"
+        className="underline underline-offset-2 hover:text-perestroika-preto"
+      >
+        abrir o glossário
+      </Link>
+    </p>
+
     <nav aria-label="navegação entre módulos" className="flex justify-between gap-3">
       {prevModule ? (
         <Link
