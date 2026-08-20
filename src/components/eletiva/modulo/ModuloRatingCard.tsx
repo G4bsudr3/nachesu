@@ -47,6 +47,8 @@ export const ModuloRatingCard = ({
   trailColor,
   courseSlug,
   forceOpen = false,
+  inline = false,
+  onAnswered,
 }: Props) => {
   const { rating, loading, save, saving } = useModuleRating(moduleId);
   const [hover, setHover] = useState<number | null>(null);
@@ -63,8 +65,10 @@ export const ModuloRatingCard = ({
   useEffect(() => {
     if (rating && picked === null) setPicked(rating.rating);
     if (rating?.comment && !comment) setComment(rating.comment);
+    if (rating) onAnswered?.(rating.rating);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rating]);
+
 
   if (loading) return null;
 
