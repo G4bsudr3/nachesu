@@ -534,26 +534,40 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
   }
 
   if (value.url) {
+    const isLink = !value.path;
     return (
       <div className="space-y-2">
-        <div className="rounded-2xl border-2 overflow-hidden bg-black/90" style={{ borderColor: `${accent}55` }}>
-          <video src={value.url} controls className="w-full aspect-video bg-black" />
-        </div>
+        {isLink ? (
+          <a
+            href={value.url}
+            target="_blank"
+            rel="noreferrer"
+            className="block rounded-2xl border-2 p-4 font-body text-sm text-perestroika-preto underline underline-offset-4 break-all"
+            style={{ borderColor: `${accent}55`, backgroundColor: `${accent}10` }}
+          >
+            {value.url}
+          </a>
+        ) : (
+          <div className="rounded-2xl border-2 overflow-hidden bg-black/90" style={{ borderColor: `${accent}55` }}>
+            <video src={value.url} controls className="w-full aspect-video bg-black" />
+          </div>
+        )}
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <p className="font-body text-xs text-perestroika-preto/70">
-            {value.name || "take enviado"} {value.duracao ? `· ${Math.floor(value.duracao / 60)}:${String(value.duracao % 60).padStart(2, "0")}` : null}
+            {value.name || (isLink ? "link do take" : "take enviado")} {value.duracao ? `· ${Math.floor(value.duracao / 60)}:${String(value.duracao % 60).padStart(2, "0")}` : null}
           </p>
           <button
             type="button"
             onClick={clear}
             className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50"
           >
-            <Trash2 className="h-3.5 w-3.5" aria-hidden /> regravar
+            <Trash2 className="h-3.5 w-3.5" aria-hidden /> trocar take
           </button>
         </div>
       </div>
     );
   }
+
 
   return (
     <div className="space-y-3">
