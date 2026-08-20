@@ -8,6 +8,8 @@ export interface NachesCertificateProps {
   courseSubtitle?: string | null;
   professorName: string;
   accentColor: string;
+  /** cor do papel: acompanha o tema da eletiva (creme na economia circular) */
+  paperColor?: string;
   /** data curta (ex: "março de 2026"). se ausente, usa hoje. */
   issuedAt?: string;
 }
@@ -32,6 +34,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
       courseSubtitle,
       professorName,
       accentColor,
+      paperColor = "#f2e4d8",
       issuedAt,
     },
     ref,
@@ -45,7 +48,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
         style={{
           width: 1414,
           height: 1000,
-          background: "#f2e4d8",
+          background: paperColor,
           color: "#090909",
         }}
       >
