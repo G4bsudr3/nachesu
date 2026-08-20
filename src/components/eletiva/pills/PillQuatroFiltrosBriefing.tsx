@@ -196,7 +196,7 @@ const SEMAFORO_META: Record<
   vermelho: {
     label: "sinal claro pra trocar",
     color: "#fd4644",
-    msg: "os filtros mostram que esse problema não sustenta 15 semanas. não é fracasso — é a ferramenta funcionando. escolha um problema novo do seu radar (encontro 1) e preencha o briefing com ele. marque a caixa abaixo pra registrarmos a troca.",
+    msg: "os filtros mostram que esse problema não sustenta 15 semanas. não é fracasso — é a ferramenta funcionando. escolha um problema novo do seu radar (módulo 1) e preencha o briefing com ele. marque a caixa abaixo pra registrarmos a troca.",
   },
   pendente: {
     label: "responda os 4 filtros",
@@ -206,8 +206,8 @@ const SEMAFORO_META: Record<
 };
 
 /**
- * pílula 03 (aula 5, economia circular) — 4 filtros de validação + briefing do projeto.
- * puxa evidências (aula 4), incômodo (aula 1), mapa de atores (aula 3).
+ * pílula 03 (módulo 5, economia circular) — 4 filtros de validação + briefing do projeto.
+ * puxa evidências (módulo 4), incômodo (módulo 1), mapa de atores (módulo 3).
  * gera PDF do briefing ao concluir.
  */
 export function PillQuatroFiltrosBriefing({
@@ -402,12 +402,12 @@ export function PillQuatroFiltrosBriefing({
           "evidencia",
           "01",
           "tem evidência?",
-          "as 3 evidências do encontro 4 sustentam que esse problema existe e é relevante?",
+          "as 3 evidências do módulo 4 sustentam que esse problema existe e é relevante?",
           evidencias.isLoading ? (
             <span className="text-perestroika-preto/50">carregando suas evidências…</span>
           ) : (evidencias.data ?? []).length === 0 ? (
             <span className="text-perestroika-preto/60">
-              nenhuma evidência do encontro 4 foi encontrada. você pode responder "não sustentam" e trocar de problema.
+              nenhuma evidência do módulo 4 foi encontrada. você pode responder "não sustentam" e trocar de problema.
             </span>
           ) : (
             <ul className="space-y-1">
@@ -427,9 +427,9 @@ export function PillQuatroFiltrosBriefing({
           "te incomoda pessoalmente?",
           "esse incômodo ainda é forte agora, ou foi só impulso do começo?",
           incomodo.isLoading ? (
-            <span className="text-perestroika-preto/50">carregando sua resposta do encontro 1…</span>
+            <span className="text-perestroika-preto/50">carregando sua resposta do módulo 1…</span>
           ) : (incomodo.data ?? "").trim().length === 0 ? (
-            <span className="text-perestroika-preto/60">nenhum incômodo do encontro 1 encontrado.</span>
+            <span className="text-perestroika-preto/60">nenhum incômodo do módulo 1 encontrado.</span>
           ) : (
             <span className="italic">"{incomodo.data}"</span>
           ),
@@ -449,7 +449,7 @@ export function PillQuatroFiltrosBriefing({
             <span className="text-perestroika-preto/50">carregando quadrante ganha…</span>
           ) : (mapa.data?.ganha ?? []).length === 0 ? (
             <span className="text-perestroika-preto/60">
-              nenhum ator "ganha" registrado no encontro 3.
+              nenhum ator "ganha" registrado no módulo 3.
             </span>
           ) : (
             <ul className="space-y-1">
@@ -608,7 +608,7 @@ export function PillQuatroFiltrosBriefing({
 
         <div>
           <p className="font-body text-sm font-medium mb-1.5">
-            3 · evidências que sustentam (1 frase cada, puxadas do encontro 4)
+            3 · evidências que sustentam (1 frase cada, puxadas do módulo 4)
           </p>
           <div className="space-y-2">
             {[0, 1, 2].map((i) => (

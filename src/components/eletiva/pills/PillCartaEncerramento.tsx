@@ -7,8 +7,8 @@ import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 
 /**
- * pílula AULA 20 — carta de encerramento (comparação temporal).
- * puxa q3-expectativa da aula 5 e q3-manchete da aula 9. compara com as respostas de hoje.
+ * pílula MÓDULO 20 — carta de encerramento (comparação temporal).
+ * puxa q3-expectativa do módulo 5 e q3-manchete do módulo 9. compara com as respostas de hoje.
  */
 
 export type CartaEncerramentoValue = {
@@ -91,14 +91,14 @@ export function PillCartaEncerramento({ pillId, schema, accent, initial, save, o
   return (
     <div className="space-y-6">
       <p className="font-body text-sm text-perestroika-preto/75 leading-relaxed">
-        no encontro 5 e no 9 você respondeu duas perguntas. hoje responde as MESMAS.
+        no módulo 5 e no 9 você respondeu duas perguntas. hoje responde as MESMAS.
         depois olha as duas versões lado a lado — quem você era, quem você é agora.
       </p>
 
       <ComparacaoPar
         n={1}
         pergunta="o que você espera ter aprendido sobre você mesmo até o final dessa eletiva?"
-        origem="no encontro 5 você respondeu:"
+        origem="no módulo 5 você respondeu:"
         antiga={antigas.expectativa_antiga}
         placeholderNovo="hoje, olhando pra trás — o que você DE FATO aprendeu sobre você?"
         valorNovo={value.hoje_expectativa ?? ""}
@@ -110,7 +110,7 @@ export function PillCartaEncerramento({ pillId, schema, accent, initial, save, o
       <ComparacaoPar
         n={2}
         pergunta="se um jornalista te entrevistasse daqui a 5 anos sobre esse projeto, e perguntasse 'o que mudou no mundo?', qual seria a resposta que você quer poder dar?"
-        origem="no encontro 9 você respondeu:"
+        origem="no módulo 9 você respondeu:"
         antiga={antigas.manchete_antiga}
         placeholderNovo="hoje, com projeto testado — qual é a manchete real que você quer daqui a 5 anos?"
         valorNovo={value.hoje_manchete ?? ""}
@@ -179,7 +179,7 @@ function ComparacaoPar({ n, pergunta, origem, antiga, placeholderNovo, valorNovo
           ) : (
             <p className="font-body text-sm text-perestroika-preto/45 italic flex items-start gap-1.5">
               <Sparkles className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" aria-hidden />
-              você não deixou registrada essa resposta no encontro anterior. tudo bem — só responda a nova hoje.
+              você não deixou registrada essa resposta no módulo anterior. tudo bem — só responda a nova hoje.
             </p>
           )}
         </article>

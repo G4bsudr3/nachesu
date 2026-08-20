@@ -200,7 +200,7 @@ export function PillMapaFluxo({
           style={{ backgroundColor: `${accent}12`, border: `2px solid ${accent}55` }}
         >
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-            do seu briefing (aula 5)
+            do seu briefing (módulo 5)
           </p>
           {briefing.hmw && (
             <p className="font-body text-sm text-perestroika-preto/90 leading-snug">

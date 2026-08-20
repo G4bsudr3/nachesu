@@ -427,7 +427,7 @@ function resolveBonus(
 }
 
 // ============================================================
-// classificador linear/circular/regenerativo (aula 2)
+// classificador linear/circular/regenerativo (módulo 2)
 // ============================================================
 
 type ClassificadorValueShape = {
@@ -454,7 +454,7 @@ function resolveClassificador3x3(
   const justifications = v.justifications ?? {};
 
   const fixed = schema.fixed_items ?? [];
-  // itens do radar (3 do aula 1) ficam com ids radar-1/2/3 e não estão no schema
+  // itens do radar (3 do módulo 1) ficam com ids radar-1/2/3 e não estão no schema
   const radarIds = Object.keys(classifications).filter((id) => id.startsWith("radar-"));
   const knownIds = new Set([...fixed.map((f) => f.id), ...radarIds]);
   // garante que classificações órfãs também apareçam
@@ -505,7 +505,7 @@ function resolveClassificador3x3(
 }
 
 // ============================================================
-// pbl corf triplo (aula 2)
+// pbl corf triplo (módulo 2)
 // ============================================================
 
 type CorfEntrega = {
@@ -583,7 +583,7 @@ function resolvePblCorfTriplo(
 }
 
 // ============================================================
-// guia de prompts (aula 2)
+// guia de prompts (módulo 2)
 // ============================================================
 
 function resolveGuiaDePrompts(

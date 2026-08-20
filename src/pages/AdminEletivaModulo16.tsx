@@ -85,7 +85,7 @@ export default function AdminEletivaModulo16() {
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
           </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
-            economia circular · aula 16 · abertura trilha testar
+            economia circular · módulo 16 · abertura trilha testar
           </p>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
             planos de experimento da turma

@@ -10,8 +10,8 @@ import { EntregaChecklist } from "./EntregaChecklist";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 
 /**
- * pílula AULA 20 — Parte C: mini-dossiê digital.
- * puxa artefatos das aulas 4, 6, 9, 10, 15, 17, 18, 20 e mostra grid.
+ * pílula MÓDULO 20 — Parte C: mini-dossiê digital.
+ * puxa artefatos das módulos 4, 6, 9, 10, 15, 17, 18, 20 e mostra grid.
  * link permanente: /dossie/:user_id
  */
 
@@ -45,14 +45,14 @@ interface Props {
 }
 
 const BLOCOS_DOSSIE = [
-  { key: "aula4_module_id", n: 1, titulo: "problema local + 3 evidências", origem: "aula 4" },
-  { key: "aula10_module_id", n: 2, titulo: "personas / stakeholders", origem: "aula 10" },
-  { key: "aula6_module_id", n: 3, titulo: "mapa de fluxo circular", origem: "aula 6" },
-  { key: "aula18_module_id", n: 4, titulo: "proposta de valor v2", origem: "aula 18" },
-  { key: "aula18_module_id", n: 5, titulo: "modelo de negócio v2", origem: "aula 18" },
-  { key: "aula9_module_id", n: 6, titulo: "impactos regenerativos", origem: "aula 9" },
-  { key: "aula15_module_id", n: 7, titulo: "3 riscos + 3 suposições", origem: "aula 15" },
-  { key: "aula17_module_id", n: 8, titulo: "experimento executado", origem: "aula 17" },
+  { key: "aula4_module_id", n: 1, titulo: "problema local + 3 evidências", origem: "módulo 4" },
+  { key: "aula10_module_id", n: 2, titulo: "personas / stakeholders", origem: "módulo 10" },
+  { key: "aula6_module_id", n: 3, titulo: "mapa de fluxo circular", origem: "módulo 6" },
+  { key: "aula18_module_id", n: 4, titulo: "proposta de valor v2", origem: "módulo 18" },
+  { key: "aula18_module_id", n: 5, titulo: "modelo de negócio v2", origem: "módulo 18" },
+  { key: "aula9_module_id", n: 6, titulo: "impactos regenerativos", origem: "módulo 9" },
+  { key: "aula15_module_id", n: 7, titulo: "3 riscos + 3 suposições", origem: "módulo 15" },
+  { key: "aula17_module_id", n: 8, titulo: "experimento executado", origem: "módulo 17" },
   { key: "_local", n: 9, titulo: "pitch em vídeo", origem: "hoje" },
   { key: "_local", n: 10, titulo: "carta de encerramento", origem: "hoje" },
 ] as const;

@@ -115,7 +115,7 @@ export const useBuilderProfile = (slug: string | undefined) => {
           return {
             id: s.id,
             mission_id: s.mission_id,
-            mission_titulo: m?.titulo ?? "missão",
+            mission_titulo: m?.titulo ?? "exercício",
             mission_ordem: m?.ordem ?? 0,
             link: s.link,
             descricao: s.descricao,

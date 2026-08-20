@@ -4,7 +4,7 @@ import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 
 /**
- * pílula AULA 20 — Parte A (auto-avaliação em 5 dimensões) + Parte B (feedback pro professor).
+ * pílula MÓDULO 20 — Parte A (auto-avaliação em 5 dimensões) + Parte B (feedback pro professor).
  */
 
 export type FechamentoAvaliacaoValue = {
@@ -124,7 +124,7 @@ export function PillFechamentoAvaliacao({ pillId, accent, initial, save, onCompl
             value={value.mudaria ?? ""}
             onChange={(e) => set("mudaria", e.target.value)}
             rows={3}
-            placeholder="ex: o encontro X ficou longo demais. cortaria pra 30 min."
+            placeholder="ex: o módulo X ficou longo demais. cortaria pra 30 min."
             className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none resize-y"
           />
         </div>

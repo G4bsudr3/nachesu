@@ -76,13 +76,13 @@ export default function AdminEletivaModulo19() {
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
           </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
-            economia circular · aula 19 · roteiro de pitch
+            economia circular · módulo 19 · roteiro de pitch
           </p>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
             primeiros takes da turma
           </h1>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
-            quem já entregou roteiro em 6 blocos e mandou o primeiro take. duração média ajuda a calibrar a aula 20.
+            quem já entregou roteiro em 6 blocos e mandou o primeiro take. duração média ajuda a calibrar o módulo 20.
           </p>
         </header>
 

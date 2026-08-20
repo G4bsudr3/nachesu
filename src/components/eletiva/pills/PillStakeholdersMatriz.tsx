@@ -190,14 +190,14 @@ export function PillStakeholdersMatriz({
 
   return (
     <div className="space-y-6">
-      {/* âncora: sugestões da aula 3 */}
+      {/* âncora: sugestões do módulo 3 */}
       {availableSuggestions.length > 0 && (
         <aside
           className="rounded-2xl p-4 sm:p-5 space-y-2"
           style={{ backgroundColor: `${accent}12`, border: `2px solid ${accent}55` }}
         >
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60">
-            atores que você já mapeou (aula 3) — clique pra puxar
+            atores que você já mapeou (módulo 3) — clique pra puxar
           </p>
           <div className="flex flex-wrap gap-1.5">
             {availableSuggestions.slice(0, 12).map((n) => (

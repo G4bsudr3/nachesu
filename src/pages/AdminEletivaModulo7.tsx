@@ -37,7 +37,7 @@ const TIPO_LABEL: Record<string, string> = {
 
 /**
  * /admin/eletiva/economia-circular/modulo/7
- * agrega as matrizes vazamento → oportunidade da aula 7.
+ * agrega as matrizes vazamento → oportunidade do módulo 7.
  */
 export default function AdminEletivaModulo7() {
   const { data, isLoading, error } = useQuery({
@@ -92,7 +92,7 @@ export default function AdminEletivaModulo7() {
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
           </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
-            economia circular · aula 7
+            economia circular · módulo 7
           </p>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
             matrizes vazamento → oportunidade

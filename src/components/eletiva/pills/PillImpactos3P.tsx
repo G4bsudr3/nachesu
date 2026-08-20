@@ -207,7 +207,7 @@ export function PillImpactos3P({
           {hmw && (
             <div>
               <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                seu HMW (briefing · aula 5)
+                seu HMW (briefing · módulo 5)
               </p>
               <p className="font-display text-base sm:text-lg leading-snug text-perestroika-preto">
                 {hmw}
@@ -217,7 +217,7 @@ export function PillImpactos3P({
           {principios.length > 0 && (
             <div>
               <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                seus princípios EMF (aula 8)
+                seus princípios EMF (módulo 8)
               </p>
               <p className="font-body text-sm text-perestroika-preto/85">
                 {principios.map((p) => PRINCIPIO_LABEL[p] ?? p).join(" + ")}

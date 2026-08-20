@@ -61,10 +61,10 @@ const BLOCOS: Array<{
   placeholder: string;
 }> = [
   { key: "hook", numero: 1, titulo: "HOOK", duracao: "15-20s", maxPalavras: 40, regra: "cena, número, pergunta ou contraste. nunca comece com \"olá, meu nome é...\".", placeholder: "ex: todo dia 8 quilos de comida vai pro lixo na cantina do Sebrae — quilos, não gramas." },
-  { key: "problema", numero: 2, titulo: "PROBLEMA + EVIDÊNCIA", duracao: "30-40s", maxPalavras: 70, regra: "puxa 1 das 3 evidências do encontro 4. cita fonte da prova.", placeholder: "ex: entrevistei 12 alunos que almoçam na escola. 9 disseram que jogam parte da comida fora." },
+  { key: "problema", numero: 2, titulo: "PROBLEMA + EVIDÊNCIA", duracao: "30-40s", maxPalavras: 70, regra: "puxa 1 das 3 evidências do módulo 4. cita fonte da prova.", placeholder: "ex: entrevistei 12 alunos que almoçam na escola. 9 disseram que jogam parte da comida fora." },
   { key: "solucao", numero: 3, titulo: "SOLUÇÃO", duracao: "30-40s", maxPalavras: 70, regra: "linguagem simples. um primo de 12 anos entenderia? sem jargão.", placeholder: "ex: uma redistribuição via app entre mesas antes do descarte. o que sobrou de um vira almoço de outro." },
-  { key: "regenera", numero: 4, titulo: "COMO REGENERA", duracao: "20-30s", maxPalavras: 50, regra: "cita princípio EMF (encontro 8) e o fluxo que muda (encontro 6).", placeholder: "ex: fecha o loop de alimento antes de virar resíduo. reduz descarte na origem, sem gasto novo de energia." },
-  { key: "modelo", numero: 5, titulo: "MODELO", duracao: "20-30s", maxPalavras: 50, regra: "quem paga, quanto, por quê. tira do BMC v2 do encontro 18.", placeholder: "ex: parceria com a cantina, custo zero. troco por relatório mensal que a escola usa em comunicação." },
+  { key: "regenera", numero: 4, titulo: "COMO REGENERA", duracao: "20-30s", maxPalavras: 50, regra: "cita princípio EMF (módulo 8) e o fluxo que muda (módulo 6).", placeholder: "ex: fecha o loop de alimento antes de virar resíduo. reduz descarte na origem, sem gasto novo de energia." },
+  { key: "modelo", numero: 5, titulo: "MODELO", duracao: "20-30s", maxPalavras: 50, regra: "quem paga, quanto, por quê. tira do BMC v2 do módulo 18.", placeholder: "ex: parceria com a cantina, custo zero. troco por relatório mensal que a escola usa em comunicação." },
   { key: "chamada", numero: 6, titulo: "CHAMADA", duracao: "10-15s", maxPalavras: 30, regra: "ação específica. não termine com \"obrigado por ouvir\".", placeholder: "ex: quero 3 parceiros dispostos a testar comigo em 60 dias. quem topa, me procura." },
 ];
 
@@ -91,7 +91,7 @@ function hookRuim(hook: string) {
   return HOOK_PROIBIDOS.some((p) => low.startsWith(p));
 }
 
-// pulls read-only das aulas anteriores
+// pulls read-only das módulos anteriores
 type Pulls = {
   evidencias: CacaEvidenciasValue["evidencias"] | null;
   impactos: Impactos3PValue | null;
@@ -307,7 +307,7 @@ export function PillPitchRoteiro({ pillId, schema, accent, initial, pitchMap, sa
         <SectionHeader
           n={3}
           title="ASSISTA E ANOTA"
-          hint="depois de assistir seu take, em 1 frase: o que mais chama atenção (positivo) e o que mais atrapalha? vira seu foco pra aula 20."
+          hint="depois de assistir seu take, em 1 frase: o que mais chama atenção (positivo) e o que mais atrapalha? vira seu foco pra módulo 20."
         />
         <textarea
           value={value.auto_avaliacao ?? ""}
@@ -364,11 +364,11 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
       style={{ backgroundColor: `${accent}10`, border: `1px solid ${accent}44` }}
     >
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-        material das aulas anteriores · use como referência enquanto escreve
+        material das módulos anteriores · use como referência enquanto escreve
       </p>
       <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
         {pulls.evidencias?.length ? (
-          <RefCard title={`evidências (aula 4) · ${pulls.evidencias.length}`}>
+          <RefCard title={`evidências (módulo 4) · ${pulls.evidencias.length}`}>
             <ul className="space-y-1">
               {pulls.evidencias.slice(0, 3).map((ev, i) => {
                 const resumo = ev.descricao || ev.frase1 || ev.prova || ev.entrevistado || "—";
@@ -382,7 +382,7 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
           </RefCard>
         ) : null}
         {pulls.propostaV2 ? (
-          <RefCard title="proposta de valor v2 (aula 18)">
+          <RefCard title="proposta de valor v2 (módulo 18)">
             <p className="font-body text-xs text-perestroika-preto/75 leading-snug">
               <strong>{pulls.propostaV2.frase_ancora || pulls.propostaV2.solucao || "—"}</strong>
             </p>
@@ -392,14 +392,14 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
           </RefCard>
         ) : null}
         {pulls.impactos ? (
-          <RefCard title="impactos regenerativos (aula 9)">
+          <RefCard title="impactos regenerativos (módulo 9)">
             <p className="font-body text-xs text-perestroika-preto/75 leading-snug">
               {pulls.impactos.pessoas?.estado_desejado || pulls.impactos.planeta?.estado_desejado || pulls.impactos.prosperidade?.estado_desejado || "—"}
             </p>
           </RefCard>
         ) : null}
         {pulls.bmcV2 ? (
-          <RefCard title="modelo v2 (aula 18)">
+          <RefCard title="modelo v2 (módulo 18)">
             <p className="font-body text-xs text-perestroika-preto/75 leading-snug">
               <span className="text-perestroika-preto/50">segmento:</span> {pulls.bmcV2.segmento || "—"}
             </p>

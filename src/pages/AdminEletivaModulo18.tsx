@@ -77,7 +77,7 @@ export default function AdminEletivaModulo18() {
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
           </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
-            economia circular · aula 18 · o que mudou
+            economia circular · módulo 18 · o que mudou
           </p>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
             versões 2 da turma

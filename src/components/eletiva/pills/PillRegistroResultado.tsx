@@ -158,7 +158,7 @@ export function PillRegistroResultado({
           style={{ backgroundColor: `${accent}12`, border: `1px solid ${accent}55` }}
         >
           <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/60">
-            critério pré-definido · aula 16
+            critério pré-definido · módulo 16
           </p>
           <p className="font-body text-xs text-perestroika-preto/85">{criterioQ.data.criterio}</p>
         </div>
@@ -254,7 +254,7 @@ export function PillRegistroResultado({
       </section>
 
       <section className="space-y-2">
-        <SectionHeader n={6} title="CRITÉRIO DE SUCESSO · FOI ATINGIDO?" hint="respeita o que você definiu na aula 16. sem 'flexibilizar'." />
+        <SectionHeader n={6} title="CRITÉRIO DE SUCESSO · FOI ATINGIDO?" hint="respeita o que você definiu no módulo 16. sem 'flexibilizar'." />
         <div className="grid gap-2 sm:grid-cols-3">
           {[
             { id: "atingiu", label: "atingiu", cor: "#16a34a" },

@@ -260,12 +260,12 @@ export function PillSuposicoesRiscos({
         style={{ backgroundColor: `${accent}12`, border: `2px solid ${accent}55` }}
       >
         <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60">
-          o que puxamos das aulas anteriores
+          o que puxamos das módulos anteriores
         </p>
         {propostaQ.data?.frase_ancora ? (
           <div>
             <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/50 mb-0.5">
-              proposta de valor · aula 13
+              proposta de valor · módulo 13
             </p>
             <p className="font-body text-sm text-perestroika-preto/85 leading-snug">
               {propostaQ.data.frase_ancora}
@@ -278,13 +278,13 @@ export function PillSuposicoesRiscos({
           </div>
         ) : (
           <p className="font-body text-xs text-perestroika-vermelho/85">
-            você ainda não fechou a proposta da aula 13.
+            você ainda não fechou a proposta do módulo 13.
           </p>
         )}
         {bmcQ.data?.segmento && (
           <div>
             <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/50 mb-0.5">
-              modelo · aula 14
+              modelo · módulo 14
             </p>
             <p className="font-body text-xs text-perestroika-preto/75 leading-snug">
               segmento: {bmcQ.data.segmento}

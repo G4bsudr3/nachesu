@@ -200,7 +200,7 @@ export function PillSelecaoIdeia({
   if (ideiasQ.isLoading) {
     return (
       <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5">
-        <p className="font-body text-sm text-perestroika-preto/60">carregando suas 20 ideias da aula 11…</p>
+        <p className="font-body text-sm text-perestroika-preto/60">carregando suas 20 ideias do módulo 11…</p>
       </div>
     );
   }
@@ -211,10 +211,10 @@ export function PillSelecaoIdeia({
         <AlertCircle className="h-4 w-4 mt-0.5 text-perestroika-vermelho" aria-hidden />
         <div>
           <p className="font-body text-sm text-perestroika-preto/85">
-            você ainda não tem ideias registradas na aula 11.
+            você ainda não tem ideias registradas no módulo 11.
           </p>
           <p className="font-body text-xs text-perestroika-preto/60 mt-1">
-            volta pro encontro 11 e conclui o sprint pra desbloquear a seleção.
+            volta pro módulo 11 e conclui o sprint pra desbloquear a seleção.
           </p>
         </div>
       </div>
@@ -228,7 +228,7 @@ export function PillSelecaoIdeia({
         style={{ backgroundColor: `${accent}12`, border: `2px solid ${accent}55` }}
       >
         <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60">
-          suas ideias da aula 11
+          suas ideias do módulo 11
         </p>
         <p className="font-display uppercase text-xl leading-none text-perestroika-preto">
           {ideias.length} ideias na mesa

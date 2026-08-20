@@ -485,7 +485,7 @@ function WatcherPanel({ onDone }: { onDone: () => void }) {
             watcher de inatividade
           </p>
           <p className="font-body text-sm text-perestroika-preto/75 mt-1">
-            varre quem começou a aula 1 há mais de 48h e ainda não enviou o radar,
+            varre quem começou o módulo 1 há mais de 48h e ainda não enviou o radar,
             cria um alerta pra você puxar a pessoa.
           </p>
         </div>

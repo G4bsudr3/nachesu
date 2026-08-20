@@ -174,10 +174,10 @@ export function PillPlanoExperimento({
         <SectionHeader
           n={1}
           title="SUPOSIÇÃO A TESTAR"
-          hint="escolha uma das 3 que você mapeou na aula 15. só uma."
+          hint="escolha uma das 3 que você mapeou no módulo 15. só uma."
         />
         {supQ.isLoading ? (
-          <p className="font-body text-xs text-perestroika-preto/60">carregando suas suposições da aula 15…</p>
+          <p className="font-body text-xs text-perestroika-preto/60">carregando suas suposições do módulo 15…</p>
         ) : suposicoes.length === 0 ? (
           <div
             className="rounded-2xl p-4 flex items-start gap-2"
@@ -185,7 +185,7 @@ export function PillPlanoExperimento({
           >
             <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: accent }} aria-hidden />
             <p className="font-body text-sm text-perestroika-preto/80 leading-snug">
-              você ainda não fechou o mapa da aula 15. volta lá antes de planejar o experimento.
+              você ainda não fechou o mapa do módulo 15. volta lá antes de planejar o experimento.
             </p>
           </div>
         ) : (

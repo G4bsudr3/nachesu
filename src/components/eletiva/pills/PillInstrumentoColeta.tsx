@@ -65,7 +65,7 @@ const CAMPOS_POR_METODO: Record<Metodo, { titulo: string; campos: CampoDef[] }> 
     campos: [
       { id: "pessoas", label: "lista das 3-5 pessoas que vão ser servidas", hint: "nome + como conheceu + por que combinam com o público.", min: 40, multiline: true },
       { id: "como_entregar", label: "como você vai entregar o serviço na prática", hint: "passo a passo do que VOCÊ faz na mão pra essas pessoas.", min: 60, multiline: true },
-      { id: "o_que_medir_extra", label: "o que vai medir de perto", hint: "além do critério da aula 16, o que observa em cada atendimento.", min: 30, multiline: true },
+      { id: "o_que_medir_extra", label: "o que vai medir de perto", hint: "além do critério do módulo 16, o que observa em cada atendimento.", min: 30, multiline: true },
     ],
   },
   fakedoor: {
@@ -171,7 +171,7 @@ export function PillInstrumentoColeta({
   const ready = !!activeMetodo && camposOk && cronOk;
 
   if (planoQ.isLoading) {
-    return <p className="font-body text-xs text-perestroika-preto/60">carregando seu plano da aula 16…</p>;
+    return <p className="font-body text-xs text-perestroika-preto/60">carregando seu plano do módulo 16…</p>;
   }
 
   if (!metodoFromPlano && !initial?.metodo) {
@@ -182,7 +182,7 @@ export function PillInstrumentoColeta({
       >
         <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: accent }} aria-hidden />
         <p className="font-body text-sm text-perestroika-preto/80 leading-snug">
-          você ainda não escolheu método na aula 16. volta lá antes de montar o instrumento.
+          você ainda não escolheu método no módulo 16. volta lá antes de montar o instrumento.
         </p>
       </div>
     );
@@ -196,7 +196,7 @@ export function PillInstrumentoColeta({
           style={{ backgroundColor: `${accent}12`, border: `1px solid ${accent}55` }}
         >
           <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/60">
-            do seu plano · aula 16
+            do seu plano · módulo 16
           </p>
           <p className="font-body text-xs text-perestroika-preto/85">
             <span className="font-semibold">suposição: </span>

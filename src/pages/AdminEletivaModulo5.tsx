@@ -60,7 +60,7 @@ export default function AdminEletivaModulo5() {
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> painel admin
           </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1">
-            economia circular · encontro 5
+            economia circular · módulo 5
           </p>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none">
             briefing · fechamento trilha 1
@@ -77,7 +77,7 @@ export default function AdminEletivaModulo5() {
             <section aria-label="kpis" className="grid gap-3 sm:grid-cols-4">
               {[
                 { label: "matriculadas", value: k.total_students ?? 0 },
-                { label: "concluíram aula 5", value: k.completed_count ?? 0 },
+                { label: "concluíram módulo 5", value: k.completed_count ?? 0 },
                 { label: "briefings entregues", value: k.briefing_count ?? 0 },
                 {
                   label: "% trocou de problema",

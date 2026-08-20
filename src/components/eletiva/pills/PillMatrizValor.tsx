@@ -186,14 +186,14 @@ export function PillMatrizValor({
 
   return (
     <div className="space-y-6">
-      {/* contexto do mapa aula 6 */}
+      {/* contexto do mapa módulo 6 */}
       {vazamentosMapa.length > 0 && (
         <aside
           className="rounded-2xl p-4 sm:p-5"
           style={{ backgroundColor: `${accent}12`, border: `2px solid ${accent}55` }}
         >
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-2">
-            do seu mapa de fluxo (aula 6) · {vazamentosMapa.length} vazamento{vazamentosMapa.length > 1 ? "s" : ""}
+            do seu mapa de fluxo (módulo 6) · {vazamentosMapa.length} vazamento{vazamentosMapa.length > 1 ? "s" : ""}
           </p>
           <ul className="space-y-1">
             {vazamentosMapa.slice(0, 6).map((v, i) => (
@@ -209,7 +209,7 @@ export function PillMatrizValor({
       {vazamentosMapa.length > 0 && vazamentosMapa.length < minLinhas && (
         <div className="rounded-2xl border-2 border-perestroika-preto/25 bg-perestroika-bege p-4">
           <p className="font-body text-sm text-perestroika-preto/85">
-            seu mapa da aula 6 tem só <strong>{vazamentosMapa.length}</strong> vazamento(s). volta lá e cava
+            seu mapa do módulo 6 tem só <strong>{vazamentosMapa.length}</strong> vazamento(s). volta lá e cava
             mais {minLinhas - vazamentosMapa.length} — a matriz precisa de {minLinhas} linhas pra funcionar.
           </p>
         </div>

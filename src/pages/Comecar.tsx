@@ -9,7 +9,7 @@ const beneficios = [
   {
     pose: "building" as const,
     titulo: "tudo num lugar só",
-    desc: "suas aulas, exercícios, projeto e o tutor ia vivem dentro da naches u. sem caderno solto, sem pasta perdida.",
+    desc: "suas módulos, exercícios, projeto e o tutor ia vivem dentro da naches u. sem caderno solto, sem pasta perdida.",
   },
   {
     pose: "talking" as const,
