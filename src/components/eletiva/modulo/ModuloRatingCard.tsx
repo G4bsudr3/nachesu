@@ -223,7 +223,7 @@ export const ModuloRatingCard = ({
         </div>
       )}
 
-      {picked === null && (
+      {picked === null && !inline && (
         <button
           type="button"
           onClick={() => {
