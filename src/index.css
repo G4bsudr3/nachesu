@@ -290,3 +290,25 @@ html.reading-easy .font-display {
 @keyframes spin-slow {
   to { transform: rotate(360deg); }
 }
+
+/* sinalização de clicável: tudo que age como botão/link mostra o cursor de
+   mão e um foco visível, mesmo quando não é <button>. */
+button:not(:disabled),
+summary,
+label[for],
+[role="button"]:not([aria-disabled="true"]),
+[role="tab"],
+[role="option"],
+[role="menuitem"],
+[role="link"],
+a[href] {
+  cursor: pointer;
+}
+
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible,
+[role="option"]:focus-visible,
+summary:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
