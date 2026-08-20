@@ -89,9 +89,16 @@ const AdminFluxo = () => {
         </div>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-4">
+      <p className="hidden lg:flex items-center gap-2 text-[11px] text-perestroika-preto/55">
+        <span className="inline-block w-8 border-t border-dashed border-perestroika-preto/40" />
+        as setas mostram por onde se chega em cada tela. clique num card pra destacar só as
+        conexões dele.
+      </p>
+
+      <div ref={gridRef} className="relative grid gap-4 lg:gap-x-14 lg:grid-cols-4">
+        <FluxoConnections containerRef={gridRef} selectedId={selectedId} />
         {LANES.map((lane) => (
-          <section key={lane.id} className="space-y-3 min-w-0">
+          <section key={lane.id} className="relative z-10 space-y-3 min-w-0">
             <div className="space-y-0.5">
               <h2 className={cn("font-display uppercase text-2xl leading-none", lane.accent)}>
                 {lane.title}
@@ -108,14 +115,17 @@ const AdminFluxo = () => {
                   <li key={n.id}>
                     <button
                       type="button"
+                      data-flow-node={n.id}
                       onClick={() => setSelectedId(n.id)}
                       aria-expanded={selectedId === n.id}
                       className={cn(
-                        "card-surface w-full text-left p-3 space-y-1.5 transition-colors hover:bg-perestroika-preto/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto",
-                        selectedId === n.id && "bg-perestroika-preto/[0.06]",
+                        "card-surface relative w-full text-left p-3 space-y-1.5 bg-perestroika-bege transition-colors hover:bg-perestroika-preto/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto",
+                        selectedId === n.id &&
+                          "bg-perestroika-preto/[0.06] ring-2 ring-perestroika-laranja",
                         alert && "border-perestroika-laranja/50",
                       )}
                     >
+
                       <div className="flex items-start justify-between gap-2">
                         <span className="font-medium text-sm leading-tight">{n.title}</span>
                         <span
