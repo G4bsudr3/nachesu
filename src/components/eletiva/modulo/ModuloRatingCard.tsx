@@ -132,11 +132,18 @@ export const ModuloRatingCard = ({
   return (
     <section
       aria-label="avaliar este módulo"
-      className="mt-8 w-full max-w-md rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
+      className={
+        inline
+          ? "mt-6 w-full rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
+          : "mt-8 w-full max-w-md rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
+      }
     >
       <p className="font-display uppercase text-xl leading-none">
-        como foi o módulo {String(moduleNumber).padStart(2, "0")} pra você?
+        {moduleNumber > 0
+          ? `como foi o módulo ${String(moduleNumber).padStart(2, "0")} pra você?`
+          : "como foi este módulo pra você?"}
       </p>
+
 
       <div
         className="mt-3 flex items-center justify-center"
