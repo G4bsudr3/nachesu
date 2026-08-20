@@ -708,7 +708,9 @@ const Modulo = () => {
           trailColor={trailColor}
           hasTrail={!!trail}
           moduleId={moduleRow.id}
-          ratingModuleId={courseSlug === "ia-na-pratica" ? moduleRow.id : null}
+          ratingModuleId={isRatingCheckpoint(moduleRow.number) ? moduleRow.id : null}
+          courseSlug={courseSlug ?? null}
+
 
           onTogglePill={(p) => togglePillMutation.mutate(p)}
           togglePending={togglePillMutation.isPending}
