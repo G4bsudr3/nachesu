@@ -22,24 +22,8 @@ import { ModuloSkeleton } from "@/components/eletiva/modulo/ModuloSkeleton";
 import { TutorChat } from "@/components/eletiva/TutorChat";
 import { ModuloHeader } from "@/components/eletiva/modulo/ModuloHeader";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
+import { ModuloConclusaoSlot } from "@/components/eletiva/modulo/ModuloConclusaoSlot";
 import { ModuloCelebration } from "@/components/eletiva/modulo/ModuloCelebration";
-import { ModuloConclusaoClassificador } from "@/components/eletiva/modulo/ModuloConclusaoClassificador";
-import { ModuloConclusaoMapaAtores } from "@/components/eletiva/modulo/ModuloConclusaoMapaAtores";
-import { ModuloConclusaoEvidencias } from "@/components/eletiva/modulo/ModuloConclusaoEvidencias";
-import { ModuloConclusaoBriefing } from "@/components/eletiva/modulo/ModuloConclusaoBriefing";
-import { ModuloConclusaoMapaFluxo } from "@/components/eletiva/modulo/ModuloConclusaoMapaFluxo";
-import { ModuloConclusaoMatrizValor } from "@/components/eletiva/modulo/ModuloConclusaoMatrizValor";
-import { ModuloConclusaoRegrasJogo } from "@/components/eletiva/modulo/ModuloConclusaoRegrasJogo";
-import { ModuloConclusaoImpactos } from "@/components/eletiva/modulo/ModuloConclusaoImpactos";
-import { ModuloConclusaoStakeholders } from "@/components/eletiva/modulo/ModuloConclusaoStakeholders";
-import { ModuloConclusaoSprintIdeacao } from "@/components/eletiva/modulo/ModuloConclusaoSprintIdeacao";
-import { ModuloConclusaoSelecaoIdeia } from "@/components/eletiva/modulo/ModuloConclusaoSelecaoIdeia";
-import { ModuloConclusaoPropostaValor } from "@/components/eletiva/modulo/ModuloConclusaoPropostaValor";
-import { ModuloConclusaoBMC } from "@/components/eletiva/modulo/ModuloConclusaoBMC";
-import { ModuloConclusaoSuposicoesRiscos } from "@/components/eletiva/modulo/ModuloConclusaoSuposicoesRiscos";
-import { ModuloConclusaoPlanoExperimento } from "@/components/eletiva/modulo/ModuloConclusaoPlanoExperimento";
-import { ModuloConclusaoRegistroResultado } from "@/components/eletiva/modulo/ModuloConclusaoRegistroResultado";
-import { ModuloConclusaoChangelogV2 } from "@/components/eletiva/modulo/ModuloConclusaoChangelogV2";
 import { ModuloAutoCompleteBurst } from "@/components/eletiva/modulo/ModuloAutoCompleteBurst";
 
 import { ModuloFooter } from "@/components/eletiva/modulo/ModuloFooter";
@@ -223,7 +207,6 @@ const Modulo = () => {
   }, [pillsLoading, moduleRow?.id]);
 
 
-
   const submitDeliverableIfExists = async () => {
     if (!user || !moduleRow) return;
     // se existe deliverable em rascunho/enviado, marca submitted_at
@@ -358,7 +341,6 @@ const Modulo = () => {
       if (!(await ensureSession())) {
         throw new Error("sua sessão expirou. entra de novo pra salvar seu progresso");
       }
-
 
 
       if (isDone) {
@@ -628,77 +610,13 @@ const Modulo = () => {
           />
         )}
 
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 2 && (
-          <ModuloConclusaoClassificador moduleId={moduleRow.id} />
+        {isCompleted && (
+          <ModuloConclusaoSlot
+            courseSlug={courseSlug ?? null}
+            moduleNumber={moduleRow.number}
+            moduleId={moduleRow.id}
+          />
         )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 3 && (
-          <ModuloConclusaoMapaAtores moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 4 && (
-          <ModuloConclusaoEvidencias moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 5 && (
-          <ModuloConclusaoBriefing moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 6 && (
-          <ModuloConclusaoMapaFluxo moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 7 && (
-          <ModuloConclusaoMatrizValor moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 8 && (
-          <ModuloConclusaoRegrasJogo moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 9 && (
-          <ModuloConclusaoImpactos moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 10 && (
-          <ModuloConclusaoStakeholders moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 11 && (
-          <ModuloConclusaoSprintIdeacao moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 12 && (
-          <ModuloConclusaoSelecaoIdeia moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 13 && (
-          <ModuloConclusaoPropostaValor moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 14 && (
-          <ModuloConclusaoBMC moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 15 && (
-          <ModuloConclusaoSuposicoesRiscos moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 16 && (
-          <ModuloConclusaoPlanoExperimento moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 17 && (
-          <ModuloConclusaoRegistroResultado moduleId={moduleRow.id} />
-        )}
-
-        {isCompleted && courseSlug === "economia-circular" && moduleRow.number === 18 && (
-          <ModuloConclusaoChangelogV2 moduleId={moduleRow.id} />
-        )}
-
-
-
-
 
 
         <ModuloPillList
