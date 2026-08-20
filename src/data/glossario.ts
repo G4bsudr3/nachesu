@@ -98,12 +98,14 @@ const TERMOS: GlossarioTermo[] = [
     definicao:
       "apresentação curta, de 2 a 3 minutos, que explica o problema, a solução e por que ela importa.",
     tags: ["ia", "circular"],
+    sinonimos: ["elevator pitch"],
   },
   {
     termo: "proposta de valor",
     definicao:
       "a frase que diz pra quem você resolve, qual dor resolve e o que muda na vida dessa pessoa.",
     tags: ["ia", "circular"],
+    sinonimos: ["value proposition"],
   },
   {
     termo: "canvas",
@@ -124,6 +126,97 @@ const TERMOS: GlossarioTermo[] = [
     definicao:
       "devolutiva sobre o que você fez. o útil aponta o que funcionou, o que travou e o próximo passo.",
     tags: ["ia", "circular"],
+  },
+  {
+    termo: "case",
+    definicao:
+      "um exemplo real de alguém que resolveu um problema parecido. serve de referência pra entender o que funcionou e o que não funcionou.",
+    tags: ["ia", "circular"],
+    sinonimos: ["estudo de caso", "caso"],
+  },
+  {
+    termo: "insight",
+    definicao:
+      "uma descoberta que muda como você enxerga o problema. geralmente vem de observar uma pessoa ou dado de perto.",
+    tags: ["ia", "circular"],
+    sinonimos: ["descoberta", "percepção"],
+  },
+  {
+    termo: "template",
+    definicao:
+      "um modelo pronto que você preenche com o seu conteúdo. economiza tempo e deixa a estrutura consistente.",
+    tags: ["ia", "circular"],
+    sinonimos: ["modelo", "molde"],
+  },
+  {
+    termo: "ideação",
+    definicao:
+      "o momento de gerar muitas ideias, sem julgar ainda. quanto mais opções, maior a chance de encontrar uma boa solução.",
+    tags: ["ia", "circular"],
+    sinonimos: ["geração de ideias", "criação de ideias"],
+  },
+  {
+    termo: "sprint",
+    definicao:
+      "período curto e focado em entregar uma parte do projeto. no final, você tem algo concreto pra testar ou mostrar.",
+    tags: ["ia", "circular"],
+    sinonimos: ["ciclo", "janela de entrega"],
+  },
+  {
+    termo: "brainstorm",
+    definicao:
+      "reunião rápida pra jogar ideias na mesa sem censura. depois de colocar tudo, você organiza e escolhe as melhores.",
+    tags: ["ia", "circular"],
+    sinonimos: ["tempestade de ideias", "roda de ideias"],
+  },
+  {
+    termo: "engajamento",
+    definicao:
+      "quanto a pessoa se envolve com o que você criou. pode ser tempo, interação, compartilhamento ou repetição de uso.",
+    tags: ["ia", "circular"],
+    sinonimos: ["envolvimento", "participação"],
+  },
+  {
+    termo: "benchmark",
+    definicao:
+      "olhar o que outros fazem de melhor pra usar como referência. não é copiar, é aprender com o que já está no mercado.",
+    tags: ["ia", "circular"],
+    sinonimos: ["referência", "comparação"],
+  },
+  {
+    termo: "pivotar",
+    definicao:
+      "mudar de direção no projeto sem desistir do problema. você guarda o que aprendeu e testa uma nova hipótese.",
+    tags: ["ia", "circular"],
+    sinonimos: ["pivot", "mudar de direção"],
+  },
+  {
+    termo: "dashboard",
+    definicao:
+      "painel visual que mostra números e indicadores de um jeito rápido de entender. ajuda a acompanhar se algo está indo bem.",
+    tags: ["ia", "circular"],
+    sinonimos: ["painel", "painel de controle"],
+  },
+  {
+    termo: "segmento",
+    definicao:
+      "um grupo específico de pessoas com características parecidas. focar num segmento ajuda a resolver melhor o problema dele.",
+    tags: ["ia", "circular"],
+    sinonimos: ["segmentação", "nicho"],
+  },
+  {
+    termo: "priorização",
+    definicao:
+      "escolher o que fazer primeiro entre várias opções. boa priorização considera impacto, esforço e risco.",
+    tags: ["ia", "circular"],
+    sinonimos: ["priorizar", "escolha de prioridades"],
+  },
+  {
+    termo: "build",
+    definicao:
+      "a versão construída do produto, o ato de montar algo. depois de validar, você builda a próxima versão.",
+    tags: ["ia"],
+    sinonimos: ["construção", "versão", "buildar"],
   },
 
   // ia na prática
@@ -471,7 +564,7 @@ const TERMOS: GlossarioTermo[] = [
     definicao:
       "a mudança real que a sua ação provoca em gente, lugar ou ambiente. positivo ou negativo, e de preferência medido.",
     tags: ["circular"],
-    sinonimos: ["3p", "impacto triplo"],
+    sinonimos: ["3p", "impacto triplo", "triple bottom line"],
   },
   {
     termo: "experimento de baixo custo",
