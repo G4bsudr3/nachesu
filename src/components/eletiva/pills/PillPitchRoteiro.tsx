@@ -500,14 +500,20 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
 
   async function uploadBlob(blob: Blob, filename: string, duracao: number | null) {
     if (!userId) {
-      const m = "precisa estar logado pra enviar o take.";
-      setErro(m); toast.error(m); return;
+      setErro(null);
+      setDiag({
+        causa: "você não está logado",
+        detalhe: "o take precisa de login pra ficar salvo com você.",
+        acao: "entra de novo na plataforma e volta pro módulo 19. o roteiro escrito continua salvo.",
+      });
+      toast.error("precisa estar logado pra enviar o take.");
+      return;
     }
-    if (blob.size > MAX_MB * 1024 * 1024) {
-      const m = `arquivo passa de ${MAX_MB}mb. grava menor ou comprime.`;
-      setErro(m); toast.error(m); return;
+    const pre = diagnosticar({ blob, filename });
+    if (pre.causa === "vídeo grande demais" || pre.causa === "tipo de arquivo inválido") {
+      setErro(null); setDiag(pre); toast.error(pre.causa); return;
     }
-    setErro(null); setUploading(true); setProgress("subindo...");
+    setErro(null); setDiag(null); setUploading(true); setProgress("subindo...");
     try {
       if (value.path) {
         await supabase.storage.from(BUCKET).remove([value.path]).catch(() => {});
@@ -523,8 +529,8 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
       setTimeout(() => setProgress(null), 1500);
     } catch (e) {
       const raw = e instanceof Error ? e.message : "erro no upload";
-      const msg = /row-level security|not authorized|permission/i.test(raw) ? "sem permissão. faz login de novo." : raw;
-      setErro(msg); setProgress(null); toast.error(msg);
+      const d = diagnosticar({ raw });
+      setDiag(d); setProgress(null); toast.error(d.causa);
     } finally {
       setUploading(false);
     }
