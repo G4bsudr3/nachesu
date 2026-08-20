@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, Star, Users } from "lucide-react";
+import { Loader2, Star, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/layout/PageHeader";
 
@@ -39,9 +38,6 @@ export default function AdminEletivaModulo20() {
       <PageHeader />
       <main className="mx-auto max-w-5xl px-6 py-10 space-y-10">
         <div className="space-y-2">
-          <Link to="/admin" className="inline-flex items-center gap-1 font-body text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto">
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> admin
-          </Link>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none tracking-wide text-perestroika-preto">
             módulo 20 · fechamento
           </h1>
@@ -156,7 +152,7 @@ export default function AdminEletivaModulo20() {
             </section>
           </>
         )}
-      </main>
+      </div>
     </div>
   );
 }

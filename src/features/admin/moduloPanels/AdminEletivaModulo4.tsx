@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, AlertTriangle, Camera, Mic, Link2, Layers } from "lucide-react";
+import { Loader2, AlertTriangle, Camera, Mic, Link2, Layers } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type Sample = { nickname: string; sintese: string };
@@ -88,15 +87,8 @@ export default function AdminEletivaModulo4() {
   const tipoTotal = Object.values(tipo).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-8 space-y-8">
+    <div className="space-y-8">
       <header className="space-y-3">
-        <Link
-          to="/admin"
-          className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          voltar pra admin
-        </Link>
         <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
           eletiva · economia circular · módulo 4
         </p>
