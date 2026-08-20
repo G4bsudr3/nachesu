@@ -415,13 +415,7 @@ const AdminModuloDetalhe = () => {
             <PanelHeader title={"sem painel específico"} />
           )}
           {ExercicioPanel ? (
-            <Suspense
-              fallback={
-                <p className="font-body text-sm text-perestroika-preto/60 py-8">
-                  carregando painel do exercício...
-                </p>
-              }
-            >
+            <Suspense fallback={<PanelSkeleton />}>
               <ExercicioPanel />
             </Suspense>
           ) : (
