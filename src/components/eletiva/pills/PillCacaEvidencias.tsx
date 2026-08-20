@@ -267,7 +267,7 @@ export function PillCacaEvidencias({
         </div>
 
         {(ganhaAtores.length > 0 || perdeAtores.length > 0) && (
-          <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0 pt-1 border-t border-perestroika-preto/10">
+          <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0 pt-1 border-t border-perestroika-preto/15">
             {ganhaAtores.length > 0 && (
               <div>
                 <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">
@@ -356,7 +356,7 @@ export function PillCacaEvidencias({
           onChange={(e) => setValue((prev) => ({ ...prev, sintese: e.target.value }))}
           placeholder="ex: minhas 3 evidências mostram que o problema não é a falta de lixeiras — é a rotina do intervalo que não deixa tempo pra separar…"
           rows={4}
-          className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+          className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
           voiceAriaLabel="gravar síntese por voz"
         />
         <p className="font-body text-[11px] text-perestroika-preto/55">
@@ -460,7 +460,7 @@ function FichaEvidencia({
       <header className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <span
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full font-display text-base text-perestroika-bege shrink-0"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full font-display text-base text-perestroika-bege shrink-0"
             style={{ backgroundColor: accent }}
           >
             {String(idx + 1).padStart(2, "0")}
@@ -624,7 +624,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+        className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
       />
     </div>
   );
@@ -653,7 +653,7 @@ function TextField({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+        className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
         voiceAriaLabel={`gravar ${label} por voz`}
       />
     </div>

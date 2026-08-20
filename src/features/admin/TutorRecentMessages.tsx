@@ -113,9 +113,9 @@ export const TutorRecentMessages = ({ windowDays }: { windowDays: 7 | 30 }) => {
             <p className="font-body text-sm text-perestroika-preto/55">nada por aqui no filtro atual.</p>
           ) : (
             (rows ?? []).map((r) => (
-              <div key={r.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/50 p-3">
+              <div key={r.id} className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/50 p-3">
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
+                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                     {r.trail_id ? trailMap.get(r.trail_id) ?? "–" : "sem trilha"}
                     {r.pill_title ? ` · ${r.pill_title}` : ""}
                   </span>
@@ -127,17 +127,17 @@ export const TutorRecentMessages = ({ windowDays }: { windowDays: 7 | 30 }) => {
                 </p>
                 <div className="flex items-center gap-2 mt-2">
                   {r.helpful !== null && r.helpful > 0 && (
-                    <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/60">
+                    <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60">
                       <ThumbsUp className="h-3 w-3" /> útil
                     </span>
                   )}
                   {r.helpful !== null && r.helpful < 0 && (
-                    <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-perestroika-vermelho">
+                    <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-perestroika-vermelho">
                       <ThumbsDown className="h-3 w-3" /> não útil
                     </span>
                   )}
                   {r.off_scope && (
-                    <span className="text-[10px] uppercase tracking-[0.18em] rounded-full px-2 py-0.5 bg-perestroika-laranja/20 text-perestroika-laranja">
+                    <span className="text-[10px] uppercase tracking-[0.2em] rounded-full px-2 py-0.5 bg-perestroika-laranja/20 text-perestroika-laranja">
                       fora de escopo
                     </span>
                   )}

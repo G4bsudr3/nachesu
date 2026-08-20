@@ -57,7 +57,7 @@ export const NotificationBell = () => {
         sideOffset={8}
         className="w-[340px] sm:w-[380px] p-0 bg-perestroika-bege border-perestroika-preto/15"
       >
-        <div className="flex items-center justify-between p-3 border-b border-perestroika-preto/10">
+        <div className="flex items-center justify-between p-3 border-b border-perestroika-preto/15">
           <span className="font-display text-lg uppercase tracking-wide text-perestroika-preto">
             notificações
           </span>
@@ -135,7 +135,7 @@ export const NotificationBell = () => {
           )}
         </div>
 
-        <div className="p-2 border-t border-perestroika-preto/10">
+        <div className="p-2 border-t border-perestroika-preto/15">
           <Button
             asChild
             variant="ghost"

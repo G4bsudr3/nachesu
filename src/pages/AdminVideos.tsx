@@ -59,7 +59,7 @@ const TONE_CLASS: Record<string, string> = {
   bad: "bg-perestroika-vermelho/15 text-perestroika-vermelho border-perestroika-vermelho/40",
   warn: "bg-perestroika-laranja/15 text-perestroika-laranja border-perestroika-laranja/40",
   good: "bg-perestroika-preto/5 text-perestroika-preto/60 border-perestroika-preto/15",
-  muted: "bg-perestroika-preto/5 text-perestroika-preto/60 border-perestroika-preto/10",
+  muted: "bg-perestroika-preto/5 text-perestroika-preto/60 border-perestroika-preto/15",
 };
 
 const PROBLEM_STATUSES: CheckStatus[] = [
@@ -184,7 +184,7 @@ const AdminVideos = () => {
       )}
 
       {!isLoading && items.length === 0 && (
-        <div className="rounded-2xl border border-perestroika-preto/10 p-8 text-center">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 p-8 text-center">
           <CheckCircle2 className="h-6 w-6 mx-auto mb-3 text-perestroika-preto/60" />
           <p className="font-display uppercase text-xl">tudo batendo</p>
           <p className="font-body text-sm text-perestroika-preto/60 mt-1">
@@ -199,7 +199,7 @@ const AdminVideos = () => {
           return (
             <article
               key={item.pill_id}
-              className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/40 p-4 sm:p-5"
+              className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-4 sm:p-5"
             >
               <div className="flex flex-wrap items-center gap-2 mb-2">
                 <span

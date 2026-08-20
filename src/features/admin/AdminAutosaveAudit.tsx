@@ -202,7 +202,7 @@ export function AdminAutosaveAudit() {
         <h3 className="font-body text-xs uppercase tracking-wider text-perestroika-preto/55">
           panorama por curso
         </h3>
-        <div className="overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege">
+        <div className="overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege">
           <Table>
             <TableHeader>
               <TableRow>
@@ -242,7 +242,7 @@ export function AdminAutosaveAudit() {
         <h3 className="font-body text-xs uppercase tracking-wider text-perestroika-preto/55">
           status por estudante ({studentRows.length})
         </h3>
-        <div className="overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege">
+        <div className="overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege">
           <Table>
             <TableHeader>
               <TableRow>
@@ -267,7 +267,7 @@ export function AdminAutosaveAudit() {
                       variant="outline"
                       className={
                         r.status === "rascunho"
-                          ? "border-perestroika-preto/20 text-perestroika-preto/60"
+                          ? "border-perestroika-preto/15 text-perestroika-preto/60"
                           : "border-emerald-500/40 text-emerald-700"
                       }
                     >
@@ -313,7 +313,7 @@ export function AdminAutosaveAudit() {
             <Trash2 className="h-3 w-3" /> limpar
           </button>
         </div>
-        <div className="max-h-80 overflow-auto rounded-2xl border border-perestroika-preto/10 bg-perestroika-preto/95 p-3 font-mono text-[11px] leading-relaxed text-white/90">
+        <div className="max-h-80 overflow-auto rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/95 p-3 font-mono text-[11px] leading-relaxed text-white/90">
           {events.length === 0 ? (
             <p className="text-white/40">
               nenhum evento ainda. tentativas e falhas de autosave aparecem aqui em tempo real.
@@ -356,7 +356,7 @@ export function AdminAutosaveAudit() {
 
 function StatCard({ label, value, hint }: { label: string; value: number; hint?: string }) {
   return (
-    <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/40 p-4">
+    <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-4">
       <div className="font-display text-3xl text-perestroika-preto tabular-nums">{value}</div>
       <div className="mt-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
         {label}

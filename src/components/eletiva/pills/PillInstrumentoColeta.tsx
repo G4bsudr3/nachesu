@@ -265,7 +265,7 @@ export function PillInstrumentoColeta({
           <button
             type="button"
             onClick={addDia}
-            className="inline-flex items-center gap-1 self-start rounded-full border-2 border-perestroika-preto/20 px-3 py-1.5 font-body text-xs text-perestroika-preto/70 hover:border-perestroika-preto/50"
+            className="inline-flex items-center gap-1 self-start rounded-full border-2 border-perestroika-preto/15 px-3 py-1.5 font-body text-xs text-perestroika-preto/70 hover:border-perestroika-preto/50"
           >
             <Plus className="h-3.5 w-3.5" /> adicionar dia
           </button>
@@ -357,7 +357,7 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           rows={3}
           className={`w-full rounded-xl border-2 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none resize-y ${
-            ok ? "border-perestroika-preto/40" : "border-perestroika-preto/15"
+            ok ? "border-perestroika-preto/30" : "border-perestroika-preto/15"
           }`}
         />
       ) : (
@@ -365,7 +365,7 @@ function Field({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={`w-full rounded-xl border-2 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none ${
-            ok ? "border-perestroika-preto/40" : "border-perestroika-preto/15"
+            ok ? "border-perestroika-preto/30" : "border-perestroika-preto/15"
           }`}
         />
       )}

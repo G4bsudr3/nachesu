@@ -78,7 +78,7 @@ export function ModuloConclusaoPlanoExperimento({ moduleId }: Props) {
       aria-label="plano de experimento"
     >
       <header>
-        <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
           exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">

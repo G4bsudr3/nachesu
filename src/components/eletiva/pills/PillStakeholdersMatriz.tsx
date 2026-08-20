@@ -251,7 +251,7 @@ export function PillStakeholdersMatriz({
                     <Icon className="h-4 w-4" />
                   </span>
                   <div>
-                    <p className="font-display uppercase text-sm tracking-[0.14em] text-perestroika-preto leading-tight">
+                    <p className="font-display uppercase text-sm tracking-[0.2em] text-perestroika-preto leading-tight">
                       {c.label}
                     </p>
                     {c.hint && (
@@ -289,7 +289,7 @@ export function PillStakeholdersMatriz({
               <button
                 type="button"
                 onClick={() => addStakeholder(c.id)}
-                className="inline-flex items-center gap-1.5 rounded-full border-2 border-dashed border-perestroika-preto/25 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border-2 border-dashed border-perestroika-preto/15 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors"
               >
                 <Plus className="h-3.5 w-3.5" /> adicionar nome
               </button>
@@ -371,7 +371,7 @@ function StakeholderRow({
           value={stakeholder.nome}
           onChange={(e) => onChange({ nome: e.target.value })}
           placeholder="ex.: Kamila do Sebrae BH"
-          className="flex-1 rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+          className="flex-1 rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
           aria-label="nome específico do stakeholder"
         />
         <button
@@ -389,14 +389,14 @@ function StakeholderRow({
           value={stakeholder.interesse}
           onChange={(e) => onChange({ interesse: e.target.value })}
           placeholder="o que ele quer?"
-          className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+          className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
         />
         <input
           type="text"
           value={stakeholder.influencia}
           onChange={(e) => onChange({ influencia: e.target.value })}
           placeholder="como pode ajudar ou atrapalhar?"
-          className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+          className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
         />
       </div>
       <div className="flex items-center gap-2 flex-wrap">
@@ -406,7 +406,7 @@ function StakeholderRow({
         <select
           value={stakeholder.quadrante ?? ""}
           onChange={(e) => onChange({ quadrante: (e.target.value || undefined) as Stakeholder["quadrante"] })}
-          className="rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-2 py-1.5 font-body text-xs focus:border-perestroika-preto focus:outline-none"
+          className="rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-2 py-1.5 font-body text-xs focus:border-perestroika-preto focus:outline-none"
           disabled={!valid}
         >
           <option value="">escolher…</option>
@@ -456,7 +456,7 @@ function MatrizPreview({
               className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-3 space-y-1.5 min-h-[96px]"
             >
               <p
-                className="font-display uppercase text-xs tracking-[0.14em]"
+                className="font-display uppercase text-[11px] tracking-[0.2em]"
                 style={{ color: accent }}
               >
                 {q.label}

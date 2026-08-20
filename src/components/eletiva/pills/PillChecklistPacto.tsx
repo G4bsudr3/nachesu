@@ -121,13 +121,13 @@ export function PillChecklistPacto({
                 className={`w-full flex items-start gap-3 rounded-2xl border-2 px-4 py-3 text-left transition-colors ${
                   isChecked
                     ? "bg-perestroika-preto/[0.04]"
-                    : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
+                    : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/30"
                 }`}
                 style={isChecked ? { borderColor: accent } : undefined}
               >
                 <span
                   className={`flex-shrink-0 mt-0.5 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-colors ${
-                    isChecked ? "" : "border-perestroika-preto/40"
+                    isChecked ? "" : "border-perestroika-preto/30"
                   }`}
                   style={
                     isChecked
@@ -157,7 +157,7 @@ export function PillChecklistPacto({
             onChange={(e) => setValue((prev) => ({ ...prev, outros: e.target.value }))}
             placeholder={schema.outros.placeholder}
             rows={2}
-            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
             voiceAriaLabel="gravar outro compromisso por voz"
           />
         </div>
@@ -173,7 +173,7 @@ export function PillChecklistPacto({
             onChange={(e) => setValue((prev) => ({ ...prev, reflexao: e.target.value }))}
             placeholder={schema.reflexao.placeholder}
             rows={5}
-            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
             voiceAriaLabel="gravar reflexão por voz"
           />
         </div>

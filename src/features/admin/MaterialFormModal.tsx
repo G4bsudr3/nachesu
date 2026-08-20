@@ -150,7 +150,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
               onClick={() => setMode("link")}
               className={cn(
                 "rounded-xl border p-3 text-left transition-all",
-                mode === "link" ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege" : "border-perestroika-preto/15 bg-perestroika-bege/50 hover:border-perestroika-preto/40",
+                mode === "link" ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege" : "border-perestroika-preto/15 bg-perestroika-bege/50 hover:border-perestroika-preto/30",
               )}
             >
               <LinkIcon className="mb-1.5 h-4 w-4" />
@@ -164,7 +164,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
               onClick={() => setMode("file")}
               className={cn(
                 "rounded-xl border p-3 text-left transition-all",
-                mode === "file" ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege" : "border-perestroika-preto/15 bg-perestroika-bege/50 hover:border-perestroika-preto/40",
+                mode === "file" ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege" : "border-perestroika-preto/15 bg-perestroika-bege/50 hover:border-perestroika-preto/30",
               )}
             >
               <Upload className="mb-1.5 h-4 w-4" />
@@ -193,7 +193,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
                 type="file"
                 accept="application/pdf,image/*,video/*"
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                className="mt-1 block w-full rounded-md border border-perestroika-preto/20 bg-perestroika-bege/70 px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-perestroika-preto file:px-3 file:py-1.5 file:text-xs file:uppercase file:text-perestroika-bege"
+                className="mt-1 block w-full rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-3 py-2 text-sm file:mr-3 file:rounded-xl file:border-0 file:bg-perestroika-preto file:px-3 file:py-1.5 file:text-xs file:uppercase file:text-perestroika-bege"
               />
               {editing?.file_url && !file && (
                 <p className="mt-1 font-body text-xs text-perestroika-preto/55">
@@ -218,7 +218,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
               placeholder="o que é, pra que serve, por que vale a pena ler"
               rows={3}
               maxLength={280}
-              className="mt-1 w-full rounded-md border border-perestroika-preto/20 bg-perestroika-bege/70 px-3 py-2 font-body text-sm placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto"
+              className="mt-1 w-full rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-3 py-2 font-body text-sm placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto"
             />
             <div className="mt-1 text-right font-body text-[10px] text-perestroika-preto/60">{description.length}/280</div>
           </div>
@@ -258,7 +258,7 @@ export const MaterialFormModal = ({ open, onClose, onSaved, editing }: Props) =>
             publicar agora (turma vê)
           </label>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-perestroika-preto/10">
+          <div className="flex justify-end gap-2 pt-2 border-t border-perestroika-preto/15">
             <button
               type="button"
               onClick={onClose}

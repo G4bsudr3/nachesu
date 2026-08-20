@@ -35,7 +35,7 @@ export const ModuloProgressBar = ({
   return (
     <div className="fixed top-0 inset-x-0 z-40 transition-transform duration-300 translate-y-0">
 
-      <div className="bg-perestroika-bege/95 backdrop-blur border-b border-perestroika-preto/10">
+      <div className="bg-perestroika-bege/95 backdrop-blur border-b border-perestroika-preto/15">
         <div className="container max-w-3xl py-2.5 flex items-center gap-3">
           <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 shrink-0">
             mód {String(moduleNumber).padStart(2, "0")}

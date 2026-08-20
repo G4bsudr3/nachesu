@@ -341,7 +341,7 @@ export const AdminFeedbackInbox = ({
             setModuleId(null);
           }}
         >
-          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="curso" />
           </SelectTrigger>
           <SelectContent position="popper" sideOffset={6} className="max-h-[60vh] overflow-y-auto">
@@ -357,7 +357,7 @@ export const AdminFeedbackInbox = ({
           value={moduleId ?? "todos"}
           onValueChange={(v) => setModuleId(v === "todos" ? null : v)}
         >
-          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="módulo" />
           </SelectTrigger>
           <SelectContent position="popper" sideOffset={6} className="max-h-[60vh] overflow-y-auto">
@@ -370,7 +370,7 @@ export const AdminFeedbackInbox = ({
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as InboxFilter)}>
-          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="status" />
           </SelectTrigger>
           <SelectContent>
@@ -390,14 +390,14 @@ export const AdminFeedbackInbox = ({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="buscar por nome ou apelido do estudante…"
-          className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
+          className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/15"
         />
       </div>
 
       <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
         {isLoading ? "carregando…" : `${filteredData.length} ${filteredData.length === 1 ? "entrega" : "entregas"} nesse recorte`}
       </p>
-      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
+      <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -614,7 +614,7 @@ export const AdminFeedbackInbox = ({
                   </p>
                 )}
                 {bulkCandidates.length > 0 && (
-                  <div className="max-h-48 overflow-y-auto rounded-lg border border-perestroika-preto/15 bg-perestroika-preto/[0.03] p-2">
+                  <div className="max-h-48 overflow-y-auto rounded-xl border border-perestroika-preto/15 bg-perestroika-preto/[0.03] p-2">
                     <ul className="text-xs space-y-1">
                       {bulkCandidates.slice(0, 20).map((d) => (
                         <li key={d.id} className="flex justify-between gap-3">

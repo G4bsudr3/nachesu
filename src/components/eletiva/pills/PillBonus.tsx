@@ -116,7 +116,7 @@ export function PillBonus({
                   type="text"
                   value={v}
                   onChange={(e) => setValue((prev) => ({ ...prev, [f.id]: e.target.value }))}
-                  className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+                  className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
                   placeholder={f.label}
                 />
                 {min > 0 && v.trim().length < min && (

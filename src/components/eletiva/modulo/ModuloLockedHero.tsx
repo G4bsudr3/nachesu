@@ -69,7 +69,7 @@ export const ModuloLockedHero = ({
           <Lock className="h-6 w-6 text-perestroika-preto/70" />
         )}
       </div>
-      <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
+      <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
         módulo {String(moduleNumber).padStart(2, "0")}
       </p>
       <h1 className="font-display uppercase text-4xl sm:text-5xl mb-3 leading-[0.95]">

@@ -5,7 +5,7 @@ import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
  * substitui completamente a UI de chat por: aviso + canal direto pro educador.
  */
 export const TutorDisabledNotice = () => (
-  <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 px-5 py-6">
+  <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 px-5 py-6">
     <div className="flex flex-col items-center text-center gap-3">
       <EletivaSymbol pose="resting" className="size-20" />
       <p className="font-display uppercase text-2xl leading-none">tutor em ajuste</p>
@@ -14,7 +14,7 @@ export const TutorDisabledNotice = () => (
       </p>
     </div>
 
-    <div className="mt-5 pt-5 border-t border-perestroika-preto/10 space-y-3">
+    <div className="mt-5 pt-5 border-t border-perestroika-preto/15 space-y-3">
       <p className="font-display uppercase text-xs tracking-wider text-perestroika-preto/55">
         canais ativos
       </p>

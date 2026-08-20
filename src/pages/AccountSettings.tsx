@@ -119,7 +119,7 @@ const AccountSettings = () => {
 
 
         {/* leitura acessível */}
-        <section className="rounded-3xl border border-perestroika-preto/15 p-6 mb-6">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 mb-6">
           <div className="flex items-center gap-2 mb-1">
             <Eye className="h-4 w-4" aria-hidden />
             <h2 className="font-display uppercase text-2xl leading-none">
@@ -130,7 +130,7 @@ const AccountSettings = () => {
             aumenta o espaçamento entre letras, palavras e linhas. ajuda em cansaço visual ou
             dislexia. fica salvo só nesse navegador.
           </p>
-          <label className="flex items-center justify-between gap-4 rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege px-4 py-3 cursor-pointer">
+          <label className="flex items-center justify-between gap-4 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-4 py-3 cursor-pointer">
             <span className="font-body text-sm">texto com respiração</span>
             <input
               type="checkbox"
@@ -143,7 +143,7 @@ const AccountSettings = () => {
         </section>
 
         {/* janela silenciosa */}
-        <section className="rounded-3xl border border-perestroika-preto/15 p-6 mb-6">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 mb-6">
           <div className="flex items-center gap-2 mb-1">
             <Moon className="h-4 w-4" aria-hidden />
             <h2 className="font-display uppercase text-2xl leading-none">
@@ -167,7 +167,7 @@ const AccountSettings = () => {
                   void handleSaveQuiet(v, quietEnd);
                 }}
                 disabled={savingQuiet}
-                className="w-full h-12 px-4 rounded-2xl bg-transparent border border-perestroika-preto/20 font-body text-base focus:border-perestroika-preto focus:outline-none"
+                className="w-full h-12 px-4 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 font-body text-base focus:border-perestroika-preto focus:outline-none"
               >
                 <option value="">sem janela</option>
                 {HOURS.map((h) => (
@@ -187,7 +187,7 @@ const AccountSettings = () => {
                   void handleSaveQuiet(quietStart, v);
                 }}
                 disabled={savingQuiet}
-                className="w-full h-12 px-4 rounded-2xl bg-transparent border border-perestroika-preto/20 font-body text-base focus:border-perestroika-preto focus:outline-none"
+                className="w-full h-12 px-4 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 font-body text-base focus:border-perestroika-preto focus:outline-none"
               >
                 <option value="">sem janela</option>
                 {HOURS.map((h) => (
@@ -204,7 +204,7 @@ const AccountSettings = () => {
           )}
         </section>
 
-        <section className="rounded-3xl border border-perestroika-preto/15 p-6 mb-6">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 mb-6">
           <div className="flex items-center gap-2 mb-1">
             <Lock className="h-4 w-4" aria-hidden />
             <h2 className="font-display uppercase text-2xl leading-none">
@@ -226,7 +226,7 @@ const AccountSettings = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={submitting}
-              className="w-full h-12 px-4 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base"
+              className="w-full h-12 px-4 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base"
             />
             <PasswordStrength password={password} />
             <label htmlFor="acc-pwd-confirm" className="sr-only">confirmar senha</label>
@@ -239,7 +239,7 @@ const AccountSettings = () => {
               onChange={(e) => setConfirm(e.target.value)}
               disabled={submitting}
               onKeyDown={(e) => e.key === "Enter" && handleSavePassword()}
-              className="w-full h-12 px-4 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base"
+              className="w-full h-12 px-4 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base"
             />
             <button
               type="button"
@@ -257,7 +257,7 @@ const AccountSettings = () => {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-perestroika-preto/15 p-6">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6">
           <h2 className="font-display uppercase text-2xl leading-none mb-1">
             sair
           </h2>
@@ -267,7 +267,7 @@ const AccountSettings = () => {
           <button
             type="button"
             onClick={handleSignOut}
-            className="inline-flex items-center gap-2 rounded-2xl border border-perestroika-preto/30 px-5 py-3 font-body text-sm uppercase tracking-wide hover:bg-perestroika-preto/5 transition-colors"
+            className="inline-flex items-center gap-2 rounded-2xl border-2 border-perestroika-preto/30 px-5 py-3 font-body text-sm uppercase tracking-wide hover:bg-perestroika-preto/5 transition-colors"
           >
             <LogOut className="h-4 w-4" />
             sair da conta

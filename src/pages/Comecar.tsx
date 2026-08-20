@@ -38,7 +38,7 @@ const Comecar = () => {
         actions={
           <Link
             to="/auth"
-            className="inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+            className="inline-flex items-center min-min-h-11 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
           >
             entrar
           </Link>
@@ -67,7 +67,7 @@ const Comecar = () => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.05 }}
-            className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6"
+            className="font-body text-[11px] sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6"
           >
             tá quase lá
           </motion.p>
@@ -92,7 +92,7 @@ const Comecar = () => {
       </section>
 
       {/* benefícios */}
-      <section className="container py-16 sm:py-24 border-t border-perestroika-preto/10">
+      <section className="container py-16 sm:py-24 border-t border-perestroika-preto/15">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {beneficios.map((b, i) => (
             <motion.article
@@ -118,9 +118,9 @@ const Comecar = () => {
       </section>
 
       {/* próximo passo */}
-      <section className="container py-16 sm:py-24 border-t border-perestroika-preto/10">
+      <section className="container py-16 sm:py-24 border-t border-perestroika-preto/15">
         <div className="max-w-2xl mb-10">
-          <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
             o que acontece agora
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">

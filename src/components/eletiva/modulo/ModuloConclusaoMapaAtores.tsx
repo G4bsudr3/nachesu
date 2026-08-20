@@ -107,7 +107,7 @@ export function ModuloConclusaoMapaAtores({ moduleId }: Props) {
     >
       <header className="flex items-end justify-between gap-3 flex-wrap">
         <div>
-          <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
             exercício cumprido
           </p>
           <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
@@ -135,7 +135,7 @@ export function ModuloConclusaoMapaAtores({ moduleId }: Props) {
 
       <div
         ref={mapRef}
-        className="rounded-3xl border-2 border-perestroika-preto/20 bg-perestroika-bege p-4 sm:p-6"
+        className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4 sm:p-6"
       >
         <div className="grid gap-3 sm:grid-cols-2">
           {quadrantes.map((q) => {

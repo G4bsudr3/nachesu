@@ -165,7 +165,7 @@ export const EletivaOnboardingOverlay = ({ slug, courseTitle, professorName }: P
                 <EletivaSymbol size={72} pose={current.pose} />
               </div>
               <div className="pt-1">
-                <p className="font-body text-[11px] uppercase tracking-[0.25em] text-perestroika-preto/55 mb-1 inline-flex items-center gap-1">
+                <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1 inline-flex items-center gap-1">
                   <Sparkles className="h-3 w-3" /> passo {step + 1} de {steps.length}
                 </p>
                 <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95]">

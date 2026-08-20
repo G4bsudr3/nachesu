@@ -331,18 +331,18 @@ const TutorPage = () => {
     />
     <div className="h-[calc(100dvh-var(--mobile-nav-h,0px))] bg-perestroika-bege flex flex-col overflow-hidden">
 
-      <header className="border-b border-perestroika-preto/10 px-4 py-3 flex items-center justify-between bg-perestroika-bege sticky top-0 z-10">
+      <header className="border-b border-perestroika-preto/15 px-4 py-3 flex items-center justify-between bg-perestroika-bege sticky top-0 z-10">
         <div className="flex items-center justify-start gap-2 flex-1">
           <Link
             to="/app"
             aria-label="voltar"
-            className="flex items-center gap-2 text-xs font-display uppercase tracking-[0.2em] text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
+            className="flex items-center gap-2 text-[11px] font-display uppercase tracking-[0.2em] text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">voltar</span>
           </Link>
         </div>
-        <span className="font-display uppercase tracking-[0.15em] text-base sm:text-lg text-perestroika-preto">
+        <span className="font-display uppercase tracking-[0.2em] text-base sm:text-lg text-perestroika-preto">
           tutor ia
         </span>
         <div className="flex items-center justify-end gap-2 flex-1">
@@ -354,7 +354,7 @@ const TutorPage = () => {
                 disabled={streaming || messages.length === 0}
                 aria-label="limpar conversa"
                 title="limpar conversa"
-                className="w-9 h-9 rounded-full flex items-center justify-center text-perestroika-preto/70 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="h-11 w-11 rounded-full flex items-center justify-center text-perestroika-preto/70 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -394,17 +394,17 @@ const TutorPage = () => {
               <PopoverTrigger asChild>
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-perestroika-bege/60 px-3 py-1.5 font-body text-xs text-perestroika-preto/80 hover:border-perestroika-preto/40 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 bg-perestroika-bege/60 px-3 py-1.5 font-body text-xs text-perestroika-preto/80 hover:border-perestroika-preto/30 transition-colors"
                 >
                   <span className="opacity-60">trilha</span>
                   <span className="font-semibold lowercase">{activeTrail.title}</span>
                   <ChevronDown className="w-3.5 h-3.5 opacity-60" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent align="center" className="bg-perestroika-bege border-perestroika-preto/20 p-2 w-64">
+              <PopoverContent align="center" className="bg-perestroika-bege border-perestroika-preto/15 p-2 w-64">
                 {trailsByCourse.map((group, gi) => (
-                  <div key={gi} className={gi > 0 ? "mt-2 pt-2 border-t border-perestroika-preto/10" : ""}>
-                    <p className="px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
+                  <div key={gi} className={gi > 0 ? "mt-2 pt-2 border-t border-perestroika-preto/15" : ""}>
+                    <p className="px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                       {group.title.toLowerCase()}
                     </p>
                     {group.trails.map((t) => (
@@ -478,9 +478,9 @@ const TutorPage = () => {
 
 
 
-        <div className="border-t border-perestroika-preto/10 px-4 py-3 md:px-6 md:py-4 bg-perestroika-bege">
+        <div className="border-t border-perestroika-preto/15 px-4 py-3 md:px-6 md:py-4 bg-perestroika-bege">
           <div className="max-w-3xl mx-auto">
-            <div className="relative flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege focus-within:border-perestroika-preto/40 transition-colors p-2">
+            <div className="relative flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege focus-within:border-perestroika-preto/30 transition-colors p-2">
               <Textarea
                 ref={textareaRef}
                 value={input}

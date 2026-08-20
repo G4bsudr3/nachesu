@@ -324,7 +324,7 @@ export function PillPitchRoteiro({ pillId, schema, accent, initial, pitchMap, sa
       </section>
 
       {/* STATUS + CTA */}
-      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/10">
+      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/15">
         <SaveIndicator status={status} />
 
         <div className="flex items-center gap-2 flex-wrap">
@@ -415,7 +415,7 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
 
 function RefCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <article className="rounded-xl border border-perestroika-preto/10 bg-white p-2.5">
+    <article className="rounded-xl border border-perestroika-preto/15 bg-white p-2.5">
       <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/55 mb-1">{title}</p>
       {children}
     </article>
@@ -546,7 +546,7 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
           <button
             type="button"
             onClick={clear}
-            className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/20 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50"
+            className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50"
           >
             <Trash2 className="h-3.5 w-3.5" aria-hidden /> regravar
           </button>

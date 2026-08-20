@@ -263,7 +263,7 @@ export function PillConteudoCurado({
                           value={val}
                           onChange={(e) => setAnswers((prev) => ({ ...prev, [key]: e.target.value }))}
                           rows={2}
-                          className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-2.5 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+                          className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-2.5 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
                           placeholder={`1 frase sobre ${lvl.label} do seu problema`}
                           aria-label={lvl.label}
                         />
@@ -310,7 +310,7 @@ export function PillConteudoCurado({
                       className={`${optionRowClass} ${
                         checked
                           ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                          : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
+                          : "border-perestroika-preto/15 hover:border-perestroika-preto/30"
                       }`}
                     >
                       <input
@@ -324,7 +324,7 @@ export function PillConteudoCurado({
 
                       <span
                         className={`mt-0.5 h-4 w-4 flex-shrink-0 rounded-full border-2 ${
-                          checked ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/40"
+                          checked ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/30"
                         }`}
                         aria-hidden="true"
                       />

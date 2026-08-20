@@ -67,7 +67,7 @@ export function ComparacaoNiveis({ accent, titulo, cenario, niveis }: Props) {
                 <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/55 mb-1">
                   prompt
                 </p>
-                <p className="font-body text-sm text-perestroika-preto/90 whitespace-pre-wrap leading-relaxed bg-perestroika-bege rounded-lg border border-perestroika-preto/10 p-3">
+                <p className="font-body text-sm text-perestroika-preto/90 whitespace-pre-wrap leading-relaxed bg-perestroika-bege rounded-xl border border-perestroika-preto/15 p-3">
                   {n.prompt}
                 </p>
               </div>

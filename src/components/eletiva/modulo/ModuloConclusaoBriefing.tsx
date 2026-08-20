@@ -94,7 +94,7 @@ export function ModuloConclusaoBriefing({ moduleId }: Props) {
     >
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="h-5 w-5" style={{ color: "#F25E3D" }} aria-hidden />
-        <p className="font-body text-[11px] uppercase tracking-[0.22em] text-perestroika-preto/60">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
           trilha 1 cumprida · seu briefing
         </p>
       </div>
@@ -175,7 +175,7 @@ export function ModuloConclusaoBriefing({ moduleId }: Props) {
         </button>
         <a
           href="/app"
-          className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-body text-sm uppercase tracking-wide font-medium border-2 border-perestroika-preto/25 hover:border-perestroika-preto text-perestroika-preto"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-body text-sm uppercase tracking-wide font-medium border-2 border-perestroika-preto/15 hover:border-perestroika-preto text-perestroika-preto"
         >
           <FileText className="h-4 w-4" aria-hidden />
           ver minha jornada

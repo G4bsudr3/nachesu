@@ -27,7 +27,7 @@ const NotFound = () => {
         <Link
           to="/"
           aria-label="ir para o início"
-          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto rounded-md"
+          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto rounded-xl"
         >
           <NachesULogo variant="ink" className="h-6 sm:h-7 w-auto" />
         </Link>
@@ -40,7 +40,7 @@ const NotFound = () => {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="w-full"
         >
-          <p className="font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60 mb-3">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
             erro 404
           </p>
           <h1 className="font-display uppercase text-6xl sm:text-8xl leading-[0.85]">
@@ -65,7 +65,7 @@ const NotFound = () => {
             <button
               type="button"
               onClick={() => window.history.back()}
-              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full border-2 border-perestroika-preto/20 px-7 py-4 text-sm uppercase tracking-wide hover:border-perestroika-preto/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+              className="inline-flex items-center justify-center gap-2 min-h-12 rounded-full border-2 border-perestroika-preto/15 px-7 py-4 text-sm uppercase tracking-wide hover:border-perestroika-preto/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
               <ArrowLeft className="w-4 h-4" />
               voltar

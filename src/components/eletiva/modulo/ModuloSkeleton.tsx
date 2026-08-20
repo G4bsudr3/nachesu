@@ -38,7 +38,7 @@ export const ModuloSkeleton = () => {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="h-32 rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] motion-safe:animate-pulse"
+              className="h-32 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.03] motion-safe:animate-pulse"
             />
           ))}
         </div>

@@ -167,7 +167,7 @@ export function PillPBLEstruturado({
                           href={l.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/20 px-2.5 py-1 font-body text-[11px] uppercase tracking-wider hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+                          className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/15 px-2.5 py-1 font-body text-[11px] uppercase tracking-wider hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
                         >
                           {l.label}
                           <ExternalLink className="h-3 w-3" />
@@ -188,7 +188,7 @@ export function PillPBLEstruturado({
           <button
             type="button"
             onClick={onOpenTutor}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2 font-body text-sm lowercase text-perestroika-preto/80 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/15 px-4 py-2 font-body text-sm lowercase text-perestroika-preto/80 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
           >
             <MessageCircle className="h-4 w-4" aria-hidden />
             tô travado, me ajuda
@@ -284,7 +284,7 @@ export function PillPBLEstruturado({
                     className={`flex items-center gap-2 rounded-xl border-2 px-3 py-2 cursor-pointer transition-colors ${
                       checked
                         ? "border-perestroika-preto bg-perestroika-preto/[0.05]"
-                        : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
+                        : "border-perestroika-preto/15 hover:border-perestroika-preto/30"
                     }`}
                   >
                     <input
@@ -297,7 +297,7 @@ export function PillPBLEstruturado({
                     />
                     <span
                       className={`h-3 w-3 rounded-full border-2 ${
-                        checked ? "border-perestroika-preto bg-perestroika-preto" : "border-perestroika-preto/40"
+                        checked ? "border-perestroika-preto bg-perestroika-preto" : "border-perestroika-preto/30"
                       }`}
                       aria-hidden="true"
                     />
@@ -372,7 +372,7 @@ export function PillPBLEstruturado({
 
 function OptionalTag() {
   return (
-    <span className="ml-2 inline-block rounded-full border border-perestroika-preto/25 px-2 py-[1px] font-body text-[9px] uppercase tracking-wider text-perestroika-preto/50">
+    <span className="ml-2 inline-block rounded-full border border-perestroika-preto/15 px-2 py-[1px] font-body text-[9px] uppercase tracking-wider text-perestroika-preto/50">
       opcional
     </span>
   );
@@ -412,7 +412,7 @@ function FieldText({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={2}
-        className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+        className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
         voiceAriaLabel={`gravar ${label} por voz`}
       />
     </div>
@@ -448,7 +448,7 @@ function FieldTextarea({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+        className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
         voiceAriaLabel={`gravar ${label} por voz`}
       />
     </div>

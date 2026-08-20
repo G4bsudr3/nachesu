@@ -25,7 +25,7 @@ const Bloco = ({ valor, label }: { valor: number; label: string }) => (
     <span className="font-display text-4xl sm:text-5xl md:text-6xl text-perestroika-preto leading-none tabular-nums">
       {String(valor).padStart(2, "0")}
     </span>
-    <span className="mt-1 font-body text-[10px] sm:text-xs uppercase tracking-[0.2em] text-perestroika-preto/60">
+    <span className="mt-1 font-body text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
       {label}
     </span>
   </div>
@@ -55,7 +55,7 @@ export const Countdown = ({ target }: CountdownProps) => {
       className="inline-flex flex-col gap-3 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-5 py-4"
       aria-label={`faltam ${r.dias} dias, ${r.horas} horas e ${r.minutos} minutos`}
     >
-      <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.2em] text-perestroika-preto/60">
+      <span className="font-body text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
         faltam
       </span>
       <div className="flex items-end gap-3 sm:gap-5">

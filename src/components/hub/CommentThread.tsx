@@ -56,7 +56,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
       <div className="space-y-3">
         {loading && <div className="font-body text-sm text-perestroika-preto/50">carregando comentários…</div>}
         {!loading && comments.length === 0 && (
-          <div className="rounded-xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/30 px-4 py-6 text-center font-body text-sm text-perestroika-preto/55">
+          <div className="rounded-xl border border-dashed border-perestroika-preto/15 bg-perestroika-bege/30 px-4 py-6 text-center font-body text-sm text-perestroika-preto/55">
             ainda sem comentários. quebra o silêncio.
           </div>
         )}
@@ -65,7 +65,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
             const isMine = user?.id === c.user_id;
             const name = c.author.nickname || c.author.display_name || "alguém";
             return (
-              <div key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/50 px-4 py-3">
+              <div key={c.id} className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/50 px-4 py-3">
                 <div className="mb-1 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="font-body text-sm font-semibold text-perestroika-preto">{name}</span>
@@ -94,7 +94,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
                 </div>
                 {c.body && <p className="whitespace-pre-wrap font-body text-sm text-perestroika-preto/85">{c.body}</p>}
                 {c.gif?.url && (
-                  <img src={c.gif.preview_url || c.gif.url} alt="gif" className="mt-2 max-h-48 rounded-lg" loading="lazy" />
+                  <img src={c.gif.preview_url || c.gif.url} alt="gif" className="mt-2 max-h-48 rounded-xl" loading="lazy" />
                 )}
               </div>
             );
@@ -117,7 +117,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
               <img
                 src={gif.preview_url || gif.url}
                 alt="gif escolhido"
-                className="max-h-32 rounded-lg"
+                className="max-h-32 rounded-xl"
               />
               <button
                 type="button"
@@ -145,7 +145,7 @@ export const CommentThread = ({ targetId, targetKind = "submission" }: Props) =>
                   <button
                     type="button"
                     aria-label="adicionar gif"
-                    className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/15 px-2.5 py-1 font-body text-xs text-perestroika-preto/70 transition-all hover:border-perestroika-preto/40 hover:text-perestroika-preto"
+                    className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/15 px-2.5 py-1 font-body text-xs text-perestroika-preto/70 transition-all hover:border-perestroika-preto/30 hover:text-perestroika-preto"
                   >
                     <ImagePlay className="h-3.5 w-3.5" />
                     gif

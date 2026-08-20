@@ -128,7 +128,7 @@ const EletivaJourneyCard = ({ courseId, slug, title, info, featured = false }: C
   return (
     <article
       className={`relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege flex flex-col ${
-        featured ? "p-8 sm:p-12" : "p-7 sm:p-9"
+        featured ? "p-8 sm:p-12" : "p-5 sm:p-8"
       }`}
     >
       {/* faixa colorida no topo */}
@@ -144,12 +144,12 @@ const EletivaJourneyCard = ({ courseId, slug, title, info, featured = false }: C
           src={info.foto}
           alt=""
           aria-hidden="true"
-          className="h-10 w-10 rounded-full object-cover border-2"
+          className="h-11 w-11 rounded-full object-cover border-2"
           style={{ borderColor: info.accent }}
           loading="lazy"
         />
         <div className="min-w-0">
-          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+          <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             quem te guia
           </p>
           <p className="font-body text-sm text-perestroika-preto/85 truncate">
@@ -185,7 +185,7 @@ const EletivaJourneyCard = ({ courseId, slug, title, info, featured = false }: C
       {/* progresso */}
       <div className="mb-6">
         <div className="flex items-baseline justify-between mb-2 gap-3">
-          <span className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+          <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             progresso
           </span>
           <span className="font-body text-xs tabular-nums text-perestroika-preto/75">

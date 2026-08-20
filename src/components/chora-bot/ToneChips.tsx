@@ -33,7 +33,7 @@ export const ToneChips = ({ value, onChange }: ToneChipsProps) => {
               className={`relative px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-display transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-1 focus-visible:ring-offset-perestroika-bege ${
                 active
                   ? "text-perestroika-bege shadow-[0_4px_12px_-2px_rgba(247,86,166,0.4)]"
-                  : "text-perestroika-preto/60 bg-perestroika-bege border border-perestroika-preto/15 hover:border-perestroika-preto/40"
+                  : "text-perestroika-preto/60 bg-perestroika-bege border border-perestroika-preto/15 hover:border-perestroika-preto/30"
               }`}
               style={
                 active

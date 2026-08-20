@@ -33,7 +33,7 @@ export const StudentProgressPanel = ({ userId }: Props) => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-perestroika-preto/15 p-6 text-center text-sm text-perestroika-preto/55">
+      <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-6 text-center text-sm text-perestroika-preto/55">
         sem matrículas ativas ainda
       </div>
     );
@@ -46,7 +46,7 @@ export const StudentProgressPanel = ({ userId }: Props) => {
         return (
           <article
             key={c.courseId}
-            className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4"
+            className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4"
           >
             <header className="flex items-start justify-between gap-2 mb-3">
               <h3 className="font-display text-xl uppercase leading-tight">{c.courseTitle}</h3>

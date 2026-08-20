@@ -171,7 +171,7 @@ export const TutorSafetyEscalations = () => {
   const list = escalations ?? [];
 
   return (
-    <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+    <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <div className="flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 text-perestroika-vermelho" />
@@ -210,11 +210,11 @@ export const TutorSafetyEscalations = () => {
                     <span className={`font-body text-[10px] uppercase tracking-[0.18em] rounded-full px-2 py-1 border ${STATUS_TONE[esc.status]}`}>
                       {STATUS_LABEL[esc.status]}
                     </span>
-                    <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/70">
+                    <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/70">
                       {esc.category ? (CATEGORY_LABEL[esc.category] ?? esc.category) : "tema sensível"}
                     </span>
                     {esc.severity && (
-                      <span className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55">
+                      <span className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                         severidade {esc.severity}
                       </span>
                     )}
@@ -231,7 +231,7 @@ export const TutorSafetyEscalations = () => {
                   </div>
                 </div>
 
-                <div className="rounded-lg bg-perestroika-bege/60 border-l-2 border-perestroika-vermelho/60 px-3 py-2">
+                <div className="rounded-xl bg-perestroika-bege/60 border-l-2 border-perestroika-vermelho/60 px-3 py-2">
                   <p className="font-body text-sm text-perestroika-preto/85 leading-snug whitespace-pre-wrap">
                     {ev?.message_redacted || ev?.message_excerpt || "(trecho anonimizado indisponível)"}
                   </p>
@@ -247,8 +247,8 @@ export const TutorSafetyEscalations = () => {
                 )}
 
                 {esc.followup_notes && (
-                  <div className="rounded-lg bg-primary/5 border border-primary/20 px-3 py-2">
-                    <p className="font-body text-[10px] uppercase tracking-[0.18em] text-primary mb-1">
+                  <div className="rounded-xl bg-primary/5 border border-primary/20 px-3 py-2">
+                    <p className="font-body text-[10px] uppercase tracking-[0.2em] text-primary mb-1">
                       acolhimento registrado {esc.offline_followup_at ? `em ${fmtDate(esc.offline_followup_at)}` : ""}
                     </p>
                     <p className="font-body text-sm text-perestroika-preto/85 whitespace-pre-wrap">

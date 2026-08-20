@@ -163,7 +163,7 @@ export const AdminStats = () => {
   }, [courseId, courses]);
 
   const selectCls =
-    "rounded-full border border-perestroika-preto/15 bg-perestroika-bege/80 backdrop-blur px-4 py-2 font-body text-sm text-perestroika-preto focus:outline-none focus:border-perestroika-preto/40 cursor-pointer";
+    "rounded-full border border-perestroika-preto/15 bg-perestroika-bege/80 backdrop-blur px-4 py-2 font-body text-sm text-perestroika-preto focus:outline-none focus:border-perestroika-preto/30 cursor-pointer";
 
   return (
     <div className="mb-8">
@@ -191,7 +191,7 @@ export const AdminStats = () => {
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/40 h-36 animate-pulse"
+              className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 h-36 animate-pulse"
             />
           ))}
         </div>
@@ -218,7 +218,7 @@ export const AdminStats = () => {
             hint={stats.pendentes > 0 ? "clica pra aprovar" : "ninguém na fila"}
             delay={0.1}
             to="/admin/pending"
-            className={stats.pendentes > 0 ? "border-perestroika-preto/40 bg-perestroika-bege" : ""}
+            className={stats.pendentes > 0 ? "border-perestroika-preto/30 bg-perestroika-bege" : ""}
           />
           <Card
             icon={GraduationCap}

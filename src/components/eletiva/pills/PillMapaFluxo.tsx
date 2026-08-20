@@ -229,7 +229,7 @@ export function PillMapaFluxo({
               key={i}
               type="button"
               onClick={() => setExemploOpen(exemploOpen === i ? null : i)}
-              className="px-3 py-1.5 rounded-full border-2 border-perestroika-preto/25 font-body text-xs uppercase tracking-wider text-perestroika-preto/80 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+              className="px-3 py-1.5 rounded-full border-2 border-perestroika-preto/15 font-body text-xs uppercase tracking-wider text-perestroika-preto/80 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
             >
               {exemploOpen === i ? "fechar" : "ver"} exemplo {i === 0 ? "A" : "B"}
             </button>
@@ -355,7 +355,7 @@ export function PillMapaFluxo({
           <button
             type="button"
             onClick={addVaz}
-            className="mt-2 inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/25 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/80 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/15 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/80 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
           >
             <Plus className="h-3.5 w-3.5" aria-hidden /> adicionar vazamento
           </button>
@@ -363,7 +363,7 @@ export function PillMapaFluxo({
       </div>
 
       {/* upload alternativo */}
-      <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/25 p-4 sm:p-5">
+      <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-4 sm:p-5">
         <div className="flex items-center gap-2 mb-2">
           <ImageIcon className="h-4 w-4 text-perestroika-preto/60" aria-hidden />
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70">
@@ -443,7 +443,7 @@ function BlocoCampo({
       }}
     >
       <p
-        className="font-display text-xs uppercase tracking-[0.2em] mb-1"
+        className="font-display text-[11px] uppercase tracking-[0.2em] mb-1"
         style={{ color: done ? accent : "rgba(9,9,9,0.7)" }}
       >
         {label}

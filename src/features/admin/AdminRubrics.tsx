@@ -178,7 +178,7 @@ export const AdminRubrics = () => {
                 marcar como rubrica padrão (substitui a anterior)
               </label>
 
-              <div className="rounded-md border border-perestroika-preto/15 p-3 space-y-2">
+              <div className="rounded-xl border border-perestroika-preto/15 p-3 space-y-2">
                 <label className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 block">
                   pontuação
                 </label>
@@ -187,7 +187,7 @@ export const AdminRubrics = () => {
                   onChange={(e) =>
                     setEditing({ ...editing, score_type: e.target.value as "none" | "numeric" })
                   }
-                  className="w-full bg-perestroika-bege/60 border border-perestroika-preto/20 rounded-md px-2 py-1.5 text-sm"
+                  className="w-full bg-perestroika-bege/60 border border-perestroika-preto/15 rounded-xl px-2 py-1.5 text-sm"
                 >
                   <option value="none">sem pontuação (só feedback)</option>
                   <option value="numeric">pontuação numérica</option>
@@ -234,7 +234,7 @@ export const AdminRubrics = () => {
                 </div>
                 <ul className="space-y-2">
                   {(editing.criteria ?? []).map((c: RubricCriterion, i: number) => (
-                    <li key={i} className="rounded-md border border-perestroika-preto/15 p-2 space-y-1.5">
+                    <li key={i} className="rounded-xl border border-perestroika-preto/15 p-2 space-y-1.5">
                       <Input
                         placeholder="label (ex: clareza)"
                         value={c.label}

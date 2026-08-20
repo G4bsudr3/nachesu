@@ -46,7 +46,7 @@ const Thread = ({ deliverableId }: { deliverableId: string }) => {
           key={m.id}
           className={`rounded-lg p-2.5 text-xs ${
             m.author_role === "student"
-              ? "bg-perestroika-bege/70 border border-perestroika-preto/10"
+              ? "bg-perestroika-bege/70 border border-perestroika-preto/15"
               : "bg-perestroika-preto/5 border border-perestroika-preto/15"
           }`}
         >
@@ -77,7 +77,7 @@ export const StudentDeliverableTimeline = ({ userId }: Props) => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-perestroika-preto/15 p-6 text-center text-sm text-perestroika-preto/55">
+      <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-6 text-center text-sm text-perestroika-preto/55">
         ainda não enviou nenhuma entrega
       </div>
     );
@@ -96,7 +96,7 @@ export const StudentDeliverableTimeline = ({ userId }: Props) => {
           return (
             <li
               key={d.id}
-              className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60"
+              className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60"
             >
               <button
                 type="button"
@@ -128,9 +128,9 @@ export const StudentDeliverableTimeline = ({ userId }: Props) => {
               </button>
 
               {expanded && (
-                <div className="border-t border-perestroika-preto/10 p-3 space-y-3">
+                <div className="border-t border-perestroika-preto/15 p-3 space-y-3">
                   {d.feedback && (
-                    <div className="rounded-lg bg-perestroika-bege/40 p-3 text-sm">
+                    <div className="rounded-xl bg-perestroika-bege/40 p-3 text-sm">
                       <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/55 mb-1.5">
                         feedback do educador
                       </p>

@@ -23,14 +23,14 @@ const FILTROS: { value: GlossarioTag | "todas"; label: string }[] = [
 ];
 
 const TermoCard = ({ t }: { t: GlossarioTermo }) => (
-  <li className="rounded-2xl border border-perestroika-preto/12 bg-perestroika-bege p-4 sm:p-5">
+  <li className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4 sm:p-5">
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
       <h3 className="font-display uppercase text-xl sm:text-2xl leading-none">{t.termo}</h3>
       <div className="flex flex-wrap gap-1.5">
         {t.tags.map((tag) => (
           <span
             key={tag}
-            className="inline-flex items-center rounded-full px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.14em]"
+            className="inline-flex items-center rounded-full px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.2em]"
             style={{ backgroundColor: `${TAG_COLOR[tag]}22`, color: TAG_COLOR[tag] }}
           >
             {TAG_LABEL[tag]}
@@ -73,7 +73,7 @@ const Glossario = () => {
 
       <main className="container max-w-3xl py-8 sm:py-12">
         <header className="mb-8">
-          <p className="mb-2 font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
+          <p className="mb-2 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
             glossário
           </p>
           <h1 className="font-display text-5xl uppercase leading-[0.9] sm:text-7xl">
@@ -122,10 +122,10 @@ const Glossario = () => {
                 onClick={() => setTag(f.value)}
                 aria-pressed={active}
                 className={cn(
-                  "inline-flex min-h-11 items-center rounded-full border-2 px-4 font-body text-xs uppercase tracking-[0.14em] transition-colors touch-manipulation",
+                  "inline-flex min-h-11 items-center rounded-full border-2 px-4 font-body text-[11px] uppercase tracking-[0.2em] transition-colors touch-manipulation",
                   active
                     ? "border-transparent text-perestroika-bege"
-                    : "border-perestroika-preto/15 text-perestroika-preto/70 hover:border-perestroika-preto/40",
+                    : "border-perestroika-preto/15 text-perestroika-preto/70 hover:border-perestroika-preto/30",
                 )}
                 style={active ? { backgroundColor: color ?? "#090909" } : undefined}
               >
@@ -135,12 +135,12 @@ const Glossario = () => {
           })}
         </div>
 
-        <p className="mb-6 font-body text-xs uppercase tracking-[0.18em] text-perestroika-preto/50">
+        <p className="mb-6 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/50">
           {resultados.length === 1 ? "1 termo" : `${resultados.length} termos`}
         </p>
 
         {resultados.length === 0 ? (
-          <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/20 p-8 text-center">
+          <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/15 p-8 text-center">
             <p className="font-display uppercase text-2xl leading-tight">não achei esse termo</p>
             <p className="mx-auto mt-2 max-w-sm font-body text-sm text-perestroika-preto/70">
               pode ser que ele apareça com outro nome nas módulos. pergunta pro tutor, ele responde com o

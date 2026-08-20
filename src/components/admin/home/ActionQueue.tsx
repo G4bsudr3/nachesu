@@ -20,7 +20,7 @@ interface Props {
 
 const TONE: Record<NonNullable<QueueItem["tone"]>, string> = {
   neutral:
-    "bg-perestroika-bege text-perestroika-preto border-perestroika-preto/10 hover:border-perestroika-preto/30",
+    "bg-perestroika-bege text-perestroika-preto border-perestroika-preto/15 hover:border-perestroika-preto/30",
   warn:
     "bg-perestroika-laranja/15 text-perestroika-preto border-perestroika-laranja/30 hover:border-perestroika-laranja/60",
   alert:
@@ -38,10 +38,10 @@ export const ActionQueue = ({ items, loading, emptyMessage, rightSlot }: Props) 
   const visible = items.filter((i) => i.count > 0);
 
   return (
-    <section className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
+    <section className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
       <div className="flex items-center justify-between gap-3 mb-4">
         <div>
-          <p className="font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/50">
+          <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">
             hoje
           </p>
           <p className="font-display text-2xl sm:text-3xl uppercase text-perestroika-preto leading-none mt-1">
@@ -61,7 +61,7 @@ export const ActionQueue = ({ items, loading, emptyMessage, rightSlot }: Props) 
           ))}
         </div>
       ) : visible.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 px-4 py-8 text-center">
+        <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 px-4 py-8 text-center">
           <p className="font-display text-xl uppercase text-perestroika-preto">
             tudo no jeito
           </p>

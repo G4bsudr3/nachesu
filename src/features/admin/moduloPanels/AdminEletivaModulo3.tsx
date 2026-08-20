@@ -94,7 +94,7 @@ export default function AdminEletivaModulo3() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
           eletiva · economia circular · módulo 3
         </p>
         <h2

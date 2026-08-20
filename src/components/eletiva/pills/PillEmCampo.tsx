@@ -68,7 +68,7 @@ export function PillEmCampo({
         style={{ backgroundColor: `${accent}18`, border: `2px solid ${accent}55` }}
       >
         <span
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full"
           style={{ backgroundColor: accent, color: "#fff" }}
         >
           <FlaskConical className="h-5 w-5" aria-hidden />

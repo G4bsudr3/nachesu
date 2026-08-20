@@ -24,10 +24,10 @@ export const DashboardSkeleton = () => {
           </div>
 
           {/* faixa de cadência da semana */}
-          <div className="h-12 rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/40 motion-safe:animate-pulse" />
+          <div className="h-12 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 motion-safe:animate-pulse" />
 
           {/* hero da eletiva (mesma silhueta do EletivaCard real) */}
-          <div className="rounded-3xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] p-8 sm:p-12 motion-safe:animate-pulse">
+          <div className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.03] p-8 sm:p-12 motion-safe:animate-pulse">
             <div className="h-3 w-40 bg-perestroika-preto/15 rounded mb-6" />
             <div className="h-12 sm:h-16 w-11/12 bg-perestroika-preto/15 rounded mb-3" />
             <div className="h-12 sm:h-16 w-2/3 bg-perestroika-preto/15 rounded mb-6" />

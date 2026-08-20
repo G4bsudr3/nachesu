@@ -29,7 +29,7 @@ export const ChoraBotBanner = () => {
     >
       <div className="flex items-center gap-3">
         <div
-          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+          className="h-11 w-11 rounded-full flex items-center justify-center shrink-0"
           style={{
             background:
               "linear-gradient(90deg, #fe7b02 0%, #fd4644 30%, #f756a6 60%, #6f77fc 100%)",

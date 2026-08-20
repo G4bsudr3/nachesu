@@ -45,7 +45,7 @@ export const UserMenu = ({ className }: UserMenuProps) => {
         >
           <span
             aria-hidden="true"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege font-display text-sm tracking-wider"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege font-display text-sm tracking-wider"
           >
             {initials}
           </span>
@@ -58,13 +58,13 @@ export const UserMenu = ({ className }: UserMenuProps) => {
       <PopoverContent
         align="end"
         sideOffset={8}
-        className="w-64 p-0 border border-perestroika-preto/10 bg-perestroika-bege text-perestroika-preto shadow-xl rounded-2xl overflow-hidden"
+        className="w-64 p-0 border-2 border-perestroika-preto/15 bg-perestroika-bege text-perestroika-preto shadow-xl rounded-2xl overflow-hidden"
       >
         {/* header do perfil */}
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-perestroika-preto/10">
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-perestroika-preto/15">
           <span
             aria-hidden="true"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege font-display text-sm tracking-wider shrink-0"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege font-display text-sm tracking-wider shrink-0"
           >
             {initials}
           </span>

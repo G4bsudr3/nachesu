@@ -84,7 +84,7 @@ export const CartaCompleta = ({ data, embedded = false, actions, cardVisual }: C
           )}
           <div className={cardVisual ? "lg:col-span-7" : "lg:col-span-12"}>
             <p className="font-body text-base lg:text-lg mb-1">oi {nome},</p>
-            <p className="font-body text-xs lg:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6 lg:mb-8">
+            <p className="font-body text-[11px] lg:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6 lg:mb-8">
               você é {view.artigo}
             </p>
             <h1 className="font-display uppercase leading-[0.85] tracking-tight">
@@ -109,7 +109,7 @@ export const CartaCompleta = ({ data, embedded = false, actions, cardVisual }: C
             )}
 
             {data.tagline && (
-              <p className="font-body text-sm lg:text-base uppercase tracking-[0.15em] text-perestroika-preto/50 mt-6 lg:mt-8">
+              <p className="font-body text-sm lg:text-base uppercase tracking-[0.2em] text-perestroika-preto/50 mt-6 lg:mt-8">
                 {data.tagline}
               </p>
             )}
@@ -166,7 +166,7 @@ export const CartaCompleta = ({ data, embedded = false, actions, cardVisual }: C
       </div>
       <section className="px-6 lg:px-16 py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         <div className="lg:col-span-3">
-          <div className="text-[10px] lg:text-xs uppercase tracking-[0.25em] text-perestroika-laranja mb-2">
+          <div className="text-[10px] lg:text-[11px] uppercase tracking-[0.2em] text-perestroika-laranja mb-2">
             § 04
           </div>
           <h2 className="font-display uppercase text-4xl lg:text-5xl leading-[0.9] text-perestroika-laranja">

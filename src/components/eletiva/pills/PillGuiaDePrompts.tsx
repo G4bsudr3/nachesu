@@ -188,7 +188,7 @@ export function PillGuiaDePrompts({
               value={value.modelos?.[t.id] ?? ""}
               onChange={(e) => updateModelo(t.id, e.target.value)}
               rows={Math.max(8, (value.modelos?.[t.id] ?? "").split("\n").length + 1)}
-              className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.03] px-3 py-2 font-mono text-xs sm:text-sm leading-relaxed focus:border-perestroika-preto focus:outline-none resize-y"
+              className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.03] px-3 py-2 font-mono text-xs sm:text-sm leading-relaxed focus:border-perestroika-preto focus:outline-none resize-y"
               aria-label={`modelo ${t.titulo}`}
               spellCheck={false}
             />
@@ -223,7 +223,7 @@ export function PillGuiaDePrompts({
                     value={value.por_que_1 ?? ""}
                     onChange={(e) => setValue((prev) => ({ ...prev, por_que_1: e.target.value }))}
                     rows={3}
-                    className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+                    className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
                     voiceAriaLabel="por que essa foi a melhor"
                   />
                 </div>
@@ -248,7 +248,7 @@ export function PillGuiaDePrompts({
                     value={value.por_que_2 ?? ""}
                     onChange={(e) => setValue((prev) => ({ ...prev, por_que_2: e.target.value }))}
                     rows={3}
-                    className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+                    className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
                     voiceAriaLabel="por que essa foi a segunda melhor"
                   />
                 </div>
@@ -273,7 +273,7 @@ export function PillGuiaDePrompts({
               onChange={(e) => setValue((prev) => ({ ...prev, reflexao: e.target.value }))}
               placeholder={schema.reflexao.placeholder}
               rows={5}
-              className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+              className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
               voiceAriaLabel="gravar reflexão final"
             />
           </div>

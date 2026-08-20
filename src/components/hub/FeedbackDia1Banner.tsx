@@ -50,7 +50,7 @@ export const FeedbackDia1Banner = () => {
                 <LagrimaGradient size={48} />
               </div>
               <div className="min-w-0 pr-6 sm:pr-0">
-                <p className="mb-1 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-laranja">
+                <p className="mb-1 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-laranja">
                   retorno rápido
                 </p>
                 <h3 className="font-display text-3xl uppercase leading-none text-perestroika-preto sm:text-4xl">

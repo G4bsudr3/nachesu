@@ -29,7 +29,7 @@ export const DepthChooser = ({ value, onChange }: Props) => {
   };
 
   return (
-    <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 backdrop-blur p-4 sm:p-5 mb-6">
+    <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 backdrop-blur p-4 sm:p-5 mb-6">
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
           <Compass className="h-4 w-4 text-perestroika-preto/60" />
@@ -61,7 +61,7 @@ export const DepthChooser = ({ value, onChange }: Props) => {
               className={`text-left rounded-xl px-4 py-3 transition-all min-h-11 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege ${
                 active
                   ? "bg-perestroika-preto text-perestroika-bege"
-                  : "border border-perestroika-preto/20 text-perestroika-preto hover:border-perestroika-preto"
+                  : "border border-perestroika-preto/15 text-perestroika-preto hover:border-perestroika-preto"
               }`}
             >
               <p className="font-body text-sm font-medium leading-tight">{opt.label}</p>

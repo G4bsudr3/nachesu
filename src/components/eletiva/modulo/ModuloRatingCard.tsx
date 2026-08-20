@@ -134,8 +134,8 @@ export const ModuloRatingCard = ({
       aria-label="avaliar este módulo"
       className={
         inline
-          ? "mt-6 w-full rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
-          : "mt-8 w-full max-w-md rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
+          ? "mt-6 w-full rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
+          : "mt-8 w-full max-w-md rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
       }
     >
       <p className="font-display uppercase text-xl leading-none">
@@ -187,7 +187,7 @@ export const ModuloRatingCard = ({
                 onChange={(e) => setComment(e.target.value.slice(0, 1000))}
                 placeholder={placeholderFor(picked)}
                 rows={3}
-                className="bg-perestroika-bege border-perestroika-preto/20 font-body text-sm"
+                className="bg-perestroika-bege border-perestroika-preto/15 font-body text-sm"
               />
               <div className="mt-2 flex items-center justify-between gap-2">
                 <span className="font-body text-[10px] text-perestroika-preto/45">

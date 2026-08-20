@@ -121,7 +121,7 @@ const AdminHome = () => {
               "rounded-full px-4 py-1.5 text-xs uppercase tracking-wide border transition-colors",
               scope === "all"
                 ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                : "bg-perestroika-bege/60 border-perestroika-preto/15 hover:border-perestroika-preto/40",
+                : "bg-perestroika-bege/60 border-perestroika-preto/15 hover:border-perestroika-preto/30",
             )}
           >
             todas as eletivas
@@ -134,7 +134,7 @@ const AdminHome = () => {
                 "rounded-full px-4 py-1.5 text-xs uppercase tracking-wide border transition-colors",
                 scope === c.id
                   ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                  : "bg-perestroika-bege/60 border-perestroika-preto/15 hover:border-perestroika-preto/40",
+                  : "bg-perestroika-bege/60 border-perestroika-preto/15 hover:border-perestroika-preto/30",
               )}
             >
               {c.title.toLowerCase()}
@@ -151,11 +151,11 @@ const AdminHome = () => {
         <ActionQueue items={queueItems} loading={isLoading} />
 
         {/* AI insight */}
-        <section className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-2 text-perestroika-preto/60">
               <Sparkles className="w-4 h-4" />
-              <span className="font-body text-[10px] uppercase tracking-[0.18em]">
+              <span className="font-body text-[10px] uppercase tracking-[0.2em]">
                 resumo da semana · gerado por ia
               </span>
             </div>
@@ -179,7 +179,7 @@ const AdminHome = () => {
               </p>
             </>
           ) : (
-            <div className="rounded-2xl border border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-6 text-center">
+            <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-6 text-center">
               <p className="font-body text-sm text-perestroika-preto/65">
                 {regenerating ? "lendo a semana e escrevendo um resumo…" : "nenhum resumo gerado ainda. clica em gerar pra ver o pulso da semana em 1 parágrafo."}
               </p>
@@ -262,7 +262,7 @@ const AdminHome = () => {
                             key={m.id}
                             to={`/admin/aula/${m.number}`}
                             title={`módulo ${m.number} – ${m.title}: ${m.completed}/${m.started} (${m.pct}%)${m.avg_rating !== null ? ` · nota ${m.avg_rating}` : ""}`}
-                            className="aspect-square rounded-lg flex items-center justify-center font-display text-sm tabular-nums hover:scale-110 transition-transform"
+                            className="aspect-square rounded-xl flex items-center justify-center font-display text-sm tabular-nums hover:scale-110 transition-transform"
                             style={{
                               backgroundColor: heatColor(m.pct, m.started),
                               color: m.pct > 60 ? "#fff" : "#090909",
@@ -315,10 +315,10 @@ const Tile = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <section className="rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
+  <section className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 backdrop-blur p-5 sm:p-6">
     <div className="flex items-center gap-2 text-perestroika-preto/60 mb-4">
       <Icon className="w-4 h-4" />
-      <span className="font-body text-[10px] uppercase tracking-[0.18em]">{title}</span>
+      <span className="font-body text-[10px] uppercase tracking-[0.2em]">{title}</span>
     </div>
     {children}
   </section>

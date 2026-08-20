@@ -215,6 +215,57 @@
   .card-perestroika--muted { @apply card-eletiva--muted; }
 }
 
+@layer components {
+  /* ——— primitivas do design system nachesu ———
+     use estas classes em vez de recriar padding/borda/raio à mão. */
+
+  /* eyebrow / label miúdo: um único tamanho e um único tracking */
+  .eyebrow {
+    @apply text-[11px] uppercase tracking-[0.2em] font-semibold;
+  }
+  .eyebrow-wide {
+    @apply text-[11px] uppercase tracking-[0.3em] font-semibold;
+  }
+
+  /* superfícies de card: 2 níveis, mesma borda, mesmo raio */
+  .card-surface {
+    @apply rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4 sm:p-5;
+  }
+  .card-surface-strong {
+    @apply rounded-2xl border-2 border-perestroika-preto/30 bg-perestroika-bege p-5 sm:p-6;
+  }
+  .card-surface-quiet {
+    @apply rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-3 sm:p-4;
+  }
+
+  /* botões ad-hoc: mesma altura mínima de toque (44px) e mesmo padding */
+  .btn-base {
+    @apply inline-flex items-center justify-center gap-2 min-h-11 px-5 py-2.5 rounded-xl
+           text-sm font-semibold transition-colors disabled:opacity-50
+           disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+  .btn-ink {
+    @apply btn-base bg-perestroika-preto text-perestroika-bege hover:bg-perestroika-preto/90;
+  }
+  .btn-outline-ink {
+    @apply btn-base border-2 border-perestroika-preto/15 text-perestroika-preto hover:border-perestroika-preto/30;
+  }
+  .btn-chip {
+    @apply inline-flex items-center justify-center gap-1.5 min-h-11 px-4 py-2 rounded-full
+           text-[11px] uppercase tracking-[0.2em] font-semibold border border-perestroika-preto/15
+           transition-colors;
+  }
+
+  /* shell de página: uma medida por tipo de tela */
+  .page-shell {
+    @apply mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 sm:py-12;
+  }
+  .page-shell-narrow {
+    @apply mx-auto w-full max-w-3xl px-4 sm:px-6 py-8 sm:py-12;
+  }
+}
+
 @layer utilities {
   .text-gradient-primary {
     background: var(--gradient-primary);

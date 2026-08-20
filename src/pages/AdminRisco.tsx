@@ -230,14 +230,14 @@ const AdminRisco = () => {
             {loading ? (
               <p className="font-body text-sm text-perestroika-preto/55">carregando...</p>
             ) : filteredRisk.length === 0 ? (
-              <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-12 text-center">
+              <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-12 text-center">
                 <p className="font-display text-2xl uppercase text-perestroika-preto mb-2">todo mundo respirando</p>
                 <p className="font-body text-sm text-perestroika-preto/65">
                   ninguém que começou está em risco de evasão agora.
                 </p>
               </div>
             ) : (
-              <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
+              <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 overflow-hidden">
                 <table className="w-full text-sm">
                   <thead className="bg-perestroika-preto/5 text-[10px] uppercase tracking-wide text-perestroika-preto/60">
                     <tr>
@@ -300,14 +300,14 @@ const AdminRisco = () => {
             {loading ? (
               <p className="font-body text-sm text-perestroika-preto/55">carregando...</p>
             ) : filteredActivation.length === 0 ? (
-              <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-12 text-center">
+              <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-12 text-center">
                 <p className="font-display text-2xl uppercase text-perestroika-preto mb-2">todo mundo já entrou</p>
                 <p className="font-body text-sm text-perestroika-preto/65">
                   nenhum matriculado pendente de ativação.
                 </p>
               </div>
             ) : (
-              <div className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden">
+              <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 overflow-hidden">
                 <table className="w-full text-sm">
                   <thead className="bg-perestroika-preto/5 text-[10px] uppercase tracking-wide text-perestroika-preto/60">
                     <tr>

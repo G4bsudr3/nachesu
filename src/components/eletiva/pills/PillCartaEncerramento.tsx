@@ -136,7 +136,7 @@ export function PillCartaEncerramento({ pillId, schema, accent, initial, save, o
         </p>
       </section>
 
-      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/10">
+      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/15">
         <SaveIndicator status={status} />
         <div className="flex items-center gap-2 flex-wrap">
           <StatusChip ok={ok1} label="hoje · expectativa" accent={accent} />
@@ -172,7 +172,7 @@ function ComparacaoPar({ n, pergunta, origem, antiga, placeholderNovo, valorNovo
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 [&>*]:min-w-0">
-        <article className="rounded-2xl bg-perestroika-preto/5 border border-perestroika-preto/15 p-3">
+        <article className="rounded-2xl bg-perestroika-preto/5 border-2 border-perestroika-preto/15 p-3">
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1.5">{origem}</p>
           {antiga ? (
             <p className="font-body text-sm text-perestroika-preto/80 whitespace-pre-wrap leading-relaxed">{antiga}</p>

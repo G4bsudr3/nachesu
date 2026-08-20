@@ -295,7 +295,7 @@ const CertificadoEletiva = () => {
                 placeholder={defaultName}
                 maxLength={80}
                 autoComplete="name"
-                className="w-full rounded-2xl border-2 border-perestroika-preto/20 bg-white px-4 py-3 font-body text-base text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto transition-colors"
+                className="w-full rounded-2xl border-2 border-perestroika-preto/15 bg-white px-4 py-3 font-body text-base text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:border-perestroika-preto transition-colors"
               />
               {nameTouched && trimmedName.length > 0 && trimmedName.length < 2 && (
                 <p className="mt-2 font-body text-xs text-perestroika-vermelho">nome muito curto.</p>
@@ -317,7 +317,7 @@ const CertificadoEletiva = () => {
                 }}
               >
                 <div
-                  className="shadow-xl rounded-lg overflow-hidden"
+                  className="shadow-xl rounded-xl overflow-hidden"
                   style={{
                     width: NACHES_CERTIFICATE_DIMENSIONS.width,
                     height: NACHES_CERTIFICATE_DIMENSIONS.height,
@@ -339,7 +339,7 @@ const CertificadoEletiva = () => {
                   />
                 </div>
               </div>
-              <p className="mt-3 text-center font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/50">
+              <p className="mt-3 text-center font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/50">
                 prévia · o arquivo final é em alta resolução
               </p>
             </div>

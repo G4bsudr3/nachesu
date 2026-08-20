@@ -64,7 +64,7 @@ export const GifPicker = ({ onPick, trigger, align = "end" }: Props) => {
                     setOpen(false);
                   }}
                   className={cn(
-                    "group relative overflow-hidden rounded-lg border border-transparent bg-perestroika-bege/30 transition-all hover:border-perestroika-preto/30 hover:scale-[1.02]",
+                    "group relative overflow-hidden rounded-xl border border-transparent bg-perestroika-bege/30 transition-all hover:border-perestroika-preto/30 hover:scale-[1.02]",
                   )}
                 >
                   <img

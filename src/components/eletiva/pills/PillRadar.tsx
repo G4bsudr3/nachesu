@@ -183,7 +183,7 @@ export function PillRadar({
                   maxLength={200}
                   onChange={(e) => updateItem(item.id, { what: e.target.value })}
                   placeholder="ex: bebedouro do 2º andar com vazamento constante"
-                  className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+                  className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
                 />
               </div>
               <div>
@@ -196,7 +196,7 @@ export function PillRadar({
                   maxLength={100}
                   onChange={(e) => updateItem(item.id, { where: e.target.value })}
                   placeholder="ex: escola, andar 2"
-                  className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+                  className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
                 />
               </div>
             </div>
@@ -208,7 +208,7 @@ export function PillRadar({
               <select
                 value={item.fluxo}
                 onChange={(e) => updateItem(item.id, { fluxo: e.target.value })}
-                className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+                className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
               >
                 <option value="">selecione...</option>
                 {(schema.fluxos ?? []).map((f) => (
@@ -243,7 +243,7 @@ export function PillRadar({
       <button
         type="button"
         onClick={addItem}
-        className="w-full rounded-2xl border-2 border-dashed border-perestroika-preto/25 py-3 font-body text-sm uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors inline-flex items-center justify-center gap-2"
+        className="w-full rounded-2xl border-2 border-dashed border-perestroika-preto/15 py-3 font-body text-sm uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors inline-flex items-center justify-center gap-2"
       >
         <Plus className="h-4 w-4" /> adicionar item
       </button>

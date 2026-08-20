@@ -25,7 +25,7 @@ import { usePulso, type PulsoEntry } from "@/features/admin/usePulso";
 import { FeedbackMarkdown } from "@/components/eletiva/FeedbackMarkdown";
 
 const Stat = ({ label, value, hint }: { label: string; value: string; hint?: string }) => (
-  <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 px-4 py-3">
+  <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 px-4 py-3">
     <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/55">{label}</p>
     <p className="font-display text-3xl leading-none text-perestroika-preto mt-1">{value}</p>
     {hint && <p className="text-[11px] text-perestroika-preto/50 mt-1">{hint}</p>}
@@ -227,7 +227,7 @@ const AdminPulso = () => {
 
       {/* as duas perguntas, lidas separadas */}
       <div className="grid gap-3 lg:grid-cols-2 mb-6">
-        <section className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4">
+        <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
           <div className="flex items-baseline justify-between gap-2 mb-1">
             <h2 className="font-display uppercase text-xl leading-none">ritmo do módulo</h2>
             <span className="text-[11px] text-perestroika-preto/50">3 opções · ia na prática</span>
@@ -266,7 +266,7 @@ const AdminPulso = () => {
           )}
         </section>
 
-        <section className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4">
+        <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
           <div className="flex items-baseline justify-between gap-2 mb-1">
             <h2 className="font-display uppercase text-xl leading-none">satisfação</h2>
             <span className="text-[11px] text-perestroika-preto/50">1 a 5 estrelas</span>
@@ -311,7 +311,7 @@ const AdminPulso = () => {
       </div>
 
       {/* análise de IA */}
-      <section className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4 sm:p-5 mb-6">
+      <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4 sm:p-5 mb-6">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
           <h2 className="font-display uppercase text-2xl leading-none">leitura da ia</h2>
           <div className="flex items-center gap-2">
@@ -368,7 +368,7 @@ const AdminPulso = () => {
                 {byCourse.map((c) => (
                   <div
                     key={c.course_id}
-                    className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4"
+                    className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4"
                   >
                     <p className="font-display uppercase text-lg leading-none">{c.title}</p>
                     <p className="text-xs text-perestroika-preto/55 mb-3">
@@ -639,7 +639,7 @@ const AdminPulso = () => {
             {filteredComments.map((c) => (
               <li
                 key={`${c.user_id}-${c.module_id}`}
-                className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4"
+                className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4"
               >
                 <div className="flex flex-wrap items-center gap-2 mb-1.5">
                   <AnswerChip entry={c} />

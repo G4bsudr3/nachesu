@@ -77,7 +77,7 @@ export function ModuloConclusaoSprintIdeacao({ moduleId }: Props) {
       className="mt-8 space-y-6"
     >
       <header>
-        <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
           exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
@@ -115,7 +115,7 @@ export function ModuloConclusaoSprintIdeacao({ moduleId }: Props) {
           {ultimas.map((i, idx) => (
             <li
               key={i.id ?? idx}
-              className="rounded-xl border-2 border-perestroika-preto/10 bg-perestroika-bege px-3 py-2 flex items-start gap-2"
+              className="rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 flex items-start gap-2"
             >
               <span className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/45 pt-0.5 flex-shrink-0">
                 r{i.rodada ?? "?"}

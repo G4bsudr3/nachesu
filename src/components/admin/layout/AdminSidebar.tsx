@@ -120,7 +120,7 @@ export const AdminSidebar = ({
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(
-          "flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-colors",
+          "flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] transition-colors",
           "text-perestroika-preto/70 hover:text-perestroika-preto hover:bg-perestroika-preto/5",
           isActive && "bg-perestroika-preto/10 text-perestroika-preto font-medium",
         )
@@ -139,9 +139,9 @@ export const AdminSidebar = ({
 
 
   return (
-    <div className="h-full flex flex-col bg-perestroika-bege border-r border-perestroika-preto/10">
+    <div className="h-full flex flex-col bg-perestroika-bege border-r border-perestroika-preto/15">
       <div className="px-4 pt-5 pb-3">
-        <p className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/45">
+        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/45">
           NachesU · admin
         </p>
       </div>
@@ -157,7 +157,7 @@ export const AdminSidebar = ({
         ))}
       </nav>
 
-      <div className="px-3 py-3 border-t border-perestroika-preto/10 flex items-center justify-between gap-2">
+      <div className="px-3 py-3 border-t border-perestroika-preto/15 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-[11px] text-perestroika-preto/55">
           <EletivaSymbol pose="thinking" size={28} />
         </div>

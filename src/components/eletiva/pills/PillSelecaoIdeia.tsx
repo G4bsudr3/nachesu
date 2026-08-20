@@ -301,7 +301,7 @@ export function PillSelecaoIdeia({
                   {porQuadrante[q.id]?.map((i) => (
                     <li
                       key={i.id}
-                      className="rounded-lg bg-white border border-perestroika-preto/10 px-2 py-1 flex items-start gap-2"
+                      className="rounded-xl bg-white border border-perestroika-preto/15 px-2 py-1 flex items-start gap-2"
                     >
                       <p className="font-body text-xs text-perestroika-preto/85 flex-1 leading-snug">
                         {i.texto}
@@ -329,7 +329,7 @@ export function PillSelecaoIdeia({
 
           {/* pool de não-alocadas */}
           {porQuadrante._nao.length > 0 && (
-            <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/25 bg-white p-4 space-y-2">
+            <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-white p-4 space-y-2">
               <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
                 a classificar · {porQuadrante._nao.length}
               </p>
@@ -337,7 +337,7 @@ export function PillSelecaoIdeia({
                 {porQuadrante._nao.map((i) => (
                   <li
                     key={i.id}
-                    className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege px-3 py-2 flex flex-col sm:flex-row sm:items-center gap-2"
+                    className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 flex flex-col sm:flex-row sm:items-center gap-2"
                   >
                     <p className="font-body text-sm text-perestroika-preto/90 flex-1 leading-snug">
                       {i.texto}
@@ -366,7 +366,7 @@ export function PillSelecaoIdeia({
               <button
                 type="button"
                 onClick={() => setFase("escolha")}
-                className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/25 px-4 py-2 font-body text-xs uppercase tracking-wider text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/15 px-4 py-2 font-body text-xs uppercase tracking-wider text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
               >
                 ir pra escolha <ArrowRight className="h-3.5 w-3.5" aria-hidden />
               </button>
@@ -488,7 +488,7 @@ export function PillSelecaoIdeia({
                     <button
                       type="button"
                       onClick={() => setValue((prev) => ({ ...prev, raridade: undefined }))}
-                      className="rounded-full border-2 border-perestroika-preto/25 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto"
+                      className="rounded-full border-2 border-perestroika-preto/15 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto"
                     >
                       volto e escolho outra
                     </button>
@@ -503,7 +503,7 @@ export function PillSelecaoIdeia({
               <button
                 type="button"
                 onClick={() => setFase("refino")}
-                className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/25 px-4 py-2 font-body text-xs uppercase tracking-wider text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/15 px-4 py-2 font-body text-xs uppercase tracking-wider text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
               >
                 ir pro refinamento <ArrowRight className="h-3.5 w-3.5" aria-hidden />
               </button>

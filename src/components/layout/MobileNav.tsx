@@ -50,7 +50,7 @@ export const MobileNav = () => {
   return (
     <nav
       aria-label="navegação principal"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-perestroika-preto/10 bg-perestroika-bege/95 backdrop-blur sm:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-perestroika-preto/15 bg-perestroika-bege/95 backdrop-blur sm:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <ul className={`grid ${cols}`}>

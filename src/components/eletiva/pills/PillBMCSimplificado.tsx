@@ -559,7 +559,7 @@ function ListEditor({
           {items.map((it, i) => (
             <li
               key={i}
-              className="flex items-center justify-between gap-2 rounded-xl bg-white border border-perestroika-preto/10 px-3 py-2"
+              className="flex items-center justify-between gap-2 rounded-xl bg-white border border-perestroika-preto/15 px-3 py-2"
             >
               <span className="font-body text-sm text-perestroika-preto/85">{it}</span>
               <button

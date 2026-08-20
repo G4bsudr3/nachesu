@@ -70,7 +70,7 @@ export const ModuloFooter = ({
         {helper}
       </p>
       {adminBypass && (
-        <p className="font-body text-[11px] uppercase tracking-[0.18em] text-perestroika-bege/55 mb-4">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-bege/55 mb-4">
           bypass de admin · estudante não vê esse botão liberado
         </p>
       )}
@@ -111,7 +111,7 @@ export const ModuloFooter = ({
       {prevModule ? (
         <Link
           to={moduloHref(courseSlug, prevModule.number)}
-          className="group min-w-0 flex-1 max-w-[48%] rounded-2xl border border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
+          className="group min-w-0 flex-1 max-w-[48%] rounded-2xl border-2 border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
         >
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1 inline-flex items-center gap-1">
             <ArrowLeft className="h-3 w-3" /> módulo {String(prevModule.number).padStart(2, "0")}
@@ -124,7 +124,7 @@ export const ModuloFooter = ({
       {nextModule ? (
         <Link
           to={moduloHref(courseSlug, nextModule.number)}
-          className="group min-w-0 flex-1 max-w-[48%] text-right rounded-2xl border border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
+          className="group min-w-0 flex-1 max-w-[48%] text-right rounded-2xl border-2 border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
         >
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1 inline-flex items-center gap-1">
             módulo {String(nextModule.number).padStart(2, "0")} <ArrowRight className="h-3 w-3" />

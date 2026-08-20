@@ -96,7 +96,7 @@ export function ModuloConclusaoStakeholders({ moduleId }: Props) {
       className="mt-8 space-y-6"
     >
       <header>
-        <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
           trilha 2 cumprida
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
@@ -150,7 +150,7 @@ export function ModuloConclusaoStakeholders({ moduleId }: Props) {
                 className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4 space-y-2 min-h-[110px]"
               >
                 <div>
-                  <p className="font-display uppercase text-sm tracking-[0.12em] text-perestroika-preto">
+                  <p className="font-display uppercase text-sm tracking-[0.2em] text-perestroika-preto">
                     {q.label}
                   </p>
                   <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">

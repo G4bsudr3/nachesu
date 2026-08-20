@@ -75,7 +75,7 @@ export function ModuloAutoCompleteBurst({ open, onDone, message, nextUnlocked }:
                 {message ?? "rodou tudo. módulo fechado."}
               </p>
               {nextUnlocked && (
-                <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60">
+                <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
                   próximo módulo liberado
                 </p>
               )}

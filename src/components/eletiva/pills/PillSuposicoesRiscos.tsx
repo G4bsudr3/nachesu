@@ -171,7 +171,7 @@ function classifyRisco(r: RiscoItem): Zona {
 const zonaCopy: Record<Zona, { label: string; tone: string }> = {
   acao: { label: "AÇÃO IMEDIATA", tone: "bg-perestroika-vermelho/15 text-perestroika-vermelho border-perestroika-vermelho/50" },
   planoB: { label: "plano B pronto", tone: "bg-perestroika-laranja/15 text-perestroika-laranja border-perestroika-laranja/50" },
-  monitorar: { label: "monitorar", tone: "bg-perestroika-preto/10 text-perestroika-preto/75 border-perestroika-preto/25" },
+  monitorar: { label: "monitorar", tone: "bg-perestroika-preto/10 text-perestroika-preto/75 border-perestroika-preto/15" },
   aceitar: { label: "aceitar", tone: "bg-perestroika-preto/[0.04] text-perestroika-preto/55 border-perestroika-preto/15" },
   vazio: { label: "categorize", tone: "bg-white text-perestroika-preto/60 border-perestroika-preto/15" },
 };
@@ -512,7 +512,7 @@ function Field({
   const border = danger
     ? "border-perestroika-vermelho/50"
     : ok
-      ? "border-perestroika-preto/40"
+      ? "border-perestroika-preto/30"
       : "border-perestroika-preto/15";
   return (
     <div className="space-y-1">

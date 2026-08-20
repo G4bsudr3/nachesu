@@ -139,7 +139,7 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
     <>
       <Icon className="h-4 w-4 mt-0.5 shrink-0" />
       <div className="flex-1 min-w-0 text-left">
-        <p className="font-body text-[11px] uppercase tracking-[0.18em] opacity-70 mb-0.5">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] opacity-70 mb-0.5">
           entrega
         </p>
         <p className="font-body text-sm font-medium flex items-center gap-2">
@@ -149,7 +149,7 @@ export const DeliverableStatusPill = ({ moduleId }: Props) => {
         <p className="font-body text-xs opacity-75 mt-0.5">{helper}</p>
       </div>
       {isRevisado && (
-        <span className="inline-flex items-center gap-1 self-center font-body text-[11px] uppercase tracking-[0.16em] text-[#fe7b02]">
+        <span className="inline-flex items-center gap-1 self-center font-body text-[11px] uppercase tracking-[0.2em] text-[#fe7b02]">
           ler retorno
           <ArrowDown className="h-3.5 w-3.5" />
         </span>

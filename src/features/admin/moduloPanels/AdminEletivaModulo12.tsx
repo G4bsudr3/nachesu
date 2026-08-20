@@ -68,7 +68,7 @@ export default function AdminEletivaModulo12() {
     <div className="space-y-8">
       <div className="space-y-8">
         <header className="space-y-3">
-          <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             economia circular · módulo 12
           </p>
           <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
@@ -114,7 +114,7 @@ export default function AdminEletivaModulo12() {
                       {s.nickname}
                     </p>
                     {s.raridade && (
-                      <span className="rounded-full border-2 border-perestroika-preto/20 px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
+                      <span className="rounded-full border-2 border-perestroika-preto/15 px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
                         {RARIDADE_LABEL[s.raridade] ?? s.raridade}
                       </span>
                     )}

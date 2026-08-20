@@ -357,7 +357,7 @@ export function PillQuatroFiltrosBriefing({
                 className={`flex items-start gap-3 rounded-xl border-2 p-2.5 cursor-pointer transition-colors ${
                   checked
                     ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                    : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
+                    : "border-perestroika-preto/15 hover:border-perestroika-preto/30"
                 }`}
               >
                 <input
@@ -369,7 +369,7 @@ export function PillQuatroFiltrosBriefing({
                 />
                 <span
                   className={`mt-0.5 h-4 w-4 flex-shrink-0 rounded-full border-2 ${
-                    checked ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/40"
+                    checked ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/30"
                   }`}
                   aria-hidden
                 />
@@ -495,7 +495,7 @@ export function PillQuatroFiltrosBriefing({
           style={{ borderColor: sem.color, backgroundColor: `${sem.color}1A` }}
         >
           <div
-            className="h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 font-display leading-none"
+            className="h-11 w-11 rounded-full flex items-center justify-center flex-shrink-0 font-display leading-none"
             style={{ backgroundColor: sem.color, color: "#0e0e0e", fontSize: 20 }}
             aria-hidden
           >
@@ -517,7 +517,7 @@ export function PillQuatroFiltrosBriefing({
                   type="checkbox"
                   checked={!!value.trocou_problema}
                   onChange={(e) => setValue((prev) => ({ ...prev, trocou_problema: e.target.checked }))}
-                  className="h-4 w-4 rounded border-2 border-perestroika-preto/40 accent-perestroika-preto"
+                  className="h-4 w-4 rounded border-2 border-perestroika-preto/30 accent-perestroika-preto"
                 />
                 escolhi um problema novo do meu radar
                 <RefreshCcw className="h-3.5 w-3.5" aria-hidden />
@@ -667,7 +667,7 @@ export function PillQuatroFiltrosBriefing({
       </section>
 
       {/* ==== PREVIEW / PDF ==== */}
-      <section className="rounded-2xl border-2 border-dashed border-perestroika-preto/25 p-4 bg-perestroika-preto/[0.03]">
+      <section className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-4 bg-perestroika-preto/[0.03]">
         <div className="flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 mt-0.5 flex-shrink-0" style={{ color: accent }} aria-hidden />
           <div className="flex-1">

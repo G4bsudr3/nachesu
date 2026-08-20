@@ -158,7 +158,7 @@ export function PillMiniDossie({ pillId, schema, accent, initial, save, onComple
               style={{ borderColor: preenchido ? `${accent}55` : "rgba(9,9,9,0.12)" }}
             >
               <div
-                className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center font-display text-sm"
+                className="flex-shrink-0 h-11 w-11 rounded-full flex items-center justify-center font-display text-sm"
                 style={{ backgroundColor: preenchido ? accent : "rgba(9,9,9,0.08)", color: preenchido ? "#f2e4d8" : "rgba(9,9,9,0.4)" }}
               >
                 {String(b.n).padStart(2, "0")}
@@ -204,14 +204,14 @@ export function PillMiniDossie({ pillId, schema, accent, initial, save, onComple
                 href={`${dossieUrl}?print=1`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2.5 font-body text-sm text-perestroika-preto hover:border-perestroika-preto/50"
+                className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-perestroika-preto/15 px-4 py-2.5 font-body text-sm text-perestroika-preto hover:border-perestroika-preto/50"
               >
                 <Download className="h-4 w-4" aria-hidden /> baixar pdf
               </a>
               <button
                 type="button"
                 onClick={copiarLink}
-                className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2.5 font-body text-sm text-perestroika-preto hover:border-perestroika-preto/50"
+                className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-perestroika-preto/15 px-4 py-2.5 font-body text-sm text-perestroika-preto hover:border-perestroika-preto/50"
               >
                 {copiado ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
                 {copiado ? "copiado" : "copiar link"}
@@ -222,7 +222,7 @@ export function PillMiniDossie({ pillId, schema, accent, initial, save, onComple
               href={dossieUrl + "?certificado=1"}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2 font-body text-sm text-perestroika-preto hover:border-perestroika-preto/50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-perestroika-preto/15 px-4 py-2 font-body text-sm text-perestroika-preto hover:border-perestroika-preto/50"
             >
               <Award className="h-4 w-4" aria-hidden /> ver certificado
             </a>
@@ -234,7 +234,7 @@ export function PillMiniDossie({ pillId, schema, accent, initial, save, onComple
         )}
       </section>
 
-      <div className="pt-2 border-t border-perestroika-preto/10">
+      <div className="pt-2 border-t border-perestroika-preto/15">
         <div className="flex justify-end">
           <SaveIndicator status={status} />
         </div>

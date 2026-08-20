@@ -258,14 +258,14 @@ export function PillMapaAtores({
                 {list.map((ator, idx) => (
                   <li
                     key={idx}
-                    className="rounded-xl border-2 border-perestroika-preto/10 bg-perestroika-bege/60 p-3 space-y-2"
+                    className="rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-3 space-y-2"
                   >
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
                         value={ator.nome}
                         onChange={(e) => updateAtor(q.id, idx, { nome: e.target.value })}
-                        className="flex-1 rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+                        className="flex-1 rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none"
                         placeholder="nome específico do ator"
                         aria-label={`nome do ator ${idx + 1} em ${q.label}`}
                       />
@@ -282,7 +282,7 @@ export function PillMapaAtores({
                       value={ator.descricao}
                       onChange={(e) => updateAtor(q.id, idx, { descricao: e.target.value })}
                       rows={2}
-                      className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+                      className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
                       placeholder="1 frase: o que essa pessoa ganha, perde, decide ou sofre?"
                       aria-label={`descrição do ator ${idx + 1}`}
                     />
@@ -293,7 +293,7 @@ export function PillMapaAtores({
               <button
                 type="button"
                 onClick={() => addAtor(q.id)}
-                className="inline-flex items-center gap-1.5 rounded-full border-2 border-dashed border-perestroika-preto/25 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full border-2 border-dashed border-perestroika-preto/15 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors"
               >
                 <Plus className="h-3.5 w-3.5" /> adicionar ator
               </button>

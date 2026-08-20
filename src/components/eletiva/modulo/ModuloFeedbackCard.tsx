@@ -245,7 +245,7 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
                 onChange={(e) => setReply(e.target.value.slice(0, 4000))}
                 placeholder="escreva sua resposta..."
                 rows={3}
-                className="bg-perestroika-bege/70 border-perestroika-preto/20 font-body text-sm"
+                className="bg-perestroika-bege/70 border-perestroika-preto/15 font-body text-sm"
                 autoFocus
               />
               <div className="mt-2 flex items-center justify-between">

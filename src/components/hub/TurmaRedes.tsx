@@ -33,7 +33,7 @@ function PersonCard({ p, isMe }: { p: TurmaPessoa; isMe: boolean }) {
   const hasAny = hasIg || hasLi;
 
   return (
-    <article className="flex flex-col gap-3 rounded-2xl border border-perestroika-preto/12 bg-perestroika-bege/55 p-4 transition-colors hover:border-perestroika-preto/30">
+    <article className="flex flex-col gap-3 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/55 p-4 transition-colors hover:border-perestroika-preto/30">
       <header className="flex items-center gap-3 min-w-0">
         {p.avatar_url ? (
           <img
@@ -75,7 +75,7 @@ function PersonCard({ p, isMe }: { p: TurmaPessoa; isMe: boolean }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`instagram de ${p.display_name}`}
-              className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-gradient-to-r from-perestroika-laranja via-perestroika-vermelho to-perestroika-rosa px-3 py-1.5 font-body text-xs font-medium text-perestroika-bege transition-transform hover:scale-[1.03]"
+              className="inline-flex min-min-h-11 items-center gap-1.5 rounded-full bg-gradient-to-r from-perestroika-laranja via-perestroika-vermelho to-perestroika-rosa px-3 py-1.5 font-body text-xs font-medium text-perestroika-bege transition-transform hover:scale-[1.03]"
             >
               <Instagram className="h-3.5 w-3.5" aria-hidden />
               <span className="max-w-[140px] truncate">@{p.instagram}</span>
@@ -87,7 +87,7 @@ function PersonCard({ p, isMe }: { p: TurmaPessoa; isMe: boolean }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`linkedin de ${p.display_name}`}
-              className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-perestroika-preto px-3 py-1.5 font-body text-xs font-medium text-perestroika-preto transition-colors hover:bg-perestroika-preto hover:text-perestroika-bege"
+              className="inline-flex min-min-h-11 items-center gap-1.5 rounded-full border border-perestroika-preto px-3 py-1.5 font-body text-xs font-medium text-perestroika-preto transition-colors hover:bg-perestroika-preto hover:text-perestroika-bege"
             >
               <Linkedin className="h-3.5 w-3.5" aria-hidden />
               <span className="max-w-[140px] truncate">{linkedinDisplay(p.linkedin!)}</span>
@@ -97,7 +97,7 @@ function PersonCard({ p, isMe }: { p: TurmaPessoa; isMe: boolean }) {
       ) : isMe ? (
         <Link
           to="/app/conta"
-          className="inline-flex w-full min-h-9 items-center justify-center gap-1.5 rounded-full border border-dashed border-perestroika-preto/40 px-3 py-1.5 font-body text-xs uppercase tracking-wide text-perestroika-preto/70 transition-colors hover:border-perestroika-preto hover:text-perestroika-preto"
+          className="inline-flex w-full min-min-h-11 items-center justify-center gap-1.5 rounded-full border border-dashed border-perestroika-preto/30 px-3 py-1.5 font-body text-xs uppercase tracking-wide text-perestroika-preto/70 transition-colors hover:border-perestroika-preto hover:text-perestroika-preto"
         >
           <Sparkles className="h-3.5 w-3.5" aria-hidden />
           adiciona tuas redes
@@ -158,7 +158,7 @@ export function TurmaRedes() {
   return (
     <section aria-labelledby="turma-redes-title" className="space-y-5">
       <div>
-        <p className="mb-2 font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
+        <p className="mb-2 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
           fica fácil se achar
         </p>
         <h2
@@ -179,7 +179,7 @@ export function TurmaRedes() {
       </div>
 
       {/* search + filtro */}
-      <div className="space-y-3 rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/40 p-3">
+      <div className="space-y-3 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-3">
         <label className="flex items-center gap-2 rounded-xl border border-perestroika-preto/15 bg-perestroika-bege px-3 focus-within:border-perestroika-preto">
           <Search className="h-4 w-4 shrink-0 text-perestroika-preto/50" aria-hidden />
           <input
@@ -214,7 +214,7 @@ export function TurmaRedes() {
                 className={`min-h-9 rounded-full px-3 py-1.5 font-body text-xs uppercase tracking-wide transition-colors ${
                   active
                     ? "bg-perestroika-preto text-perestroika-bege"
-                    : "border border-perestroika-preto/20 text-perestroika-preto/70 hover:border-perestroika-preto hover:text-perestroika-preto"
+                    : "border border-perestroika-preto/15 text-perestroika-preto/70 hover:border-perestroika-preto hover:text-perestroika-preto"
                 }`}
               >
                 {f.label}
@@ -231,7 +231,7 @@ export function TurmaRedes() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-8 text-center">
+        <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-8 text-center">
           <p className="font-body text-sm text-perestroika-preto/65">
             ninguém aqui com esse nome. tenta o nickname ou o handle.
           </p>

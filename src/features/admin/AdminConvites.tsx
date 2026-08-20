@@ -145,7 +145,7 @@ export function AdminConvites() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="inline-flex rounded-lg border border-perestroika-preto/15 overflow-hidden">
+          <div className="inline-flex rounded-xl border border-perestroika-preto/15 overflow-hidden">
             {RANGES.map(r => (
               <button
                 key={r.hours}
@@ -160,7 +160,7 @@ export function AdminConvites() {
           </div>
           <button
             onClick={refresh}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-perestroika-preto/15 px-3 py-1.5 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-perestroika-preto/15 px-3 py-1.5 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5"
             aria-label="atualizar agora"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loadingStats ? "animate-spin" : ""}`} /> atualizar
@@ -218,7 +218,7 @@ export function AdminConvites() {
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="font-display uppercase text-2xl">últimos envios</h3>
-          <div className="inline-flex rounded-lg border border-perestroika-preto/15 overflow-hidden text-xs">
+          <div className="inline-flex rounded-xl border border-perestroika-preto/15 overflow-hidden text-xs">
             {[
               { id: "all", label: "todos" },
               { id: "sent", label: "enviados" },
@@ -242,7 +242,7 @@ export function AdminConvites() {
         <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
           {filteredLog.length} {filteredLog.length === 1 ? "envio" : "envios"} no recorte
         </p>
-        <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
+        <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -294,7 +294,7 @@ function StatCard({
     ok: "bg-green-50 border-green-200",
     bad: "bg-red-50 border-red-200",
     warn: "bg-amber-50 border-amber-200",
-    muted: "bg-perestroika-preto/5 border-perestroika-preto/10",
+    muted: "bg-perestroika-preto/5 border-perestroika-preto/15",
   }[tone];
   return (
     <div className={`p-4 rounded-xl border ${toneClass}`}>

@@ -36,7 +36,7 @@ export const PillVideoPlayer = ({ url, trailColor }: Props) => {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1.5 font-body text-xs uppercase tracking-wide hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+        className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/15 px-3 py-1.5 font-body text-xs uppercase tracking-wide hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
       >
         <Play className="h-3.5 w-3.5" /> assistir em nova aba
       </a>

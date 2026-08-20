@@ -45,7 +45,7 @@ const MascoteLightbox = ({
       <DialogContent className="max-w-3xl border-2 border-perestroika-preto bg-perestroika-bege p-0 sm:rounded-[2rem]">
         <div className="flex flex-col">
           <div
-            className="flex items-center justify-center p-4 sm:p-8"
+            className="flex items-center justify-center p-4 sm:p-6"
             style={{ background: "#f2e4d8" }}
           >
             {mascote.image_url ? (
@@ -230,7 +230,7 @@ export const MascoteSelector = ({
                     key={`${c.nome}-${i}`}
                     onClick={() => setZoomIndex(i)}
                     aria-label={`ver ${c.nome} em tamanho grande`}
-                    className="group flex cursor-zoom-in items-center gap-3 rounded-full border border-perestroika-preto/20 bg-perestroika-bege/50 px-3 py-1.5 transition hover:border-perestroika-preto/50 hover:bg-perestroika-bege/85"
+                    className="group flex cursor-zoom-in items-center gap-3 rounded-full border border-perestroika-preto/15 bg-perestroika-bege/50 px-3 py-1.5 transition hover:border-perestroika-preto/50 hover:bg-perestroika-bege/85"
                   >
                     {c.image_url && (
                       <img src={c.image_url} alt={c.nome} className="h-8 w-8 rounded-full object-cover" />
@@ -314,7 +314,7 @@ export const MascoteSelector = ({
 
         {/* status: participação */}
         {isAdmin && voting.totalElegiveis > 0 && (
-          <div className="mb-5 rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/50 p-4">
+          <div className="mb-5 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/50 p-4">
             <div className="mb-2 flex items-baseline justify-between">
               <span className="font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
                 participação
@@ -381,7 +381,7 @@ export const MascoteSelector = ({
                     <span className="font-display text-4xl uppercase text-perestroika-preto/60">{c.nome}</span>
                   )}
                 </div>
-                <div className="flex flex-1 flex-col gap-3 border-t-2 border-perestroika-preto/10 p-5">
+                <div className="flex flex-1 flex-col gap-3 border-t-2 border-perestroika-preto/15 p-5">
                   {isMine && (
                     <span className="inline-flex w-fit items-center gap-1 rounded-full bg-[#fe7b02] px-2 py-0.5 font-body text-[10px] uppercase tracking-wide text-white">
                       <Check className="h-3 w-3" strokeWidth={3} /> teu voto
@@ -393,7 +393,7 @@ export const MascoteSelector = ({
                       {c.tracos.slice(0, 4).map((t) => (
                         <span
                           key={t}
-                          className="rounded-full border border-perestroika-preto/20 bg-perestroika-bege/60 px-2 py-0.5 font-body text-[11px] text-perestroika-preto/75"
+                          className="rounded-full border border-perestroika-preto/15 bg-perestroika-bege/60 px-2 py-0.5 font-body text-[11px] text-perestroika-preto/75"
                         >
                           {t}
                         </span>
@@ -411,7 +411,7 @@ export const MascoteSelector = ({
                       isMine
                         ? "border-[#fe7b02] bg-[#fe7b02] text-white"
                         : jaVotou
-                          ? "border-perestroika-preto/20 text-perestroika-preto/60"
+                          ? "border-perestroika-preto/15 text-perestroika-preto/60"
                           : "border-perestroika-preto bg-perestroika-preto text-perestroika-bege hover:bg-transparent hover:text-perestroika-preto"
                     } disabled:cursor-not-allowed`}
                   >

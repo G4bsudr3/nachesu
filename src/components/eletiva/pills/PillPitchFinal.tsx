@@ -176,7 +176,7 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
                   value={v}
                   onChange={(e) => updateBloco(b.key, e.target.value)}
                   rows={2}
-                  className="w-full rounded-lg border border-perestroika-preto/15 bg-white px-2 py-1.5 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none resize-y"
+                  className="w-full rounded-xl border border-perestroika-preto/15 bg-white px-2 py-1.5 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none resize-y"
                 />
               </div>
             );
@@ -237,7 +237,7 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
       )}
 
       {/* Status + CTA */}
-      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/10">
+      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/15">
         <SaveIndicator status={status} />
         <div className="flex items-center gap-2 flex-wrap">
           <StatusChip ok={blocosOk} label="roteiro refinado" accent={accent} />
@@ -419,7 +419,7 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
           </label>
 
           {value.video_url && (
-            <button type="button" onClick={clear} className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/20 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50">
+            <button type="button" onClick={clear} className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50">
               <Trash2 className="h-3.5 w-3.5" aria-hidden /> apagar
             </button>
           )}

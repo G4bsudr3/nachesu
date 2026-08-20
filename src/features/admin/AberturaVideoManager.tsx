@@ -300,7 +300,7 @@ export const AberturaVideoManager = ({ courseId, slug, moduleId, moduleNumber, a
                   to={`/admin/eletiva/${slug}/modulo/${r.module_number}`}
                   className={`block rounded-xl border-2 px-3 py-2.5 ${
                     has
-                      ? "border-perestroika-preto/20 bg-perestroika-bege"
+                      ? "border-perestroika-preto/15 bg-perestroika-bege"
                       : "border-rose-300 bg-rose-50"
                   } ${r.module_id === moduleId ? "ring-2 ring-perestroika-preto" : ""}`}
                 >

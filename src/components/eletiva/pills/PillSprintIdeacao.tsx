@@ -369,7 +369,7 @@ export function PillSprintIdeacao({
                 <button
                   type="button"
                   onClick={() => setRunning(false)}
-                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/25 px-3 py-2 font-body text-xs uppercase tracking-wider text-perestroika-preto"
+                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/15 px-3 py-2 font-body text-xs uppercase tracking-wider text-perestroika-preto"
                 >
                   <Pause className="h-3.5 w-3.5" aria-hidden /> pausar
                 </button>
@@ -451,7 +451,7 @@ export function PillSprintIdeacao({
             {ideiasDaRodada.map((i, idx) => (
               <li
                 key={i.id}
-                className="rounded-xl bg-white border-2 border-perestroika-preto/10 px-3 py-2 flex items-start gap-2"
+                className="rounded-xl bg-white border-2 border-perestroika-preto/15 px-3 py-2 flex items-start gap-2"
               >
                 <span
                   className="font-display text-sm tabular-nums flex-shrink-0"
@@ -478,7 +478,7 @@ export function PillSprintIdeacao({
             <button
               type="button"
               onClick={irProximaFase}
-              className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/25 px-4 py-2 font-body text-xs uppercase tracking-wider text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/15 px-4 py-2 font-body text-xs uppercase tracking-wider text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
             >
               {rodadaAtiva.numero === rodadas.length ? "ir pra compilação" : "próxima rodada"}
               <ArrowRight className="h-3.5 w-3.5" aria-hidden />
@@ -534,7 +534,7 @@ export function PillSprintIdeacao({
             {ideias.map((i, idx) => (
               <li
                 key={i.id}
-                className="rounded-xl bg-white border-2 border-perestroika-preto/10 px-3 py-2 flex items-start gap-2"
+                className="rounded-xl bg-white border-2 border-perestroika-preto/15 px-3 py-2 flex items-start gap-2"
               >
                 <span
                   className="font-display text-sm tabular-nums flex-shrink-0 pt-0.5"

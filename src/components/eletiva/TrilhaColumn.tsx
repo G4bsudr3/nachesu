@@ -66,7 +66,7 @@ export const TrilhaColumn = ({
       initial={{ opacity: 0, x: -16 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: columnIndex * 0.08, duration: 0.4 }}
-      className="rounded-3xl border-2 border-perestroika-preto/10 bg-perestroika-bege p-4 sm:p-5"
+      className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4 sm:p-5"
       aria-labelledby={`trilha-${trail.id}-titulo`}
     >
       <header className="mb-4">
