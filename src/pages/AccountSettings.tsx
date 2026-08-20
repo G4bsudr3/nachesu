@@ -259,7 +259,7 @@ const AccountSettings = () => {
           </div>
         </section>
 
-        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 space-y-4">
           <h2 className="font-display uppercase text-2xl leading-none">
             sair
           </h2>
