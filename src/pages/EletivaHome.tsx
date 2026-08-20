@@ -322,20 +322,23 @@ const EletivaHome = () => {
             </span>
           </div>
 
-          <p className="relative z-10 font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
-            sua eletiva
-          </p>
-          <h1 className="relative z-10 font-display uppercase text-4xl sm:text-7xl leading-[0.9] sm:leading-[0.85] mb-3 max-w-[14ch] sm:max-w-[18ch] text-perestroika-preto">
-            {course.title.toLowerCase()}
-          </h1>
-          {course.subtitle && (
-            <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-lg sm:max-w-xl mb-6">
-              {course.subtitle}
+          <div className="relative z-10 space-y-6">
+          <div className="space-y-2">
+            <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+              sua eletiva
             </p>
-          )}
+            <h1 className="font-display uppercase text-4xl sm:text-7xl leading-[0.9] sm:leading-[0.85] max-w-[14ch] sm:max-w-[18ch] text-perestroika-preto">
+              {course.title.toLowerCase()}
+            </h1>
+            {course.subtitle && (
+              <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-lg sm:max-w-xl">
+                {course.subtitle}
+              </p>
+            )}
+          </div>
 
           {/* quem te guia + progresso */}
-          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pb-5 mb-5 border-b border-perestroika-preto/15">
+          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pb-5 border-b border-perestroika-preto/15">
             <div className="flex items-center gap-3 min-w-0">
               {course.professor_avatar_url && (
                 <img
