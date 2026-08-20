@@ -680,6 +680,26 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
         </label>
       </div>
 
+      {diag && (
+        <div role="alert" className="space-y-2 rounded-2xl border-2 p-3" style={{ borderColor: "#fd4644", backgroundColor: "#fd464412" }}>
+          <p className="flex items-start gap-2 font-body text-sm font-semibold text-perestroika-preto">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" style={{ color: "#fd4644" }} aria-hidden />
+            {diag.causa}
+          </p>
+          <p className="font-body text-[13px] leading-snug text-perestroika-preto/75">{diag.detalhe}</p>
+          <p className="font-body text-[13px] leading-snug text-perestroika-preto">
+            <span className="font-semibold">o que fazer: </span>{diag.acao}
+          </p>
+          <button
+            type="button"
+            onClick={() => setDiag(null)}
+            className="inline-flex min-h-[36px] items-center rounded-full border-2 border-perestroika-preto/20 px-3 font-body text-xs text-perestroika-preto hover:border-perestroika-preto/50"
+          >
+            entendi
+          </button>
+        </div>
+      )}
+
       <div className="space-y-1.5 rounded-2xl border-2 border-perestroika-preto/15 p-3">
         <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
           vídeo grande ou upload travando? cola o link
