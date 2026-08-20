@@ -108,7 +108,7 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
                               : "em breve"
                             : "termine o anterior";
                   const base =
-                    "group relative flex items-center justify-between gap-3 rounded-xl border px-4 py-3.5 text-left transition-all w-full";
+                    "group relative flex h-full items-center justify-between gap-3 rounded-xl border px-4 py-3.5 text-left transition-all w-full";
                   const variant =
                     state === "current"
                       ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege shadow-[0_4px_0_0_rgba(9,9,9,0.15)]"
