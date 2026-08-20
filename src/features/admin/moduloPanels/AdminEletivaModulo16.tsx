@@ -76,7 +76,7 @@ export default function AdminEletivaModulo16() {
   return (
     <div className="space-y-8">
       <div className="space-y-8">
-        <PanelHeader title={"planos de experimento da turma"} description={"quantos alunos entregaram plano com critério de sucesso quantitativo e quais métodos escolheram."} />
+        <PanelHeader title={"planos de experimento da turma"} description={"quantos estudantes entregaram plano com critério de sucesso quantitativo e quais métodos escolheram."} />
 
         <section className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <KpiCard label="matriculados" value={kpis?.total_students ?? 0} />

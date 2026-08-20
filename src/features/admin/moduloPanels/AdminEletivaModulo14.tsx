@@ -66,7 +66,7 @@ export default function AdminEletivaModulo14() {
   return (
     <div className="space-y-8">
       <div className="space-y-8">
-        <PanelHeader title={"modelos de negócio da turma"} description={"quantos alunos entregaram o bmc simplificado, quantos têm 2+ fontes de receita e onde o autoteste acendeu amarelo."} />
+        <PanelHeader title={"modelos de negócio da turma"} description={"quantos estudantes entregaram o bmc simplificado, quantos têm 2+ fontes de receita e onde o autoteste acendeu amarelo."} />
 
         <section className="grid gap-3 sm:grid-cols-5">
           <KpiCard label="matriculados" value={kpis?.total_students ?? 0} />
