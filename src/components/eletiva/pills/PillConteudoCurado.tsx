@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink, ArrowRight, Clock, Check, X, AlertTriangle } from "lucide-react";
+import { ExternalLink, ArrowRight, Check, X, AlertTriangle } from "lucide-react";
+import { DuracaoBadge } from "@/components/eletiva/DuracaoBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";

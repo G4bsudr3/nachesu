@@ -77,6 +77,7 @@ import {
 } from "@/components/eletiva/pills";
 import { PillMapaAtores, type MapaAtoresValue } from "@/components/eletiva/pills/PillMapaAtores";
 import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
+import { DuracaoBadge, formatDuracao } from "@/components/eletiva/DuracaoBadge";
 
 
 export type ModuloPill = {
@@ -202,17 +203,14 @@ const PillCardShell = ({
           </div>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {(pill.duration_min_low || pill.duration_min_high) && (
-              <span
-                className={`hidden sm:inline-flex items-center gap-1 font-body text-xs ${
-                  pill.required ? "text-perestroika-preto/55" : "text-perestroika-preto/35"
-                }`}
+              <DuracaoBadge
+                className="hidden sm:inline-flex"
+                muted={!pill.required}
+                title={!pill.required ? "fora do tempo do módulo" : undefined}
               >
-                <Clock className="h-3 w-3" />
-                {pill.duration_min_low === pill.duration_min_high || !pill.duration_min_high
-                  ? `${pill.duration_min_low ?? pill.duration_min_high} min`
-                  : `${pill.duration_min_low}-${pill.duration_min_high} min`}
+                {formatDuracao(pill.duration_min_low, pill.duration_min_high)}
                 {!pill.required && " fora do tempo do módulo"}
-              </span>
+              </DuracaoBadge>
             )}
 
             <span
