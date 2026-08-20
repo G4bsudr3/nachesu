@@ -20,6 +20,7 @@ import {
   LogOut,
   Eye,
   History,
+  Workflow,
   Star,
   type LucideIcon,
 } from "lucide-react";
