@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2, AlertTriangle, XCircle, RefreshCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PanelHeader } from "./PanelHeader";
 
 const FLUXO_LABELS: Record<string, string> = {
   materiais: "Materiais e Compras",
@@ -48,14 +49,7 @@ export default function AdminEletivaModulo5() {
   return (
     <div className="space-y-8">
       <div className="space-y-8">
-        <div>
-          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
-            economia circular · módulo 5
-          </p>
-          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
-            briefing · fechamento trilha 1
-          </h2>
-        </div>
+        <PanelHeader title={"briefing · fechamento trilha 1"} />
 
         {isLoading && <p className="font-body text-sm text-perestroika-preto/60">carregando…</p>}
         {data?.error && (

@@ -5,6 +5,7 @@ import { ChevronRight, EyeOff, FileWarning, Clock, User2, Info } from "lucide-re
 import { supabase } from "@/integrations/supabase/client";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { PanelHeader } from "@/features/admin/moduloPanels/PanelHeader";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { FeedbackReviewDrawer } from "@/features/admin/FeedbackReviewDrawer";
@@ -188,6 +189,8 @@ const AdminModuloDetalhe = () => {
       >
         <Link to="/admin" className="hover:text-perestroika-preto">admin</Link>
         <ChevronRight className="w-3 h-3" />
+        <Link to="/admin/eletivas" className="hover:text-perestroika-preto">eletivas</Link>
+        <ChevronRight className="w-3 h-3" />
         <Link to={`/admin/eletiva/${slug}/modulos`} className="hover:text-perestroika-preto">
           {course.data.title}
         </Link>
@@ -196,6 +199,7 @@ const AdminModuloDetalhe = () => {
           módulo {String(module.number).padStart(2, "0")}
         </span>
       </nav>
+
 
       <header
         className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-5 mb-6 flex flex-wrap items-start gap-4"
@@ -258,56 +262,6 @@ const AdminModuloDetalhe = () => {
             painel do exercício
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="exercicio">
-          {ExercicioPanel ? (
-            <Suspense
-              fallback={
-                <p className="font-body text-sm text-perestroika-preto/60 py-8">
-                  carregando painel do exercício...
-                </p>
-              }
-            >
-              <ExercicioPanel />
-            </Suspense>
-          ) : (
-            <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-6 sm:p-8 text-center">
-              <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-perestroika-preto/5 flex items-center justify-center">
-                <Info className="w-6 h-6 text-perestroika-preto/60" />
-              </div>
-              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-none mb-2">
-                sem painel específico
-              </h2>
-              <p className="text-sm text-perestroika-preto/70 max-w-md mx-auto mb-4">
-                este módulo ainda não tem um painel do exercício registrado.
-                painéis específicos são criados para exercícios pbl com métricas próprias de acompanhamento.
-              </p>
-              <p className="text-sm text-perestroika-preto/70 max-w-md mx-auto">
-                enquanto isso, use a aba <span className="font-semibold text-perestroika-preto">turma</span> para ver entregas, status e revisar respostas dos estudantes.
-              </p>
-            </div>
-          )}
-        </TabsContent>
-
-
-
-        <TabsContent value="abertura">
-          <AberturaVideoManager
-            courseId={course.data.id}
-            slug={slug!}
-            moduleId={module.id}
-            moduleNumber={module.number}
-            accent={color}
-          />
-          <div className="pt-4">
-            <Link
-              to={`/admin/eletiva/${slug}/avaliacoes`}
-              className="text-[11px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto underline"
-            >
-              ver avaliações dos módulos ↗
-            </Link>
-          </div>
-        </TabsContent>
 
         <TabsContent value="conteudo" className="space-y-4">
           {missingSchema.length > 0 && (
@@ -374,6 +328,24 @@ const AdminModuloDetalhe = () => {
         </TabsContent>
 
 
+        <TabsContent value="abertura">
+          <AberturaVideoManager
+            courseId={course.data.id}
+            slug={slug!}
+            moduleId={module.id}
+            moduleNumber={module.number}
+            accent={color}
+          />
+          <div className="pt-4">
+            <Link
+              to={`/admin/eletiva/${slug}/avaliacoes`}
+              className="text-[11px] uppercase tracking-wide text-perestroika-preto/60 hover:text-perestroika-preto underline"
+            >
+              ver avaliações dos módulos ↗
+            </Link>
+          </div>
+        </TabsContent>
+
         <TabsContent value="turma">
           <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white overflow-hidden">
             <ul className="divide-y divide-perestroika-preto/10">
@@ -437,6 +409,39 @@ const AdminModuloDetalhe = () => {
               )}
             </ul>
           </div>
+        </TabsContent>
+        <TabsContent value="exercicio" className="space-y-8">
+          {!ExercicioPanel && (
+            <PanelHeader title={"sem painel específico"} />
+          )}
+          {ExercicioPanel ? (
+            <Suspense
+              fallback={
+                <p className="font-body text-sm text-perestroika-preto/60 py-8">
+                  carregando painel do exercício...
+                </p>
+              }
+            >
+              <ExercicioPanel />
+            </Suspense>
+          ) : (
+            <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-5 flex items-start gap-3">
+              <span aria-hidden className="mt-0.5 shrink-0 w-9 h-9 rounded-full bg-perestroika-preto/5 flex items-center justify-center">
+                <Info className="w-4 h-4 text-perestroika-preto/60" />
+              </span>
+              <div className="space-y-2 text-sm text-perestroika-preto/70 max-w-2xl">
+                <p>
+                  painéis do exercício são feitos sob medida para exercícios pbl com métricas próprias.
+                  este módulo ainda não tem um.
+                </p>
+                <p>
+                  enquanto isso, use a aba{" "}
+                  <span className="font-semibold text-perestroika-preto">turma</span>{" "}
+                  para ver entregas, status e revisar respostas dos estudantes.
+                </p>
+              </div>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 

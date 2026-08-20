@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, AlertTriangle, Video } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PanelHeader } from "./PanelHeader";
 
 type Sample = {
   nickname: string;
@@ -66,17 +67,7 @@ export default function AdminEletivaModulo19() {
   return (
     <div className="space-y-8">
       <div className="space-y-8">
-        <header className="space-y-3">
-          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-            economia circular · módulo 19 · roteiro de pitch
-          </p>
-          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
-            primeiros takes da turma
-          </h2>
-          <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
-            quem já entregou roteiro em 6 blocos e mandou o primeiro take. duração média ajuda a calibrar o módulo 20.
-          </p>
-        </header>
+        <PanelHeader title={"primeiros takes da turma"} description={"quem já entregou roteiro em 6 blocos e mandou o primeiro take. duração média ajuda a calibrar o módulo 20."} />
 
         <section className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <KpiCard label="matriculados" value={kpis?.total_students ?? 0} />

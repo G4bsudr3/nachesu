@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PanelHeader } from "./PanelHeader";
 
 type Category = "linear" | "circular" | "regenerativo";
 
@@ -132,16 +133,7 @@ export default function AdminEletivaModulo2() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-3">
-        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-          eletiva · economia circular · módulo 2
-        </p>
-        <h2
-          className="font-display uppercase leading-[1.05] text-2xl sm:text-3xl"
-        >
-          classificador 3x3 · como a turma vê
-        </h2>
-      </header>
+      <PanelHeader title={"classificador 3x3 · como a turma vê"} />
 
       {kpis && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PanelHeader } from "./PanelHeader";
 
 type Quadrante = { id: string; label: string; hint?: string; accent?: string };
 
@@ -93,16 +94,7 @@ export default function AdminEletivaModulo3() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-3">
-        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-          eletiva · economia circular · módulo 3
-        </p>
-        <h2
-          className="font-display uppercase leading-[1.05] text-2xl sm:text-3xl"
-        >
-          mapa de atores · quem tá em jogo
-        </h2>
-      </header>
+      <PanelHeader title={"mapa de atores · quem tá em jogo"} />
 
       {kpis && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, AlertTriangle, Camera, Mic, Link2, Layers } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PanelHeader } from "./PanelHeader";
 
 type Sample = { nickname: string; sintese: string };
 
@@ -88,16 +89,7 @@ export default function AdminEletivaModulo4() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-3">
-        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-          eletiva · economia circular · módulo 4
-        </p>
-        <h2
-          className="font-display uppercase leading-[1.05] text-2xl sm:text-3xl"
-        >
-          caça às 3 evidências · prova de realidade
-        </h2>
-      </header>
+      <PanelHeader title={"caça às 3 evidências · prova de realidade"} />
 
       {kpis && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
