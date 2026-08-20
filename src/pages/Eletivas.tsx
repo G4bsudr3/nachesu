@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
 import { ArrowRight } from "lucide-react";
+import { ELETIVA_ACCENT, TRAIL_COLORS } from "@/lib/eletivaTheme";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
@@ -31,12 +32,12 @@ const eletivas: Record<
     pitch: "construa seu primeiro app com ia, do problema ao mvp no ar.",
     descLonga:
       "20 módulos curtos pra você sair da ideia ao app no ar, com o tutor ia te provocando do seu lado.",
-    accent: "#f756a6",
+    accent: ELETIVA_ACCENT["ia-na-pratica"],
     trilhas: [
-      { n: "01", titulo: "fundamentos & ia", desc: "o que ia faz hoje, como conversar com ela, quando usar no-code.", color: "#fe7b02", range: "módulos 1-5" },
-      { n: "02", titulo: "problema & decisão", desc: "achar uma dor real, escolher a sua, escopar e vender em 60 segundos.", color: "#fd4644", range: "módulos 6-10" },
-      { n: "03", titulo: "construção no lovable", desc: "do briefing ao mvp, ux que faz sentido, ia dentro do seu app.", color: "#f756a6", range: "módulos 11-15" },
-      { n: "04", titulo: "validação & evolução", desc: "testa com gente real, itera com base no feedback, entrega.", color: "#6f77fc", range: "módulos 16-20" },
+      { n: "01", titulo: "fundamentos & ia", desc: "o que ia faz hoje, como conversar com ela, quando usar no-code.", color: TRAIL_COLORS["ia-na-pratica"][1], range: "módulos 1-5" },
+      { n: "02", titulo: "problema & decisão", desc: "achar uma dor real, escolher a sua, escopar e vender em 60 segundos.", color: TRAIL_COLORS["ia-na-pratica"][2], range: "módulos 6-10" },
+      { n: "03", titulo: "construção no lovable", desc: "do briefing ao mvp, ux que faz sentido, ia dentro do seu app.", color: TRAIL_COLORS["ia-na-pratica"][3], range: "módulos 11-15" },
+      { n: "04", titulo: "validação & evolução", desc: "testa com gente real, itera com base no feedback, entrega.", color: TRAIL_COLORS["ia-na-pratica"][4], range: "módulos 16-20" },
     ],
   },
   "economia-circular": {
@@ -47,12 +48,12 @@ const eletivas: Record<
     pitch: "desenhe um negócio que regenera, do sistema ao protótipo validado.",
     descLonga:
       "20 semanas pra enxergar fluxos, mapear ciclos e prototipar negócios regenerativos usando a escola sebrae bh como laboratório vivo.",
-    accent: "#6f77fc",
+    accent: ELETIVA_ACCENT["economia-circular"],
     trilhas: [
-      { n: "01", titulo: "enxergar", desc: "abrir o olho pro sistema. ver fluxos, resíduos e oportunidades onde os outros veem rotina.", color: "#fe7b02", range: "módulos 1-5" },
-      { n: "02", titulo: "entender", desc: "mapear causas, atores e ciclos. desenhar o sistema antes de propor solução.", color: "#fd4644", range: "módulos 6-10" },
-      { n: "03", titulo: "criar", desc: "ideação guiada, proposta de valor regenerativa, protótipo tangível pra mostrar pra alguém.", color: "#f756a6", range: "módulos 11-15" },
-      { n: "04", titulo: "validar", desc: "testa com gente real, mede impacto, ajusta o modelo. dossiê final pronto.", color: "#6f77fc", range: "módulos 16-20" },
+      { n: "01", titulo: "enxergar", desc: "abrir o olho pro sistema. ver fluxos, resíduos e oportunidades onde os outros veem rotina.", color: TRAIL_COLORS["economia-circular"][1], range: "módulos 1-5" },
+      { n: "02", titulo: "entender", desc: "mapear causas, atores e ciclos. desenhar o sistema antes de propor solução.", color: TRAIL_COLORS["economia-circular"][2], range: "módulos 6-10" },
+      { n: "03", titulo: "criar", desc: "ideação guiada, proposta de valor regenerativa, protótipo tangível pra mostrar pra alguém.", color: TRAIL_COLORS["economia-circular"][3], range: "módulos 11-15" },
+      { n: "04", titulo: "validar", desc: "testa com gente real, mede impacto, ajusta o modelo. dossiê final pronto.", color: TRAIL_COLORS["economia-circular"][4], range: "módulos 16-20" },
     ],
   },
 };

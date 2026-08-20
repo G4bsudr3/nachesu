@@ -1,3 +1,4 @@
+import { ELETIVA_ACCENT } from "@/lib/eletivaTheme";
 /**
  * glossário das eletivas: termos que se repetem nas módulos das duas trilhas.
  * lista fixa (sem banco). definição curta, lowercase, "você", máx 2 frases.
@@ -20,8 +21,8 @@ export const TAG_LABEL: Record<GlossarioTag, string> = {
 };
 
 export const TAG_COLOR: Record<GlossarioTag, string> = {
-  ia: "#fe7b02",
-  circular: "#8A85BF",
+  ia: ELETIVA_ACCENT["ia-na-pratica"],
+  circular: ELETIVA_ACCENT["economia-circular"],
 };
 
 /** tira acento e caixa pra busca e ordenação funcionarem com "protótipo" e "prototipo". */

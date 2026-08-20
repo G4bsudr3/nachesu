@@ -161,7 +161,7 @@ export function ModuloConclusaoClassificador({ moduleId }: Props) {
           exercício cumprido
         </p>
         <h2
-          className="font-display-duduo font-black uppercase leading-[0.92] text-perestroika-preto"
+          className="font-display uppercase leading-[0.92] text-perestroika-preto"
           style={{ fontSize: "clamp(28px, 5.5vw, 44px)" }}
         >
           seu mapa mental do que é economia circular

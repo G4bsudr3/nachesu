@@ -17,6 +17,7 @@ import {
 } from "@/components/certificate/NachesCertificate";
 import { toast } from "@/hooks/use-toast";
 import { logger } from "@/lib/logger";
+import { accentFor, PAPER } from "@/lib/eletivaTheme";
 
 const slugify = (s: string) =>
   s
@@ -27,16 +28,10 @@ const slugify = (s: string) =>
     .replace(/^-+|-+$/g, "");
 
 /**
- * a cor do certificado é a mesma assinatura que o estudante viu o curso
- * inteiro: economia circular roda no tema `ecc` (creme + laranja #F25E3D),
- * então o certificado sai em laranja, não em lilás.
+ * cor e papel do certificado vêm da fonte única de tema: mesmo bege da
+ * plataforma nas duas eletivas, acento da eletiva no lugar do lilás avulso.
  */
-const accentFor = (slug: string) =>
-  slug === "economia-circular" ? "#F25E3D" : "#f756a6";
-
-/** fundo do papel: creme do tema ecc na economia circular, bege nas demais */
-const paperFor = (slug: string) =>
-  slug === "economia-circular" ? "#F5EEE1" : "#f2e4d8";
+const paperFor = (_slug: string) => PAPER;
 
 
 const CertificadoEletiva = () => {
@@ -92,7 +87,7 @@ const CertificadoEletiva = () => {
   const canDownload = isComplete && fullName.trim().length >= 2;
 
   const accent = useMemo(() => accentFor(slug), [slug]);
-  const paper = useMemo(() => paperFor(slug), [slug]);
+  const paper = useMemo(() => paperFor(slug ?? ""), [slug]);
 
   useEffect(() => {
     if (!isComplete) return;
