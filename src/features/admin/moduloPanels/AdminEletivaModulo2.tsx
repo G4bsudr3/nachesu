@@ -136,9 +136,8 @@ export default function AdminEletivaModulo2() {
         <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
           eletiva · economia circular · módulo 2
         </p>
-        <h1
-          className="font-display uppercase leading-[0.92]"
-          style={{ fontSize: "clamp(28px, 5vw, 44px)" }}
+        <h2
+          className="font-display uppercase leading-[1.05] text-2xl sm:text-3xl"
         >
           classificador 3x3 · como a turma vê
         </h2>

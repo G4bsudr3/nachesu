@@ -92,9 +92,8 @@ export default function AdminEletivaModulo4() {
         <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
           eletiva · economia circular · módulo 4
         </p>
-        <h1
-          className="font-display uppercase leading-[0.92]"
-          style={{ fontSize: "clamp(28px, 5vw, 44px)" }}
+        <h2
+          className="font-display uppercase leading-[1.05] text-2xl sm:text-3xl"
         >
           caça às 3 evidências · prova de realidade
         </h2>
