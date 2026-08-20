@@ -134,6 +134,19 @@ const TERMOS: GlossarioTermo[] = [
     tags: ["ia"],
   },
   {
+    termo: "prompt engineering",
+    definicao:
+      "a prática de escrever prompts melhores, testando variações pequenas pra tirar respostas mais úteis da ia.",
+    tags: ["ia"],
+    sinonimos: ["engenharia de prompt"],
+  },
+  {
+    termo: "corf",
+    definicao:
+      "mnemônico pra estruturar um prompt: contexto, objetivo, regras e formato. ajuda a não esquecer nada importante.",
+    tags: ["ia"],
+  },
+  {
     termo: "contexto",
     definicao:
       "tudo que você entrega junto do pedido pra ia entender a situação: quem é o usuário, o que já existe, qual limite.",
@@ -152,6 +165,102 @@ const TERMOS: GlossarioTermo[] = [
       "o sistema por trás da ia de texto. ele prevê a próxima palavra a partir do que já foi escrito, não consulta uma verdade pronta.",
     tags: ["ia"],
     sinonimos: ["llm", "modelo"],
+  },
+  {
+    termo: "chatgpt",
+    definicao:
+      "assistente de ia da openai. você conversa por texto e ele gera, resume, organiza e responde de várias formas.",
+    tags: ["ia"],
+  },
+  {
+    termo: "claude",
+    definicao:
+      "assistente de ia da anthropic. bom pra textos longos, análise de documentos e raciocínio mais cuidadoso.",
+    tags: ["ia"],
+  },
+  {
+    termo: "gemini",
+    definicao:
+      "assistente de ia do google. conecta com busca, youtube e outros produtos da google de forma nativa.",
+    tags: ["ia"],
+  },
+  {
+    termo: "cloud",
+    definicao:
+      "computação na nuvem. seus arquivos e programas ficam em servidores remotos, acessíveis de qualquer lugar por internet.",
+    tags: ["ia"],
+    sinonimos: ["nuvem"],
+  },
+  {
+    termo: "banco de dados",
+    definicao:
+      "lugar onde informações são guardadas de forma organizada, pra seu app consultar, salvar e atualizar dados.",
+    tags: ["ia"],
+    sinonimos: ["database", "db"],
+  },
+  {
+    termo: "stack",
+    definicao:
+      "conjunto de tecnologias que fazem seu app funcionar: front, back, banco, hospedagem, ferramentas de ia.",
+    tags: ["ia"],
+  },
+  {
+    termo: "no-code",
+    definicao:
+      "montar software sem escrever código, arrastando peças e configurando regras. ideal pra prototipar rápido.",
+    tags: ["ia"],
+  },
+  {
+    termo: "low-code",
+    definicao:
+      "montar software com pouco código, usando blocos prontos e pequenos scripts quando precisa de lógica extra.",
+    tags: ["ia"],
+  },
+  {
+    termo: "lovable",
+    definicao:
+      "a ferramenta onde você constrói sua plataforma conversando com a ia, sem precisar saber programar.",
+    tags: ["ia"],
+  },
+  {
+    termo: "figma",
+    definicao:
+      "ferramenta de design de interfaces. você desenha telas, componentes e protótipos clicáveis antes de construir.",
+    tags: ["ia"],
+  },
+  {
+    termo: "dev",
+    definicao:
+      "abreviação de desenvolvedor. a pessoa que programa, ou o próprio ato de desenvolver software.",
+    tags: ["ia"],
+    sinonimos: ["developer", "desenvolvedor"],
+  },
+  {
+    termo: "framework",
+    definicao:
+      "conjunto de ferramentas e regras que acelera a construção de software. dá estrutura pra você não começar do zero.",
+    tags: ["ia"],
+  },
+  {
+    termo: "app web",
+    definicao:
+      "aplicativo que roda no navegador, sem precisar instalar. acessível por link, funciona em qualquer celular ou computador.",
+    tags: ["ia"],
+    sinonimos: ["aplicativo web", "webapp"],
+  },
+  {
+    termo: "landing page",
+    definicao:
+      "página simples com um único objetivo: explicar uma ideia e fazer o visitante agir, como se cadastrar ou comprar.",
+    tags: ["ia"],
+    sinonimos: ["landing pages", "página de captura"],
+  },
+  {
+    termo: "automação",
+    definicao:
+      "fazer uma tarefa repetitiva acontecer sozinha, disparada por um gatilho. economiza tempo e reduz erro humano.",
+    tags: ["ia"],
+    sinonimos: ["automações", "workflow"],
   },
   {
     termo: "mvp",
@@ -175,6 +284,65 @@ const TERMOS: GlossarioTermo[] = [
     sinonimos: ["tração"],
   },
   {
+    termo: "métrica",
+    definicao:
+      "número que mede se algo está funcionando. exemplo: quantas pessoas usaram, quantas voltaram, quanto tempo ficaram.",
+    tags: ["ia"],
+    sinonimos: ["métricas", "indicador"],
+  },
+  {
+    termo: "viabilidade",
+    definicao:
+      "análise se a ideia é possível de fazer agora, considerando tempo, custo, tecnologia e interesse das pessoas.",
+    tags: ["ia"],
+  },
+  {
+    termo: "jbtd",
+    definicao:
+      "abreviação de jobs-to-be-done. foco no trabalho que a pessoa contrata seu produto pra fazer, não só no perfil dela.",
+    tags: ["ia"],
+    sinonimos: ["jobs to be done"],
+  },
+  {
+    termo: "feature",
+    definicao:
+      "funcionalidade específica do produto. uma parte do que seu app faz, como login, busca ou notificação.",
+    tags: ["ia"],
+    sinonimos: ["funcionalidade"],
+  },
+  {
+    termo: "bug",
+    definicao:
+      "erro no software que faz algo sair diferente do esperado. toda ferramenta tem, e a boa prática é reportar e corrigir.",
+    tags: ["ia"],
+  },
+  {
+    termo: "backlog",
+    definicao:
+      "lista de coisas a fazer no produto no futuro. novas ideias, bugs e melhorias ficam guardadas lá até serem priorizadas.",
+    tags: ["ia"],
+  },
+  {
+    termo: "polish",
+    definicao:
+      "capricho final: ajustes de design, microtextos, animações e consistência que fazem o produto parecer acabado.",
+    tags: ["ia"],
+  },
+  {
+    termo: "storytelling",
+    definicao:
+      "arte de contar uma história com propósito. no pitch, você usa storytelling pra fazer a ideia emocionar e fazer sentido.",
+    tags: ["ia"],
+    sinonimos: ["narrativa", "narrativa de produto"],
+  },
+  {
+    termo: "portfólio",
+    definicao:
+      "coleção dos seus melhores projetos. mostra o que você pensou, fez e aprendeu, muito mais do que um currículo.",
+    tags: ["ia"],
+    sinonimos: ["portfolio"],
+  },
+  {
     termo: "briefing",
     definicao:
       "o resumo do que precisa ser feito: problema, usuário, objetivo e limites. é o que você entrega pra ia antes de construir.",
@@ -188,11 +356,16 @@ const TERMOS: GlossarioTermo[] = [
     tags: ["ia"],
   },
   {
+    termo: "persona",
+    definicao:
+      "arquétipo do usuário que você resolve: nome, idade, rotina, dores e objetivos. ajuda a tomar decisão de produto.",
+    tags: ["ia"],
+  },
+  {
     termo: "usuário",
     definicao:
       "a pessoa específica que vai usar o que você criou. quanto mais concreta, melhor a decisão de produto.",
     tags: ["ia"],
-    sinonimos: ["persona"],
   },
   {
     termo: "dor",
@@ -209,17 +382,18 @@ const TERMOS: GlossarioTermo[] = [
     sinonimos: ["publicar"],
   },
   {
-    termo: "lovable",
-    definicao:
-      "a ferramenta onde você constrói sua plataforma conversando com a ia, sem precisar saber programar.",
-    tags: ["ia"],
-  },
-  {
     termo: "interface",
     definicao:
       "a parte visível do produto: tela, botão, texto. é por onde a pessoa usa o que você fez.",
     tags: ["ia"],
     sinonimos: ["ui"],
+  },
+  {
+    termo: "ux",
+    definicao:
+      "experiência do usuário. tudo que a pessoa sente, pensa e encontra ao usar o seu produto, do começo ao fim.",
+    tags: ["ia"],
+    sinonimos: ["user experience", "experiência do usuário"],
   },
   {
     termo: "teste com usuário",
