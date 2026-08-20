@@ -131,7 +131,7 @@ export async function generateBriefingPdf(data: BriefingData): Promise<Blob> {
   doc.setTextColor(CREME);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
-  doc.text("NACHESU · ELETIVA ECONOMIA CIRCULAR · ENCONTRO 5 · FECHAMENTO DA TRILHA 1", 18, h - 4.5);
+  doc.text("NACHESU · ELETIVA ECONOMIA CIRCULAR · MÓDULO 5 · FECHAMENTO DA TRILHA 1", 18, h - 4.5);
 
   return doc.output("blob");
 }

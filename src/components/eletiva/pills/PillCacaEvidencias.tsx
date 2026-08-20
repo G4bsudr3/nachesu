@@ -318,7 +318,7 @@ export function PillCacaEvidencias({
       {/* instruções */}
       <div className="rounded-2xl bg-perestroika-preto/[0.04] p-4 sm:p-5">
         <p className="font-body text-sm text-perestroika-preto/85 leading-relaxed">
-          sua missão: produzir <strong>3 evidências distintas</strong> do seu problema. evidência tem nome, data,
+          suo exercício: produzir <strong>3 evidências distintas</strong> do seu problema. evidência tem nome, data,
           local. opinião não tem. pelo menos 1 delas precisa ter algo do mundo real (foto, áudio ou link
           público). se descobrir que o problema não é bem o que pensava, isso é vitória, não fracasso.
         </p>

@@ -261,7 +261,7 @@ function CampoRow({ rotulo, valor }: { rotulo: string; valor?: string | null }) 
 function NaoPreenchido() {
   return (
     <p className="font-body text-sm text-perestroika-preto/45 italic flex items-center gap-1.5">
-      <Sparkles className="h-3.5 w-3.5" aria-hidden /> não preenchido nesse encontro.
+      <Sparkles className="h-3.5 w-3.5" aria-hidden /> não preenchido nesse módulo.
     </p>
   );
 }

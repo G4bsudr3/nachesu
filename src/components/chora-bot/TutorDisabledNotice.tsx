@@ -21,7 +21,7 @@ export const TutorDisabledNotice = () => (
       <ul className="space-y-2 text-sm text-perestroika-preto/80">
         <li className="flex gap-2">
           <span className="font-bold">·</span>
-          <span>encontro presencial com Dudu (economia circular) ou frattz (ia na prática)</span>
+          <span>módulo presencial com Dudu (economia circular) ou frattz (ia na prática)</span>
         </li>
         <li className="flex gap-2">
           <span className="font-bold">·</span>

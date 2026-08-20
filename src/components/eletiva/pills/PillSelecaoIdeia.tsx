@@ -214,7 +214,7 @@ export function PillSelecaoIdeia({
             você ainda não tem ideias registradas na aula 11.
           </p>
           <p className="font-body text-xs text-perestroika-preto/60 mt-1">
-            volta pro encontro 11 e conclui o sprint pra desbloquear a seleção.
+            volta pro módulo 11 e conclui o sprint pra desbloquear a seleção.
           </p>
         </div>
       </div>

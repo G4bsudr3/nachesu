@@ -72,7 +72,7 @@ function useProblemaEscolhido(sourceModuleId?: string) {
 const emptyAtor = (): Ator => ({ nome: "", descricao: "" });
 
 /**
- * pílula 03 — missão mapa de atores (aula 3, economia circular).
+ * pílula 03 — exercício mapa de atores (aula 3, economia circular).
  * grid 2x2 editável, mínimo 2 atores por quadrante, "ganha" é obrigatório.
  * puxa o problema escolhido (radar da aula 1) pra ancorar o foco no topo.
  */

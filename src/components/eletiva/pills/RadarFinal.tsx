@@ -119,7 +119,7 @@ export function RadarFinal({ items, fluxos, accent, save, homeHref = "/app" }: P
           aula 1 · concluída
         </p>
         <h1 className="font-display uppercase text-5xl sm:text-6xl leading-[0.9]">
-          missão 1 cumprida
+          exercício 1 cumprido
         </h1>
         <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-xl mx-auto">
           tu treinou o olho. saiu com {totalFilled} {totalFilled === 1 ? "vazamento mapeado" : "vazamentos mapeados"}{" "}

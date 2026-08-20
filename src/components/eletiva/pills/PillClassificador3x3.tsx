@@ -182,7 +182,7 @@ export function PillClassificador3x3({
                 <p className="font-body text-sm text-perestroika-preto">
                   {`faltam ${3 - radarItems.length} ${
                     3 - radarItems.length === 1 ? "item" : "itens"
-                  } no seu radar da missão 1 pra liberar essa missão.`}
+                  } no seu radar do exercício 1 pra liberar esse exercício.`}
                 </p>
               </div>
 
@@ -224,7 +224,7 @@ export function PillClassificador3x3({
                           </p>
                         ) : (
                           <p className="font-body text-xs text-perestroika-preto/55 leading-snug">
-                            faltando — volta na missão 1 e adiciona um item aqui.
+                            faltando — volta no exercício 1 e adiciona um item aqui.
                           </p>
                         )}
                       </div>
@@ -237,7 +237,7 @@ export function PillClassificador3x3({
                     className="inline-flex items-center gap-1 font-body text-xs uppercase tracking-wider underline"
                     style={{ color: accent }}
                   >
-                    voltar pra missão 1 <ArrowRight className="h-3 w-3" aria-hidden />
+                    voltar pro exercício 1 <ArrowRight className="h-3 w-3" aria-hidden />
                   </Link>
                 )}
               </div>
@@ -346,7 +346,7 @@ export function PillClassificador3x3({
       <div className="flex items-center justify-between gap-3 pt-2">
         <p className="font-body text-xs text-perestroika-preto/55">
           {!hasEnoughRadar
-            ? "complete a missão 1 primeiro."
+            ? "complete o exercício 1 primeiro."
             : !allClassified
               ? `classifique todos os ${allItems.length} itens.`
               : !enoughJustified
@@ -365,7 +365,7 @@ export function PillClassificador3x3({
           }`}
           style={!ready || isCompleted || isCompleting ? undefined : { backgroundColor: accent }}
         >
-          {isCompleted ? "missão entregue" : ctaLabel}
+          {isCompleted ? "exercício entregue" : ctaLabel}
           {!isCompleted && <ArrowRight className="h-4 w-4" aria-hidden />}
         </button>
       </div>

@@ -11,7 +11,7 @@ const STAGES: { id: TrailStage; label: string; href: string }[] = [
   { id: "carta", label: "carta", href: "/app/carta" },
   { id: "prework", label: "pré-work", href: "/app/prework" },
   { id: "tutorial", label: "tutorial", href: "/app/tutorial" },
-  { id: "missoes", label: "missões", href: "/app/missoes" },
+  { id: "missoes", label: "exercícios", href: "/app/missoes" },
 ];
 
 interface Props {

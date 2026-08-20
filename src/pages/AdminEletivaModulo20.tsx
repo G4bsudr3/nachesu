@@ -43,7 +43,7 @@ export default function AdminEletivaModulo20() {
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> admin
           </Link>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none tracking-wide text-perestroika-preto">
-            encontro 20 · fechamento
+            módulo 20 · fechamento
           </h1>
           <p className="font-body text-sm text-perestroika-preto/70">
             economia circular e negócios regenerativos · dashboard final

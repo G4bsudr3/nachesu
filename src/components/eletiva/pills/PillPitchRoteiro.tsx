@@ -61,10 +61,10 @@ const BLOCOS: Array<{
   placeholder: string;
 }> = [
   { key: "hook", numero: 1, titulo: "HOOK", duracao: "15-20s", maxPalavras: 40, regra: "cena, número, pergunta ou contraste. nunca comece com \"olá, meu nome é...\".", placeholder: "ex: todo dia 8 quilos de comida vai pro lixo na cantina do Sebrae — quilos, não gramas." },
-  { key: "problema", numero: 2, titulo: "PROBLEMA + EVIDÊNCIA", duracao: "30-40s", maxPalavras: 70, regra: "puxa 1 das 3 evidências do encontro 4. cita fonte da prova.", placeholder: "ex: entrevistei 12 alunos que almoçam na escola. 9 disseram que jogam parte da comida fora." },
+  { key: "problema", numero: 2, titulo: "PROBLEMA + EVIDÊNCIA", duracao: "30-40s", maxPalavras: 70, regra: "puxa 1 das 3 evidências do módulo 4. cita fonte da prova.", placeholder: "ex: entrevistei 12 alunos que almoçam na escola. 9 disseram que jogam parte da comida fora." },
   { key: "solucao", numero: 3, titulo: "SOLUÇÃO", duracao: "30-40s", maxPalavras: 70, regra: "linguagem simples. um primo de 12 anos entenderia? sem jargão.", placeholder: "ex: uma redistribuição via app entre mesas antes do descarte. o que sobrou de um vira almoço de outro." },
-  { key: "regenera", numero: 4, titulo: "COMO REGENERA", duracao: "20-30s", maxPalavras: 50, regra: "cita princípio EMF (encontro 8) e o fluxo que muda (encontro 6).", placeholder: "ex: fecha o loop de alimento antes de virar resíduo. reduz descarte na origem, sem gasto novo de energia." },
-  { key: "modelo", numero: 5, titulo: "MODELO", duracao: "20-30s", maxPalavras: 50, regra: "quem paga, quanto, por quê. tira do BMC v2 do encontro 18.", placeholder: "ex: parceria com a cantina, custo zero. troco por relatório mensal que a escola usa em comunicação." },
+  { key: "regenera", numero: 4, titulo: "COMO REGENERA", duracao: "20-30s", maxPalavras: 50, regra: "cita princípio EMF (módulo 8) e o fluxo que muda (módulo 6).", placeholder: "ex: fecha o loop de alimento antes de virar resíduo. reduz descarte na origem, sem gasto novo de energia." },
+  { key: "modelo", numero: 5, titulo: "MODELO", duracao: "20-30s", maxPalavras: 50, regra: "quem paga, quanto, por quê. tira do BMC v2 do módulo 18.", placeholder: "ex: parceria com a cantina, custo zero. troco por relatório mensal que a escola usa em comunicação." },
   { key: "chamada", numero: 6, titulo: "CHAMADA", duracao: "10-15s", maxPalavras: 30, regra: "ação específica. não termine com \"obrigado por ouvir\".", placeholder: "ex: quero 3 parceiros dispostos a testar comigo em 60 dias. quem topa, me procura." },
 ];
 

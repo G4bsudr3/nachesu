@@ -119,7 +119,7 @@ export const useHubFeed = () => {
         id: s.id,
         kind: "submission",
         user_id: s.user_id,
-        title: missionMap.get(s.mission_id) ?? "missão",
+        title: missionMap.get(s.mission_id) ?? "exercício",
         description: s.descricao,
         link: s.link,
         cover_url: null,

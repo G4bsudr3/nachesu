@@ -13,14 +13,14 @@ export interface HubBuilder {
   archetype: Archetype | null;
   image_url: string | null;
   emoji: string | null;
-  /** 1ª linha da última submissão (qualquer missão) — preview na galeria */
+  /** 1ª linha da última submissão (qualquer exercício) — preview na galeria */
   project_preview: string | null;
   has_project: boolean;
   total_reactions: number;
 }
 
 /** Busca galeria do hub: todo profile ativo com carta publicada
- * + última submissão (qualquer missão) como preview de projeto.
+ * + última submissão (qualquer exercício) como preview de projeto.
  * Inclui builders sem submissão ainda (mostra "ainda construindo"). */
 export const useHubGallery = () => {
   const [builders, setBuilders] = useState<HubBuilder[]>([]);

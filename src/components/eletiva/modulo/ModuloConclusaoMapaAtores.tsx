@@ -108,7 +108,7 @@ export function ModuloConclusaoMapaAtores({ moduleId }: Props) {
       <header className="flex items-end justify-between gap-3 flex-wrap">
         <div>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
-            missão 3 cumprida
+            exercício 3 cumprido
           </p>
           <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
             seu mapa de atores

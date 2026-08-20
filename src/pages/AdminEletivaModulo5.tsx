@@ -60,7 +60,7 @@ export default function AdminEletivaModulo5() {
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> painel admin
           </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1">
-            economia circular · encontro 5
+            economia circular · módulo 5
           </p>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none">
             briefing · fechamento trilha 1
