@@ -435,7 +435,12 @@ const EletivaHome = () => {
         {/* mapa de módulos com estado */}
         {snapshot && (
           <div className="mb-6">
-            <ModulesByTrail snapshot={snapshot} onPick={(n) => navigate(`/app/eletiva/${slug}/modulo/${n}`)} />
+            <ModulesByTrail
+              snapshot={snapshot}
+              slug={course.slug}
+              onPick={(n) => navigate(`/app/eletiva/${slug}/modulo/${n}`)}
+            />
+
           </div>
         )}
 
