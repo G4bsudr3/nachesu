@@ -108,7 +108,7 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
                               : "em breve"
                             : "termine o anterior";
                   const base =
-                    "group relative flex items-center justify-between gap-3 rounded-xl border px-4 py-3.5 text-left transition-all w-full";
+                    "group relative flex h-full items-center justify-between gap-3 rounded-xl border px-4 py-3.5 text-left transition-all w-full";
                   const variant =
                     state === "current"
                       ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege shadow-[0_4px_0_0_rgba(9,9,9,0.15)]"
@@ -124,21 +124,17 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
                         ? "text-perestroika-preto/35"
                         : undefined;
                   return (
-                    <li key={m.id} id={`modulo-${m.number}`} className="scroll-mt-28">
-                      {state === "current" && (
-                        <p
-                          className="mb-1 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-body text-[10px] uppercase tracking-[0.18em] text-perestroika-bege"
-                          style={{ backgroundColor: color }}
-                        >
-                          continue por aqui
-                        </p>
-                      )}
+                    <li key={m.id} id={`modulo-${m.number}`} className="scroll-mt-28 h-full">
+                      {/* o marcador de "continue por aqui" vive dentro do card,
+                          na linha de status. fora dele ele empurrava só uma
+                          célula do grid e desalinhava a linha no desktop, e
+                          virava uma faixa solta no mobile. */}
                       <button
                         type="button"
                         disabled={!clickable}
                         onClick={() => clickable && onPick(m.number)}
                         className={`${base} ${variant}`}
-                        aria-label={`módulo ${m.number} ${m.title} — ${stateLabel}`}
+                        aria-label={`módulo ${m.number} ${m.title} — ${state === "current" ? "continue por aqui, " : ""}${stateLabel}`}
                       >
                         <div className="flex items-center gap-3.5 min-w-0">
                           <span
@@ -152,9 +148,22 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
                             <p className="font-body text-sm font-medium leading-snug truncate">
                               {m.title.toLowerCase()}
                             </p>
-                            <p className="font-body text-[10px] uppercase tracking-[0.15em] opacity-65 mt-0.5">
-                              {stateLabel}
-                            </p>
+                            {state === "current" ? (
+                              <span
+                                className="mt-1 inline-flex max-w-full items-center gap-1.5 rounded-full px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.15em] text-perestroika-bege"
+                                style={{ backgroundColor: color }}
+                              >
+                                <span
+                                  aria-hidden
+                                  className="h-1.5 w-1.5 shrink-0 rounded-full bg-perestroika-bege"
+                                />
+                                <span className="truncate">continue por aqui</span>
+                              </span>
+                            ) : (
+                              <p className="font-body text-[10px] uppercase tracking-[0.15em] opacity-65 mt-0.5">
+                                {stateLabel}
+                              </p>
+                            )}
                           </div>
                         </div>
                         <Icon className="h-4 w-4 shrink-0 opacity-60 group-hover:translate-x-0.5 transition-transform" />
