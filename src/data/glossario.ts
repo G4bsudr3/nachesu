@@ -500,6 +500,90 @@ const TERMOS: GlossarioTermo[] = [
       "quando a sobra de um negócio vira matéria-prima de outro. o resíduo de um é o insumo do vizinho.",
     tags: ["circular"],
   },
+  {
+    termo: "lean canvas",
+    definicao:
+      "uma versão enxuta do canvas de negócio, feita pra caber em uma página e ser testada rápido. ajuda a descrever problema, solução, vantagem e métricas.",
+    tags: ["circular"],
+    sinonimos: ["lean"],
+  },
+  {
+    termo: "escalar",
+    definicao:
+      "fazer algo crescer de forma que continue funcionando. não é só ficar maior, é aumentar o alcance sem perder qualidade.",
+    tags: ["circular"],
+    sinonimos: ["escala", "escalabilidade"],
+  },
+  {
+    termo: "resíduo",
+    definicao:
+      "tudo que sobra de um processo e não tem mais uso planejado. na economia circular, resíduo vira insumo de outro ciclo.",
+    tags: ["circular"],
+    sinonimos: ["sobra", "resto", "dejeto"],
+  },
+  {
+    termo: "b2b",
+    definicao:
+      "abreviação de business-to-business. negócio que vende pra outras empresas, não pra pessoa final.",
+    tags: ["circular"],
+    sinonimos: ["business to business", "empresa para empresa"],
+  },
+  {
+    termo: "b2c",
+    definicao:
+      "abreviação de business-to-consumer. negócio que vende direto pra pessoa final, como você compra no mercado.",
+    tags: ["circular"],
+    sinonimos: ["business to consumer", "empresa para consumidor"],
+  },
+  {
+    termo: "trade-off",
+    definicao:
+      "quando escolher uma coisa significa abrir mão de outra. toda decisão tem trade-offs, e a boa escolha é consciente deles.",
+    tags: ["circular"],
+    sinonimos: ["troca", "custo de oportunidade"],
+  },
+  {
+    termo: "aterro",
+    definicao:
+      "lugar onde resíduos são enterrados. na economia circular, o objetivo é mandar o mínimo possível pro aterro.",
+    tags: ["circular"],
+    sinonimos: ["aterro sanitário", "lixão"],
+  },
+  {
+    termo: "design thinking",
+    definicao:
+      "forma de resolver problemas colocando a pessoa usuária no centro. empatiza, define, idea, prototipa e testa em ciclos curtos.",
+    tags: ["circular"],
+    sinonimos: ["pensamento de design"],
+  },
+  {
+    termo: "insumo",
+    definicao:
+      "qualquer recurso que entra no processo pra produzir algo: material, energia, informação ou trabalho.",
+    tags: ["circular"],
+    sinonimos: ["matéria-prima", "recurso de entrada"],
+  },
+  {
+    termo: "modelo de negócio",
+    definicao:
+      "descrição de como uma empresa cria valor, entrega pra quem precisa e ganha dinheiro pra continuar existindo.",
+    tags: ["circular"],
+    sinonimos: ["modelo de negócios", "modelo empresarial"],
+  },
+  {
+    termo: "esg",
+    definicao:
+      "abreviação de environmental, social, governance. critérios que medem se uma empresa cuida de meio ambiente, pessoas e boa gestão.",
+    tags: ["circular"],
+    sinonimos: ["ambiental, social e governança"],
+  },
+  {
+    termo: "biomimética",
+    definicao:
+      "inspirar soluções em estratégias da natureza. como o bambu resiste ao vento, ou como floresta recicla nutrientes sem lixo.",
+    tags: ["circular"],
+    sinonimos: ["biomimicry", "inspiração na natureza"],
+  },
 ];
 
 /** ordenado sem acento pra a lista sair na ordem que a pessoa espera. */
