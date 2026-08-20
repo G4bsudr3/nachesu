@@ -98,7 +98,7 @@ async function fetchRatings(): Promise<PulsoRating[]> {
       course_id: r.modules?.trails?.course_id ?? "",
       course_title: r.modules?.trails?.courses?.title ?? "",
       course_slug: slug,
-      scale: scaleOfCourse(slug),
+      scale: scaleOfRating(slug, r.created_at),
     };
   });
 }
