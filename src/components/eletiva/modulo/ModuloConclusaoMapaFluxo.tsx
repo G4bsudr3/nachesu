@@ -20,7 +20,7 @@ interface Props {
 }
 
 /**
- * celebração pós-conclusão da módulo 6 (economia circular).
+ * celebração pós-conclusão do módulo 6 (economia circular).
  * mostra o esqueleto do sistema desenhado pelo estudante.
  */
 export function ModuloConclusaoMapaFluxo({ moduleId }: Props) {

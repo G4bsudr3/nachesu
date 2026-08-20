@@ -215,7 +215,7 @@ export function PillPropostaValor({
           o que puxamos das módulos anteriores
         </p>
         {ideiaQ.isLoading ? (
-          <p className="font-body text-xs text-perestroika-preto/60">carregando sua ideia da módulo 12…</p>
+          <p className="font-body text-xs text-perestroika-preto/60">carregando sua ideia do módulo 12…</p>
         ) : ideiaQ.data?.ideia ? (
           <div>
             <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/50 mb-0.5">
@@ -227,7 +227,7 @@ export function PillPropostaValor({
           </div>
         ) : (
           <p className="font-body text-xs text-perestroika-vermelho/85">
-            você ainda não fechou a seleção da módulo 12. volta lá antes de escrever a proposta.
+            você ainda não fechou a seleção do módulo 12. volta lá antes de escrever a proposta.
           </p>
         )}
         {impactosQ.data && impactosQ.data.length > 0 && (

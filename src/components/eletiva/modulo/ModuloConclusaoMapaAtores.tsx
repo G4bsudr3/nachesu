@@ -21,7 +21,7 @@ interface Props {
 }
 
 /**
- * celebração pós-conclusão da módulo 3 (economia circular).
+ * celebração pós-conclusão do módulo 3 (economia circular).
  * mostra o mapa de atores 2x2 preenchido pelo estudante e permite baixar como PNG.
  */
 export function ModuloConclusaoMapaAtores({ moduleId }: Props) {

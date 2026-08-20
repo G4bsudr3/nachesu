@@ -37,7 +37,7 @@ const TIPO_LABEL: Record<string, string> = {
 
 /**
  * /admin/eletiva/economia-circular/modulo/7
- * agrega as matrizes vazamento → oportunidade da módulo 7.
+ * agrega as matrizes vazamento → oportunidade do módulo 7.
  */
 export default function AdminEletivaModulo7() {
   const { data, isLoading, error } = useQuery({

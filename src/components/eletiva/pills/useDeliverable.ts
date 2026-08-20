@@ -13,7 +13,7 @@ import {
 } from "./deliverableLocalDraft";
 
 
-// payload livre que cada pílula da módulo 1 grava em module_deliverables.content.
+// payload livre que cada pílula do módulo 1 grava em module_deliverables.content.
 export type DeliverableContent = Record<string, unknown>;
 
 type DeliverableRow = {

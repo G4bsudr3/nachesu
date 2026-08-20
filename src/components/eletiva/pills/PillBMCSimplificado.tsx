@@ -211,7 +211,7 @@ export function PillBMCSimplificado({
           o que puxamos das módulos anteriores
         </p>
         {propostaQ.isLoading ? (
-          <p className="font-body text-xs text-perestroika-preto/60">carregando sua proposta da módulo 13…</p>
+          <p className="font-body text-xs text-perestroika-preto/60">carregando sua proposta do módulo 13…</p>
         ) : propostaQ.data?.frase_ancora ? (
           <div>
             <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/50 mb-0.5">
@@ -228,7 +228,7 @@ export function PillBMCSimplificado({
           </div>
         ) : (
           <p className="font-body text-xs text-perestroika-vermelho/85">
-            você ainda não fechou a proposta da módulo 13. volta lá antes de desenhar o modelo.
+            você ainda não fechou a proposta do módulo 13. volta lá antes de desenhar o modelo.
           </p>
         )}
         {stakeQ.data && stakeQ.data.length > 0 && (
@@ -271,7 +271,7 @@ export function PillBMCSimplificado({
               PROPOSTA DE VALOR
             </p>
             <p className="font-body text-[11px] italic text-perestroika-preto/55">
-              puxada da módulo 13. só visualização.
+              puxada do módulo 13. só visualização.
             </p>
             <p className="font-body text-sm text-perestroika-preto/85 leading-snug whitespace-pre-wrap">
               {propostaQ.data?.frase_ancora || propostaQ.data?.solucao || "—"}

@@ -35,7 +35,7 @@ const TIPO_ICON: Record<string, typeof Camera> = {
 
 /**
  * /admin/eletiva/economia-circular/modulo/4
- * agrega as evidências entregues na módulo 4.
+ * agrega as evidências entregues no módulo 4.
  */
 export default function AdminEletivaModulo4() {
   const { data, isLoading, error } = useQuery({
@@ -111,7 +111,7 @@ export default function AdminEletivaModulo4() {
       {kpis && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <KpiCard label="matriculados" value={kpis.total_students} />
-          <KpiCard label="fecharam a módulo 4" value={kpis.completed_count} />
+          <KpiCard label="fecharam o módulo 4" value={kpis.completed_count} />
           <KpiCard label="entregaram evidências" value={kpis.submitted_count} />
           <KpiCard
             label="com origem real (foto/áudio/link)"

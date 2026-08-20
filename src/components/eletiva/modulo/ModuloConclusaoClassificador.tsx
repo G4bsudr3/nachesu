@@ -35,7 +35,7 @@ interface Props {
 }
 
 /**
- * celebração pós-conclusão da módulo 2 (economia circular).
+ * celebração pós-conclusão do módulo 2 (economia circular).
  * mostra os 13 itens que o estudante classificou (10 fixos + 3 do radar),
  * agrupados em 3 colunas por categoria com a cor de cada uma.
  * so renderiza quando existe classificacao salva no deliverable.

@@ -33,7 +33,7 @@ interface Props {
 }
 
 /**
- * celebração pós-conclusão da módulo 4 (economia circular).
+ * celebração pós-conclusão do módulo 4 (economia circular).
  * mostra as 3 evidências + síntese que o estudante entregou.
  */
 export function ModuloConclusaoEvidencias({ moduleId }: Props) {

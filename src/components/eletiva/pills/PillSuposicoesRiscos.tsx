@@ -278,7 +278,7 @@ export function PillSuposicoesRiscos({
           </div>
         ) : (
           <p className="font-body text-xs text-perestroika-vermelho/85">
-            você ainda não fechou a proposta da módulo 13.
+            você ainda não fechou a proposta do módulo 13.
           </p>
         )}
         {bmcQ.data?.segmento && (

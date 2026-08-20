@@ -223,7 +223,7 @@ export function PillChangelogV2({
     <div className="space-y-8">
       {/* PARTE 1 · DIAGNÓSTICO */}
       <section className="space-y-3">
-        <SectionHeader n={1} title="DIAGNÓSTICO" hint="olhando os resultados da módulo 17, o que aconteceu?" />
+        <SectionHeader n={1} title="DIAGNÓSTICO" hint="olhando os resultados do módulo 17, o que aconteceu?" />
 
         {resultado.value?.criterio_resultado && (
           <div
@@ -231,7 +231,7 @@ export function PillChangelogV2({
             style={{ backgroundColor: `${accent}12`, border: `1px solid ${accent}55` }}
           >
             <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">
-              resultado registrado na módulo 17
+              resultado registrado no módulo 17
             </p>
             <p className="font-body text-sm text-perestroika-preto/85">
               critério · <strong>{resultado.value.criterio_resultado === "atingiu" ? "atingiu" : resultado.value.criterio_resultado === "parcial" ? "parcial" : "não atingiu"}</strong>
@@ -396,7 +396,7 @@ export function PillChangelogV2({
           </div>
         ) : (
           <p className="font-body text-xs text-perestroika-preto/60">
-            você ainda não fechou a proposta de valor da módulo 13. volta lá se quiser puxar a v1.
+            você ainda não fechou a proposta de valor do módulo 13. volta lá se quiser puxar a v1.
           </p>
         )}
       </section>
@@ -438,7 +438,7 @@ export function PillChangelogV2({
           </div>
         ) : (
           <p className="font-body text-xs text-perestroika-preto/60">
-            você ainda não fechou o BMC da módulo 14. volta lá se quiser puxar a v1.
+            você ainda não fechou o BMC do módulo 14. volta lá se quiser puxar a v1.
           </p>
         )}
       </section>

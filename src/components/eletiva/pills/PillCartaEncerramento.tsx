@@ -8,7 +8,7 @@ import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 
 /**
  * pílula MÓDULO 20 — carta de encerramento (comparação temporal).
- * puxa q3-expectativa da módulo 5 e q3-manchete da módulo 9. compara com as respostas de hoje.
+ * puxa q3-expectativa do módulo 5 e q3-manchete do módulo 9. compara com as respostas de hoje.
  */
 
 export type CartaEncerramentoValue = {

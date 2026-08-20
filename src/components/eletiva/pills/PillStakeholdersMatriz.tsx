@@ -190,7 +190,7 @@ export function PillStakeholdersMatriz({
 
   return (
     <div className="space-y-6">
-      {/* âncora: sugestões da módulo 3 */}
+      {/* âncora: sugestões do módulo 3 */}
       {availableSuggestions.length > 0 && (
         <aside
           className="rounded-2xl p-4 sm:p-5 space-y-2"

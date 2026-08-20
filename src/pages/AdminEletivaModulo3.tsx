@@ -34,7 +34,7 @@ type StatsResponse = {
 /**
  * /admin/eletiva/economia-circular/modulo/3
  *
- * agrega o mapa de atores 2x2 da módulo 3.
+ * agrega o mapa de atores 2x2 do módulo 3.
  * chama a rpc admin_module3_mapa_atores_stats (security definer, só admin).
  */
 export default function AdminEletivaModulo3() {
@@ -116,7 +116,7 @@ export default function AdminEletivaModulo3() {
       {kpis && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           <KpiCard label="matriculados" value={kpis.total_students} />
-          <KpiCard label="fecharam a módulo 3" value={kpis.completed_count} />
+          <KpiCard label="fecharam o módulo 3" value={kpis.completed_count} />
           <KpiCard label="entregaram o mapa" value={kpis.submitted_count} />
         </div>
       )}

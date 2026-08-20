@@ -254,7 +254,7 @@ export function PillRegistroResultado({
       </section>
 
       <section className="space-y-2">
-        <SectionHeader n={6} title="CRITÉRIO DE SUCESSO · FOI ATINGIDO?" hint="respeita o que você definiu na módulo 16. sem 'flexibilizar'." />
+        <SectionHeader n={6} title="CRITÉRIO DE SUCESSO · FOI ATINGIDO?" hint="respeita o que você definiu no módulo 16. sem 'flexibilizar'." />
         <div className="grid gap-2 sm:grid-cols-3">
           {[
             { id: "atingiu", label: "atingiu", cor: "#16a34a" },

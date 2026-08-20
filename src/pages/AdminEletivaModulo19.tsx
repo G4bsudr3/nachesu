@@ -82,7 +82,7 @@ export default function AdminEletivaModulo19() {
             primeiros takes da turma
           </h1>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
-            quem já entregou roteiro em 6 blocos e mandou o primeiro take. duração média ajuda a calibrar a módulo 20.
+            quem já entregou roteiro em 6 blocos e mandou o primeiro take. duração média ajuda a calibrar o módulo 20.
           </p>
         </header>
 

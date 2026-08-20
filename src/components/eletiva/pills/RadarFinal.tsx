@@ -15,7 +15,7 @@ interface Props {
   items: RadarItem[];
   /** dicionário de fluxos (label/value) declarado no interaction_schema da pílula radar */
   fluxos: FluxoOpt[];
-  /** cor accent do módulo (duduo dentro da módulo 1) */
+  /** cor accent do módulo (duduo dentro do módulo 1) */
   accent: string;
   /** persiste mudanças quando aluno completa evidência faltante na tela final */
   save: (patch: DeliverableContent) => Promise<unknown>;
@@ -33,7 +33,7 @@ const fluxoColors: Record<string, string> = {
 };
 
 /**
- * RadarFinal — tela pós-conclusão da módulo 1.
+ * RadarFinal — tela pós-conclusão do módulo 1.
  *
  * mostra o radar consolidado do aluno agrupado por fluxo, com cards bonitos
  * pra cada item: o que vi, onde, evidência (preview de foto/áudio/link).

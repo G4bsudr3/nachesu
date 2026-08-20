@@ -209,7 +209,7 @@ export function PillMatrizValor({
       {vazamentosMapa.length > 0 && vazamentosMapa.length < minLinhas && (
         <div className="rounded-2xl border-2 border-perestroika-preto/25 bg-perestroika-bege p-4">
           <p className="font-body text-sm text-perestroika-preto/85">
-            seu mapa da módulo 6 tem só <strong>{vazamentosMapa.length}</strong> vazamento(s). volta lá e cava
+            seu mapa do módulo 6 tem só <strong>{vazamentosMapa.length}</strong> vazamento(s). volta lá e cava
             mais {minLinhas - vazamentosMapa.length} — a matriz precisa de {minLinhas} linhas pra funcionar.
           </p>
         </div>

@@ -43,7 +43,7 @@ const catMeta: Record<Category, { label: string; bg: string; ink: string }> = {
 /**
  * /admin/eletiva/economia-circular/modulo/2
  *
- * distribuição agregada do classificador 3x3 da módulo 2.
+ * distribuição agregada do classificador 3x3 do módulo 2.
  * chama a rpc admin_module2_classificador_stats (security definer, só admin).
  */
 export default function AdminEletivaModulo2() {
@@ -155,7 +155,7 @@ export default function AdminEletivaModulo2() {
       {kpis && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           <KpiCard label="matriculados" value={kpis.total_students} />
-          <KpiCard label="fecharam a módulo 2" value={kpis.completed_count} />
+          <KpiCard label="fecharam o módulo 2" value={kpis.completed_count} />
           <KpiCard label="fizeram o classificador" value={kpis.submitted_count} />
         </div>
       )}

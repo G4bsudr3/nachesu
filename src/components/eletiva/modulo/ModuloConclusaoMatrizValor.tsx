@@ -27,7 +27,7 @@ interface Props {
   moduleId: string;
 }
 
-/** celebração pós-conclusão da módulo 7. */
+/** celebração pós-conclusão do módulo 7. */
 export function ModuloConclusaoMatrizValor({ moduleId }: Props) {
   const { user } = useAuth();
   const reduce = useReducedMotion();

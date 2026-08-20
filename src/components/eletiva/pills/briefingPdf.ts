@@ -31,7 +31,7 @@ function fluxoLabel(k?: string) {
 }
 
 /**
- * Gera o PDF do briefing da módulo 5 (economia circular).
+ * Gera o PDF do briefing do módulo 5 (economia circular).
  * Layout A4 retrato, 1 página, paleta Duduo. Devolve um Blob pronto pra download ou upload.
  * jsPDF é importado sob demanda (~163KB gzip) pra não pesar na rota de módulo —
  * só carrega quando o aluno realmente exporta o PDF.

@@ -246,13 +246,13 @@ export function PillCacaEvidencias({
       >
         <div>
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-1.5">
-            seu problema (do radar da módulo 1)
+            seu problema (do radar do módulo 1)
           </p>
           {problemaQuery.isLoading ? (
             <p className="font-body text-sm text-perestroika-preto/55">carregando…</p>
           ) : problemaItems.length === 0 ? (
             <p className="font-body text-sm text-perestroika-preto/70">
-              você ainda não preencheu o radar da módulo 1. volta lá pra ancorar sua investigação.
+              você ainda não preencheu o radar do módulo 1. volta lá pra ancorar sua investigação.
             </p>
           ) : (
             <ul className="space-y-1">

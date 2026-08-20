@@ -39,7 +39,7 @@ const FLUXO_LABEL: Record<string, string> = {
 
 /**
  * /admin/eletiva/economia-circular/modulo/6
- * agrega os mapas de fluxo entregues na módulo 6.
+ * agrega os mapas de fluxo entregues no módulo 6.
  */
 export default function AdminEletivaModulo6() {
   const { data, isLoading, error } = useQuery({
