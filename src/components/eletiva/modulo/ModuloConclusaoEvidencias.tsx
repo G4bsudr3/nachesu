@@ -33,7 +33,7 @@ interface Props {
 }
 
 /**
- * celebração pós-conclusão da aula 4 (economia circular).
+ * celebração pós-conclusão da módulo 4 (economia circular).
  * mostra as 3 evidências + síntese que o estudante entregou.
  */
 export function ModuloConclusaoEvidencias({ moduleId }: Props) {
@@ -95,7 +95,7 @@ export function ModuloConclusaoEvidencias({ moduleId }: Props) {
     >
       <header>
         <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
-          exercício 4 cumprido
+          exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
           suas 3 evidências

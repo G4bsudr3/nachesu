@@ -206,8 +206,8 @@ const SEMAFORO_META: Record<
 };
 
 /**
- * pílula 03 (aula 5, economia circular) — 4 filtros de validação + briefing do projeto.
- * puxa evidências (aula 4), incômodo (aula 1), mapa de atores (aula 3).
+ * pílula 03 (módulo 5, economia circular) — 4 filtros de validação + briefing do projeto.
+ * puxa evidências (módulo 4), incômodo (módulo 1), mapa de atores (módulo 3).
  * gera PDF do briefing ao concluir.
  */
 export function PillQuatroFiltrosBriefing({

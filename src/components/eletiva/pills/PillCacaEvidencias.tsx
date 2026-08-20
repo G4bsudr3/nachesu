@@ -133,8 +133,8 @@ const METODO_LABEL: Record<string, string> = {
 };
 
 /**
- * pílula 03 — caça às 3 evidências (aula 4, economia circular).
- * puxa problema (aula 1) + mapa de atores (aula 3), método vem do quiz da pílula 02.
+ * pílula 03 — caça às 3 evidências (módulo 4, economia circular).
+ * puxa problema (módulo 1) + mapa de atores (módulo 3), método vem do quiz da pílula 02.
  * 3 fichas + síntese, validação de ao menos 1 evidência com upload/link real.
  */
 export function PillCacaEvidencias({
@@ -246,13 +246,13 @@ export function PillCacaEvidencias({
       >
         <div>
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-1.5">
-            seu problema (do radar da aula 1)
+            seu problema (do radar da módulo 1)
           </p>
           {problemaQuery.isLoading ? (
             <p className="font-body text-sm text-perestroika-preto/55">carregando…</p>
           ) : problemaItems.length === 0 ? (
             <p className="font-body text-sm text-perestroika-preto/70">
-              você ainda não preencheu o radar da aula 1. volta lá pra ancorar sua investigação.
+              você ainda não preencheu o radar da módulo 1. volta lá pra ancorar sua investigação.
             </p>
           ) : (
             <ul className="space-y-1">
@@ -271,7 +271,7 @@ export function PillCacaEvidencias({
             {ganhaAtores.length > 0 && (
               <div>
                 <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">
-                  quem ganha (aula 3)
+                  quem ganha (módulo 3)
                 </p>
                 <p className="font-body text-xs text-perestroika-preto/80">{ganhaAtores.slice(0, 4).join(" · ")}</p>
               </div>
@@ -279,7 +279,7 @@ export function PillCacaEvidencias({
             {perdeAtores.length > 0 && (
               <div>
                 <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">
-                  quem perde (aula 3)
+                  quem perde (módulo 3)
                 </p>
                 <p className="font-body text-xs text-perestroika-preto/80">{perdeAtores.slice(0, 4).join(" · ")}</p>
               </div>
@@ -318,7 +318,7 @@ export function PillCacaEvidencias({
       {/* instruções */}
       <div className="rounded-2xl bg-perestroika-preto/[0.04] p-4 sm:p-5">
         <p className="font-body text-sm text-perestroika-preto/85 leading-relaxed">
-          suo exercício: produzir <strong>3 evidências distintas</strong> do seu problema. evidência tem nome, data,
+          seu exercício: produzir <strong>3 evidências distintas</strong> do seu problema. evidência tem nome, data,
           local. opinião não tem. pelo menos 1 delas precisa ter algo do mundo real (foto, áudio ou link
           público). se descobrir que o problema não é bem o que pensava, isso é vitória, não fracasso.
         </p>

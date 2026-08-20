@@ -5,7 +5,7 @@ import { normOptions, correctValues, wrongFeedback, minChars } from "../choiceSc
 import { PillConteudoCurado } from "../PillConteudoCurado";
 
 
-// schema real da aula 16 de economia circular (formato novo: id + correct + feedback_incorrect)
+// schema real da módulo 16 de economia circular (formato novo: id + correct + feedback_incorrect)
 const schemaM16 = {
   type: "curated_content_with_questions" as const,
   cards: [],

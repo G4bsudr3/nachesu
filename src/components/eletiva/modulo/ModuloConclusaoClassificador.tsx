@@ -35,7 +35,7 @@ interface Props {
 }
 
 /**
- * celebração pós-conclusão da aula 2 (economia circular).
+ * celebração pós-conclusão da módulo 2 (economia circular).
  * mostra os 13 itens que o estudante classificou (10 fixos + 3 do radar),
  * agrupados em 3 colunas por categoria com a cor de cada uma.
  * so renderiza quando existe classificacao salva no deliverable.
@@ -167,7 +167,7 @@ export function ModuloConclusaoClassificador({ moduleId }: Props) {
           seu mapa mental do que é economia circular
         </h2>
         <p className="font-body text-sm text-perestroika-preto/75 max-w-2xl">
-          você classificou {totalClassified} itens. essa é a lente que você vai carregar pras próximas aulas.
+          você classificou {totalClassified} itens. essa é a lente que você vai carregar pras próximas módulos.
         </p>
         <div className="flex flex-wrap gap-2 pt-1 justify-center sm:justify-start">
           {(Object.keys(catMeta) as Category[]).map((cat) => (

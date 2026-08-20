@@ -56,7 +56,7 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   },
   "/app/glossario": {
     title: "glossário · nachesu",
-    description: "os termos que mais aparecem nas aulas das duas eletivas, explicados em uma frase.",
+    description: "os termos que mais aparecem nas módulos das duas eletivas, explicados em uma frase.",
   },
 };
 

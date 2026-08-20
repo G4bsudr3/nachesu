@@ -58,7 +58,7 @@ export function PillEmCampo({
   const headline = schema.headline ?? "experimento em campo";
   const body =
     schema.body ??
-    "suo exercício: executar o experimento e registrar tudo. quando terminar, volta aqui e libera a parte 2.";
+    "seu exercício: executar o experimento e registrar tudo. quando terminar, volta aqui e libera a parte 2.";
   const ctaLabel = schema.completion?.label ?? "voltei, quero registrar";
 
   return (

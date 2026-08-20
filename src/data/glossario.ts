@@ -1,5 +1,5 @@
 /**
- * glossário das eletivas: termos que se repetem nas aulas das duas trilhas.
+ * glossário das eletivas: termos que se repetem nas módulos das duas trilhas.
  * lista fixa (sem banco). definição curta, lowercase, "você", máx 2 frases.
  */
 
@@ -583,7 +583,7 @@ const TERMOS: GlossarioTermo[] = [
   {
     termo: "ellen macarthur",
     definicao:
-      "fundação que organizou os princípios da economia circular usados nas aulas: eliminar resíduo, circular material, regenerar a natureza.",
+      "fundação que organizou os princípios da economia circular usados nas módulos: eliminar resíduo, circular material, regenerar a natureza.",
     tags: ["circular"],
     sinonimos: ["fundação ellen macarthur"],
   },

@@ -77,7 +77,7 @@ export default function AdminEletivaModulo5() {
             <section aria-label="kpis" className="grid gap-3 sm:grid-cols-4">
               {[
                 { label: "matriculadas", value: k.total_students ?? 0 },
-                { label: "concluíram aula 5", value: k.completed_count ?? 0 },
+                { label: "concluíram módulo 5", value: k.completed_count ?? 0 },
                 { label: "briefings entregues", value: k.briefing_count ?? 0 },
                 {
                   label: "% trocou de problema",

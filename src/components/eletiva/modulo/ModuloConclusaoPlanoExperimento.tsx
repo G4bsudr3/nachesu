@@ -79,7 +79,7 @@ export function ModuloConclusaoPlanoExperimento({ moduleId }: Props) {
     >
       <header>
         <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
-          exercício 16 cumprido
+          exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
           plano na mão

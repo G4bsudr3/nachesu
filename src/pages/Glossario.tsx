@@ -80,7 +80,7 @@ const Glossario = () => {
             palavra que<br />se repete
           </h1>
           <p className="mt-4 max-w-xl font-body text-base text-perestroika-preto/75 sm:text-lg">
-            as palavras que mais aparecem nas aulas, explicadas em uma frase.
+            as palavras que mais aparecem nas módulos, explicadas em uma frase.
           </p>
         </header>
 
@@ -143,7 +143,7 @@ const Glossario = () => {
           <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/20 p-8 text-center">
             <p className="font-display uppercase text-2xl leading-tight">não achei esse termo</p>
             <p className="mx-auto mt-2 max-w-sm font-body text-sm text-perestroika-preto/70">
-              pode ser que ele apareça com outro nome nas aulas. pergunta pro tutor, ele responde com o
+              pode ser que ele apareça com outro nome nas módulos. pergunta pro tutor, ele responde com o
               contexto do seu módulo.
             </p>
             <Link

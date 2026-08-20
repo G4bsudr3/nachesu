@@ -39,7 +39,7 @@ const FLUXO_LABEL: Record<string, string> = {
 
 /**
  * /admin/eletiva/economia-circular/modulo/6
- * agrega os mapas de fluxo entregues na aula 6.
+ * agrega os mapas de fluxo entregues na módulo 6.
  */
 export default function AdminEletivaModulo6() {
   const { data, isLoading, error } = useQuery({
@@ -94,7 +94,7 @@ export default function AdminEletivaModulo6() {
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
           </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
-            economia circular · aula 6
+            economia circular · módulo 6
           </p>
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
             mapas de fluxo da turma
@@ -117,7 +117,7 @@ export default function AdminEletivaModulo6() {
         {/* Distribuição por fluxo */}
         <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-5">
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-3">
-            distribuição por fluxo escolhido (briefing aula 5)
+            distribuição por fluxo escolhido (briefing módulo 5)
           </p>
           {totalDist === 0 ? (
             <p className="font-body text-sm text-perestroika-preto/60">ainda sem dados.</p>

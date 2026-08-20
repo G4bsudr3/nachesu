@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 /**
- * admin da AULA 20 — fechamento da eletiva.
+ * admin da MÓDULO 20 — fechamento da eletiva.
  * distribuição das 5 dimensões, notas, palavra-resumo (nuvem simples),
  * lista de projetos "candidatos a piloto".
  */

@@ -27,7 +27,7 @@ interface Props {
   moduleId: string;
 }
 
-/** celebração pós-conclusão da aula 7. */
+/** celebração pós-conclusão da módulo 7. */
 export function ModuloConclusaoMatrizValor({ moduleId }: Props) {
   const { user } = useAuth();
   const reduce = useReducedMotion();
@@ -90,7 +90,7 @@ export function ModuloConclusaoMatrizValor({ moduleId }: Props) {
     >
       <header>
         <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
-          exercício 7 cumprido
+          exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
           {linhas.length} oportunidade{linhas.length > 1 ? "s" : ""} reai{linhas.length > 1 ? "s" : "l"} mapeada{linhas.length > 1 ? "s" : ""}

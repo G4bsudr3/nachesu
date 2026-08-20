@@ -9,8 +9,8 @@ import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import type { PitchRoteiroValue } from "./PillPitchRoteiro";
 
 /**
- * pílula da AULA 20 — PBL parte 1 + 2:
- * refina o roteiro do pitch (puxa da aula 19) e grava versão final (90s-4min, máx 3 tentativas)
+ * pílula da MÓDULO 20 — PBL parte 1 + 2:
+ * refina o roteiro do pitch (puxa da módulo 19) e grava versão final (90s-4min, máx 3 tentativas)
  */
 
 export type PitchFinalValue = {
@@ -93,7 +93,7 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
   const pull = useAula19Pull(schema);
 
   const [value, setValue] = useState<PitchFinalValue>(() => {
-    // se ainda não editou, começa com o roteiro da aula 19 (rascunho)
+    // se ainda não editou, começa com o roteiro da módulo 19 (rascunho)
     const seed: PitchFinalValue = { tentativas: 0, ...initial };
     if (pull.roteiro && !initial.hook && !initial.problema) {
       seed.hook = pull.roteiro.hook ?? "";
@@ -145,13 +145,13 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
     <div className="space-y-6">
       {/* PARTE 1 — Refinar roteiro */}
       <section className="space-y-3">
-        <SectionHeader n={1} title="refinar o roteiro" hint="side-by-side com o take da aula 19" />
+        <SectionHeader n={1} title="refinar o roteiro" hint="side-by-side com o take da módulo 19" />
 
         {previousTake && (
           <div className="rounded-2xl border-2 overflow-hidden bg-black" style={{ borderColor: `${accent}55` }}>
             <video src={previousTake} controls className="w-full aspect-video bg-black" />
             <p className="px-3 py-1.5 font-body text-[11px] text-perestroika-preto/70 bg-perestroika-bege">
-              seu primeiro take da aula 19 — assiste e corta o que sobra.
+              seu primeiro take da módulo 19 — assiste e corta o que sobra.
             </p>
           </div>
         )}

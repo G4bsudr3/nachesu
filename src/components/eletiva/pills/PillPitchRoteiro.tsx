@@ -91,7 +91,7 @@ function hookRuim(hook: string) {
   return HOOK_PROIBIDOS.some((p) => low.startsWith(p));
 }
 
-// pulls read-only das aulas anteriores
+// pulls read-only das módulos anteriores
 type Pulls = {
   evidencias: CacaEvidenciasValue["evidencias"] | null;
   impactos: Impactos3PValue | null;
@@ -307,7 +307,7 @@ export function PillPitchRoteiro({ pillId, schema, accent, initial, pitchMap, sa
         <SectionHeader
           n={3}
           title="ASSISTA E ANOTA"
-          hint="depois de assistir seu take, em 1 frase: o que mais chama atenção (positivo) e o que mais atrapalha? vira seu foco pra aula 20."
+          hint="depois de assistir seu take, em 1 frase: o que mais chama atenção (positivo) e o que mais atrapalha? vira seu foco pra módulo 20."
         />
         <textarea
           value={value.auto_avaliacao ?? ""}
@@ -364,11 +364,11 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
       style={{ backgroundColor: `${accent}10`, border: `1px solid ${accent}44` }}
     >
       <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
-        material das aulas anteriores · use como referência enquanto escreve
+        material das módulos anteriores · use como referência enquanto escreve
       </p>
       <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
         {pulls.evidencias?.length ? (
-          <RefCard title={`evidências (aula 4) · ${pulls.evidencias.length}`}>
+          <RefCard title={`evidências (módulo 4) · ${pulls.evidencias.length}`}>
             <ul className="space-y-1">
               {pulls.evidencias.slice(0, 3).map((ev, i) => {
                 const resumo = ev.descricao || ev.frase1 || ev.prova || ev.entrevistado || "—";
@@ -382,7 +382,7 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
           </RefCard>
         ) : null}
         {pulls.propostaV2 ? (
-          <RefCard title="proposta de valor v2 (aula 18)">
+          <RefCard title="proposta de valor v2 (módulo 18)">
             <p className="font-body text-xs text-perestroika-preto/75 leading-snug">
               <strong>{pulls.propostaV2.frase_ancora || pulls.propostaV2.solucao || "—"}</strong>
             </p>
@@ -392,14 +392,14 @@ function PullsPainel({ pulls, accent }: { pulls: Pulls; accent: string }) {
           </RefCard>
         ) : null}
         {pulls.impactos ? (
-          <RefCard title="impactos regenerativos (aula 9)">
+          <RefCard title="impactos regenerativos (módulo 9)">
             <p className="font-body text-xs text-perestroika-preto/75 leading-snug">
               {pulls.impactos.pessoas?.estado_desejado || pulls.impactos.planeta?.estado_desejado || pulls.impactos.prosperidade?.estado_desejado || "—"}
             </p>
           </RefCard>
         ) : null}
         {pulls.bmcV2 ? (
-          <RefCard title="modelo v2 (aula 18)">
+          <RefCard title="modelo v2 (módulo 18)">
             <p className="font-body text-xs text-perestroika-preto/75 leading-snug">
               <span className="text-perestroika-preto/50">segmento:</span> {pulls.bmcV2.segmento || "—"}
             </p>

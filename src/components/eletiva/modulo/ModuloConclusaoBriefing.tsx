@@ -20,7 +20,7 @@ const FLUXO_LABELS: Record<string, string> = {
 };
 
 /**
- * Tela de fechamento da trilha 1 (aula 5).
+ * Tela de fechamento da trilha 1 (módulo 5).
  * Mostra o briefing renderizado bonito + botão de download do PDF.
  */
 export function ModuloConclusaoBriefing({ moduleId }: Props) {

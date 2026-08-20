@@ -20,7 +20,7 @@ interface Props {
 }
 
 /**
- * celebração pós-conclusão da aula 6 (economia circular).
+ * celebração pós-conclusão da módulo 6 (economia circular).
  * mostra o esqueleto do sistema desenhado pelo estudante.
  */
 export function ModuloConclusaoMapaFluxo({ moduleId }: Props) {
@@ -87,7 +87,7 @@ export function ModuloConclusaoMapaFluxo({ moduleId }: Props) {
     >
       <header>
         <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
-          exercício 6 cumprido
+          exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
           o esqueleto do seu sistema

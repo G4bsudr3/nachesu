@@ -4,7 +4,7 @@ import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 
 /**
- * pílula AULA 20 — Parte A (auto-avaliação em 5 dimensões) + Parte B (feedback pro professor).
+ * pílula MÓDULO 20 — Parte A (auto-avaliação em 5 dimensões) + Parte B (feedback pro professor).
  */
 
 export type FechamentoAvaliacaoValue = {

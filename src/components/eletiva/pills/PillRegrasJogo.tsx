@@ -204,7 +204,7 @@ export function PillRegrasJogo({
           {hmw && (
             <div>
               <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                seu HMW (do briefing · aula 5)
+                seu HMW (do briefing · módulo 5)
               </p>
               <p className="font-display text-base sm:text-lg leading-snug text-perestroika-preto">
                 {hmw}
@@ -214,7 +214,7 @@ export function PillRegrasJogo({
           {oportunidades.length > 0 && (
             <div>
               <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 mb-1">
-                suas oportunidades (matriz · aula 7)
+                suas oportunidades (matriz · módulo 7)
               </p>
               <ul className="space-y-1">
                 {oportunidades.map((o, i) => (

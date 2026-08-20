@@ -128,7 +128,7 @@ export default function DossieAluno() {
 
         {/* PITCH */}
         {data.pitch?.video_url && (
-          <Bloco n={9} titulo="pitch em vídeo" origem="aula 20">
+          <Bloco n={9} titulo="pitch em vídeo" origem="módulo 20">
             <div className="rounded-2xl overflow-hidden border-2 border-perestroika-preto/15 bg-black">
               <video src={data.pitch.video_url} controls className="w-full aspect-video bg-black" />
             </div>
@@ -136,7 +136,7 @@ export default function DossieAluno() {
         )}
 
         {/* PROBLEMA + EVIDÊNCIAS */}
-        <Bloco n={1} titulo="problema local + 3 evidências" origem="aula 4">
+        <Bloco n={1} titulo="problema local + 3 evidências" origem="módulo 4">
           {data.evidencias && data.evidencias.length > 0 ? (
             <div className="space-y-3">
               {data.evidencias.slice(0, 3).map((ev, i) => (
@@ -150,7 +150,7 @@ export default function DossieAluno() {
         </Bloco>
 
         {/* PROPOSTA */}
-        <Bloco n={4} titulo="proposta de valor v2" origem="aula 18">
+        <Bloco n={4} titulo="proposta de valor v2" origem="módulo 18">
           {data.proposta_v2 ? (
             <div className="space-y-2">
               {data.proposta_v2.frase_ancora && (
@@ -164,7 +164,7 @@ export default function DossieAluno() {
         </Bloco>
 
         {/* BMC */}
-        <Bloco n={5} titulo="modelo de negócio v2" origem="aula 18">
+        <Bloco n={5} titulo="modelo de negócio v2" origem="módulo 18">
           {data.bmc_v2 ? (
             <div className="space-y-2">
               <CampoRow rotulo="segmento" valor={data.bmc_v2.segmento} />
@@ -176,7 +176,7 @@ export default function DossieAluno() {
         </Bloco>
 
         {/* IMPACTOS */}
-        <Bloco n={6} titulo="impactos regenerativos" origem="aula 9">
+        <Bloco n={6} titulo="impactos regenerativos" origem="módulo 9">
           {data.impactos ? (
             <div className="space-y-2">
               <CampoRow rotulo="pessoas" valor={data.impactos.pessoas?.estado_desejado} />
@@ -187,7 +187,7 @@ export default function DossieAluno() {
         </Bloco>
 
         {/* EXPERIMENTO */}
-        <Bloco n={8} titulo="experimento executado + aprendizados" origem="aula 17">
+        <Bloco n={8} titulo="experimento executado + aprendizados" origem="módulo 17">
           {data.experimento ? (
             <div className="space-y-2">
               <CampoRow rotulo="o que fez" valor={data.experimento.o_que_fez} />
@@ -199,7 +199,7 @@ export default function DossieAluno() {
         </Bloco>
 
         {/* CARTA DE ENCERRAMENTO */}
-        <Bloco n={10} titulo="carta de encerramento · então × agora" origem="aula 20">
+        <Bloco n={10} titulo="carta de encerramento · então × agora" origem="módulo 20">
           {data.carta ? (
             <div className="space-y-3">
               {data.carta.hoje_expectativa && (

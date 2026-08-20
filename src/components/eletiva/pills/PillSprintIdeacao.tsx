@@ -288,7 +288,7 @@ export function PillSprintIdeacao({
           )}
           {oport && (
             <p className="font-body text-sm text-perestroika-preto/80">
-              oportunidade puxada da aula 7 · <strong>{oport}</strong>
+              oportunidade puxada da módulo 7 · <strong>{oport}</strong>
             </p>
           )}
         </aside>
