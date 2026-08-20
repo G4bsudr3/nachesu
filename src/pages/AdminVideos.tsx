@@ -184,8 +184,8 @@ const AdminVideos = () => {
       )}
 
       {!isLoading && items.length === 0 && (
-        <div className="rounded-2xl border-2 border-perestroika-preto/15 p-8 text-center">
-          <CheckCircle2 className="h-6 w-6 mx-auto mb-3 text-perestroika-preto/60" />
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 p-8 text-center space-y-3">
+          <CheckCircle2 className="h-6 w-6 mx-auto text-perestroika-preto/60" />
           <p className="font-display uppercase text-xl">tudo batendo</p>
           <p className="font-body text-sm text-perestroika-preto/60 mt-1">
             nenhum vídeo com título trocado, canal errado ou link fora do ar.
@@ -199,9 +199,9 @@ const AdminVideos = () => {
           return (
             <article
               key={item.pill_id}
-              className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-4 sm:p-5"
+              className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-4 sm:p-5 space-y-2"
             >
-              <div className="flex flex-wrap items-center gap-2 mb-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span
                   className={cn(
                     "font-body text-[11px] uppercase tracking-wide px-2 py-1 rounded-full border",
@@ -221,8 +221,8 @@ const AdminVideos = () => {
               <p className="font-display uppercase text-lg leading-tight">{item.pill_title}</p>
 
               <div className="grid sm:grid-cols-2 gap-3 mt-3 font-body text-sm">
-                <div>
-                  <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/45 mb-1">
+                <div className="space-y-1">
+                  <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/45">
                     cadastrado na aula
                   </p>
                   <p className={cn(item.title_mismatch && "text-perestroika-vermelho")}>

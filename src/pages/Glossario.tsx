@@ -72,8 +72,8 @@ const Glossario = () => {
       />
 
       <main className="container max-w-3xl py-8 sm:py-12">
-        <header className="mb-8">
-          <p className="mb-2 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
+        <header className="mb-8 space-y-2">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
             glossário
           </p>
           <h1 className="font-display text-5xl uppercase leading-[0.9] sm:text-7xl">

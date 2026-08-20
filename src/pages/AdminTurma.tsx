@@ -227,8 +227,8 @@ const AdminTurma = () => {
       <PageHeader back={{ to: "/admin", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
       <main className="container max-w-5xl pb-20 pt-4">
-        <header className="mb-6">
-          <p className="font-body text-xs uppercase tracking-wide text-perestroika-preto/55 mb-1">
+        <header className="mb-6 space-y-1">
+          <p className="font-body text-xs uppercase tracking-wide text-perestroika-preto/55">
             dashboard da turma
           </p>
           <h1 className="font-display text-4xl sm:text-5xl uppercase tracking-tight text-perestroika-preto">

@@ -298,8 +298,8 @@ const Index = () => {
         </motion.div>
 
 
-        <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
-          <motion.p variants={heroItem} className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6">
+        <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10 space-y-6">
+          <motion.p variants={heroItem} className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             uma plataforma naches · em parceria com escola sebrae
           </motion.p>
           <motion.h1 variants={heroItem} className="font-display uppercase display-clamp-hero">
@@ -339,9 +339,9 @@ const Index = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-15%" }}
           transition={{ duration: 0.6 }}
-          className="sm:mb-16 max-w-2xl"
+          className="sm:mb-16 max-w-2xl space-y-4"
         >
-          <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             o que é o nachesu
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
@@ -418,9 +418,9 @@ const Index = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-15%" }}
           transition={{ duration: 0.6 }}
-          className="sm:mb-16 max-w-2xl"
+          className="sm:mb-16 max-w-2xl space-y-4"
         >
-          <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             escolha sua eletiva
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
@@ -533,9 +533,9 @@ const Index = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-15%" }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-center md:text-left"
+            className="text-center md:text-left space-y-4"
           >
-            <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-perestroika-bege/60 mb-4">
+            <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-perestroika-bege/60">
               o tutor da escola
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
@@ -557,13 +557,13 @@ const Index = () => {
       </section>
 
       {/* trilhas com tabs */}
-      <section id="trilhas" className="container py-20 sm:py-28 scroll-mt-32">
+      <section id="trilhas" className="container py-20 sm:py-28 scroll-mt-32 space-y-10">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-15%" }}
           transition={{ duration: 0.6 }}
-          className="mb-10 sm:mb-12 max-w-2xl"
+          className="sm:mb-12 max-w-2xl"
         >
           <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             por dentro das trilhas
@@ -658,8 +658,8 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-10 md:gap-16 items-start"
         >
-          <div className="md:sticky md:top-32">
-            <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <div className="md:sticky md:top-32 space-y-4">
+            <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
               perguntas frequentes
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">

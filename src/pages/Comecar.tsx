@@ -62,12 +62,12 @@ const Comecar = () => {
           </span>
         </motion.div>
 
-        <div className="max-w-3xl relative z-10">
+        <div className="max-w-3xl relative z-10 space-y-6">
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.05 }}
-            className="font-body text-[11px] sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6"
+            className="font-body text-[11px] sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60"
           >
             tá quase lá
           </motion.p>
