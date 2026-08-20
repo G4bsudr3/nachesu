@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PanelHeader } from "@/features/admin/moduloPanels/PanelHeader";
+import { PanelSkeleton } from "@/features/admin/moduloPanels/PanelSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { FeedbackReviewDrawer } from "@/features/admin/FeedbackReviewDrawer";
