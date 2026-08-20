@@ -332,14 +332,14 @@ const Index = () => {
       {/* o que é o nachesu */}
       <section
         id="como-funciona"
-        className="container py-20 sm:py-28 border-t border-perestroika-preto/15 scroll-mt-32"
+        className="container py-20 sm:py-28 border-t border-perestroika-preto/15 scroll-mt-32 space-y-12"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-15%" }}
           transition={{ duration: 0.6 }}
-          className="mb-12 sm:mb-16 max-w-2xl"
+          className="sm:mb-16 max-w-2xl"
         >
           <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             o que é o nachesu
@@ -411,14 +411,14 @@ const Index = () => {
       {/* eletivas + facilitadores enxutos */}
       <section
         id="eletivas"
-        className="container py-20 sm:py-28 border-t border-perestroika-preto/15 scroll-mt-32"
+        className="container py-20 sm:py-28 border-t border-perestroika-preto/15 scroll-mt-32 space-y-12"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-15%" }}
           transition={{ duration: 0.6 }}
-          className="mb-12 sm:mb-16 max-w-2xl"
+          className="sm:mb-16 max-w-2xl"
         >
           <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             escolha sua eletiva

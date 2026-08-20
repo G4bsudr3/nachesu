@@ -156,8 +156,8 @@ const Glossario = () => {
         ) : (
           <div className="space-y-8">
             {grupos.map(([letra, itens]) => (
-              <section key={letra} aria-label={`termos com ${letra}`}>
-                <h2 className="mb-3 font-display uppercase text-3xl leading-none text-perestroika-preto/25">
+              <section className="space-y-3" key={letra} aria-label={`termos com ${letra}`}>
+                <h2 className="font-display uppercase text-3xl leading-none text-perestroika-preto/25">
                   {letra}
                 </h2>
                 <ul className="space-y-3">

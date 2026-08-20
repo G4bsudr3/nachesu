@@ -194,8 +194,8 @@ const CertificadoEletiva = () => {
     return (
       <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
         <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
-        <main className="container max-w-2xl pt-10 pb-20 text-center">
-          <h1 className="font-display uppercase text-4xl mb-3">eletiva não encontrada</h1>
+        <main className="container max-w-2xl pt-10 pb-20 text-center space-y-3">
+          <h1 className="font-display uppercase text-4xl">eletiva não encontrada</h1>
           <Link to="/app" className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide">voltar</Link>
         </main>
       </div>

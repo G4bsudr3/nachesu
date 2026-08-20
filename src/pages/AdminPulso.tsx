@@ -639,9 +639,9 @@ const AdminPulso = () => {
             {filteredComments.map((c) => (
               <li
                 key={`${c.user_id}-${c.module_id}`}
-                className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4"
+                className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4 space-y-1.5"
               >
-                <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                <div className="flex flex-wrap items-center gap-2">
                   <AnswerChip entry={c} />
                   <Link
                     to={`/admin/aluno/${c.user_id}`}

@@ -155,8 +155,8 @@ const AccountSettings = () => {
             mensagem direta do educador continua chegando normal.
           </p>
           <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label htmlFor="quiet-start" className="mb-1 block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
+            <div className="space-y-1">
+              <label htmlFor="quiet-start" className="block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
                 começa às
               </label>
               <select
@@ -175,8 +175,8 @@ const AccountSettings = () => {
                 ))}
               </select>
             </div>
-            <div>
-              <label htmlFor="quiet-end" className="mb-1 block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
+            <div className="space-y-1">
+              <label htmlFor="quiet-end" className="block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
                 acaba às
               </label>
               <select

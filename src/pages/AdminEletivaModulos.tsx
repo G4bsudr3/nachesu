@@ -152,8 +152,8 @@ const AdminEletivaModulos = () => {
 
       <div className="space-y-8">
         {byTrail.map(({ trail, color, modules }) => (
-          <section key={trail.id}>
-            <div className="flex items-center gap-3 mb-3">
+          <section className="space-y-3" key={trail.id}>
+            <div className="flex items-center gap-3">
               <span
                 aria-hidden
                 className="inline-block h-3 w-3 rounded-full"

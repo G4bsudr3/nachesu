@@ -460,8 +460,8 @@ const Kpi = ({
 );
 
 const EmptyBlock = ({ title, sub }: { title: string; sub: string }) => (
-  <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-8 text-center">
-    <p className="font-display text-xl uppercase text-perestroika-preto mb-1">{title}</p>
+  <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-8 text-center space-y-1">
+    <p className="font-display text-xl uppercase text-perestroika-preto">{title}</p>
     <p className="font-body text-sm text-perestroika-preto/65">{sub}</p>
   </div>
 );

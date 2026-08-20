@@ -119,8 +119,8 @@ const Comecar = () => {
 
       {/* próximo passo */}
       <section className="container py-16 sm:py-24 border-t border-perestroika-preto/15">
-        <div className="max-w-2xl mb-10">
-          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-4">
+        <div className="max-w-2xl mb-10 space-y-4">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
             o que acontece agora
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
