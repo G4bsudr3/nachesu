@@ -247,9 +247,9 @@ const EletivaHome = () => {
     return (
       <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
         <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
-        <main className="container max-w-2xl pt-10 pb-20 text-center">
-          <h1 className="font-display uppercase text-4xl mb-3">eletiva não encontrada</h1>
-          <p className="font-body text-perestroika-preto/70 mb-6">esse link não bateu com nenhuma eletiva ativa.</p>
+        <main className="container max-w-2xl pt-10 pb-20 text-center space-y-4">
+          <h1 className="font-display uppercase text-4xl">eletiva não encontrada</h1>
+          <p className="font-body text-perestroika-preto/70">esse link não bateu com nenhuma eletiva ativa.</p>
           <Link
             to="/app"
             className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide"
