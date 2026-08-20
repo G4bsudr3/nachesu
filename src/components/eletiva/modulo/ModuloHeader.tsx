@@ -1,4 +1,5 @@
-import { CheckCircle2, Clock, Layers, Sparkles } from "lucide-react";
+import { CheckCircle2, Layers, Sparkles } from "lucide-react";
+import { DuracaoBadge } from "@/components/eletiva/DuracaoBadge";
 
 interface Props {
   courseTitle?: string | null;
@@ -100,10 +101,9 @@ export const ModuloHeader = ({
             {totalPills} {totalPills === 1 ? "bloco" : "blocos"}
           </span>
         )}
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-perestroika-preto/10 px-3 py-1.5 font-body text-xs uppercase tracking-wider">
-          <Clock className="h-3 w-3" aria-hidden />
+        <DuracaoBadge variant="chip">
           {coreLabel ? `${coreLabel} de núcleo` : "tempo variável"}
-        </span>
+        </DuracaoBadge>
         {!!bonusMinHigh && bonusMinHigh > 0 && (
           <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65">
             <Sparkles className="h-3 w-3" aria-hidden />

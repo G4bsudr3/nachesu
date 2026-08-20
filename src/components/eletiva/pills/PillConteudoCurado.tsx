@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink, ArrowRight, Clock, Check, X, AlertTriangle } from "lucide-react";
+import { ExternalLink, ArrowRight, Check, X, AlertTriangle } from "lucide-react";
+import { DuracaoBadge } from "@/components/eletiva/DuracaoBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
@@ -175,11 +176,7 @@ export function PillConteudoCurado({
           >
             <div className="flex min-w-0 items-center justify-between gap-2 mb-1.5 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
               <span className="min-w-0 truncate">{card.source ?? "fonte externa"}</span>
-              {card.duration && (
-                <span className="inline-flex min-w-0 items-center gap-1 truncate">
-                  <Clock className="h-3 w-3" aria-hidden="true" /> {card.duration}
-                </span>
-              )}
+              {card.duration && <DuracaoBadge>{card.duration}</DuracaoBadge>}
             </div>
             <h3 className="font-display uppercase text-lg leading-tight mb-1.5 break-words">{card.title}</h3>
             {card.description && (
