@@ -106,9 +106,22 @@ const pillKindLabel: Record<ModuloPill["kind"], string> = {
   pilula_a: "abertura",
   pilula_b: "conteúdo",
   pilula_c: "conteúdo",
-  exercicio_pbl: "exercício pbl",
-  registro: "reflexão",
+  exercicio_pbl: "exercício",
+  registro: "registro",
 };
+
+/**
+ * o rótulo conversa com o nome da pílula: as duas eletivas usam o mesmo
+ * vocabulário (abertura, conteúdo, exercício, fechamento, bônus, registro),
+ * então uma pílula chamada "fechando o módulo 6" não aparece como "conteúdo".
+ */
+export function pillLabel(pill: Pick<ModuloPill, "kind" | "title">) {
+  const t = (pill.title || "").toLowerCase();
+  if (t.startsWith("bônus") || t.startsWith("bonus")) return "bônus";
+  if (t.startsWith("fechando") || t.startsWith("checagem")) return "fechamento";
+  return pillKindLabel[pill.kind];
+}
+
 
 interface Props {
   pills: ModuloPill[] | undefined;
