@@ -52,29 +52,36 @@ function acharPrimeira(texto: string, padrao: string): { inicio: number; fim: nu
 export function linkifyGlossario(markdown: string, usadas = new Set<string>()): string {
   if (!markdown) return markdown;
 
+  /** processa um trecho limpo, do gatilho `desde` em diante, sem tocar no que já virou link */
+  const processar = (texto: string, desde: number): string => {
+    for (let i = desde; i < GATILHOS.length; i++) {
+      const g = GATILHOS[i];
+      if (usadas.has(g.termo)) continue;
+      const hit = acharPrimeira(texto, g.padrao);
+      if (!hit) continue;
+      usadas.add(g.termo);
+      const rotulo = texto.slice(hit.inicio, hit.fim);
+      const href = `/app/glossario?q=${encodeURIComponent(g.termo)}`;
+      return (
+        processar(texto.slice(0, hit.inicio), i + 1) +
+        `[${rotulo}](${href})` +
+        processar(texto.slice(hit.fim), i + 1)
+      );
+    }
+    return texto;
+  };
+
   return markdown
     .split("\n")
     .map((linha) => {
       // pula título, citação e bloco de código
       if (/^\s*(#{1,6}\s|>|```|\s{4,}\S)/.test(linha)) return linha;
 
-      const partes = linha.split(PROTEGIDO);
-      return partes
-        .map((parte, i) => {
-          if (i % 2 === 1) return parte; // região protegida
-          let out = parte;
-          for (const g of GATILHOS) {
-            if (usadas.has(g.termo)) continue;
-            const hit = acharPrimeira(out, g.padrao);
-            if (!hit) continue;
-            const texto = out.slice(hit.inicio, hit.fim);
-            const href = `/app/glossario?q=${encodeURIComponent(g.termo)}`;
-            out = `${out.slice(0, hit.inicio)}[${texto}](${href})${out.slice(hit.fim)}`;
-            usadas.add(g.termo);
-          }
-          return out;
-        })
+      return linha
+        .split(PROTEGIDO)
+        .map((parte, i) => (i % 2 === 1 ? parte : processar(parte, 0)))
         .join("");
     })
     .join("\n");
 }
+
