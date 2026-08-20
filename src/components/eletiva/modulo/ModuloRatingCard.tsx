@@ -11,13 +11,19 @@ import {
 
 interface Props {
   moduleId: string;
+  /** 0 esconde o número no título (uso inline dentro da pílula de registro) */
   moduleNumber: number;
   trailColor: string;
   /** slug da eletiva, pra oferecer o tutor quando a nota é baixa */
   courseSlug?: string | null;
   /** quando true, ignora o "agora não" e mostra o card mesmo assim */
   forceOpen?: boolean;
+  /** dentro da pílula de registro: sem margem extra e sempre visível */
+  inline?: boolean;
+  /** avisa a pílula quando a pergunta já foi respondida */
+  onAnswered?: (value: number | null) => void;
 }
+
 
 const LABELS: Record<number, string> = {
   1: "difícil demais, travou",
