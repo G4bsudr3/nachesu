@@ -122,7 +122,7 @@ export function PillRadar({
   return (
     <div className="space-y-6">
       <header className="flex items-start justify-between gap-3">
-        <div>
+        <div className="flex-1 min-w-0">
           <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95] mb-2">{title}</h2>
           {bodyMd && (
             <p className="font-body text-perestroika-preto/75 whitespace-pre-wrap text-sm sm:text-base">
