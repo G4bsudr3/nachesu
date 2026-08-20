@@ -607,7 +607,7 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
           className={`inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2 font-body text-sm text-perestroika-preto cursor-pointer hover:border-perestroika-preto/50 ${uploading ? "opacity-60 cursor-wait" : ""}`}
         >
           {uploading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Upload className="h-4 w-4" aria-hidden />}
-          {uploading ? "subindo..." : "ou upload de vídeo (até 100mb)"}
+          {uploading ? "subindo..." : `ou upload de vídeo (até ${MAX_MB}mb)`}
           <input
             type="file"
             accept="video/*"
@@ -622,6 +622,41 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
         </label>
       </div>
 
+      <div className="space-y-1.5 rounded-2xl border-2 border-perestroika-preto/15 p-3">
+        <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
+          vídeo grande ou upload travando? cola o link
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <input
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            inputMode="url"
+            placeholder="link do youtube, drive ou whatsapp"
+            className="flex-1 min-w-[200px] rounded-xl border-2 border-perestroika-preto/15 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              const v = link.trim();
+              if (!/^https?:\/\/\S+\.\S+/.test(v)) {
+                setErro("cola um link completo, começando com https://");
+                return;
+              }
+              setErro(null);
+              onChange({ url: v, path: null, name: "link do take", duracao: null });
+              setLink("");
+            }}
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-perestroika-bege"
+            style={{ backgroundColor: accent }}
+          >
+            <LinkIcon className="h-4 w-4" aria-hidden /> usar link
+          </button>
+        </div>
+        <p className="font-body text-[11px] text-perestroika-preto/55">
+          deixa o link aberto pra quem tem o endereço, senão o educador não consegue assistir.
+        </p>
+      </div>
+
       {(progress || erro) && (
         <p role={erro ? "alert" : "status"} className="font-body text-[11px]" style={{ color: erro ? "#fd4644" : "#75BF9C" }}>
           {erro ?? progress}
@@ -629,8 +664,9 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
       )}
 
       <p className="font-body text-[11px] text-perestroika-preto/55 leading-snug">
-        não precisa estar bom. é rascunho. o take fica salvo com você — só admins e você conseguem ver. semana que vem: versão final.
+        não precisa estar bom. é rascunho. o take fica salvo com você, só você e os educadores veem. semana que vem: versão final.
       </p>
+
     </div>
   );
 }
