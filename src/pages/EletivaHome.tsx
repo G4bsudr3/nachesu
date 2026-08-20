@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, BookOpen, CheckCircle2, Clock, Lock, MessageCircle } from "lucide-react";
+import { ArrowRight, BookMarked, BookOpen, CheckCircle2, Clock, Lock, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
