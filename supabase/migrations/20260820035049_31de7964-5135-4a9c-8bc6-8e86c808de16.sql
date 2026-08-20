@@ -1,0 +1,1 @@
+update public.modules set title = 'ia sem hype: o que ela faz bem (e mal)' where title = 'IA sem hype: o que ela faz bem (e mal)';
