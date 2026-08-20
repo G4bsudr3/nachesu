@@ -425,7 +425,7 @@ export function PillSprintIdeacao({
               setRascunho("");
               inputRef.current?.focus();
             }}
-            className="flex items-center gap-2"
+            className="flex min-w-0 items-center gap-2"
           >
             <input
               ref={inputRef}
@@ -433,14 +433,14 @@ export function PillSprintIdeacao({
               value={rascunho}
               onChange={(e) => setRascunho(e.target.value)}
               placeholder="joga a próxima ideia. curta. sem julgar."
-              className="flex-1 rounded-full border-2 border-perestroika-preto/15 bg-white px-4 py-2.5 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+              className="min-w-0 flex-1 rounded-full border-2 border-perestroika-preto/15 bg-white px-4 py-2.5 font-body text-sm focus:border-perestroika-preto focus:outline-none"
               maxLength={140}
               aria-label="nova ideia"
             />
             <button
               type="submit"
               disabled={rascunho.trim().length < 3}
-              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 font-body text-xs uppercase tracking-wider text-white transition-colors disabled:opacity-40"
+              className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 font-body text-xs uppercase tracking-wider text-white transition-colors disabled:opacity-40"
               style={{ backgroundColor: accent }}
             >
               <Plus className="h-3.5 w-3.5" aria-hidden /> ideia

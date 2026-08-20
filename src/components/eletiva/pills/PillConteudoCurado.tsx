@@ -176,7 +176,7 @@ export function PillConteudoCurado({
             <div className="flex min-w-0 items-center justify-between gap-2 mb-1.5 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
               <span className="min-w-0 truncate">{card.source ?? "fonte externa"}</span>
               {card.duration && (
-                <span className="inline-flex flex-shrink-0 items-center gap-1 whitespace-nowrap">
+                <span className="inline-flex min-w-0 items-center gap-1 truncate">
                   <Clock className="h-3 w-3" aria-hidden="true" /> {card.duration}
                 </span>
               )}
