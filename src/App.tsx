@@ -32,25 +32,6 @@ const AdminLayout = lazy(() =>
   import("./components/admin/layout/AdminLayout").then((m) => ({ default: m.AdminLayout })),
 );
 const AdminAula = lazy(() => import("./pages/AdminAula.tsx"));
-const AdminEletivaModulo2 = lazy(() => import("./pages/AdminEletivaModulo2.tsx"));
-const AdminEletivaModulo3 = lazy(() => import("./pages/AdminEletivaModulo3.tsx"));
-const AdminEletivaModulo4 = lazy(() => import("./pages/AdminEletivaModulo4.tsx"));
-const AdminEletivaModulo5 = lazy(() => import("./pages/AdminEletivaModulo5.tsx"));
-const AdminEletivaModulo6 = lazy(() => import("./pages/AdminEletivaModulo6.tsx"));
-const AdminEletivaModulo7 = lazy(() => import("./pages/AdminEletivaModulo7.tsx"));
-const AdminEletivaModulo8 = lazy(() => import("./pages/AdminEletivaModulo8.tsx"));
-const AdminEletivaModulo9 = lazy(() => import("./pages/AdminEletivaModulo9.tsx"));
-const AdminEletivaModulo10 = lazy(() => import("./pages/AdminEletivaModulo10.tsx"));
-const AdminEletivaModulo11 = lazy(() => import("./pages/AdminEletivaModulo11.tsx"));
-const AdminEletivaModulo12 = lazy(() => import("./pages/AdminEletivaModulo12.tsx"));
-const AdminEletivaModulo13 = lazy(() => import("./pages/AdminEletivaModulo13.tsx"));
-const AdminEletivaModulo14 = lazy(() => import("./pages/AdminEletivaModulo14.tsx"));
-const AdminEletivaModulo15 = lazy(() => import("./pages/AdminEletivaModulo15.tsx"));
-const AdminEletivaModulo16 = lazy(() => import("./pages/AdminEletivaModulo16.tsx"));
-const AdminEletivaModulo17 = lazy(() => import("./pages/AdminEletivaModulo17.tsx"));
-const AdminEletivaModulo18 = lazy(() => import("./pages/AdminEletivaModulo18.tsx"));
-const AdminEletivaModulo19 = lazy(() => import("./pages/AdminEletivaModulo19.tsx"));
-const AdminEletivaModulo20 = lazy(() => import("./pages/AdminEletivaModulo20.tsx"));
 const DossieAluno = lazy(() => import("./pages/DossieAluno.tsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
 const HubIndex = lazy(() => import("./pages/HubIndex.tsx"));
@@ -297,25 +278,6 @@ const App = () => (
                 <Route path="/admin/turma/:courseId" element={<AdminTurma />} />
                 <Route path="/admin/aluno/:userId" element={<AdminStudentProfile />} />
                 <Route path="/admin/aula/:n" element={<AdminAula />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/2" element={<AdminEletivaModulo2 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/3" element={<AdminEletivaModulo3 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/4" element={<AdminEletivaModulo4 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/5" element={<AdminEletivaModulo5 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/6" element={<AdminEletivaModulo6 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/7" element={<AdminEletivaModulo7 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/8" element={<AdminEletivaModulo8 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/9" element={<AdminEletivaModulo9 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/10" element={<AdminEletivaModulo10 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/11" element={<AdminEletivaModulo11 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/12" element={<AdminEletivaModulo12 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/13" element={<AdminEletivaModulo13 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/14" element={<AdminEletivaModulo14 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/15" element={<AdminEletivaModulo15 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/16" element={<AdminEletivaModulo16 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/17" element={<AdminEletivaModulo17 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/18" element={<AdminEletivaModulo18 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/19" element={<AdminEletivaModulo19 />} />
-                <Route path="/admin/eletiva/economia-circular/modulo/20" element={<AdminEletivaModulo20 />} />
                 <Route path="/dossie/:userId" element={<DossieAluno />} />
                 <Route path="/admin/entregas" element={<AdminEntregas />} />
                 <Route path="/admin/pulso" element={<AdminPulso />} />
