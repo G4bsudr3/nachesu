@@ -24,7 +24,7 @@ export const useFluxoMetrics = () =>
       ] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("status", "pendente"),
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("status", "ativo"),
-        supabase.from("enrollments").select("id", { count: "exact", head: true }).eq("status", "ativa"),
+        supabase.from("enrollments").select("id", { count: "exact", head: true }).eq("status", "active"),
         supabase
           .from("student_engagement_risk")
           .select("user_id", { count: "exact", head: true })
