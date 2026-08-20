@@ -52,10 +52,11 @@ const isAvailable = (m: { published: boolean; available_from: string | null }) =
 };
 
 /**
- * eletivas em navegação livre: todos os módulos publicados abrem ao mesmo
- * tempo e o aluno escolhe por onde continuar. a trilha marca o próximo dele.
+ * navegação livre vale pra todas as eletivas: todos os módulos já liberados
+ * abrem ao mesmo tempo e o estudante escolhe por onde continuar. a trilha
+ * marca o próximo dele.
  */
-const FREE_NAV_COURSE_SLUGS = new Set(["ia-na-pratica"]);
+
 
 const ADMIN_BYPASS_EMAILS = new Set([
   "hey@frattz.com",
