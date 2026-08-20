@@ -254,15 +254,13 @@ const AdminModuloDetalhe = () => {
           <TabsTrigger value="turma" className="uppercase tracking-wide text-xs">
             turma ({enrolled.length})
           </TabsTrigger>
-          {ExercicioPanel && (
-            <TabsTrigger value="exercicio" className="uppercase tracking-wide text-xs">
-              painel do exercício
-            </TabsTrigger>
-          )}
+          <TabsTrigger value="exercicio" className="uppercase tracking-wide text-xs">
+            painel do exercício
+          </TabsTrigger>
         </TabsList>
 
-        {ExercicioPanel && (
-          <TabsContent value="exercicio">
+        <TabsContent value="exercicio">
+          {ExercicioPanel ? (
             <Suspense
               fallback={
                 <p className="font-body text-sm text-perestroika-preto/60 py-8">
@@ -272,8 +270,24 @@ const AdminModuloDetalhe = () => {
             >
               <ExercicioPanel />
             </Suspense>
-          </TabsContent>
-        )}
+          ) : (
+            <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-6 sm:p-8 text-center">
+              <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-perestroika-preto/5 flex items-center justify-center">
+                <Info className="w-6 h-6 text-perestroika-preto/60" />
+              </div>
+              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-none mb-2">
+                sem painel específico
+              </h2>
+              <p className="text-sm text-perestroika-preto/70 max-w-md mx-auto mb-4">
+                este módulo ainda não tem um painel do exercício registrado.
+                painéis específicos são criados para exercícios pbl com métricas próprias de acompanhamento.
+              </p>
+              <p className="text-sm text-perestroika-preto/70 max-w-md mx-auto">
+                enquanto isso, use a aba <span className="font-semibold text-perestroika-preto">turma</span> para ver entregas, status e revisar respostas dos estudantes.
+              </p>
+            </div>
+          )}
+        </TabsContent>
 
 
 
