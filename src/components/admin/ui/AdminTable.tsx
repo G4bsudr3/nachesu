@@ -63,13 +63,34 @@ export const AdminTBody = ({ className, ...props }: HTMLAttributes<HTMLTableSect
 export const AdminTR = ({
   className,
   interactive = true,
+  onClick,
+  onKeyDown,
   ...props
-}: HTMLAttributes<HTMLTableRowElement> & { interactive?: boolean }) => (
-  <tr
-    className={cn(interactive && "hover:bg-perestroika-preto/5 transition-colors", className)}
-    {...props}
-  />
-);
+}: HTMLAttributes<HTMLTableRowElement> & { interactive?: boolean }) => {
+  const clickable = !!onClick;
+  return (
+    <tr
+      className={cn(
+        interactive && "hover:bg-perestroika-preto/5 transition-colors",
+        clickable &&
+          "cursor-pointer hover:bg-perestroika-preto/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-perestroika-preto",
+        className,
+      )}
+      onClick={onClick}
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={(e) => {
+        onKeyDown?.(e);
+        if (clickable && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          (onClick as any)?.(e);
+        }
+      }}
+      {...props}
+    />
+  );
+};
+
 
 export const AdminTH = ({ className, ...props }: ThHTMLAttributes<HTMLTableCellElement>) => (
   <th className={cn("text-left px-3 py-2 font-semibold", className)} {...props} />

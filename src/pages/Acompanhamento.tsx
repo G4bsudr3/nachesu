@@ -243,7 +243,7 @@ function StatCard({
         ativo
           ? "border-perestroika-preto bg-perestroika-preto/[0.06]"
           : "border-perestroika-preto/15",
-        onClick && "hover:border-perestroika-preto/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa",
+        onClick && "cursor-pointer hover:border-perestroika-preto/50 hover:bg-perestroika-preto/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa",
       )}
     >
       <div className="font-body text-[11px] lowercase tracking-wide text-perestroika-preto/55">
