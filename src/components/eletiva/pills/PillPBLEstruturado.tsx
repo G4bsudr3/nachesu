@@ -11,8 +11,8 @@ import { PillMarkdown } from "@/components/eletiva/PillMarkdown";
 type StepLink = { label: string; url: string };
 type Step = { titulo: string; descricao: string; links?: StepLink[] };
 
-type Campo = { label: string; placeholder?: string; optional?: boolean };
-type CampoEvidencia = { label: string; optional?: boolean };
+type Campo = { label: string; help?: string; placeholder?: string; optional?: boolean };
+type CampoEvidencia = { label: string; help?: string; optional?: boolean };
 
 type Schema = {
   type?: "pbl_estruturado";
@@ -205,6 +205,7 @@ export function PillPBLEstruturado({
         {c.pedido_a && (
           <FieldText
             label={c.pedido_a.label}
+            help={c.pedido_a.help}
             optional={c.pedido_a.optional}
             placeholder={c.pedido_a.placeholder}
             value={value.pedido_a ?? ""}
@@ -214,6 +215,7 @@ export function PillPBLEstruturado({
         {c.print_a && (
           <FieldEvidence
             label={c.print_a.label}
+            help={c.print_a.help}
             optional={c.print_a.optional}
             itemId={`${pillId}-print-a`}
             value={value.print_a ?? emptyEvidence}
@@ -225,6 +227,7 @@ export function PillPBLEstruturado({
         {c.pedido_b && (
           <FieldText
             label={c.pedido_b.label}
+            help={c.pedido_b.help}
             optional={c.pedido_b.optional}
             placeholder={c.pedido_b.placeholder}
             value={value.pedido_b ?? ""}
@@ -234,6 +237,7 @@ export function PillPBLEstruturado({
         {c.print_b && (
           <FieldEvidence
             label={c.print_b.label}
+            help={c.print_b.help}
             optional={c.print_b.optional}
             itemId={`${pillId}-print-b`}
             value={value.print_b ?? emptyEvidence}
@@ -245,6 +249,7 @@ export function PillPBLEstruturado({
         {c.pedido_c && (
           <FieldText
             label={c.pedido_c.label}
+            help={c.pedido_c.help}
             optional={c.pedido_c.optional}
             placeholder={c.pedido_c.placeholder}
             value={value.pedido_c ?? ""}
@@ -254,6 +259,7 @@ export function PillPBLEstruturado({
         {c.print_c && (
           <FieldEvidence
             label={c.print_c.label}
+            help={c.print_c.help}
             optional={c.print_c.optional}
             itemId={`${pillId}-print-c`}
             value={value.print_c ?? emptyEvidence}
@@ -306,6 +312,7 @@ export function PillPBLEstruturado({
         {c.por_que && (
           <FieldTextarea
             label={c.por_que.label}
+            help={c.por_que.help}
             optional={c.por_que.optional}
             placeholder={c.por_que.placeholder}
             value={value.por_que ?? ""}
@@ -316,6 +323,7 @@ export function PillPBLEstruturado({
         {c.aprendi && (
           <FieldTextarea
             label={c.aprendi.label}
+            help={c.aprendi.help}
             optional={c.aprendi.optional}
             placeholder={c.aprendi.placeholder}
             value={value.aprendi ?? ""}
@@ -326,6 +334,7 @@ export function PillPBLEstruturado({
         {c.veredicto && (
           <FieldTextarea
             label={c.veredicto.label}
+            help={c.veredicto.help}
             optional={c.veredicto.optional}
             placeholder={c.veredicto.placeholder}
             value={value.veredicto ?? ""}
@@ -369,14 +378,23 @@ function OptionalTag() {
   );
 }
 
+function FieldHelp({ text }: { text?: string }) {
+  if (!text) return null;
+  return (
+    <p className="mb-2 font-body text-xs leading-snug text-perestroika-preto/70">{text}</p>
+  );
+}
+
 function FieldText({
   label,
+  help,
   placeholder,
   value,
   onChange,
   optional,
 }: {
   label: string;
+  help?: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
@@ -388,6 +406,7 @@ function FieldText({
         {label}
         {optional && <OptionalTag />}
       </label>
+      <FieldHelp text={help} />
       <TextareaWithVoice
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -402,6 +421,7 @@ function FieldText({
 
 function FieldTextarea({
   label,
+  help,
   placeholder,
   value,
   onChange,
@@ -409,6 +429,7 @@ function FieldTextarea({
   optional,
 }: {
   label: string;
+  help?: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
@@ -421,6 +442,7 @@ function FieldTextarea({
         {label}
         {optional && <OptionalTag />}
       </label>
+      <FieldHelp text={help} />
       <TextareaWithVoice
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -435,6 +457,7 @@ function FieldTextarea({
 
 function FieldEvidence({
   label,
+  help,
   itemId,
   value,
   onChange,
@@ -442,6 +465,7 @@ function FieldEvidence({
   optional,
 }: {
   label: string;
+  help?: string;
   itemId: string;
   value: EvidenceValue;
   onChange: (v: EvidenceValue) => void;
@@ -454,6 +478,7 @@ function FieldEvidence({
         {label}
         {optional && <OptionalTag />}
       </label>
+      <FieldHelp text={help} />
       <EvidenceUploader
         itemId={itemId}
         value={value}
@@ -463,4 +488,5 @@ function FieldEvidence({
     </div>
   );
 }
+
 
