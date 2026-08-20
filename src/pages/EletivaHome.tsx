@@ -351,8 +351,8 @@ const EletivaHome = () => {
                   loading="lazy"
                 />
               )}
-              <div className="min-w-0">
-                <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/65 mb-0.5">
+              <div className="min-w-0 space-y-0.5">
+                <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/65">
                   quem te guia
                 </p>
                 <p className="font-body text-sm font-semibold truncate">{course.professor_name.toLowerCase()}</p>
@@ -360,8 +360,8 @@ const EletivaHome = () => {
             </div>
 
             {totalPublished > 0 && (
-              <div className="flex-1 min-w-[180px]">
-                <div className="flex items-baseline justify-between mb-2 gap-3">
+              <div className="flex-1 min-w-[180px] space-y-2">
+                <div className="flex items-baseline justify-between gap-3">
                   <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/65">
                     seu progresso
                   </p>
@@ -383,68 +383,69 @@ const EletivaHome = () => {
 
           {/* próximo passo integrado no hero */}
           {!snapLoading && current && (
-            <div className="rounded-2xl border-2 border-perestroika-preto/30 bg-perestroika-bege/80 p-5 sm:p-6 shadow-sm">
-              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2 inline-flex items-center gap-2">
+            <div className="rounded-2xl border-2 border-perestroika-preto/30 bg-perestroika-bege/80 p-5 sm:p-6 shadow-sm space-y-2">
+              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60 inline-flex items-center gap-2">
                 <EletivaSymbol size={20} pose="building" /> próximo passo
               </p>
-              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
+              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto">
                 módulo {String(current.number).padStart(2, "0")} · {current.title.toLowerCase()}
               </h2>
               {current.objective && (
-                <p className="font-body text-sm text-perestroika-preto/80 mb-4 max-w-lg">
+                <p className="font-body text-sm text-perestroika-preto/80 max-w-lg">
                   {current.objective}
                 </p>
               )}
-              <button
-                type="button"
-                onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
-                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
-              >
-                continuar de onde parou <ArrowRight className="h-4 w-4" />
-              </button>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
+                  className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+                >
+                  continuar de onde parou <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
 
           {/* certificado liberado: aparece só quando 100% dos módulos publicados foram concluídos */}
           {!snapLoading && totalPublished > 0 && totalCompleted >= totalPublished && (
             <div
-              className="rounded-2xl border-2 p-5 sm:p-6 shadow-sm"
+              className="rounded-2xl border-2 p-5 sm:p-6 shadow-sm space-y-2"
               style={{
                 borderColor: courseAccent,
                 background: `linear-gradient(135deg, ${courseAccent}29, rgba(242,228,216,0.6))`,
               }}
             >
-              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/70 mb-2">
+              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/70">
                 você chegou até o fim
               </p>
-              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
+              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto">
                 seu certificado tá liberado
               </h2>
-              <p className="font-body text-sm text-perestroika-preto/80 mb-4 max-w-lg">
+              <p className="font-body text-sm text-perestroika-preto/80 max-w-lg">
                 100% da eletiva concluída. baixe seu certificado oficial em alta resolução.
               </p>
-              <button
-                type="button"
-                onClick={() => navigate(`/app/eletiva/${slug}/certificado`)}
-                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
-              >
-                baixar certificado <ArrowRight className="h-4 w-4" />
-              </button>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/app/eletiva/${slug}/certificado`)}
+                  className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+                >
+                  baixar certificado <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
-
+          </div>
         </motion.section>
 
         {/* mapa de módulos com estado */}
         {snapshot && (
-          <div className="mb-6">
-            <ModulesByTrail
-              snapshot={snapshot}
-              slug={course.slug}
-              onPick={(n) => navigate(`/app/eletiva/${slug}/modulo/${n}`)}
-            />
-
-          </div>
+          <ModulesByTrail
+            snapshot={snapshot}
+            slug={course.slug}
+            onPick={(n) => navigate(`/app/eletiva/${slug}/modulo/${n}`)}
+          />
         )}
 
         {/* atalhos */}
