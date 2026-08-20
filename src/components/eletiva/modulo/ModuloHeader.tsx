@@ -62,21 +62,22 @@ export const ModuloHeader = ({
       {/* breadcrumb eletiva > trilha */}
       <nav
         aria-label="localização"
-        className="flex items-center gap-2 flex-wrap font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/60 mb-5"
+        className="flex items-center gap-2 min-w-0 font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/60 mb-5"
       >
         {courseTitle && (
           <>
-            <span>{courseTitle.toLowerCase()}</span>
-            <span aria-hidden className="text-perestroika-preto/30">/</span>
+            <span className="truncate min-w-0">{courseTitle.toLowerCase()}</span>
+            <span aria-hidden className="text-perestroika-preto/30 flex-shrink-0">/</span>
           </>
         )}
         {trailTitle && (
-          <span className="inline-flex items-center gap-1.5" style={{ color: trailColor }}>
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: trailColor }} />
+          <span className="inline-flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap" style={{ color: trailColor }}>
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: trailColor }} />
             {trailTitle.toLowerCase()}
           </span>
         )}
       </nav>
+
 
       {/* número do módulo em destaque */}
       <p className="font-display uppercase text-2xl leading-none mb-1 text-perestroika-preto/70">
