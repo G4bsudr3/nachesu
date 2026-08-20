@@ -296,12 +296,12 @@ const EletivaHome = () => {
     >
       <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
-      <main className="container max-w-3xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16">
+      <main className="container max-w-3xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16 space-y-6">
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege pt-8 sm:pt-12 p-6 sm:p-10 mb-6"
+          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege pt-8 sm:pt-12 p-6 sm:p-10"
         >
           <div
             aria-hidden
