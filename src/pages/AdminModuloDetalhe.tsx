@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PanelHeader } from "@/features/admin/moduloPanels/PanelHeader";
+import { PanelSkeleton } from "@/features/admin/moduloPanels/PanelSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { FeedbackReviewDrawer } from "@/features/admin/FeedbackReviewDrawer";
@@ -415,13 +416,7 @@ const AdminModuloDetalhe = () => {
             <PanelHeader title={"sem painel específico"} />
           )}
           {ExercicioPanel ? (
-            <Suspense
-              fallback={
-                <p className="font-body text-sm text-perestroika-preto/60 py-8">
-                  carregando painel do exercício...
-                </p>
-              }
-            >
+            <Suspense fallback={<PanelSkeleton />}>
               <ExercicioPanel />
             </Suspense>
           ) : (
