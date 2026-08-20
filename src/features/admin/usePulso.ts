@@ -6,19 +6,26 @@ import { RATING_CHECKPOINTS } from "@/features/hub/useModuleRating";
 /**
  * duas perguntas diferentes moram na mesma tabela module_ratings:
  *
- *  - ritmo (1 a 3), usada na eletiva ia-na-pratica:
+ *  - ritmo (1 a 3), histórico da eletiva ia-na-pratica:
  *      1 tranquilo demais · 2 no ponto · 3 pesado demais
- *  - satisfação (1 a 5 estrelas), usada nas demais eletivas
+ *  - satisfação (1 a 5 estrelas), instrumento único de hoje em diante
  *
- * misturar as duas numa média só produz leitura errada (ritmo 1.6 vira
- * "nota baixa"). tudo aqui é particionado por escala.
+ * as duas eletivas usam a mesma escala agora (satisfação), então o admin
+ * compara curso com curso. as respostas antigas de ritmo continuam lidas
+ * como ritmo pela data, pra não virar média errada ("1.6" vira nota baixa).
  */
 export type PulsoScale = "ritmo" | "satisfacao";
 
-const RITMO_COURSES = new Set(["ia-na-pratica"]);
+/** virada pra escala única de satisfação nas duas eletivas */
+export const RITMO_LEGACY_UNTIL = "2026-08-20T00:00:00Z";
 
-export const scaleOfCourse = (slug: string): PulsoScale =>
-  RITMO_COURSES.has(slug) ? "ritmo" : "satisfacao";
+const RITMO_LEGACY_COURSES = new Set(["ia-na-pratica"]);
+
+export const scaleOfRating = (slug: string, createdAt: string): PulsoScale =>
+  RITMO_LEGACY_COURSES.has(slug) && createdAt < RITMO_LEGACY_UNTIL
+    ? "ritmo"
+    : "satisfacao";
+
 
 export const RITMO_LABELS: Record<number, string> = {
   1: "tranquilo demais",
