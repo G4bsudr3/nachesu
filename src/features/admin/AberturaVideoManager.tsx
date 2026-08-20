@@ -287,7 +287,7 @@ export const AberturaVideoManager = ({ courseId, slug, moduleId, moduleNumber, a
         </p>
         <ul className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2">
           {(data ?? []).map((r) => {
-            const has = ((r.schema.video_url as string) ?? "").trim().length > 0;
+            const has = rowHasVideo(r);
             return (
               <li key={r.module_id}>
                 <Link
