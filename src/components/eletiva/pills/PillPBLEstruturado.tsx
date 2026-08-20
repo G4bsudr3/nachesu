@@ -378,14 +378,23 @@ function OptionalTag() {
   );
 }
 
+function FieldHelp({ text }: { text?: string }) {
+  if (!text) return null;
+  return (
+    <p className="mb-2 font-body text-xs leading-snug text-perestroika-preto/70">{text}</p>
+  );
+}
+
 function FieldText({
   label,
+  help,
   placeholder,
   value,
   onChange,
   optional,
 }: {
   label: string;
+  help?: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
@@ -397,6 +406,7 @@ function FieldText({
         {label}
         {optional && <OptionalTag />}
       </label>
+      <FieldHelp text={help} />
       <TextareaWithVoice
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -411,6 +421,7 @@ function FieldText({
 
 function FieldTextarea({
   label,
+  help,
   placeholder,
   value,
   onChange,
@@ -418,6 +429,7 @@ function FieldTextarea({
   optional,
 }: {
   label: string;
+  help?: string;
   placeholder?: string;
   value: string;
   onChange: (v: string) => void;
@@ -430,6 +442,7 @@ function FieldTextarea({
         {label}
         {optional && <OptionalTag />}
       </label>
+      <FieldHelp text={help} />
       <TextareaWithVoice
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -444,6 +457,7 @@ function FieldTextarea({
 
 function FieldEvidence({
   label,
+  help,
   itemId,
   value,
   onChange,
@@ -451,6 +465,7 @@ function FieldEvidence({
   optional,
 }: {
   label: string;
+  help?: string;
   itemId: string;
   value: EvidenceValue;
   onChange: (v: EvidenceValue) => void;
@@ -463,6 +478,7 @@ function FieldEvidence({
         {label}
         {optional && <OptionalTag />}
       </label>
+      <FieldHelp text={help} />
       <EvidenceUploader
         itemId={itemId}
         value={value}
@@ -472,4 +488,5 @@ function FieldEvidence({
     </div>
   );
 }
+
 
