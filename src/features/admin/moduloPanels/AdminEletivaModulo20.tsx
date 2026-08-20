@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Star, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { PageHeader } from "@/components/layout/PageHeader";
 
 /**
  * admin da MÓDULO 20 — fechamento da eletiva.
@@ -34,9 +33,8 @@ export default function AdminEletivaModulo20() {
   });
 
   return (
-    <div className="min-h-dvh bg-perestroika-bege">
-      <PageHeader />
-      <main className="mx-auto max-w-5xl px-6 py-10 space-y-10">
+    <div className="space-y-8">
+      <div className="space-y-8">
         <div className="space-y-2">
           <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none tracking-wide text-perestroika-preto">
             módulo 20 · fechamento

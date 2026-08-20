@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2, AlertTriangle, XCircle, RefreshCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { PageHeader } from "@/components/layout/PageHeader";
 
 const FLUXO_LABELS: Record<string, string> = {
   materiais: "Materiais e Compras",
@@ -47,9 +46,8 @@ export default function AdminEletivaModulo5() {
   const semTotal = (sem.verde ?? 0) + (sem.amarelo ?? 0) + (sem.vermelho ?? 0) || 1;
 
   return (
-    <div className="min-h-dvh bg-perestroika-bege">
-      <PageHeader layout="split" />
-      <main className="mx-auto max-w-5xl px-4 sm:px-6 py-6 sm:py-10 space-y-8">
+    <div className="space-y-8">
+      <div className="space-y-8">
         <div>
           <p className="font-body text-[11px] uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1">
             economia circular · módulo 5
