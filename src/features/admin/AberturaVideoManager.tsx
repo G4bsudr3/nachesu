@@ -22,7 +22,17 @@ type AberturaRow = {
   title: string;
   published: boolean;
   schema: Schema;
+  /** coluna video_url da pílula: é onde a economia circular guarda o vídeo */
+  video_url: string | null;
 };
+
+/** verdadeiro quando a pílula tem vídeo em qualquer um dos formatos usados */
+export const rowHasVideo = (r: { schema: Schema; video_url: string | null }) =>
+  !!(
+    (r.video_url ?? "").trim() ||
+    ((r.schema.video_url as string) ?? "").trim() ||
+    ((r.schema.embed_url as string) ?? "").trim()
+  );
 
 interface Props {
   courseId: string;
@@ -59,7 +69,7 @@ export const AberturaVideoManager = ({ courseId, slug, moduleId, moduleNumber, a
       if (!modules.length) return [];
       const { data: pills } = await supabase
         .from("module_pills")
-        .select("id, module_id, title, published, order_index, interaction_schema")
+        .select("id, module_id, title, published, order_index, interaction_schema, video_url")
         .in("module_id", modules.map((m) => m.id))
         .order("order_index");
       const byModule = new Map<string, AberturaRow>();
@@ -69,8 +79,14 @@ export const AberturaVideoManager = ({ courseId, slug, moduleId, moduleNumber, a
         title: string;
         published: boolean;
         interaction_schema: Schema | null;
+        video_url: string | null;
       }[]) {
-        if (p.interaction_schema?.type !== "video_with_transcript") continue;
+        const kind = p.interaction_schema?.type;
+        const isVideoPill =
+          kind === "video_with_transcript" ||
+          kind === "video_embed" ||
+          !!(p.video_url ?? "").trim();
+        if (!isVideoPill) continue;
         if (byModule.has(p.module_id)) continue;
         const mod = modules.find((m) => m.id === p.module_id)!;
         byModule.set(p.module_id, {
@@ -80,6 +96,7 @@ export const AberturaVideoManager = ({ courseId, slug, moduleId, moduleNumber, a
           title: p.title,
           published: p.published,
           schema: p.interaction_schema ?? {},
+          video_url: p.video_url,
         });
       }
       return modules.map(
@@ -91,6 +108,7 @@ export const AberturaVideoManager = ({ courseId, slug, moduleId, moduleNumber, a
             title: "",
             published: false,
             schema: {},
+            video_url: null,
           },
       );
     },
@@ -171,7 +189,7 @@ export const AberturaVideoManager = ({ courseId, slug, moduleId, moduleNumber, a
     }
   };
 
-  const semVideo = (data ?? []).filter((r) => !((r.schema.video_url as string) ?? "").trim());
+  const semVideo = (data ?? []).filter((r) => !rowHasVideo(r));
 
   return (
     <section className="space-y-6">
