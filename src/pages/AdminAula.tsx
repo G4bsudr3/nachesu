@@ -194,8 +194,8 @@ function AdminAulaInner({ number }: { number: number }) {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-6">
-        <Tabs value={tab} onValueChange={setTab} className="w-full">
-          <TabsList className="grid grid-cols-3 max-w-md mb-6">
+        <Tabs value={tab} onValueChange={setTab} className="w-full space-y-6">
+          <TabsList className="grid grid-cols-3 max-w-md">
             <TabsTrigger value="conteudo">conteúdo</TabsTrigger>
             <TabsTrigger value="metricas">métricas</TabsTrigger>
             <TabsTrigger value="entregas">entregas</TabsTrigger>
@@ -411,8 +411,8 @@ function MetricsPanel({
         ))}
       </div>
 
-      <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5">
-        <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3">
+      <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 space-y-3">
+        <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55">
           distribuição por fluxo
         </p>
         {Object.keys(m.flow_distribution ?? {}).length === 0 ? (

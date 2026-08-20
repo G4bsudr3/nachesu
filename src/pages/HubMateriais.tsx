@@ -230,9 +230,9 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
         aria-modal="true"
       >
         <header className="flex items-start justify-between gap-4 border-b border-perestroika-preto/15 p-5 sm:p-6">
-          <div className="min-w-0">
+          <div className="min-w-0 space-y-1">
             {cat && (
-              <span className="mb-1 inline-block font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
+              <span className="inline-block font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                 {cat.emoji} {cat.label} · {MATERIAL_KIND_LABELS[kind]}
               </span>
             )}
@@ -316,13 +316,13 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
             </a>
           )}
 
-          <div className="mb-6">
-            <p className="mb-3 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">reações da turma</p>
+          <div className="mb-6 space-y-3">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">reações da turma</p>
             <ReactionBar targetId={m.id} targetKind="material" />
           </div>
 
-          <div>
-            <p className="mb-3 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">comentários</p>
+          <div className="space-y-3">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">comentários</p>
             <CommentThread targetId={m.id} targetKind="material" />
           </div>
         </div>
@@ -385,8 +385,8 @@ const HubMateriais = () => {
       />
 
       <main className="container max-w-6xl py-8 sm:py-12">
-        <header className="mb-8">
-          <p className="mb-2 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
+        <header className="mb-8 space-y-2">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
             {activeCourseTitle ? `materiais · ${activeCourseTitle.toLowerCase()}` : "materiais"}
           </p>
           <h1 className="font-display text-5xl uppercase leading-[0.9] sm:text-7xl">

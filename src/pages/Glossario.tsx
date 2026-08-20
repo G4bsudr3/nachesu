@@ -72,8 +72,8 @@ const Glossario = () => {
       />
 
       <main className="container max-w-3xl py-8 sm:py-12">
-        <header className="mb-8">
-          <p className="mb-2 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
+        <header className="mb-8 space-y-2">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
             glossário
           </p>
           <h1 className="font-display text-5xl uppercase leading-[0.9] sm:text-7xl">
@@ -156,8 +156,8 @@ const Glossario = () => {
         ) : (
           <div className="space-y-8">
             {grupos.map(([letra, itens]) => (
-              <section key={letra} aria-label={`termos com ${letra}`}>
-                <h2 className="mb-3 font-display uppercase text-3xl leading-none text-perestroika-preto/25">
+              <section className="space-y-3" key={letra} aria-label={`termos com ${letra}`}>
+                <h2 className="font-display uppercase text-3xl leading-none text-perestroika-preto/25">
                   {letra}
                 </h2>
                 <ul className="space-y-3">

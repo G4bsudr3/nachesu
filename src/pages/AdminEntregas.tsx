@@ -8,10 +8,10 @@ import { AdminFeedbackInbox } from "@/features/admin/AdminFeedbackInbox";
  * agora com um lugar só, filtrado por status.
  */
 const AdminEntregas = () => (
-  <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-perestroika-preto font-body">
+  <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-perestroika-preto font-body space-y-3">
     <nav
       aria-label="breadcrumb"
-      className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3"
+      className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-perestroika-preto/55"
     >
       <Link to="/admin" className="hover:text-perestroika-preto">
         admin

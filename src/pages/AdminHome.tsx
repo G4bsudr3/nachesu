@@ -206,9 +206,9 @@ const AdminHome = () => {
                     { label: "entregaram final", v: f.final },
                   ];
                   return (
-                    <div key={c.id}>
+                    <div className="space-y-2" key={c.id}>
                       {filteredCourses.length > 1 && (
-                        <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
+                        <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55">
                           {c.title.toLowerCase()}
                         </p>
                       )}
@@ -247,9 +247,9 @@ const AdminHome = () => {
             ) : (
               <div className="space-y-4">
                 {filteredCourses.map((c) => (
-                  <div key={c.id}>
+                  <div className="space-y-2" key={c.id}>
                     {filteredCourses.length > 1 && (
-                      <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
+                      <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55">
                         {c.title.toLowerCase()}
                       </p>
                     )}

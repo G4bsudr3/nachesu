@@ -247,8 +247,8 @@ const AdminModuloDetalhe = () => {
         </div>
       )}
 
-      <Tabs defaultValue="conteudo">
-        <TabsList className="bg-perestroika-preto/5 mb-6">
+      <Tabs className="space-y-6" defaultValue="conteudo">
+        <TabsList className="bg-perestroika-preto/5">
           <TabsTrigger value="conteudo" className="uppercase tracking-wide text-xs">
             conteúdo
           </TabsTrigger>

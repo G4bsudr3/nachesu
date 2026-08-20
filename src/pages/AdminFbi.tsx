@@ -105,12 +105,12 @@ const AdminFbi = () => {
   return (
     <div className="text-perestroika-preto font-body">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <motion.div
+        <motion.div className="space-y-4"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
             <nav
               aria-label="breadcrumb"
               className="flex items-center gap-2 text-xs uppercase tracking-wide text-perestroika-preto/60"

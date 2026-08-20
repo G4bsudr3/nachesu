@@ -248,8 +248,8 @@ const AdminPulso = () => {
                   { label: "no ponto", n: ritmo.noPonto },
                   { label: "pesado demais", n: ritmo.pesado },
                 ].map((row) => (
-                  <li key={row.label}>
-                    <div className="flex justify-between mb-0.5">
+                  <li className="space-y-0.5" key={row.label}>
+                    <div className="flex justify-between">
                       <span>{row.label}</span>
                       <span className="text-perestroika-preto/55">{row.n}</span>
                     </div>
@@ -311,8 +311,8 @@ const AdminPulso = () => {
       </div>
 
       {/* análise de IA */}
-      <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4 sm:p-5 mb-6">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+      <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4 sm:p-5 mb-6 space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="font-display uppercase text-2xl leading-none">leitura da ia</h2>
           <div className="flex items-center gap-2">
             {insight && (
@@ -340,8 +340,8 @@ const AdminPulso = () => {
         )}
       </section>
 
-      <Tabs defaultValue="geral">
-        <TabsList className="mb-4">
+      <Tabs className="space-y-4" defaultValue="geral">
+        <TabsList className="">
           <TabsTrigger value="geral" className="text-xs">
             visão geral
           </TabsTrigger>
@@ -355,8 +355,8 @@ const AdminPulso = () => {
 
         <TabsContent value="geral">
           {/* eletivas e trilhas */}
-          <section className="mb-6">
-            <h2 className="font-display uppercase text-2xl leading-none mb-2">
+          <section className="mb-6 space-y-2">
+            <h2 className="font-display uppercase text-2xl leading-none">
               por eletiva e trilha
             </h2>
             {byCourse.length === 0 ? (
@@ -368,10 +368,10 @@ const AdminPulso = () => {
                 {byCourse.map((c) => (
                   <div
                     key={c.course_id}
-                    className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4"
+                    className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4 space-y-3"
                   >
                     <p className="font-display uppercase text-lg leading-none">{c.title}</p>
-                    <p className="text-xs text-perestroika-preto/55 mb-3">
+                    <p className="text-xs text-perestroika-preto/55">
                       {c.scale === "ritmo"
                         ? `${c.noPontoPct}% no ponto`
                         : `${c.average?.toFixed(2) ?? "—"} de média`}{" "}
@@ -381,8 +381,8 @@ const AdminPulso = () => {
                       {byTrail
                         .filter((t) => t.course === c.title)
                         .map((t) => (
-                          <li key={t.key}>
-                            <div className="flex items-center justify-between text-xs mb-1">
+                          <li className="space-y-1" key={t.key}>
+                            <div className="flex items-center justify-between text-xs">
                               <span className="truncate pr-2">{t.trail}</span>
                               <span className="text-perestroika-preto/55 shrink-0">
                                 {t.scale === "ritmo"
@@ -410,8 +410,8 @@ const AdminPulso = () => {
           </section>
 
           {/* ranking de módulos */}
-          <section>
-            <div className="flex items-center justify-between mb-2">
+          <section className="space-y-2">
+            <div className="flex items-center justify-between">
               <h2 className="font-display uppercase text-2xl leading-none">módulos fora do ponto</h2>
               <span className="text-[11px] text-perestroika-preto/55">
                 {byModule.length} com avaliação · mais desalinhado primeiro
@@ -488,8 +488,8 @@ const AdminPulso = () => {
           </section>
         </TabsContent>
 
-        <TabsContent value="estudantes">
-          <div className="flex flex-wrap items-center gap-2 mb-3">
+        <TabsContent className="space-y-3" value="estudantes">
+          <div className="flex flex-wrap items-center gap-2">
             <div className="relative">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-perestroika-preto/60" />
               <Input
@@ -584,8 +584,8 @@ const AdminPulso = () => {
                     </AdminTR>,
                     open ? (
                       <tr key={`${e.user_id}-${e.module_id}-hist`}>
-                        <AdminTD colSpan={6} className="bg-perestroika-preto/[0.03]">
-                          <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-2">
+                        <AdminTD colSpan={6} className="bg-perestroika-preto/[0.03] space-y-2">
+                          <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55">
                             histórico de {e.student}
                           </p>
                           <ul className="space-y-1.5">
@@ -639,9 +639,9 @@ const AdminPulso = () => {
             {filteredComments.map((c) => (
               <li
                 key={`${c.user_id}-${c.module_id}`}
-                className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4"
+                className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4 space-y-1.5"
               >
-                <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                <div className="flex flex-wrap items-center gap-2">
                   <AnswerChip entry={c} />
                   <Link
                     to={`/admin/aluno/${c.user_id}`}

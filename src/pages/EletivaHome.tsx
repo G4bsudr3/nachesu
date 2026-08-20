@@ -46,10 +46,10 @@ const ModulesByTrail = ({
   return (
     <section
       aria-labelledby="modulos-title"
-      className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/55 p-6 sm:p-8"
+      className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/55 p-6 sm:p-8 space-y-8"
     >
-      <header className="mb-8">
-        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55 mb-2">
+      <header className="space-y-2">
+        <p className="font-body text-[10px] uppercase tracking-[0.3em] text-perestroika-preto/55">
           O MAPA DA ELETIVA
         </p>
         <h2 id="modulos-title" className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
@@ -67,9 +67,9 @@ const ModulesByTrail = ({
           const done = trailModules.filter((m) => snapshot.progressByModuleId[m.id]?.completed_at).length;
           const trailPct = Math.round((done / trailModules.length) * 100);
           return (
-            <div key={trail.id}>
-              <div className="mb-4">
-                <div className="flex items-baseline justify-between gap-3 mb-2">
+            <div key={trail.id} className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between gap-3">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span aria-hidden className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
                     <h3 className="font-display uppercase text-lg sm:text-xl leading-none truncate">
@@ -247,9 +247,9 @@ const EletivaHome = () => {
     return (
       <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
         <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
-        <main className="container max-w-2xl pt-10 pb-20 text-center">
-          <h1 className="font-display uppercase text-4xl mb-3">eletiva não encontrada</h1>
-          <p className="font-body text-perestroika-preto/70 mb-6">esse link não bateu com nenhuma eletiva ativa.</p>
+        <main className="container max-w-2xl pt-10 pb-20 text-center space-y-4">
+          <h1 className="font-display uppercase text-4xl">eletiva não encontrada</h1>
+          <p className="font-body text-perestroika-preto/70">esse link não bateu com nenhuma eletiva ativa.</p>
           <Link
             to="/app"
             className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide"
@@ -296,12 +296,12 @@ const EletivaHome = () => {
     >
       <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
-      <main className="container max-w-3xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16">
+      <main className="container max-w-3xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16 space-y-6">
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege pt-8 sm:pt-12 p-6 sm:p-10 mb-6"
+          className="relative overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege pt-8 sm:pt-12 p-6 sm:p-10"
         >
           <div
             aria-hidden
@@ -322,20 +322,23 @@ const EletivaHome = () => {
             </span>
           </div>
 
-          <p className="relative z-10 font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
-            sua eletiva
-          </p>
-          <h1 className="relative z-10 font-display uppercase text-4xl sm:text-7xl leading-[0.9] sm:leading-[0.85] mb-3 max-w-[14ch] sm:max-w-[18ch] text-perestroika-preto">
-            {course.title.toLowerCase()}
-          </h1>
-          {course.subtitle && (
-            <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-lg sm:max-w-xl mb-6">
-              {course.subtitle}
+          <div className="relative z-10 space-y-6">
+          <div className="space-y-2">
+            <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60">
+              sua eletiva
             </p>
-          )}
+            <h1 className="font-display uppercase text-4xl sm:text-7xl leading-[0.9] sm:leading-[0.85] max-w-[14ch] sm:max-w-[18ch] text-perestroika-preto">
+              {course.title.toLowerCase()}
+            </h1>
+            {course.subtitle && (
+              <p className="font-body text-base sm:text-lg text-perestroika-preto/75 max-w-lg sm:max-w-xl">
+                {course.subtitle}
+              </p>
+            )}
+          </div>
 
           {/* quem te guia + progresso */}
-          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pb-5 mb-5 border-b border-perestroika-preto/15">
+          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pb-5 border-b border-perestroika-preto/15">
             <div className="flex items-center gap-3 min-w-0">
               {course.professor_avatar_url && (
                 <img
@@ -348,8 +351,8 @@ const EletivaHome = () => {
                   loading="lazy"
                 />
               )}
-              <div className="min-w-0">
-                <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/65 mb-0.5">
+              <div className="min-w-0 space-y-0.5">
+                <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/65">
                   quem te guia
                 </p>
                 <p className="font-body text-sm font-semibold truncate">{course.professor_name.toLowerCase()}</p>
@@ -357,8 +360,8 @@ const EletivaHome = () => {
             </div>
 
             {totalPublished > 0 && (
-              <div className="flex-1 min-w-[180px]">
-                <div className="flex items-baseline justify-between mb-2 gap-3">
+              <div className="flex-1 min-w-[180px] space-y-2">
+                <div className="flex items-baseline justify-between gap-3">
                   <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/65">
                     seu progresso
                   </p>
@@ -380,68 +383,69 @@ const EletivaHome = () => {
 
           {/* próximo passo integrado no hero */}
           {!snapLoading && current && (
-            <div className="rounded-2xl border-2 border-perestroika-preto/30 bg-perestroika-bege/80 p-5 sm:p-6 shadow-sm">
-              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2 inline-flex items-center gap-2">
+            <div className="rounded-2xl border-2 border-perestroika-preto/30 bg-perestroika-bege/80 p-5 sm:p-6 shadow-sm space-y-2">
+              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60 inline-flex items-center gap-2">
                 <EletivaSymbol size={20} pose="building" /> próximo passo
               </p>
-              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
+              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto">
                 módulo {String(current.number).padStart(2, "0")} · {current.title.toLowerCase()}
               </h2>
               {current.objective && (
-                <p className="font-body text-sm text-perestroika-preto/80 mb-4 max-w-lg">
+                <p className="font-body text-sm text-perestroika-preto/80 max-w-lg">
                   {current.objective}
                 </p>
               )}
-              <button
-                type="button"
-                onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
-                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
-              >
-                continuar de onde parou <ArrowRight className="h-4 w-4" />
-              </button>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/app/eletiva/${slug}/modulo/${current.number}`)}
+                  className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+                >
+                  continuar de onde parou <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
 
           {/* certificado liberado: aparece só quando 100% dos módulos publicados foram concluídos */}
           {!snapLoading && totalPublished > 0 && totalCompleted >= totalPublished && (
             <div
-              className="rounded-2xl border-2 p-5 sm:p-6 shadow-sm"
+              className="rounded-2xl border-2 p-5 sm:p-6 shadow-sm space-y-2"
               style={{
                 borderColor: courseAccent,
                 background: `linear-gradient(135deg, ${courseAccent}29, rgba(242,228,216,0.6))`,
               }}
             >
-              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/70 mb-2">
+              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/70">
                 você chegou até o fim
               </p>
-              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
+              <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto">
                 seu certificado tá liberado
               </h2>
-              <p className="font-body text-sm text-perestroika-preto/80 mb-4 max-w-lg">
+              <p className="font-body text-sm text-perestroika-preto/80 max-w-lg">
                 100% da eletiva concluída. baixe seu certificado oficial em alta resolução.
               </p>
-              <button
-                type="button"
-                onClick={() => navigate(`/app/eletiva/${slug}/certificado`)}
-                className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
-              >
-                baixar certificado <ArrowRight className="h-4 w-4" />
-              </button>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/app/eletiva/${slug}/certificado`)}
+                  className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-5 py-2.5 font-body font-semibold text-sm uppercase tracking-wide hover:scale-105 active:scale-95 transition-transform"
+                >
+                  baixar certificado <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
-
+          </div>
         </motion.section>
 
         {/* mapa de módulos com estado */}
         {snapshot && (
-          <div className="mb-6">
-            <ModulesByTrail
-              snapshot={snapshot}
-              slug={course.slug}
-              onPick={(n) => navigate(`/app/eletiva/${slug}/modulo/${n}`)}
-            />
-
-          </div>
+          <ModulesByTrail
+            snapshot={snapshot}
+            slug={course.slug}
+            onPick={(n) => navigate(`/app/eletiva/${slug}/modulo/${n}`)}
+          />
         )}
 
         {/* atalhos */}

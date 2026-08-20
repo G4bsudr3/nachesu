@@ -188,9 +188,9 @@ const Marco = () => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.65 }}
-            className="rounded-2xl border border-perestroika-bege/15 bg-perestroika-bege/[0.04] p-5 mb-8 max-w-xl"
+            className="rounded-2xl border border-perestroika-bege/15 bg-perestroika-bege/[0.04] p-5 mb-8 max-w-xl space-y-2"
           >
-            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-bege/55 mb-2">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-bege/55">
               próxima trilha
             </p>
             <p className="font-display uppercase text-2xl text-perestroika-bege">

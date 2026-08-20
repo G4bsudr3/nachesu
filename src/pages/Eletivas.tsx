@@ -102,8 +102,8 @@ const Eletivas = () => {
           </span>
         </motion.div>
 
-        <div className="max-w-3xl relative z-10">
-          <p className="font-body text-[11px] sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
+        <div className="max-w-3xl relative z-10 space-y-6">
+          <p className="font-body text-[11px] sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60">
             escolha sua eletiva
           </p>
           <h1 className="font-display uppercase display-clamp-hero">

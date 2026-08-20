@@ -140,8 +140,8 @@ export default function DossieAluno() {
           {data.evidencias && data.evidencias.length > 0 ? (
             <div className="space-y-3">
               {data.evidencias.slice(0, 3).map((ev, i) => (
-                <div key={i} className="rounded-xl border border-perestroika-preto/15 bg-white p-3">
-                  <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">evidência {i + 1}</p>
+                <div key={i} className="rounded-xl border border-perestroika-preto/15 bg-white p-3 space-y-1">
+                  <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">evidência {i + 1}</p>
                   <p className="font-body text-sm text-perestroika-preto whitespace-pre-wrap">{ev.descricao || ev.prova || ev.frase1 || ev.entrevistado}</p>
                 </div>
               ))}
@@ -203,20 +203,20 @@ export default function DossieAluno() {
           {data.carta ? (
             <div className="space-y-3">
               {data.carta.hoje_expectativa && (
-                <div className="rounded-xl bg-white border border-perestroika-preto/15 p-3">
-                  <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">o que aprendeu sobre si</p>
+                <div className="rounded-xl bg-white border border-perestroika-preto/15 p-3 space-y-1">
+                  <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">o que aprendeu sobre si</p>
                   <p className="font-body text-sm text-perestroika-preto whitespace-pre-wrap">{data.carta.hoje_expectativa}</p>
                 </div>
               )}
               {data.carta.hoje_manchete && (
-                <div className="rounded-xl bg-white border border-perestroika-preto/15 p-3">
-                  <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">manchete daqui a 5 anos</p>
+                <div className="rounded-xl bg-white border border-perestroika-preto/15 p-3 space-y-1">
+                  <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">manchete daqui a 5 anos</p>
                   <p className="font-body text-sm text-perestroika-preto whitespace-pre-wrap">{data.carta.hoje_manchete}</p>
                 </div>
               )}
               {data.carta.reflexao_comparativa && (
-                <div className="rounded-xl bg-perestroika-preto/5 border border-perestroika-preto/15 p-3">
-                  <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">o que mais mudou em 20 semanas</p>
+                <div className="rounded-xl bg-perestroika-preto/5 border border-perestroika-preto/15 p-3 space-y-1">
+                  <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">o que mais mudou em 20 semanas</p>
                   <p className="font-body text-sm text-perestroika-preto whitespace-pre-wrap italic">{data.carta.reflexao_comparativa}</p>
                 </div>
               )}

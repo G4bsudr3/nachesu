@@ -315,8 +315,8 @@ const AdminUsers = () => {
   return (
     <section className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto/5 px-3 py-2 text-xs uppercase tracking-wide text-perestroika-preto/70 mb-4">
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto/5 px-3 py-2 text-xs uppercase tracking-wide text-perestroika-preto/70">
             <Shield className="h-4 w-4" />
             permissões reais
           </div>

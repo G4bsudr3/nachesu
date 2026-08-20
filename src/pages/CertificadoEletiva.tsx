@@ -194,8 +194,8 @@ const CertificadoEletiva = () => {
     return (
       <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body">
         <PageHeader showLogo logoLink="/app" back={{ to: "/app", label: "voltar" }} actions={<AuthedHeaderActions />} />
-        <main className="container max-w-2xl pt-10 pb-20 text-center">
-          <h1 className="font-display uppercase text-4xl mb-3">eletiva não encontrada</h1>
+        <main className="container max-w-2xl pt-10 pb-20 text-center space-y-3">
+          <h1 className="font-display uppercase text-4xl">eletiva não encontrada</h1>
           <Link to="/app" className="inline-flex items-center gap-2 rounded-full bg-perestroika-preto text-perestroika-bege px-6 py-3 font-body text-sm uppercase tracking-wide">voltar</Link>
         </main>
       </div>
@@ -231,12 +231,12 @@ const CertificadoEletiva = () => {
         actions={<AuthedHeaderActions />}
       />
 
-      <main className="container max-w-5xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16">
-        <header className="mb-8 max-w-2xl">
-          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-2">
+      <main className="container max-w-5xl pt-6 pb-[calc(4rem+var(--mobile-nav-h,0px))] sm:pt-10 sm:pb-16 space-y-6">
+        <header className="max-w-2xl space-y-3">
+          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60">
             seu certificado
           </p>
-          <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.88] mb-3">
+          <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.88]">
             {isComplete ? "BOA! VOCÊ CHEGOU LÁ." : "quase lá."}
           </h1>
           <p className="font-body text-base sm:text-lg text-perestroika-preto/75">
@@ -248,19 +248,19 @@ const CertificadoEletiva = () => {
 
         {/* barra de progresso pra quem ainda não fechou */}
         {!isComplete && (
-          <section className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8 mb-8">
+          <section className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8">
             <div className="flex items-start gap-4">
               <div className="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-perestroika-preto text-perestroika-bege">
                 <Lock className="h-5 w-5" />
               </div>
-              <div className="flex-1">
-                <p className="font-display uppercase text-2xl leading-tight mb-1">
+              <div className="flex-1 space-y-4">
+                <p className="font-display uppercase text-2xl leading-tight">
                   faltam {Math.max(totalPublished - totalCompleted, 0)} {totalPublished - totalCompleted === 1 ? "módulo" : "módulos"}
                 </p>
-                <p className="font-body text-sm text-perestroika-preto/70 mb-4">
+                <p className="font-body text-sm text-perestroika-preto/70">
                   conclua os módulos restantes para liberar o certificado oficial.
                 </p>
-                <div className="h-2 rounded-full bg-perestroika-preto/15 overflow-hidden mb-4">
+                <div className="h-2 rounded-full bg-perestroika-preto/15 overflow-hidden">
                   <div
                     className="h-full transition-[width] duration-700"
                     style={{ width: `${pct}%`, backgroundColor: accent }}
@@ -280,11 +280,11 @@ const CertificadoEletiva = () => {
         {/* prévia + ação (só quando 100%) */}
         {isComplete && (
           <>
-            <div className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8 mb-6 mx-auto w-full max-w-3xl">
-              <label htmlFor="cert-name" className="block font-display uppercase text-2xl leading-tight mb-1">
+            <div className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-6 sm:p-8 mx-auto w-full max-w-3xl space-y-4">
+              <label htmlFor="cert-name" className="block font-display uppercase text-2xl leading-tight">
                 seu nome completo
               </label>
-              <p className="font-body text-sm text-perestroika-preto/70 mb-4">
+              <p className="font-body text-sm text-perestroika-preto/70">
                 é assim que vai aparecer impresso no certificado. capriche na grafia.
               </p>
               <input
@@ -304,7 +304,7 @@ const CertificadoEletiva = () => {
 
 
             <div
-              className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mb-6 mx-auto w-full max-w-3xl"
+              className="rounded-3xl border-2 border-perestroika-preto/15 bg-white/50 p-4 sm:p-6 mx-auto w-full max-w-3xl"
             >
               <div
                 ref={previewBoxRef}

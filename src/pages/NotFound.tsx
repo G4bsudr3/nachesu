@@ -38,9 +38,9 @@ const NotFound = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full"
+          className="w-full space-y-3"
         >
-          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-3">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
             erro 404
           </p>
           <h1 className="font-display uppercase text-6xl sm:text-8xl leading-[0.85]">

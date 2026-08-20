@@ -109,24 +109,26 @@ const AccountSettings = () => {
         actions={<AuthedHeaderActions />}
       />
 
-      <main className="container max-w-xl py-12">
-        <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none mb-2">
-          sua conta
-        </h1>
-        <p className="font-body text-perestroika-preto/70 mb-10">
-          {user?.email}
-        </p>
+      <main className="container max-w-xl py-12 space-y-6">
+        <header className="space-y-2">
+          <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none">
+            sua conta
+          </h1>
+          <p className="font-body text-perestroika-preto/70">
+            {user?.email}
+          </p>
+        </header>
 
 
         {/* leitura acessível */}
-        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 mb-6">
-          <div className="flex items-center gap-2 mb-1">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 space-y-4">
+          <div className="flex items-center gap-2">
             <Eye className="h-4 w-4" aria-hidden />
             <h2 className="font-display uppercase text-2xl leading-none">
               leitura acessível
             </h2>
           </div>
-          <p className="font-body text-sm text-perestroika-preto/70 mb-5">
+          <p className="font-body text-sm text-perestroika-preto/70">
             aumenta o espaçamento entre letras, palavras e linhas. ajuda em cansaço visual ou
             dislexia. fica salvo só nesse navegador.
           </p>
@@ -143,20 +145,20 @@ const AccountSettings = () => {
         </section>
 
         {/* janela silenciosa */}
-        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 mb-6">
-          <div className="flex items-center gap-2 mb-1">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 space-y-4">
+          <div className="flex items-center gap-2">
             <Moon className="h-4 w-4" aria-hidden />
             <h2 className="font-display uppercase text-2xl leading-none">
               janela silenciosa
             </h2>
           </div>
-          <p className="font-body text-sm text-perestroika-preto/70 mb-5">
+          <p className="font-body text-sm text-perestroika-preto/70">
             avisos automáticos por e-mail não vão sair nesse intervalo (horário de brasília).
             mensagem direta do educador continua chegando normal.
           </p>
           <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label htmlFor="quiet-start" className="mb-1 block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
+            <div className="space-y-1">
+              <label htmlFor="quiet-start" className="block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
                 começa às
               </label>
               <select
@@ -175,8 +177,8 @@ const AccountSettings = () => {
                 ))}
               </select>
             </div>
-            <div>
-              <label htmlFor="quiet-end" className="mb-1 block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
+            <div className="space-y-1">
+              <label htmlFor="quiet-end" className="block font-body text-xs uppercase tracking-wide text-perestroika-preto/60">
                 acaba às
               </label>
               <select
@@ -204,14 +206,14 @@ const AccountSettings = () => {
           )}
         </section>
 
-        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 mb-6">
-          <div className="flex items-center gap-2 mb-1">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 space-y-4">
+          <div className="flex items-center gap-2">
             <Lock className="h-4 w-4" aria-hidden />
             <h2 className="font-display uppercase text-2xl leading-none">
               {hasPassword ? "trocar senha" : "definir senha"}
             </h2>
           </div>
-          <p className="font-body text-sm text-perestroika-preto/70 mb-5">
+          <p className="font-body text-sm text-perestroika-preto/70">
             {hasPassword
               ? "muda quando quiser. mínimo 6 caracteres."
               : "define uma pra entrar mais rápido da próxima vez."}
@@ -257,11 +259,11 @@ const AccountSettings = () => {
           </div>
         </section>
 
-        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6">
-          <h2 className="font-display uppercase text-2xl leading-none mb-1">
+        <section className="rounded-3xl border-2 border-perestroika-preto/15 p-6 space-y-4">
+          <h2 className="font-display uppercase text-2xl leading-none">
             sair
           </h2>
-          <p className="font-body text-sm text-perestroika-preto/70 mb-5">
+          <p className="font-body text-sm text-perestroika-preto/70">
             desconecta dessa sessão.
           </p>
           <button

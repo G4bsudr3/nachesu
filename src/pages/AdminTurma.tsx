@@ -227,8 +227,8 @@ const AdminTurma = () => {
       <PageHeader back={{ to: "/admin", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
       <main className="container max-w-5xl pb-20 pt-4">
-        <header className="mb-6">
-          <p className="font-body text-xs uppercase tracking-wide text-perestroika-preto/55 mb-1">
+        <header className="mb-6 space-y-1">
+          <p className="font-body text-xs uppercase tracking-wide text-perestroika-preto/55">
             dashboard da turma
           </p>
           <h1 className="font-display text-4xl sm:text-5xl uppercase tracking-tight text-perestroika-preto">
@@ -460,8 +460,8 @@ const Kpi = ({
 );
 
 const EmptyBlock = ({ title, sub }: { title: string; sub: string }) => (
-  <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-8 text-center">
-    <p className="font-display text-xl uppercase text-perestroika-preto mb-1">{title}</p>
+  <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-8 text-center space-y-1">
+    <p className="font-display text-xl uppercase text-perestroika-preto">{title}</p>
     <p className="font-body text-sm text-perestroika-preto/65">{sub}</p>
   </div>
 );

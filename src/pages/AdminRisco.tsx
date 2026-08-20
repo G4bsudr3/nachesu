@@ -145,9 +145,9 @@ const AdminRisco = () => {
     <PageShell>
       <PageHeader back={{ to: "/admin", label: "voltar" }} actions={<AuthedHeaderActions />} />
 
-      <main className="container max-w-5xl pb-20 pt-4">
-        <header className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
+      <main className="container max-w-5xl pb-20 pt-4 space-y-6">
+        <header className="">
+          <div className="flex items-center gap-3">
             <AlertTriangle className="h-6 w-6 text-perestroika-vermelho" />
             <h1 className="font-display text-4xl sm:text-5xl uppercase tracking-tight text-perestroika-preto">
               acompanhamento de turma
@@ -158,7 +158,7 @@ const AdminRisco = () => {
           </p>
         </header>
 
-        <div className="flex flex-wrap items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center gap-3">
           <Select value={courseFilter} onValueChange={setCourseFilter}>
             <SelectTrigger className="w-[260px] bg-perestroika-bege">
               <SelectValue placeholder="filtrar eletiva" />
@@ -230,8 +230,8 @@ const AdminRisco = () => {
             {loading ? (
               <p className="font-body text-sm text-perestroika-preto/55">carregando...</p>
             ) : filteredRisk.length === 0 ? (
-              <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-12 text-center">
-                <p className="font-display text-2xl uppercase text-perestroika-preto mb-2">todo mundo respirando</p>
+              <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-12 text-center space-y-2">
+                <p className="font-display text-2xl uppercase text-perestroika-preto">todo mundo respirando</p>
                 <p className="font-body text-sm text-perestroika-preto/65">
                   ninguém que começou está em risco de evasão agora.
                 </p>
@@ -300,8 +300,8 @@ const AdminRisco = () => {
             {loading ? (
               <p className="font-body text-sm text-perestroika-preto/55">carregando...</p>
             ) : filteredActivation.length === 0 ? (
-              <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-12 text-center">
-                <p className="font-display text-2xl uppercase text-perestroika-preto mb-2">todo mundo já entrou</p>
+              <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-12 text-center space-y-2">
+                <p className="font-display text-2xl uppercase text-perestroika-preto">todo mundo já entrou</p>
                 <p className="font-body text-sm text-perestroika-preto/65">
                   nenhum matriculado pendente de ativação.
                 </p>
