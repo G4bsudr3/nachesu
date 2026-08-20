@@ -275,6 +275,7 @@ export const ModuloPillList = ({
   togglePending,
   onOpenTutor,
   ratingModuleId,
+  courseSlug,
 }: Props) => {
   // avaliação de fim de módulo: guardada aqui pra virar item do checklist
   // da pílula de registro sem depender de a rede ter respondido.
@@ -289,12 +290,16 @@ export const ModuloPillList = ({
 
   const ratingSlot = (pill: ModuloPill) =>
     wantsRating(pill) ? (
-      <ModuleRatingPrompt
+      <ModuloRatingCard
         moduleId={ratingModuleId as string}
-        accent={trailColor}
+        moduleNumber={0}
+        trailColor={trailColor}
+        courseSlug={courseSlug}
+        inline
         onAnswered={(v) => setRatingAnswered(v !== null)}
       />
     ) : undefined;
+
   const ratingChecklist = (pill: ModuloPill) =>
     wantsRating(pill)
       ? [{ id: "avaliacao", label: "dizer como foi o módulo", done: ratingAnswered }]
