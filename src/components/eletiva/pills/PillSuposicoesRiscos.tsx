@@ -414,7 +414,7 @@ export function PillSuposicoesRiscos({
                   min={riscoMinChars}
                   multiline
                 />
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-2 [&>*]:min-w-0">
                   <SelectPill
                     label="probabilidade"
                     value={r.probabilidade ?? ""}

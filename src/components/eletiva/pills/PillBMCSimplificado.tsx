@@ -254,7 +254,7 @@ export function PillBMCSimplificado({
           </p>
         </header>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 [&>*]:min-w-0">
           {/* segmento + proposta (readonly) */}
           <BlocoTexto
             label={blocosStatus[0]?.bloco.titulo ?? "SEGMENTO DE CLIENTES"}
@@ -575,7 +575,7 @@ function ListEditor({
         </ul>
       )}
 
-      <div className="flex gap-2">
+      <div className="flex min-w-0 gap-2">
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -586,14 +586,14 @@ function ListEditor({
             }
           }}
           placeholder={placeholder}
-          className="flex-1 rounded-xl border-2 border-perestroika-preto/15 bg-white px-3 py-2 font-body text-sm text-perestroika-preto focus:border-perestroika-preto focus:outline-none"
+          className="min-w-0 flex-1 rounded-xl border-2 border-perestroika-preto/15 bg-white px-3 py-2 font-body text-sm text-perestroika-preto focus:border-perestroika-preto focus:outline-none"
           maxLength={140}
         />
         <button
           type="button"
           onClick={commit}
           disabled={!draft.trim()}
-          className="inline-flex items-center gap-1 rounded-xl px-3 py-2 font-body text-xs uppercase tracking-wider disabled:opacity-40"
+          className="inline-flex flex-shrink-0 items-center gap-1 rounded-xl px-3 py-2 font-body text-xs uppercase tracking-wider disabled:opacity-40"
           style={{ backgroundColor: accent, color: "#fff" }}
         >
           <Plus className="h-3.5 w-3.5" aria-hidden /> add

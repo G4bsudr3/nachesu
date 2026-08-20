@@ -164,26 +164,26 @@ export function PillConteudoCurado({
       </header>
 
       {/* cards externos */}
-      <section aria-label="recursos curados" className="grid sm:grid-cols-2 gap-3">
+      <section aria-label="recursos curados" className="grid sm:grid-cols-2 gap-3 min-w-0">
         {(schema.cards ?? []).map((card) => (
           <a
             key={card.id}
             href={card.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group rounded-2xl border-2 border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
+            className="group min-w-0 overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 p-4 hover:border-perestroika-preto transition-colors"
           >
-            <div className="flex items-center justify-between gap-2 mb-1.5 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
-              <span className="truncate">{card.source ?? "fonte externa"}</span>
+            <div className="flex min-w-0 items-center justify-between gap-2 mb-1.5 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
+              <span className="min-w-0 truncate">{card.source ?? "fonte externa"}</span>
               {card.duration && (
-                <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                <span className="inline-flex min-w-0 items-center gap-1 truncate">
                   <Clock className="h-3 w-3" aria-hidden="true" /> {card.duration}
                 </span>
               )}
             </div>
-            <h3 className="font-display uppercase text-lg leading-tight mb-1.5">{card.title}</h3>
+            <h3 className="font-display uppercase text-lg leading-tight mb-1.5 break-words">{card.title}</h3>
             {card.description && (
-              <p className="font-body text-sm text-perestroika-preto/70 mb-2">{card.description}</p>
+              <p className="font-body text-sm text-perestroika-preto/70 mb-2 break-words">{card.description}</p>
             )}
             <span
               className="inline-flex items-center gap-1 font-body text-xs uppercase tracking-wider"
@@ -236,7 +236,7 @@ export function PillConteudoCurado({
                   <span className="text-perestroika-preto/55 mr-1">{idx + 1}.</span>
                   {q.label}
                 </label>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0">
                   {ICEBERG_LEVELS.map((lvl, li) => {
                     const key = `${q.id}::${lvl.id}`;
                     const val = answers[key] ?? "";

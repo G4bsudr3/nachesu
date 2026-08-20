@@ -261,7 +261,7 @@ export function PillPropostaValor({
           </p>
         </header>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 [&>*]:min-w-0">
           {blocosStatus.map((bs, i) => {
             const bloco = bs.bloco;
             const fullWidth = i >= 2; // solução em diante ocupa linha inteira

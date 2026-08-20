@@ -267,7 +267,7 @@ export function PillCacaEvidencias({
         </div>
 
         {(ganhaAtores.length > 0 || perdeAtores.length > 0) && (
-          <div className="grid gap-2 sm:grid-cols-2 pt-1 border-t border-perestroika-preto/10">
+          <div className="grid gap-2 sm:grid-cols-2 [&>*]:min-w-0 pt-1 border-t border-perestroika-preto/10">
             {ganhaAtores.length > 0 && (
               <div>
                 <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">
@@ -574,7 +574,7 @@ function FichaEvidencia({
             placeholder="https://…"
             onChange={(v) => onChange({ link: v })}
           />
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 [&>*]:min-w-0">
             <Field
               label="fonte"
               value={evidencia.fonte ?? ""}

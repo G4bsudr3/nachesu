@@ -272,7 +272,7 @@ export function PillMatrizValor({
                 />
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2 [&>*]:min-w-0">
                 <div>
                   <label className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 block mb-1">
                     tipo
