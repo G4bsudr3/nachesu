@@ -123,10 +123,14 @@ interface Props {
   onOpenTutor: (pill?: ModuloPill) => void;
   /**
    * quando presente, a última pílula (registro) pede a avaliação do módulo
-   * antes do botão de concluir. só a eletiva de ia na prática usa isso.
+   * antes do botão de concluir. vale igual pras duas eletivas, só nos
+   * módulos de checkpoint (1, 5, 10, 15, 20).
    */
   ratingModuleId?: string | null;
+  /** slug da eletiva, pra oferecer o tutor quando a nota vem baixa */
+  courseSlug?: string | null;
 }
+
 
 
 const PillCardShell = ({
