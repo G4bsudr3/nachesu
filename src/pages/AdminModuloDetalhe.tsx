@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, EyeOff, FileWarning, Clock, User2 } from "lucide-react";
@@ -13,6 +13,7 @@ import { computeCompleteness } from "@/features/admin/deliverableRendering/compl
 import type { PillForResolve, PillKind } from "@/features/admin/deliverableRendering/types";
 import { ModuloPillList, type ModuloPill } from "@/components/eletiva/modulo/ModuloPillList";
 import { AberturaVideoManager } from "@/features/admin/AberturaVideoManager";
+import { getModuloPanel } from "@/features/admin/moduloPanels/registry";
 import type { Database } from "@/integrations/supabase/types";
 
 type DeliverableRow = Database["public"]["Tables"]["module_deliverables"]["Row"];
@@ -67,6 +68,7 @@ const AdminModuloDetalhe = () => {
   const { slug, number } = useParams<{ slug: string; number: string }>();
   const course = useCourseBySlug(slug);
   const num = number ? parseInt(number, 10) : NaN;
+  const ExercicioPanel = getModuloPanel(slug, Number.isNaN(num) ? undefined : num);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-modulo-detalhe", course.data?.id, num],
@@ -252,7 +254,28 @@ const AdminModuloDetalhe = () => {
           <TabsTrigger value="turma" className="uppercase tracking-wide text-xs">
             turma ({enrolled.length})
           </TabsTrigger>
+          {ExercicioPanel && (
+            <TabsTrigger value="exercicio" className="uppercase tracking-wide text-xs">
+              painel do exercício
+            </TabsTrigger>
+          )}
         </TabsList>
+
+        {ExercicioPanel && (
+          <TabsContent value="exercicio">
+            <Suspense
+              fallback={
+                <p className="font-body text-sm text-perestroika-preto/60 py-8">
+                  carregando painel do exercício...
+                </p>
+              }
+            >
+              <ExercicioPanel />
+            </Suspense>
+          </TabsContent>
+        )}
+
+
 
         <TabsContent value="abertura">
           <AberturaVideoManager

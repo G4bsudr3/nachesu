@@ -1,10 +1,8 @@
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { EletivaFooter } from "@/components/layout/EletivaFooter";
 
-type Sample = { nickname: string; ideia_final: string | null; raridade: string | null };
+type Sample = { nickname: string; total_ideias: number };
 
 type StatsResponse = {
   module_id?: string;
@@ -13,30 +11,27 @@ type StatsResponse = {
     total_students: number;
     completed_count: number;
     submitted_count: number;
-    raridade_rara: number;
-    raridade_meio_obvia: number;
-    raridade_obvia: number;
+    avg_ideias: number;
+    atingiu_20: number;
+    ideias_r1: number;
+    ideias_r2: number;
+    ideias_r3: number;
+    ideias_r4: number;
   };
   samples?: Sample[];
   error?: string;
 };
 
-const RARIDADE_LABEL: Record<string, string> = {
-  rara: "rara",
-  meio_obvia: "meio óbvia",
-  obvia: "óbvia",
-};
-
-export default function AdminEletivaModulo12() {
+export default function AdminEletivaModulo11() {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-ecc-m12-selecao-stats"],
+    queryKey: ["admin-ecc-m11-ideacao-stats"],
     queryFn: async (): Promise<StatsResponse> => {
       const { data, error } = await (supabase.rpc as unknown as (
         fn: string,
         args: Record<string, unknown>,
       ) => Promise<{ data: unknown; error: Error | null }>)(
-        "admin_module12_selecao_stats",
-        { _course_slug: "economia-circular", _module_number: 12 },
+        "admin_module11_ideacao_stats",
+        { _course_slug: "economia-circular", _module_number: 11 },
       );
       if (error) throw error;
       return (data ?? {}) as StatsResponse;
@@ -46,7 +41,7 @@ export default function AdminEletivaModulo12() {
   if (isLoading) {
     return (
       <div className="p-8 flex items-center gap-2 text-sm text-perestroika-preto/70">
-        <Loader2 className="h-4 w-4 animate-spin" /> carregando seleções da turma…
+        <Loader2 className="h-4 w-4 animate-spin" /> carregando sprint de ideação da turma…
       </div>
     );
   }
@@ -67,40 +62,50 @@ export default function AdminEletivaModulo12() {
   const samples = data?.samples ?? [];
 
   return (
-    <div className="min-h-dvh flex flex-col bg-perestroika-bege">
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 space-y-8">
+    <div className="space-y-8">
+      <div className="space-y-8">
         <header className="space-y-3">
-          <Link
-            to="/admin"
-            className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
-          </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
-            economia circular · módulo 12
+            economia circular · módulo 11
           </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
-            seleção da ideia da turma
-          </h1>
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
+            sprint de ideação da turma
+          </h2>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
-            quantos fecharam a escolha, como se dividiram entre rara/óbvia e qual foi a ideia final de cada um.
+            quantas ideias vieram, como se distribuíram entre as 4 rodadas e quem conseguiu chegar às 20.
           </p>
         </header>
 
-        <section className="grid gap-3 sm:grid-cols-3">
+        <section className="grid gap-3 sm:grid-cols-4">
           <KpiCard label="matriculados" value={kpis?.total_students ?? 0} />
           <KpiCard label="concluíram" value={kpis?.completed_count ?? 0} />
-          <KpiCard label="entregaram seleção" value={kpis?.submitted_count ?? 0} />
+          <KpiCard label="entregaram sprint" value={kpis?.submitted_count ?? 0} />
+          <KpiCard label="média de ideias" value={kpis?.avg_ideias ?? 0} />
+        </section>
+
+        <section className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-4">
+            <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
+              chegaram a 20+ ideias
+            </p>
+            <p className="font-display text-3xl leading-none text-perestroika-preto tabular-nums">
+              {kpis?.atingiu_20 ?? 0}
+            </p>
+            <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/45 mt-1">
+              de {kpis?.submitted_count ?? 0} entregas
+            </p>
+          </div>
         </section>
 
         <section>
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-2">
-            distribuição de raridade
+            distribuição por rodada
           </p>
-          <div className="grid gap-2 grid-cols-3">
-            <RaridadeCard label="raras" value={kpis?.raridade_rara ?? 0} />
-            <RaridadeCard label="meio óbvias" value={kpis?.raridade_meio_obvia ?? 0} />
-            <RaridadeCard label="óbvias" value={kpis?.raridade_obvia ?? 0} />
+          <div className="grid gap-2 grid-cols-2 sm:grid-cols-4">
+            <RodadaCard label="r1 · scamper" value={kpis?.ideias_r1 ?? 0} />
+            <RodadaCard label="r2 · biomimética" value={kpis?.ideias_r2 ?? 0} />
+            <RodadaCard label="r3 · deslocamento" value={kpis?.ideias_r3 ?? 0} />
+            <RodadaCard label="r4 · analogias" value={kpis?.ideias_r4 ?? 0} />
           </div>
         </section>
 
@@ -111,32 +116,23 @@ export default function AdminEletivaModulo12() {
           {samples.length === 0 ? (
             <p className="font-body text-sm text-perestroika-preto/60">nenhuma entrega ainda.</p>
           ) : (
-            <div className="grid gap-2">
+            <div className="grid gap-2 sm:grid-cols-2">
               {samples.map((s, i) => (
                 <article
                   key={i}
-                  className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-4 space-y-1"
+                  className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-4 flex items-center justify-between gap-3"
                 >
-                  <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <p className="font-body text-sm font-semibold text-perestroika-preto">
-                      {s.nickname}
-                    </p>
-                    {s.raridade && (
-                      <span className="rounded-full border-2 border-perestroika-preto/20 px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
-                        {RARIDADE_LABEL[s.raridade] ?? s.raridade}
-                      </span>
-                    )}
-                  </div>
-                  <p className="font-body text-sm text-perestroika-preto/80 leading-snug">
-                    {s.ideia_final ?? "—"}
-                  </p>
+                  <p className="font-body text-sm font-semibold text-perestroika-preto">{s.nickname}</p>
+                  <span className="font-display text-2xl tabular-nums text-perestroika-preto">
+                    {s.total_ideias}
+                    <span className="text-xs text-perestroika-preto/50"> ideias</span>
+                  </span>
                 </article>
               ))}
             </div>
           )}
         </section>
-      </main>
-      <EletivaFooter />
+      </div>
     </div>
   );
 }
@@ -152,7 +148,7 @@ function KpiCard({ label, value }: { label: string; value: number | string }) {
   );
 }
 
-function RaridadeCard({ label, value }: { label: string; value: number }) {
+function RodadaCard({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-4">
       <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1">

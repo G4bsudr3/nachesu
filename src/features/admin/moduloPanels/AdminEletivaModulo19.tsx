@@ -1,8 +1,6 @@
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, AlertTriangle, Video } from "lucide-react";
+import { Loader2, AlertTriangle, Video } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { EletivaFooter } from "@/components/layout/EletivaFooter";
 
 type Sample = {
   nickname: string;
@@ -66,21 +64,15 @@ export default function AdminEletivaModulo19() {
   const samples = data?.samples ?? [];
 
   return (
-    <div className="min-h-dvh flex flex-col bg-perestroika-bege">
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 space-y-8">
+    <div className="space-y-8">
+      <div className="space-y-8">
         <header className="space-y-3">
-          <Link
-            to="/admin"
-            className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
-          </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
             economia circular · módulo 19 · roteiro de pitch
           </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
             primeiros takes da turma
-          </h1>
+          </h2>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
             quem já entregou roteiro em 6 blocos e mandou o primeiro take. duração média ajuda a calibrar o módulo 20.
           </p>
@@ -130,8 +122,7 @@ export default function AdminEletivaModulo19() {
             </div>
           )}
         </section>
-      </main>
-      <EletivaFooter />
+      </div>
     </div>
   );
 }

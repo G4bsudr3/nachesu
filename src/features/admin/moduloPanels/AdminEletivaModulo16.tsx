@@ -1,14 +1,13 @@
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { EletivaFooter } from "@/components/layout/EletivaFooter";
 
 type Sample = {
   nickname: string;
-  n_suposicoes: number;
-  n_riscos_acao: number;
-  primeira_suposicao: string | null;
+  metodo: string | null;
+  suposicao_key: string | null;
+  criterio_sucesso: string | null;
+  has_number: boolean;
 };
 
 type StatsResponse = {
@@ -18,23 +17,32 @@ type StatsResponse = {
     total_students: number;
     completed_count: number;
     submitted_count: number;
-    com_3_suposicoes: number;
-    com_risco_acao: number;
+    com_criterio_numero: number;
+    metodo_landing: number;
+    metodo_entrevista: number;
   };
   samples?: Sample[];
   error?: string;
 };
 
-export default function AdminEletivaModulo15() {
+const METODO_LABEL: Record<string, string> = {
+  entrevista: "entrevista",
+  prototipo: "protótipo",
+  landing: "landing falsa",
+  concierge: "concierge",
+  fakedoor: "fake door",
+};
+
+export default function AdminEletivaModulo16() {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-ecc-m15-supr-stats"],
+    queryKey: ["admin-ecc-m16-plano-stats"],
     queryFn: async (): Promise<StatsResponse> => {
       const { data, error } = await (supabase.rpc as unknown as (
         fn: string,
         args: Record<string, unknown>,
       ) => Promise<{ data: unknown; error: Error | null }>)(
-        "admin_module15_suposicoes_stats",
-        { _course_slug: "economia-circular", _module_number: 15 },
+        "admin_module16_plano_stats",
+        { _course_slug: "economia-circular", _module_number: 16 },
       );
       if (error) throw error;
       return (data ?? {}) as StatsResponse;
@@ -44,7 +52,7 @@ export default function AdminEletivaModulo15() {
   if (isLoading) {
     return (
       <div className="p-8 flex items-center gap-2 text-sm text-perestroika-preto/70">
-        <Loader2 className="h-4 w-4 animate-spin" /> carregando mapas da turma…
+        <Loader2 className="h-4 w-4 animate-spin" /> carregando planos da turma…
       </div>
     );
   }
@@ -65,32 +73,27 @@ export default function AdminEletivaModulo15() {
   const samples = data?.samples ?? [];
 
   return (
-    <div className="min-h-dvh flex flex-col bg-perestroika-bege">
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 space-y-8">
+    <div className="space-y-8">
+      <div className="space-y-8">
         <header className="space-y-3">
-          <Link
-            to="/admin"
-            className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
-          </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
-            economia circular · módulo 15 · fechamento trilha criar
+            economia circular · módulo 16 · abertura trilha testar
           </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
-            suposições e riscos da turma
-          </h1>
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
+            planos de experimento da turma
+          </h2>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
-            quantos alunos mapearam as 3 suposições nas dimensões pedidas e quantos têm risco na zona "ação imediata".
+            quantos alunos entregaram plano com critério de sucesso quantitativo e quais métodos escolheram.
           </p>
         </header>
 
-        <section className="grid gap-3 sm:grid-cols-5">
+        <section className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <KpiCard label="matriculados" value={kpis?.total_students ?? 0} />
           <KpiCard label="concluíram" value={kpis?.completed_count ?? 0} />
           <KpiCard label="entregaram" value={kpis?.submitted_count ?? 0} />
-          <KpiCard label="3 suposições" value={kpis?.com_3_suposicoes ?? 0} />
-          <KpiCard label="risco crítico" value={kpis?.com_risco_acao ?? 0} />
+          <KpiCard label="critério c/ número" value={kpis?.com_criterio_numero ?? 0} />
+          <KpiCard label="entrevistas" value={kpis?.metodo_entrevista ?? 0} />
+          <KpiCard label="landing falsa" value={kpis?.metodo_landing ?? 0} />
         </section>
 
         <section className="space-y-3">
@@ -110,14 +113,23 @@ export default function AdminEletivaModulo15() {
                     <p className="font-body text-sm font-semibold text-perestroika-preto">
                       {s.nickname}
                     </p>
-                    <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60">
-                      {s.n_suposicoes} suposições · {s.n_riscos_acao} em ação
-                    </p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {s.metodo && (
+                        <span className="rounded-full border border-perestroika-preto/20 bg-perestroika-bege px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
+                          {METODO_LABEL[s.metodo] ?? s.metodo}
+                        </span>
+                      )}
+                      {!s.has_number && s.criterio_sucesso && (
+                        <span className="rounded-full border border-perestroika-vermelho/50 bg-perestroika-vermelho/15 px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-vermelho">
+                          critério sem número
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  {s.primeira_suposicao && (
+                  {s.criterio_sucesso && (
                     <p className="font-body text-sm text-perestroika-preto/80 leading-snug">
-                      <span className="uppercase tracking-wider text-[11px] text-perestroika-preto/55">1ª suposição · </span>
-                      {s.primeira_suposicao}
+                      <span className="uppercase tracking-wider text-[11px] text-perestroika-preto/55">critério · </span>
+                      {s.criterio_sucesso}
                     </p>
                   )}
                 </article>
@@ -125,8 +137,7 @@ export default function AdminEletivaModulo15() {
             </div>
           )}
         </section>
-      </main>
-      <EletivaFooter />
+      </div>
     </div>
   );
 }

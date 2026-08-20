@@ -1,39 +1,40 @@
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { EletivaFooter } from "@/components/layout/EletivaFooter";
 
 type Sample = {
   nickname: string;
-  frase_ancora: string | null;
-  publico: string | null;
+  resultado: string | null;
+  decisao: string | null;
+  n_mudancas: number;
+  updated_at: string;
 };
 
 type StatsResponse = {
   module_id?: string;
-  pill_id?: string;
   kpis?: {
     total_students: number;
     completed_count: number;
-    submitted_count: number;
-    com_ancora: number;
-    ancora_ok: number;
+    entregas: number;
+    pivot: number;
+    persevere: number;
+    desistir: number;
+    media_mudancas: number;
   };
   samples?: Sample[];
   error?: string;
 };
 
-export default function AdminEletivaModulo13() {
+export default function AdminEletivaModulo18() {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-ecc-m13-proposta-stats"],
+    queryKey: ["admin-ecc-m18-changelog-stats"],
     queryFn: async (): Promise<StatsResponse> => {
       const { data, error } = await (supabase.rpc as unknown as (
         fn: string,
         args: Record<string, unknown>,
       ) => Promise<{ data: unknown; error: Error | null }>)(
-        "admin_module13_proposta_stats",
-        { _course_slug: "economia-circular", _module_number: 13 },
+        "admin_module18_changelog_stats",
+        { _course_slug: "economia-circular", _module_number: 18 },
       );
       if (error) throw error;
       return (data ?? {}) as StatsResponse;
@@ -43,7 +44,7 @@ export default function AdminEletivaModulo13() {
   if (isLoading) {
     return (
       <div className="p-8 flex items-center gap-2 text-sm text-perestroika-preto/70">
-        <Loader2 className="h-4 w-4 animate-spin" /> carregando propostas da turma…
+        <Loader2 className="h-4 w-4 animate-spin" /> carregando changelogs da turma…
       </div>
     );
   }
@@ -64,34 +65,27 @@ export default function AdminEletivaModulo13() {
   const samples = data?.samples ?? [];
 
   return (
-    <div className="min-h-dvh flex flex-col bg-perestroika-bege">
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 space-y-8">
+    <div className="space-y-8">
+      <div className="space-y-8">
         <header className="space-y-3">
-          <Link
-            to="/admin"
-            className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-perestroika-preto/60 hover:text-perestroika-preto"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> voltar ao painel
-          </Link>
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
-            economia circular · módulo 13
+            economia circular · módulo 18 · o que mudou
           </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
-            propostas de valor da turma
-          </h1>
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
+            versões 2 da turma
+          </h2>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
-            quem já entregou o canvas, quantas frases-âncora estão dentro do limite de 30 palavras e o que cada estudante escreveu.
+            quem pivotou, quem perseverou, e quantas mudanças cada estudante justificou com dado.
           </p>
         </header>
 
-        <section className="grid gap-3 sm:grid-cols-4">
+        <section className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <KpiCard label="matriculados" value={kpis?.total_students ?? 0} />
           <KpiCard label="concluíram" value={kpis?.completed_count ?? 0} />
-          <KpiCard label="entregaram" value={kpis?.submitted_count ?? 0} />
-          <KpiCard
-            label="frase-âncora ok"
-            value={`${kpis?.ancora_ok ?? 0}/${kpis?.com_ancora ?? 0}`}
-          />
+          <KpiCard label="entregaram" value={kpis?.entregas ?? 0} />
+          <KpiCard label="perseveraram" value={kpis?.persevere ?? 0} />
+          <KpiCard label="pivotaram" value={kpis?.pivot ?? 0} />
+          <KpiCard label="média de mudanças" value={kpis?.media_mudancas ?? 0} />
         </section>
 
         <section className="space-y-3">
@@ -105,29 +99,32 @@ export default function AdminEletivaModulo13() {
               {samples.map((s, i) => (
                 <article
                   key={i}
-                  className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-4 space-y-2"
+                  className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-4 flex items-center justify-between gap-3 flex-wrap"
                 >
-                  <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <p className="font-body text-sm font-semibold text-perestroika-preto">
-                      {s.nickname}
-                    </p>
-                  </div>
-                  <p className="font-body text-sm text-perestroika-preto/85 leading-snug">
-                    {s.frase_ancora ?? "—"}
+                  <p className="font-body text-sm font-semibold text-perestroika-preto">
+                    {s.nickname}
                   </p>
-                  {s.publico && (
-                    <p className="font-body text-[11px] text-perestroika-preto/60 leading-snug">
-                      <span className="uppercase tracking-wider">público · </span>
-                      {s.publico}
-                    </p>
-                  )}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {s.resultado && (
+                      <span className="rounded-full border border-perestroika-preto/20 bg-perestroika-bege px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
+                        {s.resultado}
+                      </span>
+                    )}
+                    {s.decisao && (
+                      <span className="rounded-full border border-perestroika-preto/20 bg-perestroika-bege px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
+                        {s.decisao}
+                      </span>
+                    )}
+                    <span className="rounded-full border border-perestroika-preto/20 bg-white px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
+                      {s.n_mudancas} mudanças
+                    </span>
+                  </div>
                 </article>
               ))}
             </div>
           )}
         </section>
-      </main>
-      <EletivaFooter />
+      </div>
     </div>
   );
 }
