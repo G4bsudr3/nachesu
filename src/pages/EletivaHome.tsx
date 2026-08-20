@@ -13,14 +13,10 @@ import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { EletivaOnboardingOverlay } from "@/components/eletiva/EletivaOnboardingOverlay";
+import { accentFor, trailColorFor } from "@/lib/eletivaTheme";
 
 
-const trailColorByOrder: Record<number, string> = {
-  1: "#fe7b02", // fundamentos & ia — laranja
-  2: "#fd4644", // problema & decisão — vermelho
-  3: "#f756a6", // construção no lovable — rosa
-  4: "#8A85BF", // validação & evolução — lilás
-};
+
 
 type ModuleState = "done" | "current" | "available" | "scheduled" | "locked";
 
@@ -37,7 +33,15 @@ const moduleState = (
   return "available";
 };
 
-const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPick: (n: number) => void }) => {
+const ModulesByTrail = ({
+  snapshot,
+  onPick,
+  slug,
+}: {
+  snapshot: EletivaSnapshot;
+  onPick: (n: number) => void;
+  slug?: string;
+}) => {
   if (!snapshot.trails.length) return null;
   return (
     <section
@@ -59,7 +63,7 @@ const ModulesByTrail = ({ snapshot, onPick }: { snapshot: EletivaSnapshot; onPic
             .filter((m) => m.trail_id === trail.id)
             .sort((a, b) => a.number - b.number);
           if (!trailModules.length) return null;
-          const color = trail.color ?? trailColorByOrder[trail.order_index] ?? "#090909";
+          const color = trail.color ?? trailColorFor(slug, trail.order_index);
           const done = trailModules.filter((m) => snapshot.progressByModuleId[m.id]?.completed_at).length;
           const trailPct = Math.round((done / trailModules.length) * 100);
           return (
@@ -284,7 +288,7 @@ const EletivaHome = () => {
   const totalPublished = snapshot?.totalPublished ?? 0;
   const progressPct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
   const tutorTo = current ? `/app/tutor?module=${current.number}` : "/app/tutor";
-  const courseAccent = course.slug === "economia-circular" ? "#8A85BF" : "#f756a6";
+  const courseAccent = accentFor(course.slug);
   return (
     <div
       data-eletiva={course.slug === "economia-circular" ? "ecc" : undefined}
@@ -403,11 +407,8 @@ const EletivaHome = () => {
             <div
               className="rounded-2xl border-2 p-5 sm:p-6 shadow-sm"
               style={{
-                borderColor: slug === "economia-circular" ? "#8A85BF" : "#f756a6",
-                background:
-                  slug === "economia-circular"
-                    ? "linear-gradient(135deg, rgba(138,133,191,0.16), rgba(242,228,216,0.6))"
-                    : "linear-gradient(135deg, rgba(247,86,166,0.16), rgba(242,228,216,0.6))",
+                borderColor: courseAccent,
+                background: `linear-gradient(135deg, ${courseAccent}29, rgba(242,228,216,0.6))`,
               }}
             >
               <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/70 mb-2">
