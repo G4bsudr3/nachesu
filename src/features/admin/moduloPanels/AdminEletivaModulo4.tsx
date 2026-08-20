@@ -97,7 +97,7 @@ export default function AdminEletivaModulo4() {
           style={{ fontSize: "clamp(28px, 5vw, 44px)" }}
         >
           caça às 3 evidências · prova de realidade
-        </h1>
+        </h2>
       </header>
 
       {kpis && (

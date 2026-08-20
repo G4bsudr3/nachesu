@@ -36,9 +36,9 @@ export default function AdminEletivaModulo20() {
     <div className="space-y-8">
       <div className="space-y-8">
         <div className="space-y-2">
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none tracking-wide text-perestroika-preto">
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
             módulo 20 · fechamento
-          </h1>
+          </h2>
           <p className="font-body text-sm text-perestroika-preto/70">
             economia circular e negócios regenerativos · dashboard final
           </p>

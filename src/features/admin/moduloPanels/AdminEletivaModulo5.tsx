@@ -52,9 +52,9 @@ export default function AdminEletivaModulo5() {
           <p className="font-body text-[11px] uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1">
             economia circular · módulo 5
           </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none">
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
             briefing · fechamento trilha 1
-          </h1>
+          </h2>
         </div>
 
         {isLoading && <p className="font-body text-sm text-perestroika-preto/60">carregando…</p>}

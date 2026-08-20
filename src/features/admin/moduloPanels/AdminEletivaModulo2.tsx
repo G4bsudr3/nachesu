@@ -141,7 +141,7 @@ export default function AdminEletivaModulo2() {
           style={{ fontSize: "clamp(28px, 5vw, 44px)" }}
         >
           classificador 3x3 · como a turma vê
-        </h1>
+        </h2>
       </header>
 
       {kpis && (

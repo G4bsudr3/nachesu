@@ -102,7 +102,7 @@ export default function AdminEletivaModulo3() {
           style={{ fontSize: "clamp(28px, 5vw, 44px)" }}
         >
           mapa de atores · quem tá em jogo
-        </h1>
+        </h2>
       </header>
 
       {kpis && (

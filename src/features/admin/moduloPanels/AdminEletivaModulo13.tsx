@@ -68,9 +68,9 @@ export default function AdminEletivaModulo13() {
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
             economia circular · módulo 13
           </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
             propostas de valor da turma
-          </h1>
+          </h2>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
             quem já entregou o canvas, quantas frases-âncora estão dentro do limite de 30 palavras e o que cada estudante escreveu.
           </p>

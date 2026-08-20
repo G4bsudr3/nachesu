@@ -79,9 +79,9 @@ export default function AdminEletivaModulo16() {
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
             economia circular · módulo 16 · abertura trilha testar
           </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
             planos de experimento da turma
-          </h1>
+          </h2>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
             quantos alunos entregaram plano com critério de sucesso quantitativo e quais métodos escolheram.
           </p>

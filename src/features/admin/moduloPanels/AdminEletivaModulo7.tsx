@@ -86,9 +86,9 @@ export default function AdminEletivaModulo7() {
           <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
             economia circular · módulo 7
           </p>
-          <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-perestroika-preto">
+          <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
             matrizes vazamento → oportunidade
-          </h1>
+          </h2>
           <p className="font-body text-sm text-perestroika-preto/70 max-w-2xl">
             veja o que a turma transformou em oportunidade e quem seriam os beneficiários pagantes.
           </p>
