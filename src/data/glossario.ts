@@ -98,12 +98,14 @@ const TERMOS: GlossarioTermo[] = [
     definicao:
       "apresentação curta, de 2 a 3 minutos, que explica o problema, a solução e por que ela importa.",
     tags: ["ia", "circular"],
+    sinonimos: ["elevator pitch"],
   },
   {
     termo: "proposta de valor",
     definicao:
       "a frase que diz pra quem você resolve, qual dor resolve e o que muda na vida dessa pessoa.",
     tags: ["ia", "circular"],
+    sinonimos: ["value proposition"],
   },
   {
     termo: "canvas",
