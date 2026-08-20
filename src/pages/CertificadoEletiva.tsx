@@ -26,8 +26,18 @@ const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+/**
+ * a cor do certificado é a mesma assinatura que o estudante viu o curso
+ * inteiro: economia circular roda no tema `ecc` (creme + laranja #F25E3D),
+ * então o certificado sai em laranja, não em lilás.
+ */
 const accentFor = (slug: string) =>
-  slug === "economia-circular" ? "#8A85BF" : "#f756a6";
+  slug === "economia-circular" ? "#F25E3D" : "#f756a6";
+
+/** fundo do papel: creme do tema ecc na economia circular, bege nas demais */
+const paperFor = (slug: string) =>
+  slug === "economia-circular" ? "#F5EEE1" : "#f2e4d8";
+
 
 const CertificadoEletiva = () => {
   const { slug } = useParams<{ slug: string }>();
