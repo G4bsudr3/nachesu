@@ -1,12 +1,17 @@
+import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { linkifyGlossario } from "@/lib/glossarioLinks";
 
 interface Props {
   children: string;
   /** cor de destaque da trilha, usada em link e citação */
   accent?: string;
   className?: string;
+  /** marca a primeira aparição de cada termo do glossário com link (padrão: sim) */
+  glossario?: boolean;
 }
 
 /**
@@ -14,8 +19,12 @@ interface Props {
  * hierarquia própria, lista numerada, citação e código inline.
  * substitui o renderizador caseiro que só entendia negrito e lista.
  */
-export function PillMarkdown({ children, accent, className }: Props) {
+export function PillMarkdown({ children, accent, className, glossario = true }: Props) {
   const linkStyle = accent ? { color: accent, textDecorationColor: accent } : undefined;
+  const texto = useMemo(
+    () => (glossario ? linkifyGlossario(children ?? "") : children),
+    [children, glossario],
+  );
 
   return (
     <div
@@ -29,18 +38,29 @@ export function PillMarkdown({ children, accent, className }: Props) {
             <strong className="font-semibold text-perestroika-preto">{children}</strong>
           ),
           em: ({ children }) => <em className="italic text-perestroika-preto/90">{children}</em>,
-          a: ({ children, href }) => (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={linkStyle}
-              className="inline-flex items-baseline gap-0.5 underline underline-offset-2 decoration-current/50 hover:decoration-current font-medium break-words"
-            >
-              {children}
-              <ArrowUpRight className="h-3 w-3 shrink-0 self-center" aria-hidden="true" />
-            </a>
-          ),
+          a: ({ children, href }) =>
+            href?.startsWith("/") ? (
+              <Link
+                to={href}
+                style={linkStyle}
+                title="ver no glossário"
+                className="underline decoration-dotted underline-offset-2 decoration-current/60 hover:decoration-solid font-medium"
+              >
+                {children}
+              </Link>
+            ) : (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={linkStyle}
+                className="inline-flex items-baseline gap-0.5 underline underline-offset-2 decoration-current/50 hover:decoration-current font-medium break-words"
+              >
+                {children}
+                <ArrowUpRight className="h-3 w-3 shrink-0 self-center" aria-hidden="true" />
+              </a>
+            ),
+
           h1: ({ children }) => <Subtitulo>{children}</Subtitulo>,
           h2: ({ children }) => <Subtitulo>{children}</Subtitulo>,
           h3: ({ children }) => <Subtitulo>{children}</Subtitulo>,
