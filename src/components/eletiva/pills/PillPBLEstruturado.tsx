@@ -205,6 +205,7 @@ export function PillPBLEstruturado({
         {c.pedido_a && (
           <FieldText
             label={c.pedido_a.label}
+            help={c.pedido_a.help}
             optional={c.pedido_a.optional}
             placeholder={c.pedido_a.placeholder}
             value={value.pedido_a ?? ""}
@@ -214,6 +215,7 @@ export function PillPBLEstruturado({
         {c.print_a && (
           <FieldEvidence
             label={c.print_a.label}
+            help={c.print_a.help}
             optional={c.print_a.optional}
             itemId={`${pillId}-print-a`}
             value={value.print_a ?? emptyEvidence}
@@ -225,6 +227,7 @@ export function PillPBLEstruturado({
         {c.pedido_b && (
           <FieldText
             label={c.pedido_b.label}
+            help={c.pedido_b.help}
             optional={c.pedido_b.optional}
             placeholder={c.pedido_b.placeholder}
             value={value.pedido_b ?? ""}
@@ -234,6 +237,7 @@ export function PillPBLEstruturado({
         {c.print_b && (
           <FieldEvidence
             label={c.print_b.label}
+            help={c.print_b.help}
             optional={c.print_b.optional}
             itemId={`${pillId}-print-b`}
             value={value.print_b ?? emptyEvidence}
@@ -245,6 +249,7 @@ export function PillPBLEstruturado({
         {c.pedido_c && (
           <FieldText
             label={c.pedido_c.label}
+            help={c.pedido_c.help}
             optional={c.pedido_c.optional}
             placeholder={c.pedido_c.placeholder}
             value={value.pedido_c ?? ""}
@@ -254,6 +259,7 @@ export function PillPBLEstruturado({
         {c.print_c && (
           <FieldEvidence
             label={c.print_c.label}
+            help={c.print_c.help}
             optional={c.print_c.optional}
             itemId={`${pillId}-print-c`}
             value={value.print_c ?? emptyEvidence}
