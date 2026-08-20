@@ -43,6 +43,7 @@ const SECTIONS: Section[] = [
     title: "visão geral",
     items: [
       { to: "/admin", label: "início", icon: Home, exact: true },
+      { to: "/admin/fluxo", label: "fluxo do usuário", icon: Workflow },
       { to: "/admin/auditoria", label: "auditoria", icon: History },
     ],
   },
