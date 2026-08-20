@@ -44,7 +44,6 @@ const SECTIONS: Section[] = [
     title: "visão geral",
     items: [
       { to: "/admin", label: "início", icon: Home, exact: true },
-      { to: "/admin/fluxo", label: "fluxo do usuário", icon: Workflow },
       { to: "/admin/auditoria", label: "auditoria", icon: History },
     ],
   },
@@ -83,6 +82,7 @@ const SECTIONS: Section[] = [
   {
     title: "configurações",
     items: [
+      { to: "/admin/fluxo", label: "fluxo do usuário", icon: Workflow },
       { to: "/admin/usuarios", label: "usuários", icon: Users },
       { to: "/admin/rubricas", label: "rubricas", icon: ClipboardList },
       { to: "/admin/tutor", label: "tutor IA", icon: Brain },
