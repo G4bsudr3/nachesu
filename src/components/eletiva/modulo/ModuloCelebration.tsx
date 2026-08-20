@@ -2,8 +2,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { ModuloRatingCard } from "@/components/eletiva/modulo/ModuloRatingCard";
-import { isRatingCheckpoint } from "@/features/hub/useModuleRating";
 
 interface Props {
   moduleNumber: number;
