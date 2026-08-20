@@ -1,7 +1,7 @@
 import { Suspense, useMemo, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, EyeOff, FileWarning, Clock, User2 } from "lucide-react";
+import { ChevronRight, EyeOff, FileWarning, Clock, User2, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
