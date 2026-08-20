@@ -61,6 +61,7 @@ const HubMateriais = lazy(() => import("./pages/HubMateriais.tsx"));
 const TutorPage = lazy(() => import("./pages/TutorPage.tsx"));
 const Modulo = lazy(() => import("./pages/Modulo.tsx"));
 const Trilhas = lazy(() => import("./pages/Trilhas.tsx"));
+const Glossario = lazy(() => import("./pages/Glossario.tsx"));
 const MinhasEletivas = lazy(() => import("./pages/MinhasEletivas.tsx"));
 const Eletivas = lazy(() => import("./pages/Eletivas.tsx"));
 const EletivaHome = lazy(() => import("./pages/EletivaHome.tsx"));
@@ -206,6 +207,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Notificacoes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/app/glossario"
+                element={
+                  <ProtectedRoute>
+                    <Glossario />
                   </ProtectedRoute>
                 }
               />
