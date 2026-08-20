@@ -425,10 +425,61 @@ function RefCard({ title, children }: { title: string; children: React.ReactNode
 // ------------- take uploader com gravação + upload -------------
 type TakeState = { url: string | null; path: string | null; name: string | null; duracao: number | null };
 
+type Diagnostico = { causa: string; detalhe: string; acao: string };
+
+function diagnosticar(input: { blob?: Blob; filename?: string; raw?: string }): Diagnostico {
+  const { blob, filename, raw } = input;
+  if (blob && blob.size > MAX_MB * 1024 * 1024) {
+    const mb = Math.round(blob.size / (1024 * 1024));
+    return {
+      causa: "vídeo grande demais",
+      detalhe: `seu arquivo tem ${mb}mb e o limite de upload é ${MAX_MB}mb.`,
+      acao: "grava um take mais curto, ou sobe pro youtube/drive e cola o link no campo abaixo.",
+    };
+  }
+  const ext = filename?.split(".").pop()?.toLowerCase();
+  const tipoOk = (blob?.type || "").startsWith("video/") || (ext ? /^(mp4|webm|mov|m4v|ogg)$/.test(ext) : false);
+  if ((blob || filename) && !tipoOk) {
+    return {
+      causa: "tipo de arquivo inválido",
+      detalhe: `só entra vídeo (mp4, mov, webm). o que você escolheu${ext ? ` é .${ext}` : ""} não é vídeo.`,
+      acao: "escolhe o arquivo de vídeo direto da galeria, ou grava aqui pelo botão de gravação.",
+    };
+  }
+  const r = raw ?? "";
+  if (/row-level security|not authorized|permission|jwt|401|403/i.test(r)) {
+    return {
+      causa: "sessão expirada",
+      detalhe: "o envio foi recusado porque seu login caiu enquanto você gravava.",
+      acao: "recarrega a página, entra de novo e reenvia o take. o texto do roteiro fica salvo.",
+    };
+  }
+  if (/exceeded the maximum|payload too large|413/i.test(r)) {
+    return {
+      causa: "upload recusado pelo servidor",
+      detalhe: `o arquivo passou do limite de ${MAX_MB}mb no meio do envio.`,
+      acao: "sobe o vídeo pro youtube ou drive e cola o link no campo abaixo.",
+    };
+  }
+  if (/network|failed to fetch|timeout|aborted|load failed/i.test(r)) {
+    return {
+      causa: "upload falhou no meio do caminho",
+      detalhe: "a conexão caiu durante o envio, comum em wi-fi instável ou 4g fraco.",
+      acao: "tenta de novo numa rede melhor. se travar de novo, cola o link do vídeo no campo abaixo.",
+    };
+  }
+  return {
+    causa: "upload falhou",
+    detalhe: r || "não deu pra concluir o envio.",
+    acao: "tenta enviar de novo. se insistir, cola o link do vídeo no campo abaixo que vale igual.",
+  };
+}
+
 function TakeUploader({ userId, value, onChange, accent }: { userId: string | null; value: TakeState; onChange: (v: TakeState) => void; accent: string }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  const [diag, setDiag] = useState<Diagnostico | null>(null);
   const [link, setLink] = useState("");
 
   // gravação
