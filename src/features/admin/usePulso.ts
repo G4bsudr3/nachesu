@@ -294,7 +294,9 @@ export function usePulso(range: string, includeTest = false) {
       }
     >();
     current.forEach((r) => {
-      const e = map.get(r.course_id) ?? {
+      // agrupa por curso + escala: nunca mistura ritmo legado com satisfação
+      const k = `${r.course_id}:${r.scale}`;
+      const e = map.get(k) ?? {
         course_id: r.course_id,
         title: r.course_title,
         slug: r.course_slug,
@@ -302,8 +304,9 @@ export function usePulso(range: string, includeTest = false) {
         ratings: [],
       };
       e.ratings.push(r.rating);
-      map.set(r.course_id, e);
+      map.set(k, e);
     });
+
     return [...map.values()].map((c) => ({
       ...c,
       average: avg(c.ratings),
