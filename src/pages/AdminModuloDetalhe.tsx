@@ -1,12 +1,11 @@
-import { Suspense, useMemo, useState } from "react";
-import { Link, useParams, Navigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, EyeOff, FileWarning, Clock, User2, Info } from "lucide-react";
+import { ChevronRight, EyeOff, FileWarning, Clock, User2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { PanelHeader } from "@/features/admin/moduloPanels/PanelHeader";
-import { PanelSkeleton } from "@/features/admin/moduloPanels/PanelSkeleton";
+import { ExercicioTabContent } from "@/features/admin/moduloPanels/ExercicioTabContent";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { FeedbackReviewDrawer } from "@/features/admin/FeedbackReviewDrawer";
@@ -412,31 +411,7 @@ const AdminModuloDetalhe = () => {
           </div>
         </TabsContent>
         <TabsContent value="exercicio" className="space-y-8">
-          {!ExercicioPanel && (
-            <PanelHeader title={"sem painel específico"} />
-          )}
-          {ExercicioPanel ? (
-            <Suspense fallback={<PanelSkeleton />}>
-              <ExercicioPanel />
-            </Suspense>
-          ) : (
-            <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-white p-5 flex items-start gap-3">
-              <span aria-hidden className="mt-0.5 shrink-0 w-9 h-9 rounded-full bg-perestroika-preto/5 flex items-center justify-center">
-                <Info className="w-4 h-4 text-perestroika-preto/60" />
-              </span>
-              <div className="space-y-2 text-sm text-perestroika-preto/70 max-w-2xl">
-                <p>
-                  painéis do exercício são feitos sob medida para exercícios pbl com métricas próprias.
-                  este módulo ainda não tem um.
-                </p>
-                <p>
-                  enquanto isso, use a aba{" "}
-                  <span className="font-semibold text-perestroika-preto">turma</span>{" "}
-                  para ver entregas, status e revisar respostas dos estudantes.
-                </p>
-              </div>
-            </div>
-          )}
+          <ExercicioTabContent slug={slug} number={Number.isNaN(num) ? undefined : num} />
         </TabsContent>
       </Tabs>
 
