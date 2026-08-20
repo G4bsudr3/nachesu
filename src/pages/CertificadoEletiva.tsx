@@ -17,6 +17,7 @@ import {
 } from "@/components/certificate/NachesCertificate";
 import { toast } from "@/hooks/use-toast";
 import { logger } from "@/lib/logger";
+import { accentFor, PAPER } from "@/lib/eletivaTheme";
 
 const slugify = (s: string) =>
   s
