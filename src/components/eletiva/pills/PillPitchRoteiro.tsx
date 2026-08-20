@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ArrowRight, Check, Circle, Loader2, Mic, Sparkles, Trash2, Upload, Video } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, Circle, Link as LinkIcon, Loader2, Mic, Sparkles, Trash2, Upload, Video } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
