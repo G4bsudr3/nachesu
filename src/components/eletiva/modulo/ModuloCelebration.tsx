@@ -2,8 +2,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
-import { ModuloRatingCard } from "@/components/eletiva/modulo/ModuloRatingCard";
-import { isRatingCheckpoint } from "@/features/hub/useModuleRating";
 
 interface Props {
   moduleNumber: number;
@@ -71,16 +69,9 @@ export function ModuloCelebration({
       >
         {nextHint ?? "obrigado por entregar com presença. próximo módulo libera em breve."}
       </motion.p>
-      {moduleId &&
-        isRatingCheckpoint(moduleNumber) &&
-        courseSlug !== "ia-na-pratica" && (
-          <ModuloRatingCard
-            moduleId={moduleId}
-            moduleNumber={moduleNumber}
-            trailColor={trailColor}
-            courseSlug={courseSlug}
-          />
-        )}
+      {/* a avaliação do módulo vive inline na pílula de registro, igual nas
+          duas eletivas. aqui não repete pra não pedir a mesma nota duas vezes. */}
+
       {courseSlug && (
         <Link
           to={`/app/eletiva/${courseSlug}`}

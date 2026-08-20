@@ -11,13 +11,19 @@ import {
 
 interface Props {
   moduleId: string;
+  /** 0 esconde o número no título (uso inline dentro da pílula de registro) */
   moduleNumber: number;
   trailColor: string;
   /** slug da eletiva, pra oferecer o tutor quando a nota é baixa */
   courseSlug?: string | null;
   /** quando true, ignora o "agora não" e mostra o card mesmo assim */
   forceOpen?: boolean;
+  /** dentro da pílula de registro: sem margem extra e sempre visível */
+  inline?: boolean;
+  /** avisa a pílula quando a pergunta já foi respondida */
+  onAnswered?: (value: number | null) => void;
 }
+
 
 const LABELS: Record<number, string> = {
   1: "difícil demais, travou",
@@ -41,6 +47,8 @@ export const ModuloRatingCard = ({
   trailColor,
   courseSlug,
   forceOpen = false,
+  inline = false,
+  onAnswered,
 }: Props) => {
   const { rating, loading, save, saving } = useModuleRating(moduleId);
   const [hover, setHover] = useState<number | null>(null);
@@ -57,8 +65,10 @@ export const ModuloRatingCard = ({
   useEffect(() => {
     if (rating && picked === null) setPicked(rating.rating);
     if (rating?.comment && !comment) setComment(rating.comment);
+    if (rating) onAnswered?.(rating.rating);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rating]);
+
 
   if (loading) return null;
 
@@ -91,17 +101,20 @@ export const ModuloRatingCard = ({
     );
   }
 
-  if (dismissed && !forceOpen && !editing) return null;
+  if (dismissed && !forceOpen && !editing && !inline) return null;
 
   const onPick = async (n: number) => {
     setPicked(n);
+    onAnswered?.(n);
     try {
       await save({ rating: n });
     } catch {
       toast.error("não deu pra salvar agora, tenta de novo");
       setPicked(null);
+      onAnswered?.(null);
     }
   };
+
 
   const onSendComment = async () => {
     try {
@@ -119,11 +132,18 @@ export const ModuloRatingCard = ({
   return (
     <section
       aria-label="avaliar este módulo"
-      className="mt-8 w-full max-w-md rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
+      className={
+        inline
+          ? "mt-6 w-full rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
+          : "mt-8 w-full max-w-md rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-5 text-center"
+      }
     >
       <p className="font-display uppercase text-xl leading-none">
-        como foi o módulo {String(moduleNumber).padStart(2, "0")} pra você?
+        {moduleNumber > 0
+          ? `como foi o módulo ${String(moduleNumber).padStart(2, "0")} pra você?`
+          : "como foi este módulo pra você?"}
       </p>
+
 
       <div
         className="mt-3 flex items-center justify-center"
@@ -203,7 +223,7 @@ export const ModuloRatingCard = ({
         </div>
       )}
 
-      {picked === null && (
+      {picked === null && !inline && (
         <button
           type="button"
           onClick={() => {

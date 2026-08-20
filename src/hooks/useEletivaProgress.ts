@@ -52,10 +52,11 @@ const isAvailable = (m: { published: boolean; available_from: string | null }) =
 };
 
 /**
- * eletivas em navegação livre: todos os módulos publicados abrem ao mesmo
- * tempo e o aluno escolhe por onde continuar. a trilha marca o próximo dele.
+ * navegação livre vale pra todas as eletivas: todos os módulos já liberados
+ * abrem ao mesmo tempo e o estudante escolhe por onde continuar. a trilha
+ * marca o próximo dele.
  */
-const FREE_NAV_COURSE_SLUGS = new Set(["ia-na-pratica"]);
+
 
 const ADMIN_BYPASS_EMAILS = new Set([
   "hey@frattz.com",
@@ -183,15 +184,17 @@ export const useEletivaProgress = (courseId?: string | null) => {
       const totalPublished = allModules.filter((m) => m.published).length;
 
 
-      // sequencial: default true. setting "false" → modo livre.
+      // navegação livre é a regra em TODAS as eletivas: o que gate o módulo é
+      // a liberação semanal (available_from), não a conclusão do anterior.
+      // o admin pode travar em sequencial ligando o setting, e aí vale pros
+      // dois cursos igual (nada de regra escondida por slug).
       const emailBypass = ADMIN_BYPASS_EMAILS.has(
         (user?.email ?? "").trim().toLowerCase(),
       );
-      const freeNav = FREE_NAV_COURSE_SLUGS.has(courseRes.data?.slug ?? "");
       const sequentialUnlock =
         !emailBypass &&
-        !freeNav &&
-        (sequentialRes.data?.value ?? "true").toLowerCase() !== "false";
+        (sequentialRes.data?.value ?? "false").toLowerCase() === "true";
+
 
       // calcula desbloqueios. ordenação por number garante "anterior".
       const sortedAll = [...allModules].sort((a, b) => a.number - b.number);

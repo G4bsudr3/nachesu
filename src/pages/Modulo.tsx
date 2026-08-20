@@ -11,6 +11,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { logAdminModuleView } from "@/hooks/useAdminAuditLog";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
+import { isRatingCheckpoint } from "@/features/hub/useModuleRating";
+
 import { useCourseBySlug } from "@/hooks/useCourses";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
@@ -708,7 +710,9 @@ const Modulo = () => {
           trailColor={trailColor}
           hasTrail={!!trail}
           moduleId={moduleRow.id}
-          ratingModuleId={courseSlug === "ia-na-pratica" ? moduleRow.id : null}
+          ratingModuleId={isRatingCheckpoint(moduleRow.number) ? moduleRow.id : null}
+          courseSlug={courseSlug ?? null}
+
 
           onTogglePill={(p) => togglePillMutation.mutate(p)}
           togglePending={togglePillMutation.isPending}
