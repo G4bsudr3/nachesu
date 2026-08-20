@@ -49,6 +49,7 @@ const EletivaHome = lazy(() => import("./pages/EletivaHome.tsx"));
 const CertificadoEletiva = lazy(() => import("./pages/CertificadoEletiva.tsx"));
 const Notificacoes = lazy(() => import("./pages/Notificacoes.tsx"));
 const AdminRisco = lazy(() => import("./pages/AdminRisco.tsx"));
+const AdminFluxo = lazy(() => import("./pages/AdminFluxo.tsx"));
 const AdminNotificacoes = lazy(() => import("./pages/AdminNotificacoes.tsx"));
 const AdminTurma = lazy(() => import("./pages/AdminTurma.tsx"));
 const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx"));
