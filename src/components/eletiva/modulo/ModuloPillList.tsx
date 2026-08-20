@@ -210,7 +210,7 @@ const PillCardShell = ({
             </span>
             {pill.required ? (
               <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/70">
-                {pillKindLabel[pill.kind]}
+                {pillLabel(pill)}
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/25 px-2 py-0.5 font-body text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-perestroika-preto/60">
