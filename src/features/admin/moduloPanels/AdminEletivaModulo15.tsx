@@ -66,7 +66,7 @@ export default function AdminEletivaModulo15() {
   return (
     <div className="space-y-8">
       <div className="space-y-8">
-        <PanelHeader title={"suposições e riscos da turma"} description={"quantos alunos mapearam as 3 suposições nas dimensões pedidas e quantos têm risco na zona "ação imediata"."} />
+        <PanelHeader title={"suposições e riscos da turma"} description={'quantos estudantes mapearam as 3 suposições nas dimensões pedidas e quantos têm risco na zona "ação imediata".'} />
 
         <section className="grid gap-3 sm:grid-cols-5">
           <KpiCard label="matriculados" value={kpis?.total_students ?? 0} />
