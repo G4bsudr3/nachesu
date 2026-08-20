@@ -425,10 +425,61 @@ function RefCard({ title, children }: { title: string; children: React.ReactNode
 // ------------- take uploader com gravação + upload -------------
 type TakeState = { url: string | null; path: string | null; name: string | null; duracao: number | null };
 
+type Diagnostico = { causa: string; detalhe: string; acao: string };
+
+function diagnosticar(input: { blob?: Blob; filename?: string; raw?: string }): Diagnostico {
+  const { blob, filename, raw } = input;
+  if (blob && blob.size > MAX_MB * 1024 * 1024) {
+    const mb = Math.round(blob.size / (1024 * 1024));
+    return {
+      causa: "vídeo grande demais",
+      detalhe: `seu arquivo tem ${mb}mb e o limite de upload é ${MAX_MB}mb.`,
+      acao: "grava um take mais curto, ou sobe pro youtube/drive e cola o link no campo abaixo.",
+    };
+  }
+  const ext = filename?.split(".").pop()?.toLowerCase();
+  const tipoOk = (blob?.type || "").startsWith("video/") || (ext ? /^(mp4|webm|mov|m4v|ogg)$/.test(ext) : false);
+  if ((blob || filename) && !tipoOk) {
+    return {
+      causa: "tipo de arquivo inválido",
+      detalhe: `só entra vídeo (mp4, mov, webm). o que você escolheu${ext ? ` é .${ext}` : ""} não é vídeo.`,
+      acao: "escolhe o arquivo de vídeo direto da galeria, ou grava aqui pelo botão de gravação.",
+    };
+  }
+  const r = raw ?? "";
+  if (/row-level security|not authorized|permission|jwt|401|403/i.test(r)) {
+    return {
+      causa: "sessão expirada",
+      detalhe: "o envio foi recusado porque seu login caiu enquanto você gravava.",
+      acao: "recarrega a página, entra de novo e reenvia o take. o texto do roteiro fica salvo.",
+    };
+  }
+  if (/exceeded the maximum|payload too large|413/i.test(r)) {
+    return {
+      causa: "upload recusado pelo servidor",
+      detalhe: `o arquivo passou do limite de ${MAX_MB}mb no meio do envio.`,
+      acao: "sobe o vídeo pro youtube ou drive e cola o link no campo abaixo.",
+    };
+  }
+  if (/network|failed to fetch|timeout|aborted|load failed/i.test(r)) {
+    return {
+      causa: "upload falhou no meio do caminho",
+      detalhe: "a conexão caiu durante o envio, comum em wi-fi instável ou 4g fraco.",
+      acao: "tenta de novo numa rede melhor. se travar de novo, cola o link do vídeo no campo abaixo.",
+    };
+  }
+  return {
+    causa: "upload falhou",
+    detalhe: r || "não deu pra concluir o envio.",
+    acao: "tenta enviar de novo. se insistir, cola o link do vídeo no campo abaixo que vale igual.",
+  };
+}
+
 function TakeUploader({ userId, value, onChange, accent }: { userId: string | null; value: TakeState; onChange: (v: TakeState) => void; accent: string }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  const [diag, setDiag] = useState<Diagnostico | null>(null);
   const [link, setLink] = useState("");
 
   // gravação
@@ -449,14 +500,20 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
 
   async function uploadBlob(blob: Blob, filename: string, duracao: number | null) {
     if (!userId) {
-      const m = "precisa estar logado pra enviar o take.";
-      setErro(m); toast.error(m); return;
+      setErro(null);
+      setDiag({
+        causa: "você não está logado",
+        detalhe: "o take precisa de login pra ficar salvo com você.",
+        acao: "entra de novo na plataforma e volta pro módulo 19. o roteiro escrito continua salvo.",
+      });
+      toast.error("precisa estar logado pra enviar o take.");
+      return;
     }
-    if (blob.size > MAX_MB * 1024 * 1024) {
-      const m = `arquivo passa de ${MAX_MB}mb. grava menor ou comprime.`;
-      setErro(m); toast.error(m); return;
+    const pre = diagnosticar({ blob, filename });
+    if (pre.causa === "vídeo grande demais" || pre.causa === "tipo de arquivo inválido") {
+      setErro(null); setDiag(pre); toast.error(pre.causa); return;
     }
-    setErro(null); setUploading(true); setProgress("subindo...");
+    setErro(null); setDiag(null); setUploading(true); setProgress("subindo...");
     try {
       if (value.path) {
         await supabase.storage.from(BUCKET).remove([value.path]).catch(() => {});
@@ -472,8 +529,8 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
       setTimeout(() => setProgress(null), 1500);
     } catch (e) {
       const raw = e instanceof Error ? e.message : "erro no upload";
-      const msg = /row-level security|not authorized|permission/i.test(raw) ? "sem permissão. faz login de novo." : raw;
-      setErro(msg); setProgress(null); toast.error(msg);
+      const d = diagnosticar({ raw });
+      setDiag(d); setProgress(null); toast.error(d.causa);
     } finally {
       setUploading(false);
     }
@@ -622,6 +679,26 @@ function TakeUploader({ userId, value, onChange, accent }: { userId: string | nu
           />
         </label>
       </div>
+
+      {diag && (
+        <div role="alert" className="space-y-2 rounded-2xl border-2 p-3" style={{ borderColor: "#fd4644", backgroundColor: "#fd464412" }}>
+          <p className="flex items-start gap-2 font-body text-sm font-semibold text-perestroika-preto">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" style={{ color: "#fd4644" }} aria-hidden />
+            {diag.causa}
+          </p>
+          <p className="font-body text-[13px] leading-snug text-perestroika-preto/75">{diag.detalhe}</p>
+          <p className="font-body text-[13px] leading-snug text-perestroika-preto">
+            <span className="font-semibold">o que fazer: </span>{diag.acao}
+          </p>
+          <button
+            type="button"
+            onClick={() => setDiag(null)}
+            className="inline-flex min-h-[36px] items-center rounded-full border-2 border-perestroika-preto/20 px-3 font-body text-xs text-perestroika-preto hover:border-perestroika-preto/50"
+          >
+            entendi
+          </button>
+        </div>
+      )}
 
       <div className="space-y-1.5 rounded-2xl border-2 border-perestroika-preto/15 p-3">
         <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
