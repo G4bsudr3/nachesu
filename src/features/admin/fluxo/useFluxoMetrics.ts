@@ -23,7 +23,7 @@ export const useFluxoMetrics = () =>
         comProgresso,
       ] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("status", "pendente"),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("status", "ativo"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("status", "active"),
         supabase.from("enrollments").select("id", { count: "exact", head: true }).eq("status", "active"),
         supabase
           .from("student_engagement_risk")
