@@ -74,9 +74,9 @@ export const CommandPalette = ({
       onOpenChange={onOpenChange}
       label="busca de comandos"
       overlayClassName="fixed inset-0 z-[100] bg-perestroika-preto/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
-      contentClassName="fixed left-1/2 top-[14vh] z-[101] w-[92vw] max-w-lg -translate-x-1/2 bg-perestroika-bege rounded-2xl border border-perestroika-preto/15 shadow-2xl overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+      contentClassName="fixed left-1/2 top-[14vh] z-[101] w-[92vw] max-w-lg -translate-x-1/2 bg-perestroika-bege rounded-2xl border-2 border-perestroika-preto/15 shadow-2xl overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
     >
-      <div className="flex items-center gap-2 px-4 border-b border-perestroika-preto/10">
+      <div className="flex items-center gap-2 px-4 border-b border-perestroika-preto/15">
         <Search className="w-4 h-4 text-perestroika-preto/60" />
         <Command.Input
           value={query}
@@ -99,7 +99,7 @@ export const CommandPalette = ({
                   key={s.user_id}
                   value={`estudante ${s.email ?? ""} ${s.display_name ?? ""} ${s.nickname ?? ""} ${s.user_id}`}
                   onSelect={run(() => navigate(`/admin/aluno/${s.user_id}`))}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
                 >
                   <User className="w-4 h-4" />
                   <span className="truncate">{name}</span>
@@ -118,7 +118,7 @@ export const CommandPalette = ({
               key={i.to}
               value={`op ${i.label} ${i.to}`}
               onSelect={run(() => navigate(i.to))}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+              className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
             >
               <i.icon className="w-4 h-4" />
               {i.label}
@@ -158,7 +158,7 @@ export const CommandPalette = ({
                 setBusy(false);
               }
             })}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+            className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
           >
             <UserCheck className="w-4 h-4" />
             aprovar próximo pendente
@@ -178,7 +178,7 @@ export const CommandPalette = ({
                 setBusy(false);
               }
             })}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+            className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
           >
             <Sparkles className="w-4 h-4" />
             regenerar resumo da semana
@@ -194,7 +194,7 @@ export const CommandPalette = ({
                 toast.error("não consegui copiar");
               }
             })}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+            className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
           >
             <Link2 className="w-4 h-4" />
             copiar link da página atual
@@ -202,7 +202,7 @@ export const CommandPalette = ({
           <Command.Item
             value="acao sair logout"
             onSelect={run(() => signOut())}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
+            className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-perestroika-preto/80 cursor-pointer aria-selected:bg-perestroika-preto/10"
           >
             <LogOut className="w-4 h-4" />
             sair

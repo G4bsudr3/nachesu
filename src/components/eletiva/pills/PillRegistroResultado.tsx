@@ -209,7 +209,7 @@ export function PillRegistroResultado({
             <button
               type="button"
               onClick={addEv}
-              className="self-start inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/20 px-3 py-1.5 font-body text-xs text-perestroika-preto/70 hover:border-perestroika-preto/50"
+              className="self-start inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/15 px-3 py-1.5 font-body text-xs text-perestroika-preto/70 hover:border-perestroika-preto/50"
             >
               + evidência
             </button>
@@ -413,7 +413,7 @@ function TextArea({
         rows={rows}
         placeholder={placeholder}
         className={`w-full rounded-xl border-2 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none resize-y ${
-          ok ? "border-perestroika-preto/40" : "border-perestroika-preto/15"
+          ok ? "border-perestroika-preto/30" : "border-perestroika-preto/15"
         }`}
       />
       {min > 0 && (

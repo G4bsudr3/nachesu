@@ -30,7 +30,7 @@ export const AdminTableWrapper = ({
 }: HTMLAttributes<HTMLDivElement> & { scroll?: boolean }) => (
   <section
     className={cn(
-      "rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 overflow-hidden",
+      "rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 overflow-hidden",
       className,
     )}
     {...props}

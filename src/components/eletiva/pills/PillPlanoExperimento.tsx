@@ -405,7 +405,7 @@ function TextField({
         placeholder={placeholder}
         rows={2}
         className={`w-full rounded-xl border-2 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none resize-y ${
-          ok ? "border-perestroika-preto/40" : "border-perestroika-preto/15"
+          ok ? "border-perestroika-preto/30" : "border-perestroika-preto/15"
         }`}
       />
       <p
@@ -439,7 +439,7 @@ function CronRow({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={`w-full rounded-xl border-2 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none ${
-          ok ? "border-perestroika-preto/40" : "border-perestroika-preto/15"
+          ok ? "border-perestroika-preto/30" : "border-perestroika-preto/15"
         }`}
       />
     </div>

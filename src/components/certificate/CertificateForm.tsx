@@ -72,7 +72,7 @@ export const CertificateForm = ({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-10">
       <header className="text-center">
-        <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-perestroika-laranja mb-3">
+        <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-perestroika-laranja mb-3">
           <Sparkles className="w-3.5 h-3.5" />
           monte o seu
         </div>
@@ -87,7 +87,7 @@ export const CertificateForm = ({
 
       {/* 1. NOME */}
       <section className="flex flex-col gap-3">
-        <label className="font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
+        <label className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
           1. nome no certificado
         </label>
         <input
@@ -119,7 +119,7 @@ export const CertificateForm = ({
 
       {/* 2. ESTILO VISUAL */}
       <section className="flex flex-col gap-3">
-        <label className="font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
+        <label className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
           2. estilo visual
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -133,11 +133,11 @@ export const CertificateForm = ({
                 className={`relative p-4 rounded-xl text-left transition-all border-2 ${
                   selected
                     ? "border-perestroika-preto"
-                    : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
+                    : "border-perestroika-preto/15 hover:border-perestroika-preto/30"
                 }`}
               >
                 <div
-                  className="w-full h-24 rounded-lg mb-3 relative overflow-hidden"
+                  className="w-full h-24 rounded-xl mb-3 relative overflow-hidden"
                   style={{ background: p.background }}
                 >
                   <div
@@ -168,7 +168,7 @@ export const CertificateForm = ({
 
       {/* PRÉVIA AO VIVO — o certificado de verdade, em escala reduzida */}
       <section className="flex flex-col gap-3">
-        <label className="font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
+        <label className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
           prévia ao vivo
         </label>
         <p className="text-xs text-perestroika-preto/55 -mt-1">
@@ -176,7 +176,7 @@ export const CertificateForm = ({
         </p>
         <div className="flex justify-center">
           <div
-            className="relative rounded-2xl overflow-hidden shadow-xl border border-perestroika-preto/10"
+            className="relative rounded-2xl overflow-hidden shadow-xl border-2 border-perestroika-preto/15"
             style={{
               width: dims.width * previewScale,
               height: dims.height * previewScale,

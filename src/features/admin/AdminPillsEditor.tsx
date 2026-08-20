@@ -509,10 +509,10 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
       style={style}
       className={`flex items-start gap-3 rounded-lg border bg-perestroika-bege/60 p-3 ${
         isDragging
-          ? "border-perestroika-preto/40 shadow-lg"
+          ? "border-perestroika-preto/30 shadow-lg"
           : pill.published
             ? "border-perestroika-preto/15"
-            : "border-dashed border-perestroika-preto/25"
+            : "border-dashed border-perestroika-preto/15"
       }`}
     >
       <button
@@ -539,7 +539,7 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
           {!pill.required && (
             <Badge
               variant="outline"
-              className="text-[10px] uppercase border-perestroika-preto/20"
+              className="text-[10px] uppercase border-perestroika-preto/15"
             >
               opcional
             </Badge>
@@ -570,7 +570,7 @@ const SortablePillRow = ({ pill, onEdit, onDelete }: RowProps) => {
           type="button"
           aria-label="remover pílula"
           onClick={onDelete}
-          className="w-8 h-8 inline-flex items-center justify-center rounded-md hover:bg-destructive/10 text-destructive transition-colors"
+          className="w-8 h-8 inline-flex items-center justify-center rounded-xl hover:bg-destructive/10 text-destructive transition-colors"
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -720,7 +720,7 @@ const PillFormDialog = ({
             </div>
           </div>
 
-          <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 p-3 flex items-center justify-between gap-3">
+          <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-3 flex items-center justify-between gap-3">
             <div>
               <Label
                 htmlFor="p-published"

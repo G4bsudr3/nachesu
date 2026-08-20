@@ -591,7 +591,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
                   onClick={onPrev}
                   disabled={!onPrev}
                   aria-label="entrega anterior"
-                  className="w-8 h-8 rounded-full border border-perestroika-preto/20 flex items-center justify-center hover:bg-perestroika-preto/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-8 h-8 rounded-full border border-perestroika-preto/15 flex items-center justify-center hover:bg-perestroika-preto/5 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -605,7 +605,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
                   onClick={onNext}
                   disabled={!onNext}
                   aria-label="próxima entrega"
-                  className="w-8 h-8 rounded-full border border-perestroika-preto/20 flex items-center justify-center hover:bg-perestroika-preto/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-8 h-8 rounded-full border border-perestroika-preto/15 flex items-center justify-center hover:bg-perestroika-preto/5 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -771,7 +771,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
                 </div>
               )}
               {analysis.risk_note && (
-                <p className="rounded-lg bg-rose-100 text-rose-900 border border-rose-300 px-3 py-2">
+                <p className="rounded-xl bg-rose-100 text-rose-900 border border-rose-300 px-3 py-2">
                   {analysis.risk_note}
                 </p>
               )}
@@ -867,7 +867,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
 
         <div className="mt-5">
           {restoredFromLocal && (
-            <div className="mb-2 flex items-start justify-between gap-3 rounded-xl border border-perestroika-preto/20 bg-perestroika-bege/60 px-3 py-2">
+            <div className="mb-2 flex items-start justify-between gap-3 rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 px-3 py-2">
               <p className="text-[11px] text-perestroika-preto/70">
                 recuperamos o rascunho que você tinha escrito nessa entrega. ele fica
                 salvo aqui no navegador enquanto você navega entre entregas.
@@ -919,7 +919,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             />
           )}
           {showPreview ? (
-            <div className="mt-2 min-h-[12rem] rounded-md border border-perestroika-preto/20 bg-perestroika-bege/60 p-3">
+            <div className="mt-2 min-h-[12rem] rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-3">
               {feedback.trim() ? (
                 <FeedbackMarkdown>{feedback}</FeedbackMarkdown>
               ) : (
@@ -932,7 +932,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               onChange={(e) => setFeedback(e.target.value.slice(0, 2000))}
               placeholder="o que ficou forte, o que pode ajustar, o próximo passo... aceita **negrito**, *itálico*, listas, [link](url)"
               rows={8}
-              className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
+              className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/15 font-body text-sm"
             />
           )}
           <p className="mt-1 text-[10px] text-perestroika-preto/60 text-right">
@@ -954,7 +954,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
               max={scoreMax}
               value={score}
               onChange={(e) => setScore(e.target.value)}
-              className="w-32 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
+              className="w-32 bg-perestroika-bege/60 border-perestroika-preto/15 font-body text-sm"
               placeholder={`até ${scoreMax}`}
             />
             {scoreInvalid && (
@@ -1044,8 +1044,8 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
                   key={m.id}
                   className={`rounded-xl p-3 ${
                     m.author_role === "student"
-                      ? "bg-perestroika-bege/70 border border-perestroika-preto/10"
-                      : "bg-perestroika-preto/5 border border-perestroika-preto/20"
+                      ? "bg-perestroika-bege/70 border border-perestroika-preto/15"
+                      : "bg-perestroika-preto/5 border border-perestroika-preto/15"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
@@ -1079,7 +1079,7 @@ export const FeedbackReviewDrawer = ({ open, onOpenChange, deliverable, onPrev, 
             onChange={(e) => setReply(e.target.value.slice(0, 4000))}
             placeholder="responder ao estudante..."
             rows={3}
-            className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/20 font-body text-sm"
+            className="mt-2 bg-perestroika-bege/60 border-perestroika-preto/15 font-body text-sm"
           />
           <div className="mt-2 flex items-center justify-between gap-2 flex-wrap">
             <span className="text-[10px] text-perestroika-preto/60">{reply.length}/4000</span>

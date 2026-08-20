@@ -89,7 +89,7 @@ export const AlbumLightbox = ({ photo, photos, onClose, onNavigate, onDelete }: 
         aria-modal="true"
       >
         {/* foto */}
-        <div className="relative flex flex-1 items-center justify-center p-4 sm:p-8">
+        <div className="relative flex flex-1 items-center justify-center p-4 sm:p-6">
           <button
             type="button"
             onClick={onClose}
@@ -137,8 +137,8 @@ export const AlbumLightbox = ({ photo, photos, onClose, onNavigate, onDelete }: 
           onClick={(e) => e.stopPropagation()}
           className="flex w-full flex-col bg-perestroika-bege text-perestroika-preto sm:w-[380px] sm:max-w-[40vw]"
         >
-          <div className="border-b border-perestroika-preto/10 p-5 sm:p-6">
-            <p className="mb-1 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+          <div className="border-b border-perestroika-preto/15 p-5 sm:p-6">
+            <p className="mb-1 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
               álbum coletivo · {idx + 1} de {photos.length}
             </p>
             <h3 className="font-display text-2xl uppercase leading-none">@{author}</h3>
@@ -174,13 +174,13 @@ export const AlbumLightbox = ({ photo, photos, onClose, onNavigate, onDelete }: 
           </div>
 
           <div className="flex-1 overflow-y-auto p-5 sm:p-6">
-            <p className="mb-3 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+            <p className="mb-3 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
               reações
             </p>
             <ReactionBar targetId={photo.id} targetKind="album_photo" />
 
             <div className="mt-6">
-              <p className="mb-3 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+              <p className="mb-3 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                 comentários
               </p>
               <CommentThread targetId={photo.id} targetKind="album_photo" />

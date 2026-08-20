@@ -40,7 +40,7 @@ const MaterialCard = ({ m, onOpen }: CardProps) => {
     <button
       type="button"
       onClick={() => onOpen(m)}
-      className="group relative flex w-full flex-col overflow-hidden rounded-3xl border border-perestroika-preto/10 bg-perestroika-bege/50 text-left transition-all hover:-translate-y-1 hover:border-perestroika-preto/30 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
+      className="group relative flex w-full flex-col overflow-hidden rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege/50 text-left transition-all hover:-translate-y-1 hover:border-perestroika-preto/30 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-perestroika-preto/5">
         {thumb ? (
@@ -229,7 +229,7 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
         role="dialog"
         aria-modal="true"
       >
-        <header className="flex items-start justify-between gap-4 border-b border-perestroika-preto/10 p-5 sm:p-6">
+        <header className="flex items-start justify-between gap-4 border-b border-perestroika-preto/15 p-5 sm:p-6">
           <div className="min-w-0">
             {cat && (
               <span className="mb-1 inline-block font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
@@ -259,13 +259,13 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
               title={m.title}
               externalUrl={url}
               className={cn(
-                "mb-6 w-full overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-preto/5",
+                "mb-6 w-full overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/5",
                 kind === "pdf" ? "h-[70vh]" : "aspect-video",
               )}
             />
           )}
           {player.mode === "video" && player.src && (
-            <div className="mb-6 overflow-hidden rounded-2xl border border-perestroika-preto/10 bg-perestroika-preto">
+            <div className="mb-6 overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto">
               <video
                 src={player.src}
                 controls
@@ -283,7 +283,7 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
             />
           )}
           {isExternalOnly && (
-            <div className="mb-6 rounded-2xl border-2 border-dashed border-perestroika-preto/20 bg-perestroika-bege/50 p-6 text-center">
+            <div className="mb-6 rounded-2xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/50 p-6 text-center">
               <ExternalLink className="mx-auto mb-2 h-6 w-6 text-perestroika-preto/55" />
               <p className="mb-4 font-body text-sm text-perestroika-preto/75">
                 {kind === "doc"
@@ -317,12 +317,12 @@ const MaterialDrawer = ({ m, onClose }: { m: HubMaterial; onClose: () => void })
           )}
 
           <div className="mb-6">
-            <p className="mb-3 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/50">reações da turma</p>
+            <p className="mb-3 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">reações da turma</p>
             <ReactionBar targetId={m.id} targetKind="material" />
           </div>
 
           <div>
-            <p className="mb-3 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/50">comentários</p>
+            <p className="mb-3 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">comentários</p>
             <CommentThread targetId={m.id} targetKind="material" />
           </div>
         </div>
@@ -386,7 +386,7 @@ const HubMateriais = () => {
 
       <main className="container max-w-6xl py-8 sm:py-12">
         <header className="mb-8">
-          <p className="mb-2 font-body text-xs uppercase tracking-[0.25em] text-perestroika-preto/60">
+          <p className="mb-2 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
             {activeCourseTitle ? `materiais · ${activeCourseTitle.toLowerCase()}` : "materiais"}
           </p>
           <h1 className="font-display text-5xl uppercase leading-[0.9] sm:text-7xl">
@@ -431,7 +431,7 @@ const HubMateriais = () => {
         )}
 
         {!loading && filtered.length === 0 && (
-          <div className="rounded-3xl border border-dashed border-perestroika-preto/20 bg-perestroika-bege/40 p-8 sm:p-12 text-center">
+          <div className="rounded-3xl border-2 border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 p-8 sm:p-12 text-center">
             <div className="mx-auto mb-5 w-28 sm:w-32" aria-hidden="true">
               <EletivaSymbol pose="resting" />
             </div>
@@ -457,7 +457,7 @@ const HubMateriais = () => {
                 <button
                   type="button"
                   onClick={() => setActiveCategory("todos")}
-                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 bg-perestroika-bege/70 px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/80 hover:border-perestroika-preto/50"
+                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 bg-perestroika-bege/70 px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/80 hover:border-perestroika-preto/50"
                 >
                   ver tudo
                 </button>
@@ -476,7 +476,7 @@ const HubMateriais = () => {
               </button>
               <Link
                 to="/app"
-                className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/25 bg-perestroika-bege/70 px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-preto/80 hover:border-perestroika-preto/60"
+                className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 bg-perestroika-bege/70 px-5 py-3 font-body text-xs uppercase tracking-wide text-perestroika-preto/80 hover:border-perestroika-preto/60"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 voltar pro início
@@ -507,7 +507,7 @@ const CategoryChip = ({ active, onClick, label, count }: { active: boolean; onCl
       "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 font-body text-sm transition-all",
       active
         ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege"
-        : "border-perestroika-preto/15 bg-perestroika-bege/50 text-perestroika-preto/75 hover:border-perestroika-preto/40",
+        : "border-perestroika-preto/15 bg-perestroika-bege/50 text-perestroika-preto/75 hover:border-perestroika-preto/30",
     )}
   >
     <span className="lowercase">{label}</span>

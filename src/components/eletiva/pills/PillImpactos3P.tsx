@@ -334,7 +334,7 @@ function DimensaoBlock({
           <Icon className="h-4 w-4" />
         </span>
         <div>
-          <p className="font-display uppercase text-sm tracking-[0.18em] text-perestroika-preto">
+          <p className="font-display uppercase text-sm tracking-[0.2em] text-perestroika-preto">
             {dim.titulo}
           </p>
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">

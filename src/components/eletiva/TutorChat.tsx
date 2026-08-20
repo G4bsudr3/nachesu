@@ -340,7 +340,7 @@ export const TutorChat = ({
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <span
-                className="h-10 w-10 rounded-full flex items-center justify-center"
+                className="h-11 w-11 rounded-full flex items-center justify-center"
                 style={{ backgroundColor: trailColor }}
                 aria-hidden="true"
               >
@@ -414,7 +414,7 @@ export const TutorChat = ({
                   className="rounded-xl border-2 px-3 py-2 font-body text-[11px] text-perestroika-preto/85 leading-relaxed"
                   style={{ borderColor: trailColor, backgroundColor: `${trailColor}15` }}
                 >
-                  <p className="uppercase tracking-[0.18em] text-[9px] text-perestroika-preto/55 mb-0.5">
+                  <p className="uppercase tracking-[0.2em] text-[9px] text-perestroika-preto/55 mb-0.5">
                     exercício em andamento
                   </p>
                   <p className="font-semibold">{pillContext.pillTitle.toLowerCase()}</p>
@@ -434,7 +434,7 @@ export const TutorChat = ({
 
         {/* banner permanente de transparência */}
         <div
-          className="px-5 py-2 text-[11px] leading-tight text-perestroika-preto/65 border-b border-perestroika-preto/10 bg-perestroika-bege/40 flex items-center gap-2"
+          className="px-5 py-2 text-[11px] leading-tight text-perestroika-preto/65 border-b border-perestroika-preto/15 bg-perestroika-bege/40 flex items-center gap-2"
           role="note"
           aria-label="aviso de privacidade do tutor"
         >
@@ -459,7 +459,7 @@ export const TutorChat = ({
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border-2 border-dashed border-perestroika-preto/25 p-5 text-sm text-perestroika-preto/70"
+              className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-5 text-sm text-perestroika-preto/70"
             >
               oi, eu sou o joão-de-barro, tutor dessa trilha da eletiva. pergunte qualquer coisa sobre os módulos,
               o desafio central ou o próximo passo. eu não entrego resposta pronta, mas ajudo você a destravar o raciocínio.
@@ -475,8 +475,8 @@ export const TutorChat = ({
                     animate={{ opacity: 1, y: 0 }}
                     className="flex justify-start"
                   >
-                    <div className="max-w-[85%] rounded-xl bg-perestroika-bege border border-dashed border-perestroika-preto/25 px-3 py-2 font-body text-[11px] text-perestroika-preto/65 leading-relaxed">
-                      <p className="uppercase tracking-[0.18em] text-[9px] text-perestroika-preto/45 mb-1">
+                    <div className="max-w-[85%] rounded-xl bg-perestroika-bege border border-dashed border-perestroika-preto/15 px-3 py-2 font-body text-[11px] text-perestroika-preto/65 leading-relaxed">
+                      <p className="uppercase tracking-[0.2em] text-[9px] text-perestroika-preto/45 mb-1">
                         contexto do tutor
                       </p>
                       {m.context.done.length > 0 ? (
@@ -589,7 +589,7 @@ export const TutorChat = ({
                   type="button"
                   onClick={() => void runSend(chip)}
                   disabled={streaming}
-                  className="shrink-0 rounded-full border border-perestroika-preto/25 bg-perestroika-bege/60 px-3 py-1.5 font-body text-[11px] text-perestroika-preto/85 hover:bg-perestroika-preto hover:text-perestroika-bege hover:border-perestroika-preto transition-colors disabled:opacity-50"
+                  className="shrink-0 rounded-full border border-perestroika-preto/15 bg-perestroika-bege/60 px-3 py-1.5 font-body text-[11px] text-perestroika-preto/85 hover:bg-perestroika-preto hover:text-perestroika-bege hover:border-perestroika-preto transition-colors disabled:opacity-50"
                 >
                   {chip}
                 </button>

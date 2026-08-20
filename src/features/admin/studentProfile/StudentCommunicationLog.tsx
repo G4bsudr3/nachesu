@@ -35,7 +35,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-perestroika-preto/10 bg-perestroika-bege/60 px-3 py-2 text-xs inline-flex items-center gap-2">
+      <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 px-3 py-2 text-xs inline-flex items-center gap-2">
         <Clock className="w-3.5 h-3.5" />
         <span className="text-perestroika-preto/60">último acesso:</span>
         <strong>
@@ -55,7 +55,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
               {nudges.map((n) => (
                 <li
                   key={n.id}
-                  className="rounded-lg border border-perestroika-preto/10 bg-perestroika-bege/60 px-3 py-2 text-xs flex items-center justify-between"
+                  className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 px-3 py-2 text-xs flex items-center justify-between"
                 >
                   <span>
                     <strong className="uppercase">{n.level}</strong> · {n.days_inactive}d parado
@@ -81,7 +81,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
               {notifications.map((n) => (
                 <li
                   key={n.id}
-                  className="rounded-lg border border-perestroika-preto/10 bg-perestroika-bege/60 px-3 py-2 text-xs"
+                  className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 px-3 py-2 text-xs"
                 >
                   <div className="flex items-center justify-between mb-0.5">
                     <span className="font-medium">{n.title}</span>
@@ -128,7 +128,7 @@ export const StudentCommunicationLog = ({ userId }: Props) => {
               return (
                 <li
                   key={`${e.message_id ?? e.created_at}-${i}`}
-                  className="rounded-lg border border-perestroika-preto/10 bg-perestroika-bege/60 px-3 py-2 text-xs"
+                  className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 px-3 py-2 text-xs"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-medium">{e.template_name}</span>

@@ -51,7 +51,7 @@ export const ModuloHeader = ({
   return (
     <section
       aria-label="cabeçalho do módulo"
-      className="relative overflow-hidden rounded-3xl bg-perestroika-bege text-perestroika-preto p-6 sm:p-9 mb-8 sm:mb-10 border-2 border-perestroika-preto/25"
+      className="relative overflow-hidden rounded-3xl bg-perestroika-bege text-perestroika-preto p-5 sm:p-8 mb-8 sm:mb-10 border-2 border-perestroika-preto/15"
     >
       <div
         className="absolute inset-x-0 top-0 h-1.5"
@@ -62,7 +62,7 @@ export const ModuloHeader = ({
       {/* breadcrumb eletiva > trilha */}
       <nav
         aria-label="localização"
-        className="flex items-center gap-2 min-w-0 font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/60 mb-5"
+        className="flex items-center gap-2 min-w-0 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-5"
       >
         {courseTitle && (
           <>
@@ -106,7 +106,7 @@ export const ModuloHeader = ({
           {coreLabel ? `${coreLabel} de núcleo` : "tempo variável"}
         </DuracaoBadge>
         {!!bonusMinHigh && bonusMinHigh > 0 && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/15 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/65">
             <Sparkles className="h-3 w-3" aria-hidden />
             +{bonusMinHigh} min de bônus opcional
           </span>
@@ -131,7 +131,7 @@ export const ModuloHeader = ({
       {typeof totalPills === "number" && totalPills > 0 && (
         <div className="mt-6" aria-label={`progresso: ${donePills ?? 0} de ${totalPills} blocos, ${pct}%`}>
           <div className="flex items-baseline justify-between mb-2 gap-3">
-            <p className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/60">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60">
               progresso do módulo
             </p>
             <p className="font-body text-xs tabular-nums text-perestroika-preto/85">

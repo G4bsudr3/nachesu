@@ -165,7 +165,7 @@ function AdminAulaInner({ number }: { number: number }) {
     <div className="min-h-dvh bg-perestroika-bege">
       {/* header */}
       <header
-        className="border-b-2 border-perestroika-preto/10 px-4 sm:px-8 py-5"
+        className="border-b-2 border-perestroika-preto/15 px-4 sm:px-8 py-5"
         style={{ backgroundColor: `${accent}10` }}
       >
         <div className="max-w-6xl mx-auto flex flex-wrap items-center gap-3 justify-between">
@@ -267,7 +267,7 @@ function ConteudoTab({ module: mod, accent }: { module: ModuleRow; accent: strin
           <Loader2 className="h-5 w-5 animate-spin text-perestroika-preto/50" />
         </div>
       ) : (
-        <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege divide-y divide-perestroika-preto/10">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege divide-y divide-perestroika-preto/10">
           {(pillsQuery.data ?? []).map((p) => (
             <div key={p.id} className="flex items-center gap-3 px-4 py-3">
               <span
@@ -396,7 +396,7 @@ function MetricsPanel({
         {cards.map((c) => (
           <div
             key={c.label}
-            className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege p-4"
+            className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4"
           >
             <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55">
               {c.label}
@@ -411,7 +411,7 @@ function MetricsPanel({
         ))}
       </div>
 
-      <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege p-5">
+      <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5">
         <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-3">
           distribuição por fluxo
         </p>
@@ -478,7 +478,7 @@ function WatcherPanel({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege p-5 space-y-3">
+    <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 space-y-3">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-body text-[11px] uppercase tracking-wide text-perestroika-preto/55">
@@ -507,7 +507,7 @@ function WatcherPanel({ onDone }: { onDone: () => void }) {
       {error && (
         <p
           role="alert"
-          className="font-body text-xs rounded-lg px-3 py-2"
+          className="font-body text-xs rounded-xl px-3 py-2"
           style={{ backgroundColor: "#fd464415", color: "#fd4644" }}
         >
           {error}
@@ -515,7 +515,7 @@ function WatcherPanel({ onDone }: { onDone: () => void }) {
       )}
 
       {result && ranAt && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t-2 border-perestroika-preto/10">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t-2 border-perestroika-preto/15">
           <Stat label="varridos" value={result.scanned_started} />
           <Stat label="novos alertas" value={result.alerts_created} highlight />
           <Stat label="já alertados" value={result.alerts_existing} />
@@ -618,7 +618,7 @@ function DeliverablesPanel({
               className={`rounded-full border-2 px-3 py-1.5 font-body text-xs transition-colors ${
                 statusFilter === f.id
                   ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege"
-                  : "border-perestroika-preto/20 hover:border-perestroika-preto/50"
+                  : "border-perestroika-preto/15 hover:border-perestroika-preto/50"
               }`}
             >
               {f.label}
@@ -653,7 +653,7 @@ function DeliverablesPanel({
           </p>
         </div>
       ) : (
-        <div className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege overflow-x-auto">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>

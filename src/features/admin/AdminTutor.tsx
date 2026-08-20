@@ -161,7 +161,7 @@ export const AdminTutor = () => {
         <StatCard icon={<Clock className="h-4 w-4" />} label="mensagens totais" value={totals.totalMessages} hint="estudante + tutor somados" />
       </section>
 
-      <section className="rounded-2xl border border-perestroika-preto/15 overflow-hidden bg-perestroika-bege/30">
+      <section className="rounded-2xl border-2 border-perestroika-preto/15 overflow-hidden bg-perestroika-bege/30">
         <Table>
           <TableHeader>
             <TableRow>
@@ -212,7 +212,7 @@ const StatCard = ({
   value: number;
   hint: string;
 }) => (
-  <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+  <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
     <div className="flex items-center gap-2 text-perestroika-preto/60 mb-2">
       {icon}
       <span className="font-body text-[10px] uppercase tracking-[0.2em]">{label}</span>

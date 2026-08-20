@@ -16,7 +16,7 @@ export const UserMessage = ({ content, initials = "vc" }: UserMessageProps) => {
         </p>
       </div>
       <div
-        className="shrink-0 w-9 h-9 rounded-full bg-perestroika-bege border-2 border-perestroika-preto flex items-center justify-center font-display uppercase text-xs tracking-wider text-perestroika-preto"
+        className="shrink-0 h-11 w-11 rounded-full bg-perestroika-bege border-2 border-perestroika-preto flex items-center justify-center font-display uppercase text-xs tracking-wider text-perestroika-preto"
         aria-hidden="true"
       >
         {initials.slice(0, 2)}

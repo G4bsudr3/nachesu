@@ -208,7 +208,7 @@ const AdminModuloDetalhe = () => {
           {String(module.number).padStart(2, "0")}
         </span>
         <div className="flex-1 min-w-[240px]">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/50 mb-1">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50 mb-1">
             {trail?.title}
           </p>
           <h1 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95] mb-1">
@@ -237,7 +237,7 @@ const AdminModuloDetalhe = () => {
       </header>
 
       {!module.published && (
-        <div className="rounded-lg bg-rose-50 border border-rose-300 text-rose-800 px-4 py-3 mb-4 text-sm flex items-center gap-2">
+        <div className="rounded-xl bg-rose-50 border border-rose-300 text-rose-800 px-4 py-3 mb-4 text-sm flex items-center gap-2">
           <EyeOff className="w-4 h-4" />
           módulo despublicado. só admin enxerga.
         </div>
@@ -297,14 +297,14 @@ const AdminModuloDetalhe = () => {
 
         <TabsContent value="conteudo" className="space-y-4">
           {missingSchema.length > 0 && (
-            <div className="rounded-lg bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 text-sm flex items-center gap-2">
+            <div className="rounded-xl bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 text-sm flex items-center gap-2">
               <FileWarning className="w-4 h-4" />
               {missingSchema.length} pílula(s) sem interaction_schema. o estudante vê só o body_md nelas.
             </div>
           )}
 
           {missingVideo.length > 0 && (
-            <div className="rounded-lg bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 text-sm space-y-1">
+            <div className="rounded-xl bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 text-sm space-y-1">
               <p className="flex items-center gap-2 font-semibold">
                 <FileWarning className="w-4 h-4" />
                 falta vídeo em {missingVideo.length} aula(s) deste módulo

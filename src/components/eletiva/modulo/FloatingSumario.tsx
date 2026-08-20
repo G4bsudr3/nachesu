@@ -75,7 +75,7 @@ export const FloatingSumario = ({ pills, completedPillIds, unlockedPillIds, trai
                 </button>
               </div>
               <div className="flex items-baseline justify-between mb-2 gap-3">
-                <p className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-bege/60">
+                <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-bege/60">
                   progresso do módulo
                 </p>
                 <p className="font-body text-xs tabular-nums text-perestroika-bege/85">
@@ -155,7 +155,7 @@ export const FloatingSumario = ({ pills, completedPillIds, unlockedPillIds, trai
         >
           <div className="flex items-center gap-3">
             <div
-              className="relative h-9 w-9 rounded-full flex items-center justify-center font-body text-[10px] font-semibold tabular-nums"
+              className="relative h-11 w-11 rounded-full flex items-center justify-center font-body text-[10px] font-semibold tabular-nums"
               style={{
                 background: `conic-gradient(${trailColor} ${pct}%, rgba(242,228,216,0.15) ${pct}%)`,
               }}
@@ -166,7 +166,7 @@ export const FloatingSumario = ({ pills, completedPillIds, unlockedPillIds, trai
               </span>
             </div>
             <div className="text-left leading-tight">
-              <p className="font-body text-[9px] uppercase tracking-[0.22em] text-perestroika-bege/55">
+              <p className="font-body text-[9px] uppercase tracking-[0.2em] text-perestroika-bege/55">
                 sumário
               </p>
               <p className="font-body text-xs font-semibold">
@@ -175,7 +175,7 @@ export const FloatingSumario = ({ pills, completedPillIds, unlockedPillIds, trai
             </div>
           </div>
           <span
-            className="h-9 w-9 rounded-full flex items-center justify-center text-perestroika-preto transition-transform"
+            className="h-11 w-11 rounded-full flex items-center justify-center text-perestroika-preto transition-transform"
             style={{ backgroundColor: trailColor, transform: open ? "rotate(180deg)" : "none" }}
           >
             <ChevronUp className="h-4 w-4" />

@@ -171,7 +171,7 @@ export function PillClassificador3x3({
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}
-                  className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege/60 h-24 animate-pulse"
+                  className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 h-24 animate-pulse"
                 />
               ))}
             </div>

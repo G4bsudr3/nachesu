@@ -365,7 +365,7 @@ const Auth = () => {
                       if (aliasHint) setAliasHint(null);
                     }}
                     disabled={submitting}
-                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
+                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
                   />
                 </div>
 
@@ -390,7 +390,7 @@ const Auth = () => {
                 )}
 
                 {sebraeChoice && sebraeChoice.needs_course_choice && (
-                  <div className="rounded-2xl border border-perestroika-preto/20 bg-perestroika-preto/5 p-4 space-y-3 animate-fade-up">
+                  <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/5 p-4 space-y-3 animate-fade-up">
                     <p className="font-body text-sm text-perestroika-preto leading-snug">
                       reconheci seu email da escola sebrae. em qual eletiva você se inscreveu?
                     </p>
@@ -440,14 +440,14 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={submitting}
-                    className="w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
+                    className="w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? "ocultar senha" : "mostrar senha"}
                     aria-pressed={showPassword}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full flex items-center justify-center text-perestroika-preto/60 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full flex items-center justify-center text-perestroika-preto/60 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>

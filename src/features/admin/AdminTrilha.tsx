@@ -225,19 +225,19 @@ export const AdminTrilha = () => {
 
       {/* stats */}
       <div className="grid grid-cols-3 gap-3 max-w-xl">
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             total
           </p>
           <p className="font-display text-3xl">{stats.total}</p>
         </div>
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             publicados
           </p>
           <p className="font-display text-3xl">{stats.published}</p>
         </div>
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-4">
           <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             visíveis agora
           </p>
@@ -249,7 +249,7 @@ export const AdminTrilha = () => {
       <div className="flex flex-wrap items-center gap-3">
         <Label className="text-xs uppercase tracking-wide">filtrar por trilha</Label>
         <Select value={trailFilter} onValueChange={setTrailFilter}>
-          <SelectTrigger className="w-64 bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-64 bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="todas as trilhas" />
           </SelectTrigger>
           <SelectContent>
@@ -264,7 +264,7 @@ export const AdminTrilha = () => {
       </div>
 
       {/* tabela */}
-      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
+      <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -352,7 +352,7 @@ export const AdminTrilha = () => {
                             togglePublishedMutation.mutate({ id: m.id, next: !m.published })
                           }
                           disabled={togglePublishedMutation.isPending}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-perestroika-preto/10 transition-colors disabled:opacity-40"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-xl hover:bg-perestroika-preto/10 transition-colors disabled:opacity-40"
                           aria-label={m.published ? "despublicar" : "publicar"}
                           title={m.published ? "despublicar" : "publicar"}
                         >
@@ -365,7 +365,7 @@ export const AdminTrilha = () => {
                         <button
                           type="button"
                           onClick={() => setPreviewModule(m)}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-perestroika-preto/10 transition-colors"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-xl hover:bg-perestroika-preto/10 transition-colors"
                           aria-label="ver preview do estudante"
                           title="ver preview do estudante"
                         >

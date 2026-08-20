@@ -277,18 +277,18 @@ const ChoraBot = () => {
   return (
     <div className="h-[calc(100dvh-var(--mobile-nav-h,0px))] bg-perestroika-bege flex flex-col overflow-hidden">
       {/* header mínimo: título · histórico · nova · voltar */}
-      <header className="border-b border-perestroika-preto/10 px-4 py-3 flex items-center justify-between bg-perestroika-bege sticky top-0 z-10">
+      <header className="border-b border-perestroika-preto/15 px-4 py-3 flex items-center justify-between bg-perestroika-bege sticky top-0 z-10">
         <div className="flex items-center justify-start gap-1 flex-1">
           <Link
             to="/app"
             aria-label="voltar"
-            className="flex items-center gap-2 text-xs font-display uppercase tracking-[0.2em] text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
+            className="flex items-center gap-2 text-[11px] font-display uppercase tracking-[0.2em] text-perestroika-preto/70 hover:text-perestroika-preto transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">voltar</span>
           </Link>
         </div>
-        <span className="font-display uppercase tracking-[0.15em] text-base sm:text-lg text-perestroika-preto">
+        <span className="font-display uppercase tracking-[0.2em] text-base sm:text-lg text-perestroika-preto">
           tutor ia
         </span>
         <div className="flex items-center justify-end gap-1 flex-1">
@@ -304,7 +304,7 @@ const ChoraBot = () => {
             onClick={newConv}
             aria-label="nova conversa"
             title="nova conversa"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-perestroika-preto/70 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
+            className="h-11 w-11 rounded-full flex items-center justify-center text-perestroika-preto/70 hover:text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -346,9 +346,9 @@ const ChoraBot = () => {
         </div>
 
         {/* input minimalista */}
-        <div className="border-t border-perestroika-preto/10 px-4 py-3 md:px-6 md:py-4 bg-perestroika-bege">
+        <div className="border-t border-perestroika-preto/15 px-4 py-3 md:px-6 md:py-4 bg-perestroika-bege">
           <div className="max-w-3xl mx-auto">
-            <div className="relative flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege focus-within:border-perestroika-preto/40 transition-colors p-2">
+            <div className="relative flex items-end gap-2 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege focus-within:border-perestroika-preto/30 transition-colors p-2">
               <Textarea
                 ref={textareaRef}
                 value={input}

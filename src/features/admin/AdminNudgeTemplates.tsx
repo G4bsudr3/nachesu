@@ -33,20 +33,20 @@ const TemplateForm = ({ row, onSave, saving }: FormRowProps) => {
           value={(draft as any)[key] ?? ""}
           rows={6}
           onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
-          className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm resize-y font-mono"
+          className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-xl px-3 py-2 text-sm resize-y font-mono"
         />
       ) : (
         <input
           value={(draft as any)[key] ?? ""}
           onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
-          className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-lg px-3 py-2 text-sm"
+          className="w-full bg-perestroika-bege/70 border border-perestroika-preto/15 rounded-xl px-3 py-2 text-sm"
         />
       )}
     </div>
   );
 
   return (
-    <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-5 space-y-4">
+    <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-display text-2xl uppercase leading-none">{meta.label}</h3>

@@ -15,7 +15,7 @@ export const MyCoursesList = () => {
     return (
       <section
         aria-label="minhas eletivas"
-        className="rounded-3xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] p-6 sm:p-8 motion-safe:animate-pulse"
+        className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.03] p-6 sm:p-8 motion-safe:animate-pulse"
       >
         <div className="h-3 w-32 bg-perestroika-preto/15 rounded mb-4" />
         <div className="h-8 w-2/3 bg-perestroika-preto/15 rounded" />

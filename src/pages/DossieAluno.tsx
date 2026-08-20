@@ -90,7 +90,7 @@ export default function DossieAluno() {
       `}</style>
 
       {/* header */}
-      <header className="no-print border-b border-perestroika-preto/10 bg-white/60 backdrop-blur">
+      <header className="no-print border-b border-perestroika-preto/15 bg-white/60 backdrop-blur">
         <div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between gap-4">
           <NachesULogo variant="ink" className="h-6" />
           <button
@@ -105,7 +105,7 @@ export default function DossieAluno() {
       <main className="mx-auto max-w-4xl px-6 py-10 space-y-12">
         {/* CAPA */}
         <section className="text-center space-y-4 py-8">
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-perestroika-preto/60">
+          <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60">
             mini-dossiê · economia circular e negócios regenerativos
           </p>
           <h1 className="font-display uppercase text-5xl sm:text-6xl leading-none tracking-wide text-perestroika-preto">
@@ -251,7 +251,7 @@ function Bloco({ n, titulo, origem, children }: { n: number; titulo: string; ori
 function CampoRow({ rotulo, valor }: { rotulo: string; valor?: string | null }) {
   if (!valor) return null;
   return (
-    <div className="rounded-lg bg-white/60 border border-perestroika-preto/10 p-2.5">
+    <div className="rounded-xl bg-white/60 border border-perestroika-preto/15 p-2.5">
       <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/50">{rotulo}</p>
       <p className="font-body text-sm text-perestroika-preto whitespace-pre-wrap">{valor}</p>
     </div>
@@ -282,7 +282,7 @@ function Certificado({ nome, geradoEm }: { nome: string; geradoEm: string | null
       </div>
       <div className="w-full max-w-3xl aspect-[1.4/1] bg-white border-8 border-perestroika-preto p-10 sm:p-16 flex flex-col items-center justify-center text-center gap-6">
         <Award className="h-12 w-12 text-perestroika-preto/60" aria-hidden />
-        <p className="font-body text-xs uppercase tracking-[0.3em] text-perestroika-preto/60">certificado de conclusão</p>
+        <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60">certificado de conclusão</p>
         <h1 className="font-display uppercase text-4xl sm:text-5xl leading-none tracking-wide text-perestroika-preto">
           {nome}
         </h1>

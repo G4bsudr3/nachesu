@@ -162,8 +162,8 @@ const TreeTab = () => {
         );
         const courseOpen = openCourses[c.id] ?? true;
         return (
-          <div key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60">
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-perestroika-preto/10">
+          <div key={c.id} className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60">
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-perestroika-preto/15">
               <button
                 type="button"
                 onClick={() => setOpenCourses((s) => ({ ...s, [c.id]: !courseOpen }))}
@@ -194,7 +194,7 @@ const TreeTab = () => {
                   const trailOpen = openTrails[t.id] ?? false;
                   const tPublished = t.modules.filter((m) => m.published).length;
                   return (
-                    <div key={t.id} className="rounded-lg bg-perestroika-bege/40 p-3">
+                    <div key={t.id} className="rounded-xl bg-perestroika-bege/40 p-3">
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
@@ -221,7 +221,7 @@ const TreeTab = () => {
                               tPublished < t.modules.length,
                             )
                           }
-                          className="text-[10px] uppercase tracking-wide rounded border border-perestroika-preto/20 px-2 py-1 hover:bg-perestroika-preto/5"
+                          className="text-[10px] uppercase tracking-wide rounded border border-perestroika-preto/15 px-2 py-1 hover:bg-perestroika-preto/5"
                         >
                           {tPublished < t.modules.length ? "publicar tudo" : "despublicar tudo"}
                         </button>
@@ -273,7 +273,7 @@ const TriStateRow = ({
   override: UserOverride | undefined;
   onSet: (v: boolean | null) => void;
 }) => (
-  <div className="flex items-center justify-between gap-3 py-2 text-sm border-b border-perestroika-preto/10 last:border-0">
+  <div className="flex items-center justify-between gap-3 py-2 text-sm border-b border-perestroika-preto/15 last:border-0">
     <span className="truncate flex-1">{label}</span>
     <span className="text-[10px] uppercase text-perestroika-preto/45 w-32 text-right">
       {tristateLabel(override)}
@@ -285,7 +285,7 @@ const TriStateRow = ({
         className={`px-2 py-1 text-[10px] uppercase rounded border ${
           !override
             ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-            : "border-perestroika-preto/20 hover:bg-perestroika-preto/5"
+            : "border-perestroika-preto/15 hover:bg-perestroika-preto/5"
         }`}
       >
         padrão
@@ -296,7 +296,7 @@ const TriStateRow = ({
         className={`px-2 py-1 text-[10px] uppercase rounded border ${
           override?.visible === true
             ? "bg-green-700 text-white border-green-700"
-            : "border-perestroika-preto/20 hover:bg-perestroika-preto/5"
+            : "border-perestroika-preto/15 hover:bg-perestroika-preto/5"
         }`}
       >
         <Eye className="w-3 h-3 inline" /> ver
@@ -307,7 +307,7 @@ const TriStateRow = ({
         className={`px-2 py-1 text-[10px] uppercase rounded border ${
           override?.visible === false
             ? "bg-red-700 text-white border-red-700"
-            : "border-perestroika-preto/20 hover:bg-perestroika-preto/5"
+            : "border-perestroika-preto/15 hover:bg-perestroika-preto/5"
         }`}
       >
         <EyeOff className="w-3 h-3 inline" /> ocultar
@@ -357,7 +357,7 @@ const PerUserTab = () => {
             className="pl-7 h-9 text-sm"
           />
         </div>
-        <ul className="max-h-[60vh] overflow-y-auto rounded-lg border border-perestroika-preto/10 bg-perestroika-bege/60 divide-y divide-perestroika-preto/5">
+        <ul className="max-h-[60vh] overflow-y-auto rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 divide-y divide-perestroika-preto/5">
           {usersLoading && <li className="p-3 text-xs text-perestroika-preto/45">carregando…</li>}
           {filtered.map((u) => (
             <li key={u.user_id}>
@@ -378,7 +378,7 @@ const PerUserTab = () => {
         </ul>
       </aside>
 
-      <section className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60 p-4 min-h-[40vh]">
+      <section className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60 p-4 min-h-[40vh]">
         {!selected && (
           <p className="text-sm text-perestroika-preto/55">
             escolhe um estudante na lista pra gerenciar visibilidade.

@@ -207,7 +207,7 @@ const Index = () => {
             })}
             <Link
               to="/auth"
-              className="hidden sm:inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+              className="hidden sm:inline-flex items-center min-min-h-11 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
               entrar
             </Link>
@@ -218,7 +218,7 @@ const Index = () => {
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               aria-label={menuOpen ? "fechar menu" : "abrir menu"}
-              className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border border-perestroika-preto/20 text-perestroika-preto hover:bg-perestroika-preto/5 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+              className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border border-perestroika-preto/15 text-perestroika-preto hover:bg-perestroika-preto/5 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -235,7 +235,7 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="lg:hidden border-t border-perestroika-preto/10 bg-perestroika-bege/95 backdrop-blur-md"
+              className="lg:hidden border-t border-perestroika-preto/15 bg-perestroika-bege/95 backdrop-blur-md"
             >
               <nav aria-label="menu" className="container py-4 flex flex-col gap-1">
                 {navItems.map((item, idx) => {
@@ -299,7 +299,7 @@ const Index = () => {
 
 
         <motion.div variants={heroContainer} initial="hidden" animate="show" className="max-w-3xl relative z-10">
-          <motion.p variants={heroItem} className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6">
+          <motion.p variants={heroItem} className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6">
             uma plataforma naches · em parceria com escola sebrae
           </motion.p>
           <motion.h1 variants={heroItem} className="font-display uppercase display-clamp-hero">
@@ -332,7 +332,7 @@ const Index = () => {
       {/* o que é o nachesu */}
       <section
         id="como-funciona"
-        className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32"
+        className="container py-20 sm:py-28 border-t border-perestroika-preto/15 scroll-mt-32"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -341,7 +341,7 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             o que é o nachesu
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
@@ -391,7 +391,7 @@ const Index = () => {
                   <span className="font-display text-3xl sm:text-4xl leading-none text-muted-foreground/50">
                     {card.step}
                   </span>
-                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-perestroika-preto text-perestroika-bege">
+                  <div className="inline-flex items-center justify-center h-11 w-11 rounded-full bg-perestroika-preto text-perestroika-bege">
                     <card.icon className="w-4 h-4" aria-hidden="true" />
                   </div>
                 </div>
@@ -411,7 +411,7 @@ const Index = () => {
       {/* eletivas + facilitadores enxutos */}
       <section
         id="eletivas"
-        className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32"
+        className="container py-20 sm:py-28 border-t border-perestroika-preto/15 scroll-mt-32"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -420,7 +420,7 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 sm:mb-16 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             escolha sua eletiva
           </p>
           <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
@@ -442,7 +442,7 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10%" }}
                 transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-9 flex flex-col"
+                className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-8 flex flex-col"
               >
                 <div className="absolute inset-x-0 top-0 h-1.5" style={{ backgroundColor: e.accent }} aria-hidden="true" />
 
@@ -450,7 +450,7 @@ const Index = () => {
                   <span className="font-display text-7xl sm:text-8xl leading-none" style={{ color: e.accent }}>
                     {e.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground inline-flex items-center gap-1.5">
+                  <span className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground inline-flex items-center gap-1.5">
                     <Clock className="h-3 w-3" aria-hidden="true" />
                     20 semanas
                   </span>
@@ -464,7 +464,7 @@ const Index = () => {
                 </p>
 
                 {/* bloco facilitador enxuto */}
-                <div className="flex items-center gap-4 pt-5 mt-auto border-t border-perestroika-preto/10">
+                <div className="flex items-center gap-4 pt-5 mt-auto border-t border-perestroika-preto/15">
                   <img
                     src={f.photo}
                     alt={f.nome}
@@ -535,7 +535,7 @@ const Index = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-center md:text-left"
           >
-            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-perestroika-bege/60 mb-4">
+            <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-perestroika-bege/60 mb-4">
               o tutor da escola
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">
@@ -565,7 +565,7 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-10 sm:mb-12 max-w-2xl"
         >
-          <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
             por dentro das trilhas
           </p>
           <h2 className="font-display uppercase display-clamp-section mb-8 leading-[0.95]">
@@ -629,7 +629,7 @@ const Index = () => {
                   <span className="font-display text-6xl sm:text-7xl leading-none" style={{ color: t.color }}>
                     {t.n}
                   </span>
-                  <span className="font-body text-xs uppercase tracking-[0.15em] text-muted-foreground inline-flex items-center gap-1.5">
+                  <span className="font-body text-[11px] uppercase tracking-[0.2em] text-muted-foreground inline-flex items-center gap-1.5">
                     <Clock className="h-3 w-3" aria-hidden="true" />
                     {t.range}
                   </span>
@@ -649,7 +649,7 @@ const Index = () => {
       {/* faq */}
       <section
         id="faq"
-        className="container py-20 sm:py-28 border-t border-perestroika-preto/10 scroll-mt-32"
+        className="container py-20 sm:py-28 border-t border-perestroika-preto/15 scroll-mt-32"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -659,7 +659,7 @@ const Index = () => {
           className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-10 md:gap-16 items-start"
         >
           <div className="md:sticky md:top-32">
-            <p className="font-body text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+            <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
               perguntas frequentes
             </p>
             <h2 className="font-display uppercase display-clamp-section leading-[0.95]">

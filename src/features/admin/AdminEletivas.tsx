@@ -273,7 +273,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
   });
 
   return (
-    <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-perestroika-bege space-y-4">
+    <div className="p-5 rounded-xl border border-perestroika-preto/15 bg-perestroika-bege space-y-4">
       <div className="flex items-center gap-2">
         <Mail className="h-4 w-4" />
         <h3 className="font-display text-lg uppercase">convites por email</h3>
@@ -296,7 +296,7 @@ function InvitesPanel({ courseId }: { courseId: string }) {
         {addInvites.isPending ? "convidando..." : "convidar"}
       </Button>
 
-      <div className="pt-2 border-t border-perestroika-preto/10 space-y-2">
+      <div className="pt-2 border-t border-perestroika-preto/15 space-y-2">
         <p className="font-body text-xs text-perestroika-preto/60">
           dispara o email de convite "entrar na nachesu" pra todo mundo da lista que ainda não logou.
         </p>
@@ -381,7 +381,7 @@ function ModulesPanel({ courseId }: { courseId: string }) {
   });
 
   return (
-    <div className="p-5 rounded-lg border border-perestroika-preto/10 bg-perestroika-bege space-y-4">
+    <div className="p-5 rounded-xl border border-perestroika-preto/15 bg-perestroika-bege space-y-4">
       <div className="flex items-center gap-2">
         <Unlock className="h-4 w-4" />
         <h3 className="font-display text-lg uppercase">publicação de módulos</h3>
@@ -414,7 +414,7 @@ function ModulesPanel({ courseId }: { courseId: string }) {
                 className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-body uppercase tracking-wide border ${
                   published
                     ? "bg-perestroika-rosa/10 border-perestroika-rosa/30 text-perestroika-vermelho"
-                    : "bg-transparent border-perestroika-preto/20 text-perestroika-preto/60"
+                    : "bg-transparent border-perestroika-preto/15 text-perestroika-preto/60"
                 }`}
               >
                 {published ? (

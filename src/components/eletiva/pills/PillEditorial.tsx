@@ -292,7 +292,7 @@ export function PillEditorial({
               onChange={(e) => setReflection(e.target.value)}
               placeholder={schema.reflexao.placeholder ?? "escreve aqui ou grave por voz..."}
               rows={4}
-              className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+              className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
               aria-label="reflexão dessa pílula"
               voiceAriaLabel="gravar reflexão por voz"
             />
@@ -381,7 +381,7 @@ function CollapsibleSection({
     <motion.section
       {...reveal}
       aria-label={label}
-      className="rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-bege/40 overflow-hidden"
+      className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 overflow-hidden"
     >
       <button
         type="button"

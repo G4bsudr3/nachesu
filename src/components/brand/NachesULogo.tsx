@@ -76,7 +76,7 @@ export const NachesULogo = ({
       {showSelo && (
         <span
           className={cn(
-            "font-body uppercase tracking-[0.22em] font-semibold mt-1.5",
+            "font-body uppercase tracking-[0.2em] font-semibold mt-1.5",
             seloColor,
           )}
           style={{ fontSize: Math.max(8, height * 0.22) }}

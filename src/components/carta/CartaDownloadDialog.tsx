@@ -42,7 +42,7 @@ export const CartaDownloadDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md sm:max-w-2xl bg-perestroika-bege border-perestroika-preto/10 p-6 sm:p-10">
+      <DialogContent className="max-w-md sm:max-w-2xl bg-perestroika-bege border-perestroika-preto/15 p-6 sm:p-10">
         <DialogTitle className="sr-only">preview da sua carta</DialogTitle>
         <DialogDescription className="sr-only">
           confira como sua carta vai ficar antes de baixar a imagem

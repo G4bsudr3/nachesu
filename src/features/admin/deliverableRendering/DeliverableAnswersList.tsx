@@ -128,7 +128,7 @@ function PillAnswerCard({
               {answer.kindLabel}
             </Badge>
             {answer.required && (
-              <Badge variant="outline" className="text-[10px] uppercase border-perestroika-preto/40">
+              <Badge variant="outline" className="text-[10px] uppercase border-perestroika-preto/30">
                 obrigatória
               </Badge>
             )}
@@ -173,7 +173,7 @@ function PillAnswerCard({
 
 function BlockRow({ block }: { block: AnswerBlock }) {
   return (
-    <div className="rounded-lg bg-perestroika-preto/[0.03] p-3">
+    <div className="rounded-xl bg-perestroika-preto/[0.03] p-3">
       <p className="text-[11px] uppercase tracking-wide text-perestroika-preto/55 mb-1.5">
         pergunta
       </p>

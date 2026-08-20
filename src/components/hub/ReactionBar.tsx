@@ -29,7 +29,7 @@ export const ReactionBar = ({ targetId, targetKind = "submission", size = "md", 
               size === "sm" ? "px-2 py-1 text-xs" : "px-2.5 py-1.5 text-sm",
               mine
                 ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege"
-                : "border-perestroika-preto/15 bg-perestroika-bege/60 text-perestroika-preto hover:border-perestroika-preto/40",
+                : "border-perestroika-preto/15 bg-perestroika-bege/60 text-perestroika-preto hover:border-perestroika-preto/30",
             )}
           >
             <span>{emoji}</span>

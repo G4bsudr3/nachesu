@@ -101,7 +101,7 @@ export class RootErrorBoundary extends Component<Props, State> {
             </button>
             <a
               href="/app"
-              className="inline-flex items-center justify-center rounded-full border-2 border-perestroika-preto/20 text-perestroika-preto px-6 py-3 font-body text-sm uppercase tracking-wide min-h-[44px] hover:border-perestroika-preto/40"
+              className="inline-flex items-center justify-center rounded-full border-2 border-perestroika-preto/15 text-perestroika-preto px-6 py-3 font-body text-sm uppercase tracking-wide min-h-[44px] hover:border-perestroika-preto/30"
             >
               voltar pro início
             </a>

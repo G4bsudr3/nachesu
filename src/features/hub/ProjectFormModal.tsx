@@ -118,7 +118,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
               placeholder="conta a história em poucas linhas"
               maxLength={500}
               rows={4}
-              className="w-full rounded-md border border-perestroika-preto/15 bg-perestroika-bege/70 px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:ring-2 focus:ring-perestroika-preto/20"
+              className="w-full rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/70 px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/60 focus:outline-none focus:ring-2 focus:ring-perestroika-preto/20"
             />
             <p className="mt-1 text-right font-body text-[10px] text-perestroika-preto/60">
               {description.length}/500
@@ -156,7 +156,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
             </label>
             {coverUrl ? (
               <div className="relative inline-block">
-                <img src={coverUrl} alt="capa" className="max-h-32 rounded-lg" />
+                <img src={coverUrl} alt="capa" className="max-h-32 rounded-xl" />
                 <button
                   type="button"
                   onClick={() => setCoverUrl("")}
@@ -169,7 +169,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
             ) : (
               <label
                 className={cn(
-                  "flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-perestroika-preto/25 bg-perestroika-bege/40 px-4 py-3 font-body text-sm text-perestroika-preto/60 hover:bg-perestroika-bege/60",
+                  "flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-perestroika-preto/15 bg-perestroika-bege/40 px-4 py-3 font-body text-sm text-perestroika-preto/60 hover:bg-perestroika-bege/60",
                   uploading && "opacity-60",
                 )}
               >
@@ -197,7 +197,7 @@ export const ProjectFormModal = ({ open, onClose, onSaved, editing }: Props) => 
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full border border-perestroika-preto/15 px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/70 hover:border-perestroika-preto/40"
+              className="rounded-full border border-perestroika-preto/15 px-4 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/70 hover:border-perestroika-preto/30"
             >
               cancelar
             </button>

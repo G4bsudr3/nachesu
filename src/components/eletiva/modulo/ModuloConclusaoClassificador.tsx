@@ -157,7 +157,7 @@ export function ModuloConclusaoClassificador({ moduleId }: Props) {
       className="my-8 rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-5 py-8 sm:px-8 sm:py-10 space-y-6"
     >
       <header className="space-y-2 text-center sm:text-left">
-        <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/60">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
           exercício cumprido
         </p>
         <h2
@@ -196,7 +196,7 @@ export function ModuloConclusaoClassificador({ moduleId }: Props) {
                 className="rounded-xl px-3 py-2 flex items-center justify-between"
                 style={{ backgroundColor: meta.bg, color: "#fff" }}
               >
-                <span className="font-body text-xs uppercase tracking-[0.2em]">{meta.label}</span>
+                <span className="font-body text-[11px] uppercase tracking-[0.2em]">{meta.label}</span>
                 <span className="font-display leading-none text-2xl tabular-nums">
                   {String(list.length).padStart(2, "0")}
                 </span>

@@ -81,12 +81,12 @@ export const ModulePill = ({
     "block w-full rounded-2xl border-2 px-3 py-2.5 transition-all motion-safe:duration-200";
   const stateClasses =
     state === "completed"
-      ? "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40 hover:scale-[1.02]"
+      ? "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/30 hover:scale-[1.02]"
       : state === "current"
         ? "bg-perestroika-bege motion-safe:animate-pulse-soft hover:scale-[1.02]"
         : state === "available"
           ? "border-perestroika-preto bg-perestroika-bege hover:scale-[1.02]"
-          : "border-perestroika-preto/10 bg-perestroika-preto/[0.02] cursor-not-allowed";
+          : "border-perestroika-preto/15 bg-perestroika-preto/[0.02] cursor-not-allowed";
 
   const wrapperStyle =
     state === "current" ? { borderColor: trailColor } : undefined;

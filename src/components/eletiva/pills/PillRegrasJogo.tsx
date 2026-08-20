@@ -280,7 +280,7 @@ export function PillRegrasJogo({
       >
         <header className="flex items-center gap-2">
           <Target className="h-4 w-4 text-perestroika-preto/70" aria-hidden />
-          <p className="font-display uppercase text-sm tracking-[0.18em] text-perestroika-preto/80">
+          <p className="font-display uppercase text-sm tracking-[0.2em] text-perestroika-preto/80">
             R's táticos · escolha 1 ou 2
           </p>
         </header>
@@ -404,7 +404,7 @@ function PrincipioBlock({
         >
           {n}
         </span>
-        <p className="font-display text-xs uppercase tracking-[0.2em] text-perestroika-preto/70">
+        <p className="font-display text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/70">
           princípio prioritário {n}
         </p>
       </div>

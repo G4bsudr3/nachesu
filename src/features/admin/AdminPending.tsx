@@ -130,7 +130,7 @@ export const AdminPending = () => {
           rows.map((r) => (
             <div
               key={r.user_id}
-              className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 p-3"
+              className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-3"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
@@ -154,7 +154,7 @@ export const AdminPending = () => {
                 <button
                   onClick={() => handleArchive(r.user_id)}
                   disabled={acting === r.user_id}
-                  className="flex-1 inline-flex items-center justify-center gap-1 rounded-full border border-perestroika-preto/20 px-3 py-2 text-xs uppercase tracking-wide disabled:opacity-40"
+                  className="flex-1 inline-flex items-center justify-center gap-1 rounded-full border border-perestroika-preto/15 px-3 py-2 text-xs uppercase tracking-wide disabled:opacity-40"
                 >
                   <Archive className="w-3 h-3" /> arquivar
                 </button>
@@ -164,7 +164,7 @@ export const AdminPending = () => {
       </div>
 
       {/* desktop: table */}
-      <div className="hidden sm:block rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
+      <div className="hidden sm:block rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -212,7 +212,7 @@ export const AdminPending = () => {
                       <button
                         onClick={() => handleArchive(r.user_id)}
                         disabled={acting === r.user_id}
-                        className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/20 px-3 py-1.5 text-xs uppercase tracking-wide hover:border-perestroika-preto/50 transition-colors disabled:opacity-40"
+                        className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/15 px-3 py-1.5 text-xs uppercase tracking-wide hover:border-perestroika-preto/50 transition-colors disabled:opacity-40"
                       >
                         <Archive className="w-3 h-3" />
                         arquivar

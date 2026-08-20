@@ -93,7 +93,7 @@ export const TutorMessageActions = ({ content, trailId, isLatest }: TutorMessage
           type="button"
           onClick={copy}
           aria-label={copied ? "resposta copiada" : "copiar resposta"}
-          className="p-1.5 rounded-md hover:bg-perestroika-preto/5 text-perestroika-preto/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+          className="p-1.5 rounded-xl hover:bg-perestroika-preto/5 text-perestroika-preto/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
         >
           {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
         </button>
@@ -136,7 +136,7 @@ export const TutorMessageActions = ({ content, trailId, isLatest }: TutorMessage
             role="group"
             aria-label="por que essa resposta não ajudou?"
           >
-            <span className="text-[10px] uppercase tracking-[0.18em] text-perestroika-preto/55 mr-1 self-center">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 mr-1 self-center">
               o que rolou?
             </span>
             {(Object.keys(REASON_LABELS) as ReasonKey[]).map((key) => (
@@ -148,7 +148,7 @@ export const TutorMessageActions = ({ content, trailId, isLatest }: TutorMessage
                 className={`px-2.5 py-1 rounded-full text-[11px] font-body border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${
                   chosenReason === key
                     ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                    : "bg-transparent text-perestroika-preto/70 border-perestroika-preto/20 hover:bg-perestroika-preto/5"
+                    : "bg-transparent text-perestroika-preto/70 border-perestroika-preto/15 hover:bg-perestroika-preto/5"
                 }`}
               >
                 {REASON_LABELS[key]}

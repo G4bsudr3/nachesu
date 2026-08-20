@@ -86,7 +86,7 @@ export function ModuloConclusaoMapaFluxo({ moduleId }: Props) {
       className="mt-8 space-y-5"
     >
       <header>
-        <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
           exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
@@ -140,7 +140,7 @@ export function ModuloConclusaoMapaFluxo({ moduleId }: Props) {
 function BlocoResumo({ label, text, arrow }: { label: string; text?: string; arrow?: boolean }) {
   return (
     <div className="relative rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4">
-      <p className="font-display text-xs uppercase tracking-[0.2em] text-perestroika-preto/70 mb-1">
+      <p className="font-display text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/70 mb-1">
         {label}
       </p>
       <p className="font-body text-sm text-perestroika-preto/85 leading-snug whitespace-pre-wrap">

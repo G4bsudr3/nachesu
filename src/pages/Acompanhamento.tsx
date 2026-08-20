@@ -251,7 +251,7 @@ function StatCard({
       </div>
       <div
         className={cn(
-          "font-display leading-[0.85] tabular-nums text-[2.5rem] sm:text-[3rem] mt-1",
+          "font-display leading-[0.85] tabular-nums text-4xl sm:text-5xl mt-1",
           destaque === "alerta"
             ? "text-perestroika-vermelho"
             : destaque === "ok"
@@ -279,7 +279,7 @@ function DistribBar({ alunos }: { alunos: Aluno[] }) {
 
   return (
     <div className="mt-6">
-      <div className="flex h-3 w-full overflow-hidden rounded-full border border-perestroika-preto/20">
+      <div className="flex h-3 w-full overflow-hidden rounded-full border border-perestroika-preto/15">
         {partes.map((p) => (
           <div
             key={p.s}
@@ -318,7 +318,7 @@ function StatusPill({ status, appNaoAbriu }: { status: Status; appNaoAbriu?: boo
       {appNaoAbriu && (
         <span
           title="entrou pelo link mas o app nunca abriu no aparelho dela"
-          className="inline-block rounded-full border border-perestroika-preto/25 px-2 py-1 font-body text-[10px] lowercase tracking-wide text-perestroika-preto/65 whitespace-nowrap"
+          className="inline-block rounded-full border border-perestroika-preto/15 px-2 py-1 font-body text-[10px] lowercase tracking-wide text-perestroika-preto/65 whitespace-nowrap"
         >
           app não abriu
         </span>
@@ -467,7 +467,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
   }, [filtrados, eletiva]);
 
   const campoCls =
-    "rounded-lg border border-perestroika-preto/25 bg-transparent px-3 py-2 font-body text-sm lowercase text-perestroika-preto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa";
+    "rounded-xl border border-perestroika-preto/15 bg-transparent px-3 py-2 font-body text-sm lowercase text-perestroika-preto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa";
 
   const OrdemBtn = ({ o, children }: { o: Ordem; children: React.ReactNode }) => (
     <button
@@ -625,7 +625,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
         <button
           type="button"
           onClick={baixarCsv}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-perestroika-preto px-4 py-2 font-body text-sm lowercase text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-perestroika-preto px-4 py-2 font-body text-sm lowercase text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
         >
           <Download className="h-4 w-4" /> baixar csv
         </button>
@@ -634,17 +634,17 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
       {temFiltro && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {turmaAtiva !== "todas" && (
-            <span className="rounded-full border border-perestroika-preto/25 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
+            <span className="rounded-full border border-perestroika-preto/15 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
               turma {turmaAtiva}
             </span>
           )}
           {status !== "todos" && (
-            <span className="rounded-full border border-perestroika-preto/25 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
+            <span className="rounded-full border border-perestroika-preto/15 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
               {STATUS_LABEL[status]}
             </span>
           )}
           {!!busca.trim() && (
-            <span className="rounded-full border border-perestroika-preto/25 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
+            <span className="rounded-full border border-perestroika-preto/15 px-3 py-1 font-body text-[11px] lowercase text-perestroika-preto/75">
               busca "{busca.trim()}"
             </span>
           )}
@@ -673,7 +673,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
       </div>
 
       {filtrados.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center text-center py-12 border border-dashed border-perestroika-preto/20 rounded-2xl">
+        <div className="mt-8 flex flex-col items-center text-center py-12 border-2 border-dashed border-perestroika-preto/15 rounded-2xl">
           <EletivaSymbol size={64} pose="resting" />
           <p className="font-body text-sm lowercase text-perestroika-preto/65 mt-4 max-w-xs">
             nenhum estudante com esses filtros. limpa os filtros pra ver a turma inteira.
@@ -681,7 +681,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
           <button
             type="button"
             onClick={limpar}
-            className="mt-4 rounded-lg bg-perestroika-preto px-4 py-2 font-body text-sm lowercase text-perestroika-bege"
+            className="mt-4 rounded-xl bg-perestroika-preto px-4 py-2 font-body text-sm lowercase text-perestroika-bege"
           >
             limpar filtros
           </button>
@@ -750,7 +750,7 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
                   <tr
                     key={`${a.nome}-${i}`}
                     className={cn(
-                      "border-b border-perestroika-preto/10 align-middle",
+                      "border-b border-perestroika-preto/15 align-middle",
                       i % 2 === 1 && "bg-perestroika-preto/[0.03]",
                     )}
                   >
@@ -860,7 +860,7 @@ export default function Acompanhamento() {
             <button
               type="button"
               onClick={() => query.refetch()}
-              className="inline-flex items-center gap-2 rounded-lg border-2 border-perestroika-preto px-3 py-2 font-body text-sm lowercase text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-perestroika-preto px-3 py-2 font-body text-sm lowercase text-perestroika-preto hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
             >
               <RefreshCw className={cn("h-4 w-4", query.isFetching && "animate-spin")} />
               atualizar
@@ -878,7 +878,7 @@ export default function Acompanhamento() {
             </p>
             <div className="w-full mt-10 space-y-4">
               {[0, 1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-10 rounded-lg bg-perestroika-preto/8 animate-pulse" />
+                <div key={i} className="h-10 rounded-xl bg-perestroika-preto/8 animate-pulse" />
               ))}
             </div>
           </div>
@@ -899,7 +899,7 @@ export default function Acompanhamento() {
                 sessionStorage.removeItem(SESSION_KEY);
                 setSenha(null);
               }}
-              className="mt-4 rounded-lg border-2 border-perestroika-preto px-4 py-2 font-body text-sm lowercase"
+              className="mt-4 rounded-xl border-2 border-perestroika-preto px-4 py-2 font-body text-sm lowercase"
             >
               entrar de novo
             </button>
@@ -926,7 +926,7 @@ export default function Acompanhamento() {
                       "rounded-full px-4 py-2 font-body text-sm lowercase transition-colors",
                       i === aba
                         ? "bg-perestroika-preto text-perestroika-bege"
-                        : "border border-perestroika-preto/25 text-perestroika-preto/70 hover:border-perestroika-preto",
+                        : "border border-perestroika-preto/15 text-perestroika-preto/70 hover:border-perestroika-preto",
                     )}
                   >
                     {el.titulo}

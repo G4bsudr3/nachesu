@@ -39,7 +39,7 @@ export function PillVideoEmbed({
     <div className="space-y-5">
       <header>
         {optional && (
-          <p className="inline-flex items-center gap-1.5 mb-2 font-body text-[11px] uppercase tracking-[0.18em] text-perestroika-preto/55">
+          <p className="inline-flex items-center gap-1.5 mb-2 font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             <Sparkles className="h-3 w-3" aria-hidden /> bônus opcional
           </p>
         )}

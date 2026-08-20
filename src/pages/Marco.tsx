@@ -190,7 +190,7 @@ const Marco = () => {
             transition={{ duration: 0.5, delay: 0.65 }}
             className="rounded-2xl border border-perestroika-bege/15 bg-perestroika-bege/[0.04] p-5 mb-8 max-w-xl"
           >
-            <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-bege/55 mb-2">
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-bege/55 mb-2">
               próxima trilha
             </p>
             <p className="font-display uppercase text-2xl text-perestroika-bege">

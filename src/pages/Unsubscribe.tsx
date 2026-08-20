@@ -48,7 +48,7 @@ const Unsubscribe = () => {
         actions={
           <Link
             to="/auth"
-            className="inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+            className="inline-flex items-center min-min-h-11 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
           >
             entrar
           </Link>

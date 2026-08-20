@@ -180,8 +180,8 @@ const PillCardShell = ({
       id={`pilula-${index + 1}`}
       className={`rounded-2xl border-2 transition-colors scroll-mt-24 overflow-hidden ${
         done
-          ? "border-perestroika-preto/40 bg-perestroika-preto/[0.04]"
-          : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/40"
+          ? "border-perestroika-preto/30 bg-perestroika-preto/[0.04]"
+          : "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/30"
       } ${justUnlocked ? "motion-safe:animate-pill-unlock ring-2 ring-perestroika-rosa/60 ring-offset-2 ring-offset-perestroika-bege" : ""}`}
     >
       <div
@@ -209,11 +209,11 @@ const PillCardShell = ({
               {String(index + 1).padStart(2, "0")}
             </span>
             {pill.required ? (
-              <span className="font-body text-[10px] sm:text-xs uppercase tracking-[0.18em] text-perestroika-preto/70">
+              <span className="font-body text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/70">
                 {pillLabel(pill)}
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/25 px-2 py-0.5 font-body text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-perestroika-preto/60">
+              <span className="inline-flex items-center gap-1 rounded-full border border-perestroika-preto/15 px-2 py-0.5 font-body text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60">
                 <Sparkles className="h-3 w-3" aria-hidden /> bônus opcional
               </span>
             )}
@@ -406,7 +406,7 @@ export const ModuloPillList = ({
     <ResumeContext.Provider value={remember}>
     <section aria-label="pílulas do módulo" className="space-y-4 mb-10">
       <header className="mb-4 sm:mb-6">
-        <p className="font-body text-[10px] sm:text-xs uppercase tracking-[0.22em] text-perestroika-preto/55 mb-1.5">
+        <p className="font-body text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1.5">
           conteúdo do módulo
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-none text-perestroika-preto">
@@ -439,7 +439,7 @@ export const ModuloPillList = ({
             <button
               type="button"
               onClick={forget}
-              className="rounded-full border border-perestroika-preto/25 px-3 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/70 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+              className="rounded-full border border-perestroika-preto/15 px-3 py-2 font-body text-xs uppercase tracking-wide text-perestroika-preto/70 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
             >
               dispensar
             </button>
@@ -453,14 +453,14 @@ export const ModuloPillList = ({
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="h-24 rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] motion-safe:animate-pulse"
+              className="h-24 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.03] motion-safe:animate-pulse"
             />
           ))}
         </div>
       )}
 
       {!loading && (pills?.length ?? 0) === 0 && (
-        <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/20 p-6 text-center">
+        <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-6 text-center">
           <p className="font-body text-sm text-perestroika-preto/60">
             as pílulas desse módulo ainda estão sendo preparadas. volte em breve.
           </p>
@@ -1251,7 +1251,7 @@ export const ModuloPillList = ({
                   href={pill.attachment_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1.5 font-body text-xs uppercase tracking-wide hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/15 px-3 py-1.5 font-body text-xs uppercase tracking-wide hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
                 >
                   <FileText className="h-3.5 w-3.5" /> material
                   <ExternalLink className="h-3 w-3" />

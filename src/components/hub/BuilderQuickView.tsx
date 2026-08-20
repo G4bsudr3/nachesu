@@ -25,15 +25,15 @@ export const BuilderQuickView = ({ builder, onClose }: BuilderQuickViewProps) =>
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        className="max-w-3xl gap-0 overflow-hidden p-0 sm:rounded-3xl bg-perestroika-bege border-perestroika-preto/10 max-h-[92dvh]"
+        className="max-w-3xl gap-0 overflow-hidden p-0 sm:rounded-3xl bg-perestroika-bege border-perestroika-preto/15 max-h-[92dvh]"
       >
         <DialogTitle className="sr-only">carta de {displayName}</DialogTitle>
         <DialogDescription className="sr-only">preview da carta de builder</DialogDescription>
 
         {/* header sticky */}
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-perestroika-preto/10 bg-perestroika-bege/95 px-5 py-3 backdrop-blur">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-perestroika-preto/15 bg-perestroika-bege/95 px-5 py-3 backdrop-blur">
           <div className="min-w-0">
-            <p className="truncate font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/50">
+            <p className="truncate font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/50">
               {builder?.cidade ?? "builder"}
             </p>
             <div className="flex items-baseline gap-2">
@@ -91,7 +91,7 @@ export const BuilderQuickView = ({ builder, onClose }: BuilderQuickViewProps) =>
 
         {/* footer sticky com CTA */}
         {slug && (
-          <div className="sticky bottom-0 z-10 border-t border-perestroika-preto/10 bg-perestroika-bege/95 px-5 py-3 backdrop-blur">
+          <div className="sticky bottom-0 z-10 border-t border-perestroika-preto/15 bg-perestroika-bege/95 px-5 py-3 backdrop-blur">
             <Link
               to={`/app/hub/builder/${slug}`}
               onClick={onClose}

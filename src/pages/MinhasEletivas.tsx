@@ -32,7 +32,7 @@ const MinhasEletivas = () => {
       >
         <div className="container max-w-4xl pt-6 sm:pt-10 space-y-8">
           <header>
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-perestroika-preto/60 mb-2">
+            <p className="font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-2">
               minhas matrículas
             </p>
             <h1 className="font-display uppercase text-4xl sm:text-5xl leading-[0.9] mb-3">
@@ -44,7 +44,7 @@ const MinhasEletivas = () => {
           </header>
 
           {isLoading ? (
-            <div className="rounded-3xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] p-8 motion-safe:animate-pulse h-40" />
+            <div className="rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.03] p-8 motion-safe:animate-pulse h-40" />
           ) : items.length === 0 ? (
             <SemMatriculaPicker />
 

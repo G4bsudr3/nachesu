@@ -76,7 +76,7 @@ export const TrailTransitionBanner = ({
           >
             <X className="h-4 w-4" />
           </button>
-          <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-bege/70 mb-3 inline-flex items-center gap-1.5">
+          <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-bege/70 mb-3 inline-flex items-center gap-1.5">
             <Sparkles className="h-3 w-3" /> {msg.eyebrow}
           </p>
           <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95] mb-3 max-w-lg">

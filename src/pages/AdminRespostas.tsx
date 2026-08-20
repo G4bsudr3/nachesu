@@ -208,7 +208,7 @@ const AdminRespostas = () => {
             setModuleId(null);
           }}
         >
-          <SelectTrigger className="w-[200px] h-9 text-xs bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-[200px] h-9 text-xs bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="eletiva" />
           </SelectTrigger>
           <SelectContent position="popper">
@@ -225,7 +225,7 @@ const AdminRespostas = () => {
           value={moduleId ?? "all"}
           onValueChange={(v) => setModuleId(v === "all" ? null : v)}
         >
-          <SelectTrigger className="w-[220px] h-9 text-xs bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-[220px] h-9 text-xs bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="módulo" />
           </SelectTrigger>
           <SelectContent position="popper" className="max-h-[320px]">
@@ -239,7 +239,7 @@ const AdminRespostas = () => {
         </Select>
 
         <Select value={status} onValueChange={(v) => setStatus(v as InboxFilter)}>
-          <SelectTrigger className="w-[170px] h-9 text-xs bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-[170px] h-9 text-xs bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="status" />
           </SelectTrigger>
           <SelectContent position="popper">
@@ -268,7 +268,7 @@ const AdminRespostas = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="buscar estudante por nome, código ou turma…"
-          className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
+          className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/15"
         />
       </div>
 

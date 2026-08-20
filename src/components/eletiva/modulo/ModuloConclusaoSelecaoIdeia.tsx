@@ -79,7 +79,7 @@ export function ModuloConclusaoSelecaoIdeia({ moduleId }: Props) {
       className="mt-8 space-y-6"
     >
       <header>
-        <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
           exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
@@ -96,7 +96,7 @@ export function ModuloConclusaoSelecaoIdeia({ moduleId }: Props) {
             ideia escolhida
           </p>
           {value.raridade && (
-            <span className="rounded-full border-2 border-perestroika-preto/25 px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/75">
+            <span className="rounded-full border-2 border-perestroika-preto/15 px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/75">
               raridade · {RARIDADE_LABEL[value.raridade] ?? value.raridade}
             </span>
           )}

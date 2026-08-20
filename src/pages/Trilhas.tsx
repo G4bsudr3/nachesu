@@ -99,7 +99,7 @@ const Trilhas = () => {
 
           <header className="mb-8 sm:mb-10 space-y-4">
             <div>
-              <p className="font-body text-xs uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2">
+              <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2">
                 eletiva {activeCourse.title.toLowerCase()}
               </p>
               <h1 className="font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.9] mb-3">

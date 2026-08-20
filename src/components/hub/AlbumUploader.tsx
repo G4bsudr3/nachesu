@@ -87,9 +87,9 @@ export const AlbumUploader = ({ open, onClose, uploading, onUpload }: Props) => 
         aria-label="mandar foto pro álbum"
         className="fixed inset-x-0 bottom-0 top-4 z-50 mx-auto flex max-w-2xl flex-col overflow-hidden rounded-t-3xl bg-perestroika-bege shadow-2xl sm:inset-4 sm:rounded-3xl"
       >
-        <header className="flex items-start justify-between gap-4 border-b border-perestroika-preto/10 p-5 sm:p-6">
+        <header className="flex items-start justify-between gap-4 border-b border-perestroika-preto/15 p-5 sm:p-6">
           <div>
-            <p className="mb-1 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+            <p className="mb-1 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
               álbum coletivo
             </p>
             <h2 className="font-display text-3xl uppercase leading-none sm:text-4xl">
@@ -128,7 +128,7 @@ export const AlbumUploader = ({ open, onClose, uploading, onUpload }: Props) => 
               "flex w-full flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed p-8 text-center transition-all",
               drag
                 ? "border-perestroika-preto bg-perestroika-preto/5"
-                : "border-perestroika-preto/25 hover:border-perestroika-preto/60 hover:bg-perestroika-preto/5",
+                : "border-perestroika-preto/15 hover:border-perestroika-preto/60 hover:bg-perestroika-preto/5",
             )}
           >
             <div
@@ -159,7 +159,7 @@ export const AlbumUploader = ({ open, onClose, uploading, onUpload }: Props) => 
           {/* previews */}
           {previews.length > 0 && (
             <div className="mt-6">
-              <p className="mb-3 font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+              <p className="mb-3 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                 {previews.length} pra subir
               </p>
               <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
@@ -182,7 +182,7 @@ export const AlbumUploader = ({ open, onClose, uploading, onUpload }: Props) => 
               </div>
 
               <label className="mt-5 block">
-                <span className="mb-2 block font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/55">
+                <span className="mb-2 block font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                   legenda (opcional, vale pra todas)
                 </span>
                 <input
@@ -191,14 +191,14 @@ export const AlbumUploader = ({ open, onClose, uploading, onUpload }: Props) => 
                   onChange={(e) => setCaption(e.target.value)}
                   placeholder="ex: dia 1, café da manhã antes do caos"
                   maxLength={140}
-                  className="w-full rounded-2xl border border-perestroika-preto/20 bg-perestroika-bege/60 px-4 py-3 font-body text-sm placeholder:text-perestroika-preto/60 focus:border-perestroika-preto focus:outline-none"
+                  className="w-full rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 px-4 py-3 font-body text-sm placeholder:text-perestroika-preto/60 focus:border-perestroika-preto focus:outline-none"
                 />
               </label>
             </div>
           )}
         </div>
 
-        <footer className="flex items-center justify-between gap-3 border-t border-perestroika-preto/10 bg-perestroika-bege/95 p-5 sm:p-6">
+        <footer className="flex items-center justify-between gap-3 border-t border-perestroika-preto/15 bg-perestroika-bege/95 p-5 sm:p-6">
           <button
             type="button"
             onClick={handleClose}

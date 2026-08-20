@@ -113,7 +113,7 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-5xl max-h-[92vh] overflow-hidden flex flex-col p-0">
-        <DialogHeader className="px-6 pt-6 pb-3 border-b border-perestroika-preto/10">
+        <DialogHeader className="px-6 pt-6 pb-3 border-b border-perestroika-preto/15">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="space-y-1">
               <DialogTitle className="font-display uppercase text-xl">
@@ -133,7 +133,7 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
             <div
               role="tablist"
               aria-label="dispositivo"
-              className="inline-flex rounded-full border border-perestroika-preto/20 bg-perestroika-bege/70 p-1 text-xs"
+              className="inline-flex rounded-full border border-perestroika-preto/15 bg-perestroika-bege/70 p-1 text-xs"
             >
               <button
                 type="button"
@@ -250,14 +250,14 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
                       {[0, 1, 2].map((i) => (
                         <div
                           key={i}
-                          className="h-20 rounded-2xl border-2 border-perestroika-preto/10 bg-perestroika-preto/[0.03] animate-pulse"
+                          className="h-20 rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/[0.03] animate-pulse"
                         />
                       ))}
                     </div>
                   )}
 
                   {!isLoading && (pills?.length ?? 0) === 0 && (
-                    <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/20 p-5 text-center">
+                    <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-5 text-center">
                       <p className="font-body text-sm text-perestroika-preto/60">
                         nenhuma pílula ainda. adiciona pelo botão "pílulas".
                       </p>
@@ -303,12 +303,12 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
 
                       <div className="flex flex-wrap gap-2 mt-3">
                         {pill.video_url && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1 font-body text-[11px] uppercase tracking-wide">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wide">
                             <Play className="h-3 w-3" /> assistir
                           </span>
                         )}
                         {pill.attachment_url && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/20 px-3 py-1 font-body text-[11px] uppercase tracking-wide">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wide">
                             <FileText className="h-3 w-3" /> material
                             <ExternalLink className="h-2.5 w-2.5" />
                           </span>
@@ -341,22 +341,22 @@ export const AdminModulePreview = ({ module, trail, onClose }: Props) => {
                 </section>
 
                 {/* rodapé com badges de estado */}
-                <div className="flex flex-wrap gap-2 pt-3 border-t border-perestroika-preto/10">
+                <div className="flex flex-wrap gap-2 pt-3 border-t border-perestroika-preto/15">
                   <Badge
                     variant="outline"
-                    className="text-[10px] uppercase border-perestroika-preto/25"
+                    className="text-[10px] uppercase border-perestroika-preto/15"
                   >
                     {module.published ? "publicado" : "rascunho"}
                   </Badge>
                   <Badge
                     variant="outline"
-                    className="text-[10px] uppercase border-perestroika-preto/25"
+                    className="text-[10px] uppercase border-perestroika-preto/15"
                   >
                     {isAvailable ? "visível agora" : "agendado/oculto"}
                   </Badge>
                   <Badge
                     variant="outline"
-                    className="text-[10px] uppercase border-perestroika-preto/25 inline-flex items-center gap-1"
+                    className="text-[10px] uppercase border-perestroika-preto/15 inline-flex items-center gap-1"
                   >
                     <ArrowRight className="w-3 h-3" /> {pills?.length ?? 0}{" "}
                     pílula(s)

@@ -117,10 +117,10 @@ const ModulesByTrail = ({
                     state === "current"
                       ? "border-perestroika-preto bg-perestroika-preto text-perestroika-bege shadow-[0_4px_0_0_rgba(9,9,9,0.15)]"
                       : state === "done"
-                        ? "border-perestroika-preto/20 bg-perestroika-bege hover:border-perestroika-preto/60"
+                        ? "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto/60"
                         : state === "available"
-                          ? "border-perestroika-preto/25 bg-perestroika-bege hover:border-perestroika-preto hover:-translate-y-0.5"
-                          : "border-perestroika-preto/10 bg-perestroika-preto/[0.02] text-perestroika-preto/50 cursor-not-allowed";
+                          ? "border-perestroika-preto/15 bg-perestroika-bege hover:border-perestroika-preto hover:-translate-y-0.5"
+                          : "border-perestroika-preto/15 bg-perestroika-preto/[0.02] text-perestroika-preto/50 cursor-not-allowed";
                   const numColor =
                     state === "current"
                       ? "text-perestroika-bege"
@@ -154,7 +154,7 @@ const ModulesByTrail = ({
                             </p>
                             {state === "current" ? (
                               <span
-                                className="mt-1 inline-flex max-w-full items-center gap-1.5 rounded-full px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.15em] text-perestroika-bege"
+                                className="mt-1 inline-flex max-w-full items-center gap-1.5 rounded-full px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-bege"
                                 style={{ backgroundColor: color }}
                               >
                                 <span
@@ -164,7 +164,7 @@ const ModulesByTrail = ({
                                 <span className="truncate">continue por aqui</span>
                               </span>
                             ) : (
-                              <p className="font-body text-[10px] uppercase tracking-[0.15em] opacity-65 mt-0.5">
+                              <p className="font-body text-[10px] uppercase tracking-[0.2em] opacity-65 mt-0.5">
                                 {stateLabel}
                               </p>
                             )}
@@ -325,7 +325,7 @@ const EletivaHome = () => {
           <p className="relative z-10 font-body text-[11px] uppercase tracking-[0.3em] text-perestroika-preto/60 mb-1">
             sua eletiva
           </p>
-          <h1 className="relative z-10 font-display uppercase text-[42px] sm:text-7xl leading-[0.9] sm:leading-[0.85] mb-3 max-w-[14ch] sm:max-w-[18ch] text-perestroika-preto">
+          <h1 className="relative z-10 font-display uppercase text-4xl sm:text-7xl leading-[0.9] sm:leading-[0.85] mb-3 max-w-[14ch] sm:max-w-[18ch] text-perestroika-preto">
             {course.title.toLowerCase()}
           </h1>
           {course.subtitle && (
@@ -335,7 +335,7 @@ const EletivaHome = () => {
           )}
 
           {/* quem te guia + progresso */}
-          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pb-5 mb-5 border-b border-perestroika-preto/10">
+          <div className="flex flex-wrap items-end gap-x-8 gap-y-5 pb-5 mb-5 border-b border-perestroika-preto/15">
             <div className="flex items-center gap-3 min-w-0">
               {course.professor_avatar_url && (
                 <img
@@ -349,7 +349,7 @@ const EletivaHome = () => {
                 />
               )}
               <div className="min-w-0">
-                <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/65 mb-0.5">
+                <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/65 mb-0.5">
                   quem te guia
                 </p>
                 <p className="font-body text-sm font-semibold truncate">{course.professor_name.toLowerCase()}</p>
@@ -359,14 +359,14 @@ const EletivaHome = () => {
             {totalPublished > 0 && (
               <div className="flex-1 min-w-[180px]">
                 <div className="flex items-baseline justify-between mb-2 gap-3">
-                  <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/65">
+                  <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/65">
                     seu progresso
                   </p>
                   <p className="font-body text-sm font-semibold tabular-nums text-perestroika-preto">
                     {totalCompleted}/{totalPublished} · {progressPct}%
                   </p>
                 </div>
-                <div className="h-2 rounded-full bg-perestroika-preto/15 overflow-hidden border border-perestroika-preto/10">
+                <div className="h-2 rounded-full bg-perestroika-preto/15 overflow-hidden border border-perestroika-preto/15">
                   <motion.div
                     className="h-full bg-perestroika-preto"
                     initial={{ width: 0 }}
@@ -381,7 +381,7 @@ const EletivaHome = () => {
           {/* próximo passo integrado no hero */}
           {!snapLoading && current && (
             <div className="rounded-2xl border-2 border-perestroika-preto/30 bg-perestroika-bege/80 p-5 sm:p-6 shadow-sm">
-              <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/60 mb-2 inline-flex items-center gap-2">
+              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/60 mb-2 inline-flex items-center gap-2">
                 <EletivaSymbol size={20} pose="building" /> próximo passo
               </p>
               <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">
@@ -411,7 +411,7 @@ const EletivaHome = () => {
                 background: `linear-gradient(135deg, ${courseAccent}29, rgba(242,228,216,0.6))`,
               }}
             >
-              <p className="font-body text-[10px] uppercase tracking-[0.25em] text-perestroika-preto/70 mb-2">
+              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/70 mb-2">
                 você chegou até o fim
               </p>
               <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[0.95] text-perestroika-preto mb-2">

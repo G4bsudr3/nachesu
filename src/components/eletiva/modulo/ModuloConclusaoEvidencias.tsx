@@ -94,7 +94,7 @@ export function ModuloConclusaoEvidencias({ moduleId }: Props) {
       className="mt-8 space-y-5"
     >
       <header>
-        <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55 mb-1">
+        <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55 mb-1">
           exercício cumprido
         </p>
         <h2 className="font-display uppercase text-3xl sm:text-4xl leading-[0.95]">
@@ -113,7 +113,7 @@ export function ModuloConclusaoEvidencias({ moduleId }: Props) {
       </div>
 
       {value?.sintese && value.sintese.trim().length > 0 && (
-        <div className="rounded-2xl border-2 border-perestroika-preto/20 bg-perestroika-bege p-4 sm:p-5">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4 sm:p-5">
           <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55 mb-1.5">
             sua síntese
           </p>

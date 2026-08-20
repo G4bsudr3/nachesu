@@ -74,14 +74,14 @@ export const DashboardCommandPanel = ({ snapshot, courseTitle }: Props) => {
       className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
     >
       {/* cadência */}
-      <div className="rounded-2xl border-2 border-perestroika-preto/12 bg-perestroika-bege/40 p-5 flex flex-col">
+      <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5 flex flex-col">
         <div className="flex items-center gap-2 text-perestroika-preto/55 mb-3">
           {nextReleaseDate && unlockedPending.length === 0 ? (
             <CalendarClock className="h-3.5 w-3.5" aria-hidden="true" />
           ) : (
             <Clock className="h-3.5 w-3.5" aria-hidden="true" />
           )}
-          <span className="font-body text-[10px] uppercase tracking-[0.22em]">
+          <span className="font-body text-[10px] uppercase tracking-[0.2em]">
             cadência da semana
           </span>
         </div>
@@ -96,12 +96,12 @@ export const DashboardCommandPanel = ({ snapshot, courseTitle }: Props) => {
       {/* tutor IA */}
       <Link
         to={tutorHref}
-        className="group rounded-2xl border-2 border-perestroika-preto/12 bg-perestroika-preto text-perestroika-bege p-5 flex flex-col hover:scale-[1.01] active:scale-[0.99] transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+        className="group rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto text-perestroika-bege p-5 flex flex-col hover:scale-[1.01] active:scale-[0.99] transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
       >
         <div className="flex items-center justify-between text-perestroika-bege/70 mb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-            <span className="font-body text-[10px] uppercase tracking-[0.22em]">
+            <span className="font-body text-[10px] uppercase tracking-[0.2em]">
               tutor ia
             </span>
           </div>
@@ -120,12 +120,12 @@ export const DashboardCommandPanel = ({ snapshot, courseTitle }: Props) => {
       {/* mapa */}
       <Link
         to={mapHref}
-        className="group rounded-2xl border-2 border-perestroika-preto/12 bg-perestroika-bege p-5 flex flex-col hover:scale-[1.01] active:scale-[0.99] transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+        className="group rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 flex flex-col hover:scale-[1.01] active:scale-[0.99] transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
       >
         <div className="flex items-center justify-between text-perestroika-preto/55 mb-3">
           <div className="flex items-center gap-2">
             <Map className="h-3.5 w-3.5" aria-hidden="true" />
-            <span className="font-body text-[10px] uppercase tracking-[0.22em]">
+            <span className="font-body text-[10px] uppercase tracking-[0.2em]">
               o mapa inteiro
             </span>
           </div>

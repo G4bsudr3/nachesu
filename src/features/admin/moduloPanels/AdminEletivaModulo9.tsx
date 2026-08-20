@@ -74,7 +74,7 @@ export default function AdminEletivaModulo9() {
     <div className="space-y-8">
       <div className="space-y-8">
         <header className="space-y-3">
-          <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             economia circular · módulo 9
           </p>
           <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
@@ -154,7 +154,7 @@ function KpiCard({ label, value }: { label: string; value: number | string }) {
 function SampleLinha({ label, desejado, metrica }: { label: string; desejado?: string; metrica?: string }) {
   if (!desejado && !metrica) return null;
   return (
-    <div className="border-t border-perestroika-preto/10 pt-2">
+    <div className="border-t border-perestroika-preto/15 pt-2">
       <p className="font-body text-[10px] uppercase tracking-wider text-perestroika-preto/50">{label}</p>
       {desejado && <p className="font-body text-xs text-perestroika-preto/80">{desejado}</p>}
       {metrica && <p className="font-body text-xs text-perestroika-preto/60 italic">métrica: {metrica}</p>}

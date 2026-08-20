@@ -369,7 +369,7 @@ export const AdminTutorCommand = () => {
       </section>
 
       {negReasons.length > 0 && (
-        <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+        <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
           <h2 className="font-display uppercase text-xl mb-3">por que avaliaram como ruim</h2>
           <div className="flex flex-wrap gap-2">
             {negReasons.map(([reason, count]) => (
@@ -424,7 +424,7 @@ export const AdminTutorCommand = () => {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2 text-perestroika-preto/70">
               <ShieldAlert className="h-4 w-4" />
@@ -442,7 +442,7 @@ export const AdminTutorCommand = () => {
               return (
                 <span
                   key={lvl}
-                  className="font-body text-[10px] uppercase tracking-[0.18em] rounded-full px-2 py-1 bg-perestroika-preto/5 text-perestroika-preto/75"
+                  className="font-body text-[10px] uppercase tracking-[0.2em] rounded-full px-2 py-1 bg-perestroika-preto/5 text-perestroika-preto/75"
                 >
                   {lvl.replace("_", " ")} · {n}
                 </span>
@@ -457,7 +457,7 @@ export const AdminTutorCommand = () => {
 
       <TutorSafetyEscalations />
 
-      <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+      <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display uppercase text-xl">volume diário</h2>
           <span className="text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55 font-body">
@@ -478,7 +478,7 @@ export const AdminTutorCommand = () => {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
           <h2 className="font-display uppercase text-xl mb-4">por trilha</h2>
           {perTrail.length === 0 ? (
             <p className="font-body text-sm text-perestroika-preto/55">sem perguntas no período.</p>
@@ -501,7 +501,7 @@ export const AdminTutorCommand = () => {
           )}
         </div>
 
-        <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-display uppercase text-xl">leitura da turma</h2>
             <Button
@@ -530,10 +530,10 @@ export const AdminTutorCommand = () => {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+      <section className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
         <h2 className="font-display uppercase text-xl mb-4">controles operacionais</h2>
         <div className="grid gap-5 md:grid-cols-2">
-          <div className="flex items-start justify-between gap-4 rounded-xl border border-perestroika-preto/10 p-4">
+          <div className="flex items-start justify-between gap-4 rounded-xl border border-perestroika-preto/15 p-4">
             <div>
               <Label className="font-display uppercase text-xs tracking-wide">tutor ativo</Label>
               <p className="font-body text-xs text-perestroika-preto/60 mt-1">
@@ -547,7 +547,7 @@ export const AdminTutorCommand = () => {
             />
           </div>
 
-          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+          <div className="rounded-xl border border-perestroika-preto/15 p-4">
             <Label className="font-display uppercase text-xs tracking-wide">limite diário por estudante</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">0 = sem limite.</p>
             <Input
@@ -564,7 +564,7 @@ export const AdminTutorCommand = () => {
             />
           </div>
 
-          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+          <div className="rounded-xl border border-perestroika-preto/15 p-4">
             <Label className="font-display uppercase text-xs tracking-wide">modelo</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
               flash padrão, pro só pra teste.
@@ -584,7 +584,7 @@ export const AdminTutorCommand = () => {
             </Select>
           </div>
 
-          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+          <div className="rounded-xl border border-perestroika-preto/15 p-4">
             <Label className="font-display uppercase text-xs tracking-wide">modelo de fallback</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
               usado automaticamente quando o principal falha (5xx, 429, timeout).
@@ -605,7 +605,7 @@ export const AdminTutorCommand = () => {
           </div>
 
 
-          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+          <div className="rounded-xl border border-perestroika-preto/15 p-4">
             <Label className="font-display uppercase text-xs tracking-wide">cap total diário</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">teto agregado de mensagens da turma por dia.</p>
             <Input
@@ -620,7 +620,7 @@ export const AdminTutorCommand = () => {
             />
           </div>
 
-          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+          <div className="rounded-xl border border-perestroika-preto/15 p-4">
             <Label className="font-display uppercase text-xs tracking-wide">burst por minuto</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">limite de mensagens por estudante em 60s.</p>
             <Input
@@ -635,7 +635,7 @@ export const AdminTutorCommand = () => {
             />
           </div>
 
-          <div className="rounded-xl border border-perestroika-preto/10 p-4">
+          <div className="rounded-xl border border-perestroika-preto/15 p-4">
             <Label className="font-display uppercase text-xs tracking-wide">alerta de cap (%)</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">% do cap pra acionar alerta visual (ex: 80).</p>
             <Input
@@ -654,7 +654,7 @@ export const AdminTutorCommand = () => {
             />
           </div>
 
-          <div className="rounded-xl border border-perestroika-preto/10 p-4 md:col-span-2">
+          <div className="rounded-xl border border-perestroika-preto/15 p-4 md:col-span-2">
             <Label className="font-display uppercase text-xs tracking-wide">emails de alerta de segurança</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
               educadores que recebem email imediato quando o tutor detecta evento severo (autolesão, abuso, etc). um por linha.
@@ -677,7 +677,7 @@ export const AdminTutorCommand = () => {
             />
           </div>
 
-          <div className="rounded-xl border border-perestroika-preto/10 p-4 md:col-span-2">
+          <div className="rounded-xl border border-perestroika-preto/15 p-4 md:col-span-2">
             <Label className="font-display uppercase text-xs tracking-wide">addon de instrução</Label>
             <p className="font-body text-xs text-perestroika-preto/60 mt-1 mb-2">
               concatenado ao system prompt. use pra ajustes pontuais (ex: "evite jargão técnico").
@@ -729,7 +729,7 @@ const Kpi = ({
           ? "text-perestroika-preto/45"
           : "text-perestroika-vermelho";
   return (
-    <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
+    <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/40 p-5">
       <div className="flex items-center gap-2 text-perestroika-preto/60 mb-2">
         {icon}
         <span className="font-body text-[10px] uppercase tracking-[0.2em]">{label}</span>

@@ -207,7 +207,7 @@ export function PillMatrizValor({
       )}
 
       {vazamentosMapa.length > 0 && vazamentosMapa.length < minLinhas && (
-        <div className="rounded-2xl border-2 border-perestroika-preto/25 bg-perestroika-bege p-4">
+        <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-4">
           <p className="font-body text-sm text-perestroika-preto/85">
             seu mapa do módulo 6 tem só <strong>{vazamentosMapa.length}</strong> vazamento(s). volta lá e cava
             mais {minLinhas - vazamentosMapa.length} — a matriz precisa de {minLinhas} linhas pra funcionar.
@@ -254,7 +254,7 @@ export function PillMatrizValor({
                 >
                   {i + 1}
                 </span>
-                <p className="font-display text-xs uppercase tracking-[0.2em] text-perestroika-preto/70">
+                <p className="font-display text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/70">
                   linha {i + 1}
                 </p>
               </div>
@@ -345,7 +345,7 @@ export function PillMatrizValor({
           <button
             type="button"
             onClick={addLinha}
-            className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/25 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/80 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full border-2 border-perestroika-preto/15 px-3 py-1.5 font-body text-xs uppercase tracking-wider text-perestroika-preto/80 hover:bg-perestroika-preto hover:text-perestroika-bege transition-colors"
           >
             adicionar linha
           </button>

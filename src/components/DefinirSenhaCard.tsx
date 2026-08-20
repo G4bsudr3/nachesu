@@ -64,7 +64,7 @@ export const DefinirSenhaCard = ({ onDefined }: Props) => {
 
   return (
     <>
-      <div className="relative rounded-3xl border border-perestroika-preto/15 bg-perestroika-preto/5 p-5 sm:p-6 mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
+      <div className="relative rounded-3xl border-2 border-perestroika-preto/15 bg-perestroika-preto/5 p-5 sm:p-6 mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
         <button
           type="button"
           onClick={handleDismiss}
@@ -92,7 +92,7 @@ export const DefinirSenhaCard = ({ onDefined }: Props) => {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-perestroika-bege border-perestroika-preto/20">
+        <DialogContent className="bg-perestroika-bege border-perestroika-preto/15">
           <DialogHeader>
             <DialogTitle className="font-display uppercase text-3xl leading-none">
               define sua senha
@@ -109,7 +109,7 @@ export const DefinirSenhaCard = ({ onDefined }: Props) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={submitting}
-              className="w-full h-12 px-4 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base"
+              className="w-full h-12 px-4 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base"
             />
             <PasswordStrength password={password} />
             <input
@@ -119,7 +119,7 @@ export const DefinirSenhaCard = ({ onDefined }: Props) => {
               onChange={(e) => setConfirm(e.target.value)}
               disabled={submitting}
               onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              className="w-full h-12 px-4 rounded-2xl bg-transparent border border-perestroika-preto/20 focus:border-perestroika-preto focus:outline-none font-body text-base"
+              className="w-full h-12 px-4 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base"
             />
             <button
               type="button"

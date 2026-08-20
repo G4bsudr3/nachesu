@@ -98,7 +98,7 @@ export const FirstTimeChecklist = ({
                 </p>
               </div>
               <span
-                className={`flex-shrink-0 inline-flex items-center justify-center h-6 w-6 rounded-full border transition-all mt-1 ${done ? "bg-perestroika-preto border-perestroika-preto" : "border-perestroika-preto/25"}`}
+                className={`flex-shrink-0 inline-flex items-center justify-center h-6 w-6 rounded-full border transition-all mt-1 ${done ? "bg-perestroika-preto border-perestroika-preto" : "border-perestroika-preto/15"}`}
                 aria-hidden
               >
                 {done && <Check className="h-3.5 w-3.5 text-perestroika-bege" strokeWidth={3} />}

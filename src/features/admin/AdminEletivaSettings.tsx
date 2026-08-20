@@ -155,7 +155,7 @@ export const AdminEletivaSettings = () => {
         </div>
 
         {/* default global */}
-        <div className="space-y-3 border border-border rounded-lg p-4 bg-muted/30">
+        <div className="space-y-3 border border-border rounded-xl p-4 bg-muted/30">
           <div className="flex items-start justify-between gap-6">
             <div className="space-y-1">
               <Label htmlFor="extras-global" className="font-display uppercase text-sm">
@@ -188,7 +188,7 @@ export const AdminEletivaSettings = () => {
             return (
               <div
                 key={c.id}
-                className="flex items-start justify-between gap-6 border border-border rounded-lg p-4"
+                className="flex items-start justify-between gap-6 border border-border rounded-xl p-4"
               >
                 <div className="space-y-1 min-w-0">
                   <Label htmlFor={`extras-${c.id}`} className="font-display uppercase text-sm truncate block">

@@ -165,7 +165,7 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
       <PopoverTrigger asChild>
         <button
           aria-label="baixar conversa"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-perestroika-preto/15 hover:border-perestroika-preto/40 hover:bg-perestroika-preto/5 transition-colors text-perestroika-preto/70 hover:text-perestroika-preto"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-perestroika-preto/15 hover:border-perestroika-preto/30 hover:bg-perestroika-preto/5 transition-colors text-perestroika-preto/70 hover:text-perestroika-preto"
         >
           <Download className="w-3.5 h-3.5" />
           <span className="font-display uppercase text-[10px] tracking-[0.2em]">baixar</span>
@@ -175,7 +175,7 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
         align="end"
         className="w-72 bg-perestroika-bege border-perestroika-preto/15 p-2"
       >
-        <p className="px-2 pt-1 pb-1.5 font-display uppercase text-[9px] tracking-[0.25em] text-perestroika-preto/50">
+        <p className="px-2 pt-1 pb-1.5 font-display uppercase text-[9px] tracking-[0.2em] text-perestroika-preto/50">
           título do arquivo
         </p>
         <div className="px-1 pb-2">
@@ -220,7 +220,7 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
           ) : (
             <button
               onClick={() => setEditing(true)}
-              className="w-full text-left px-2 py-1.5 rounded-md hover:bg-perestroika-preto/5 text-sm font-body text-perestroika-preto truncate border border-transparent hover:border-perestroika-preto/10"
+              className="w-full text-left px-2 py-1.5 rounded-xl hover:bg-perestroika-preto/5 text-sm font-body text-perestroika-preto truncate border border-transparent hover:border-perestroika-preto/15"
               title="clica pra editar"
             >
               {effectiveTitle}
@@ -233,14 +233,14 @@ export const DownloadConversation = ({ messages, defaultTitle }: Props) => {
         <div className="h-px bg-perestroika-preto/10 my-1" />
         <button
           onClick={downloadPdf}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-body text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-body text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
         >
           <FileDown className="w-4 h-4" />
           baixar como pdf
         </button>
         <button
           onClick={downloadTxt}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-body text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-body text-perestroika-preto hover:bg-perestroika-preto/5 transition-colors"
         >
           <FileText className="w-4 h-4" />
           baixar como texto

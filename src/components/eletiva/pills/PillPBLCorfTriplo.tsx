@@ -160,7 +160,7 @@ export function PillPBLCorfTriplo({
               "contexto: ...\nobjetivo: ...\nregras: ...\nformato: ..."
             }
             rows={6}
-            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
             voiceAriaLabel={`gravar versão corf do prompt ${i + 1}`}
           />
         </div>
@@ -204,7 +204,7 @@ export function PillPBLCorfTriplo({
               "o que ficou diferente entre as duas respostas?"
             }
             rows={3}
-            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
             voiceAriaLabel={`gravar comparação do prompt ${i + 1}`}
           />
         </div>
@@ -297,7 +297,7 @@ export function PillPBLCorfTriplo({
           <button
             type="button"
             onClick={onOpenTutor}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2 font-body text-sm lowercase text-perestroika-preto/80 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/15 px-4 py-2 font-body text-sm lowercase text-perestroika-preto/80 hover:border-perestroika-preto hover:text-perestroika-preto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto focus-visible:ring-offset-2 focus-visible:ring-offset-perestroika-bege"
           >
             <MessageCircle className="h-4 w-4" aria-hidden />
             tô travado, me ajuda
@@ -337,7 +337,7 @@ export function PillPBLCorfTriplo({
             onChange={(e) => setValue((prev) => ({ ...prev, conclusao: e.target.value }))}
             placeholder={schema.conclusao.placeholder}
             rows={4}
-            className="w-full rounded-lg border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
+            className="w-full rounded-xl border-2 border-perestroika-preto/15 bg-perestroika-bege px-3 py-2 font-body text-sm focus:border-perestroika-preto focus:outline-none resize-y"
             voiceAriaLabel="gravar conclusão geral"
           />
         </section>

@@ -33,17 +33,17 @@ export const AdminLayout = () => {
 
       {/* sidebar mobile (sheet) */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="p-0 w-72 bg-perestroika-bege border-perestroika-preto/10">
+        <SheetContent side="left" className="p-0 w-72 bg-perestroika-bege border-perestroika-preto/15">
           <AdminSidebar onNavigate={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>
 
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-30 h-12 flex items-center gap-3 px-3 sm:px-4 border-b border-perestroika-preto/10 bg-perestroika-bege/85 backdrop-blur">
+        <header className="sticky top-0 z-30 h-12 flex items-center gap-3 px-3 sm:px-4 border-b border-perestroika-preto/15 bg-perestroika-bege/85 backdrop-blur">
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-perestroika-preto/5"
+            className="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-xl hover:bg-perestroika-preto/5"
             aria-label="abrir menu"
           >
             <Menu className="w-4 h-4" />
@@ -67,7 +67,7 @@ export const AdminLayout = () => {
               type="button"
               onClick={() => setCmdOpen(true)}
               aria-label="busca rápida"
-              className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-md border border-perestroika-preto/15 bg-perestroika-bege/50 hover:bg-perestroika-bege/80 text-perestroika-preto/65 transition-colors"
+              className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/50 hover:bg-perestroika-bege/80 text-perestroika-preto/65 transition-colors"
             >
               <Search className="w-4 h-4" />
             </button>

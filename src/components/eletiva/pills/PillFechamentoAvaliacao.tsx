@@ -160,7 +160,7 @@ export function PillFechamentoAvaliacao({ pillId, accent, initial, save, onCompl
         </div>
       </section>
 
-      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/10">
+      <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/15">
         <SaveIndicator status={status} />
         <div className="flex items-center gap-2 flex-wrap">
           <StatusChip ok={dimensoesOk} label="5 dimensões" accent={accent} />

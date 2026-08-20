@@ -58,7 +58,7 @@ export const TrailBreadcrumb = ({ current, progress, level }: Props) => {
       <nav
         ref={navRef}
         aria-label="trilha"
-        className="inline-flex items-center gap-0.5 sm:gap-1.5 rounded-full bg-perestroika-preto/[0.04] border border-perestroika-preto/10 p-1 max-w-full overflow-x-auto scroll-smooth snap-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        className="inline-flex items-center gap-0.5 sm:gap-1.5 rounded-full bg-perestroika-preto/[0.04] border border-perestroika-preto/15 p-1 max-w-full overflow-x-auto scroll-smooth snap-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
 
         {STAGES.map((s) => {

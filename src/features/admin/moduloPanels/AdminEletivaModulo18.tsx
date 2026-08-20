@@ -68,7 +68,7 @@ export default function AdminEletivaModulo18() {
     <div className="space-y-8">
       <div className="space-y-8">
         <header className="space-y-3">
-          <p className="font-body text-[11px] uppercase tracking-[0.24em] text-perestroika-preto/55">
+          <p className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
             economia circular · módulo 18 · o que mudou
           </p>
           <h2 className="font-display uppercase text-2xl sm:text-3xl leading-[1.05] text-perestroika-preto">
@@ -106,16 +106,16 @@ export default function AdminEletivaModulo18() {
                   </p>
                   <div className="flex items-center gap-2 flex-wrap">
                     {s.resultado && (
-                      <span className="rounded-full border border-perestroika-preto/20 bg-perestroika-bege px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
+                      <span className="rounded-full border border-perestroika-preto/15 bg-perestroika-bege px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
                         {s.resultado}
                       </span>
                     )}
                     {s.decisao && (
-                      <span className="rounded-full border border-perestroika-preto/20 bg-perestroika-bege px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
+                      <span className="rounded-full border border-perestroika-preto/15 bg-perestroika-bege px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
                         {s.decisao}
                       </span>
                     )}
-                    <span className="rounded-full border border-perestroika-preto/20 bg-white px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
+                    <span className="rounded-full border border-perestroika-preto/15 bg-white px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-perestroika-preto/70">
                       {s.n_mudancas} mudanças
                     </span>
                   </div>

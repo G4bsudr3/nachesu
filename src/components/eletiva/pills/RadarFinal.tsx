@@ -113,7 +113,7 @@ export function RadarFinal({ items, fluxos, accent, save, homeHref = "/app" }: P
           <EletivaSymbol size={88} pose="celebrating" />
         </div>
         <p
-          className="font-body text-[11px] uppercase tracking-[0.25em]"
+          className="font-body text-[11px] uppercase tracking-[0.2em]"
           style={{ color: accent }}
         >
           módulo 1 · concluída
@@ -189,7 +189,7 @@ export function RadarFinal({ items, fluxos, accent, save, homeHref = "/app" }: P
         </div>
 
         {grouped.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/20 p-6 text-center">
+          <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-6 text-center">
             <p className="font-body text-sm text-perestroika-preto/65">
               não encontrei nenhum item completo no teu radar. volta no passo 3 pra preencher.
             </p>

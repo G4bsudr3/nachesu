@@ -159,7 +159,7 @@ const AdminEletivaModulos = () => {
                 className="inline-block h-3 w-3 rounded-full"
                 style={{ background: color }}
               />
-              <p className="font-body text-[10px] uppercase tracking-[0.22em] text-perestroika-preto/55">
+              <p className="font-body text-[10px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                 trilha {trail.order_index}
               </p>
               <h2 className="font-display uppercase text-2xl leading-none">{trail.title}</h2>
@@ -180,7 +180,7 @@ const AdminEletivaModulos = () => {
                         "group rounded-2xl border-2 bg-white p-4 flex flex-col gap-3 hover:shadow-sm transition-all",
                         hasIssue
                           ? "border-rose-400/70"
-                          : "border-perestroika-preto/15 hover:border-perestroika-preto/40",
+                          : "border-perestroika-preto/15 hover:border-perestroika-preto/30",
                       )}
                       style={{ borderTopColor: color, borderTopWidth: 4 }}
                     >
@@ -224,7 +224,7 @@ const AdminEletivaModulos = () => {
                         </div>
                       )}
 
-                      <div className="mt-auto pt-2 border-t border-perestroika-preto/10 grid grid-cols-3 gap-1 text-center">
+                      <div className="mt-auto pt-2 border-t border-perestroika-preto/15 grid grid-cols-3 gap-1 text-center">
                         <StatMini label="rascunho" value={rascunho} />
                         <StatMini label="aguarda" value={enviado} highlight={enviado > 0} />
                         <StatMini label="revisado" value={revisado} />

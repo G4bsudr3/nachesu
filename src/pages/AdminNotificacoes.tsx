@@ -48,7 +48,7 @@ const fmt = (iso: string) =>
   });
 
 const Stat = ({ label, value, hint }: { label: string; value: string; hint?: string }) => (
-  <div className="rounded-2xl border border-perestroika-preto/10 bg-perestroika-bege/60 px-4 py-3">
+  <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege/60 px-4 py-3">
     <p className="text-[10px] uppercase tracking-wide text-perestroika-preto/55">{label}</p>
     <p className="font-display text-3xl leading-none text-perestroika-preto mt-1">{value}</p>
     {hint && <p className="text-[11px] text-perestroika-preto/50 mt-1">{hint}</p>}

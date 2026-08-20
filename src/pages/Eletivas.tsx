@@ -79,7 +79,7 @@ const Eletivas = () => {
         actions={
           <Link
             to="/auth"
-            className="inline-flex items-center min-h-10 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
+            className="inline-flex items-center min-min-h-11 rounded-full bg-perestroika-preto text-perestroika-bege px-4 sm:px-5 py-2 font-body text-xs sm:text-sm uppercase tracking-wide hover:opacity-90 active:scale-95 transition-all"
           >
             entrar
           </Link>
@@ -103,7 +103,7 @@ const Eletivas = () => {
         </motion.div>
 
         <div className="max-w-3xl relative z-10">
-          <p className="font-body text-xs sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
+          <p className="font-body text-[11px] sm:text-sm uppercase tracking-[0.2em] text-perestroika-preto/60 mb-6">
             escolha sua eletiva
           </p>
           <h1 className="font-display uppercase display-clamp-hero">
@@ -128,7 +128,7 @@ const Eletivas = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10%" }}
                 transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-7 sm:p-9"
+                className="relative overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege p-5 sm:p-8"
               >
                 <div
                   className="absolute inset-x-0 top-0 h-1.5"
@@ -148,10 +148,10 @@ const Eletivas = () => {
                       height={40}
                       loading="lazy"
                       decoding="async"
-                      className="h-10 w-10 rounded-full object-cover border-2 border-perestroika-preto/15"
+                      className="h-11 w-11 rounded-full object-cover border-2 border-perestroika-preto/15"
                       draggable={false}
                     />
-                    <span className="font-body text-xs uppercase tracking-[0.15em] text-perestroika-preto/55">
+                    <span className="font-body text-[11px] uppercase tracking-[0.2em] text-perestroika-preto/55">
                       {e.professor}
                     </span>
                   </span>
@@ -168,7 +168,7 @@ const Eletivas = () => {
                 </p>
 
                 {/* trilhas */}
-                <ul className="space-y-2 mb-7 border-t border-perestroika-preto/10 pt-5">
+                <ul className="space-y-2 mb-7 border-t border-perestroika-preto/15 pt-5">
                   {e.trilhas.map((t) => (
                     <li
                       key={t.n}

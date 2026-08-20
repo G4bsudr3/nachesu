@@ -207,7 +207,7 @@ export function PillQuiz({
                           className={`${optionRowClass} ${
                             sel
                               ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                              : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
+                              : "border-perestroika-preto/15 hover:border-perestroika-preto/30"
                           }`}
                         >
 
@@ -222,7 +222,7 @@ export function PillQuiz({
                           />
                           <span
                             className={`mt-0.5 h-4 w-4 flex-shrink-0 rounded-full border-2 ${
-                              sel ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/40"
+                              sel ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/30"
                             }`}
                             aria-hidden="true"
                           />
@@ -267,7 +267,7 @@ export function PillQuiz({
                         className={`${optionRowClass} ${
                           sel
                             ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                            : "border-perestroika-preto/15 hover:border-perestroika-preto/40"
+                            : "border-perestroika-preto/15 hover:border-perestroika-preto/30"
                         }`}
                       >
 
@@ -288,7 +288,7 @@ export function PillQuiz({
                         />
                         <span
                           className={`mt-0.5 h-4 w-4 flex-shrink-0 rounded-sm border-2 ${
-                            sel ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/40"
+                            sel ? "border-perestroika-bege bg-perestroika-bege" : "border-perestroika-preto/30"
                           }`}
                           aria-hidden="true"
                         />

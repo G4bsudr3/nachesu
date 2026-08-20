@@ -102,7 +102,7 @@ export const HistoryPanel = ({
       <SheetTrigger asChild>
         <button
           aria-label="abrir histórico"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-perestroika-preto/15 hover:border-perestroika-preto/40 hover:bg-perestroika-preto/5 transition-colors text-perestroika-preto/70 hover:text-perestroika-preto"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-perestroika-preto/15 hover:border-perestroika-preto/30 hover:bg-perestroika-preto/5 transition-colors text-perestroika-preto/70 hover:text-perestroika-preto"
         >
           <History className="w-3.5 h-3.5" />
           <span className="font-display uppercase text-[10px] tracking-[0.2em]">histórico</span>
@@ -110,9 +110,9 @@ export const HistoryPanel = ({
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-md bg-perestroika-bege border-l border-perestroika-preto/10 p-0 flex flex-col"
+        className="w-full sm:max-w-md bg-perestroika-bege border-l border-perestroika-preto/15 p-0 flex flex-col"
       >
-        <SheetHeader className="px-5 pt-6 pb-4 border-b border-perestroika-preto/10">
+        <SheetHeader className="px-5 pt-6 pb-4 border-b border-perestroika-preto/15">
           <SheetTitle className="font-display uppercase text-2xl tracking-tight text-perestroika-preto">
             histórico
           </SheetTitle>
@@ -121,7 +121,7 @@ export const HistoryPanel = ({
           </p>
         </SheetHeader>
 
-        <div className="px-5 py-3 space-y-3 border-b border-perestroika-preto/10">
+        <div className="px-5 py-3 space-y-3 border-b border-perestroika-preto/15">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-perestroika-preto/60" />
             <Input
@@ -153,7 +153,7 @@ export const HistoryPanel = ({
               onClick={() => setSort((s) => (s === "recent" ? "oldest" : "recent"))}
               aria-label={sort === "recent" ? "ordenar pelas mais antigas" : "ordenar pelas mais recentes"}
               title={sort === "recent" ? "mais recentes primeiro" : "mais antigas primeiro"}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-display uppercase tracking-[0.2em] border border-perestroika-preto/15 text-perestroika-preto/70 hover:text-perestroika-preto hover:border-perestroika-preto/40 transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-display uppercase tracking-[0.2em] border border-perestroika-preto/15 text-perestroika-preto/70 hover:text-perestroika-preto hover:border-perestroika-preto/30 transition-colors"
             >
               {sort === "recent" ? (
                 <ArrowDownWideNarrow className="w-3 h-3" />
@@ -188,7 +188,7 @@ export const HistoryPanel = ({
                     className={`group relative rounded-xl border transition-colors p-3 cursor-pointer ${
                       isActive
                         ? "bg-perestroika-preto text-perestroika-bege border-perestroika-preto"
-                        : "bg-perestroika-bege border-perestroika-preto/10 hover:border-perestroika-preto/30"
+                        : "bg-perestroika-bege border-perestroika-preto/15 hover:border-perestroika-preto/30"
                     }`}
                     onClick={() => {
                       onOpen(c.id);

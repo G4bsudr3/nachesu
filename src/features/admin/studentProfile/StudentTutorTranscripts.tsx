@@ -17,7 +17,7 @@ export const StudentTutorTranscripts = ({ userId }: Props) => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-perestroika-preto/15 p-6 text-center text-sm text-perestroika-preto/55">
+      <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/15 p-6 text-center text-sm text-perestroika-preto/55">
         ainda não conversou com o tutor IA
       </div>
     );
@@ -29,7 +29,7 @@ export const StudentTutorTranscripts = ({ userId }: Props) => {
         const open = openId === c.id;
         const firstUser = c.messages.find((m) => m.role === "user");
         return (
-          <li key={c.id} className="rounded-xl border border-perestroika-preto/10 bg-perestroika-bege/60">
+          <li key={c.id} className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/60">
             <button
               type="button"
               onClick={() => setOpenId(open ? null : c.id)}
@@ -55,7 +55,7 @@ export const StudentTutorTranscripts = ({ userId }: Props) => {
             </button>
 
             {open && (
-              <div className="border-t border-perestroika-preto/10 p-3">
+              <div className="border-t border-perestroika-preto/15 p-3">
                 <ul className="space-y-2 max-h-96 overflow-y-auto">
                   {c.messages
                     .filter((m) => m.role !== "system")
@@ -64,7 +64,7 @@ export const StudentTutorTranscripts = ({ userId }: Props) => {
                         key={i}
                         className={`rounded-lg p-2.5 text-xs ${
                           m.role === "user"
-                            ? "bg-perestroika-bege/70 border border-perestroika-preto/10"
+                            ? "bg-perestroika-bege/70 border border-perestroika-preto/15"
                             : "bg-perestroika-preto/5 border border-perestroika-preto/15"
                         }`}
                       >

@@ -121,7 +121,7 @@ const OAuthConsent = () => {
 
           {details && (
             <>
-              <div className="rounded-2xl border border-perestroika-preto/15 bg-perestroika-preto/5 p-4 space-y-3">
+              <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/5 p-4 space-y-3">
                 <p className="font-body text-sm leading-snug">
                   entrando como <span className="font-semibold">{user.email}</span>.
                 </p>

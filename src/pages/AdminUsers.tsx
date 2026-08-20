@@ -363,12 +363,12 @@ const AdminUsers = () => {
             aria-expanded={suggestOpen && suggestions.length > 0}
             aria-autocomplete="list"
             placeholder="buscar por nome, ra, turma, email ou eletiva…"
-            className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/20"
+            className="pl-9 bg-perestroika-bege/60 border-perestroika-preto/15"
           />
           {suggestOpen && suggestions.length > 0 && (
             <ul
               role="listbox"
-              className="absolute z-30 mt-1 w-full max-h-[60vh] overflow-auto rounded-2xl border border-perestroika-preto/15 bg-perestroika-bege shadow-lg py-1"
+              className="absolute z-30 mt-1 w-full max-h-[60vh] overflow-auto rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-bege shadow-lg py-1"
             >
               {suggestions.map((s, i) => (
                 <li key={s.user.user_id}>
@@ -396,7 +396,7 @@ const AdminUsers = () => {
           )}
         </div>
         <Select value={courseFilter} onValueChange={setCourseFilter}>
-          <SelectTrigger className="w-full md:w-56 bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-full md:w-56 bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="eletiva" />
           </SelectTrigger>
           <SelectContent>
@@ -408,7 +408,7 @@ const AdminUsers = () => {
           </SelectContent>
         </Select>
         <Select value={domainFilter} onValueChange={setDomainFilter}>
-          <SelectTrigger className="w-full md:w-56 bg-perestroika-bege/60 border-perestroika-preto/20">
+          <SelectTrigger className="w-full md:w-56 bg-perestroika-bege/60 border-perestroika-preto/15">
             <SelectValue placeholder="domínio" />
           </SelectTrigger>
           <SelectContent>
@@ -430,7 +430,7 @@ const AdminUsers = () => {
       </div>
 
 
-      <div className="rounded-lg border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
+      <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege/40 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-perestroika-preto/5 hover:bg-perestroika-preto/5">
@@ -466,7 +466,7 @@ const AdminUsers = () => {
               <TableRow key={item.user_id} className="hover:bg-perestroika-preto/5">
                 <TableCell className="min-w-64">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-perestroika-preto text-perestroika-bege">
                       <UserRound className="h-4 w-4" />
                     </div>
                     <div>
@@ -550,7 +550,7 @@ const AdminUsers = () => {
                   <div className="inline-flex items-center gap-2">
                     <Link
                       to={`/admin/aluno/${item.user_id}`}
-                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 transition-colors"
+                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 transition-colors"
                     >
                       <ExternalLink className="h-4 w-4" /> perfil
                     </Link>
@@ -559,7 +559,7 @@ const AdminUsers = () => {
                       onClick={() => toggleTest(item)}
                       disabled={busyUserId === item.user_id}
                       title={item.is_test ? "desmarcar como conta de teste" : "marcar como conta de teste (some dos dashboards)"}
-                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
+                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
                     >
                       <FlaskConical className="h-4 w-4" />
                       {item.is_test ? "remover teste" : "marcar teste"}
@@ -569,7 +569,7 @@ const AdminUsers = () => {
                       onClick={() => resetPassword(item)}
                       disabled={busyUserId === item.user_id}
                       title="gerar senha nova aleatória"
-                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
+                      className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
                     >
                       <KeyRound className="h-4 w-4" />
                       resetar senha
@@ -579,7 +579,7 @@ const AdminUsers = () => {
                         type="button"
                         onClick={() => removeAdmin(item)}
                         disabled={busyUserId === item.user_id}
-                        className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/20 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
+                        className="inline-flex items-center gap-2 rounded-full border border-perestroika-preto/15 px-4 py-2 text-xs uppercase tracking-wide hover:bg-perestroika-preto/5 disabled:opacity-40 transition-colors"
                       >
                         <ShieldMinus className="h-4 w-4" />
                         remover admin

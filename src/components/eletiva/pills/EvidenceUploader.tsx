@@ -188,7 +188,7 @@ export function EvidenceUploader({
       <div className={`flex flex-wrap items-center gap-2 ${compact ? "flex-col items-stretch" : ""}`}>
         <label
           className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5 font-body text-xs cursor-pointer transition-colors ${
-            errorMsg ? "border-[#fd4644]" : "border-perestroika-preto/20 hover:border-perestroika-preto/50"
+            errorMsg ? "border-[#fd4644]" : "border-perestroika-preto/15 hover:border-perestroika-preto/50"
           } ${uploading ? "opacity-70 cursor-wait" : ""}`}
           aria-busy={uploading}
         >

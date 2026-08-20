@@ -61,7 +61,7 @@ export const FeedbackDia1Modal = ({ open, onOpenChange }: Props) => {
               maxLength={1000}
               rows={3}
               placeholder="conta no teu jeito"
-              className="bg-perestroika-bege/60 border-perestroika-preto/20 focus-visible:ring-perestroika-laranja"
+              className="bg-perestroika-bege/60 border-perestroika-preto/15 focus-visible:ring-perestroika-laranja"
             />
           </div>
 
@@ -75,7 +75,7 @@ export const FeedbackDia1Modal = ({ open, onOpenChange }: Props) => {
               maxLength={1000}
               rows={3}
               placeholder="manda o ponto sincero"
-              className="bg-perestroika-bege/60 border-perestroika-preto/20 focus-visible:ring-perestroika-laranja"
+              className="bg-perestroika-bege/60 border-perestroika-preto/15 focus-visible:ring-perestroika-laranja"
             />
           </div>
 
@@ -89,7 +89,7 @@ export const FeedbackDia1Modal = ({ open, onOpenChange }: Props) => {
               maxLength={1000}
               rows={3}
               placeholder="o que te marcou"
-              className="bg-perestroika-bege/60 border-perestroika-preto/20 focus-visible:ring-perestroika-laranja"
+              className="bg-perestroika-bege/60 border-perestroika-preto/15 focus-visible:ring-perestroika-laranja"
             />
           </div>
 

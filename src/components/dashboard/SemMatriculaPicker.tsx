@@ -93,7 +93,7 @@ export const SemMatriculaPicker = ({ className = "" }: { className?: string }) =
                 className={`relative overflow-hidden text-left rounded-2xl border-2 p-5 transition ${
                   active
                     ? "border-perestroika-preto bg-perestroika-bege"
-                    : "border-perestroika-preto/15 bg-perestroika-bege/60 hover:border-perestroika-preto/40"
+                    : "border-perestroika-preto/15 bg-perestroika-bege/60 hover:border-perestroika-preto/30"
                 }`}
               >
                 <span
