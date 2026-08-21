@@ -15,6 +15,8 @@ import {
 } from "@/features/admin/fluxo/flowMap";
 import { useFluxoMetrics } from "@/features/admin/fluxo/useFluxoMetrics";
 import { FluxoConnections } from "@/features/admin/fluxo/FluxoConnections";
+import { FluxoPaginasView } from "@/features/admin/fluxo/FluxoPaginasView";
+import { SEM_ENTRADA, SEM_SAIDA, ILHADAS } from "@/features/admin/fluxo/flowAnalysis";
 
 const ACCESS_STYLE: Record<FlowNode["access"], string> = {
   público: "bg-perestroika-azul/15 text-perestroika-preto",
@@ -22,11 +24,15 @@ const ACCESS_STYLE: Record<FlowNode["access"], string> = {
   admin: "bg-perestroika-preto/10 text-perestroika-preto",
 };
 
+type ViewId = "paginas" | "fluxo";
+
 const AdminFluxo = () => {
   const { data: metrics } = useFluxoMetrics();
+  const [view, setView] = useState<ViewId>("paginas");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const selected = selectedId ? nodeById(selectedId) : null;
+
 
   const gargalos = useMemo(() => {
     const vistos = new Set<string>();
