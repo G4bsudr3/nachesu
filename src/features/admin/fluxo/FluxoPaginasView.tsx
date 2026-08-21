@@ -1,0 +1,123 @@
+import { Link } from "react-router-dom";
+import { ArrowUpRight, Lock, Globe, TriangleAlert } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  FLOW_NODES,
+  LANES,
+  METRIC_ALERT_ABOVE,
+  METRIC_LABEL,
+  type MetricKey,
+} from "./flowMap";
+
+interface Props {
+  metrics?: Partial<Record<MetricKey, number>>;
+  onSelect: (id: string) => void;
+}
+
+export const FluxoPaginasView = ({ metrics, onSelect }: Props) => {
+  return (
+    <div className="space-y-8">
+      {LANES.map((lane) => {
+        const nodes = FLOW_NODES.filter((n) => n.lane === lane.id);
+        return (
+          <section key={lane.id} className="space-y-3">
+            <div className="flex items-baseline gap-3 border-b border-perestroika-preto/10 pb-2">
+              <h2 className={cn("font-display uppercase text-2xl leading-none", lane.accent)}>
+                {lane.title}
+              </h2>
+              <p className="text-[11px] text-perestroika-preto/55">{lane.hint}</p>
+              <span className="ml-auto text-[11px] tabular-nums text-perestroika-preto/50">
+                {nodes.length} {nodes.length === 1 ? "página" : "páginas"}
+              </span>
+            </div>
+
+            <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {nodes.map((n) => {
+                const value = n.metric ? metrics?.[n.metric] : undefined;
+                const limit = n.metric ? METRIC_ALERT_ABOVE[n.metric] : undefined;
+                const alert = limit !== undefined && (value ?? 0) > limit;
+                const publica = n.access === "público";
+                const abrivel = !n.route.includes(":");
+                return (
+                  <li key={n.id} className="min-w-0">
+                    <div
+                      className={cn(
+                        "card-surface h-full p-4 space-y-2 bg-perestroika-bege",
+                        alert && "border-perestroika-laranja/50",
+                      )}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <button
+                          type="button"
+                          onClick={() => onSelect(n.id)}
+                          className="text-left font-medium text-sm leading-tight underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto rounded"
+                        >
+                          {n.title}
+                        </button>
+                        <span
+                          className={cn(
+                            "shrink-0 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide",
+                            publica
+                              ? "bg-perestroika-azul/15"
+                              : "bg-perestroika-preto/10",
+                          )}
+                        >
+                          {publica ? (
+                            <Globe className="w-3 h-3" />
+                          ) : (
+                            <Lock className="w-3 h-3" />
+                          )}
+                          {publica ? "pública" : n.access === "admin" ? "admin" : "logada"}
+                        </span>
+                      </div>
+
+                      <p className="font-mono text-[11px] text-perestroika-preto/55 break-all">
+                        {n.route}
+                      </p>
+                      <p className="text-[12px] text-perestroika-preto/70">{n.role}</p>
+
+                      {value !== undefined && (
+                        <p
+                          className={cn(
+                            "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px]",
+                            alert
+                              ? "bg-perestroika-laranja/25"
+                              : "bg-perestroika-preto/[0.06] text-perestroika-preto/70",
+                          )}
+                        >
+                          <span className="font-semibold tabular-nums">{value}</span>
+                          {METRIC_LABEL[n.metric!]}
+                        </p>
+                      )}
+
+                      {n.risco && (
+                        <p className="flex items-start gap-1.5 text-[11px] text-perestroika-preto/60">
+                          <TriangleAlert className="w-3 h-3 mt-0.5 shrink-0 text-perestroika-laranja" />
+                          {n.risco}
+                        </p>
+                      )}
+
+                      {abrivel ? (
+                        <Link
+                          to={n.route}
+                          className="inline-flex items-center gap-1.5 text-[12px] underline underline-offset-2 min-h-[44px] sm:min-h-0 sm:pt-1"
+                        >
+                          abrir a página
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </Link>
+                      ) : (
+                        <p className="text-[11px] text-perestroika-preto/45 pt-1">
+                          rota com parâmetro, abre pelo produto
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
+  );
+};

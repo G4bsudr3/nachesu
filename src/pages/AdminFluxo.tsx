@@ -15,6 +15,8 @@ import {
 } from "@/features/admin/fluxo/flowMap";
 import { useFluxoMetrics } from "@/features/admin/fluxo/useFluxoMetrics";
 import { FluxoConnections } from "@/features/admin/fluxo/FluxoConnections";
+import { FluxoPaginasView } from "@/features/admin/fluxo/FluxoPaginasView";
+import { SEM_ENTRADA, SEM_SAIDA, ILHADAS } from "@/features/admin/fluxo/flowAnalysis";
 
 const ACCESS_STYLE: Record<FlowNode["access"], string> = {
   público: "bg-perestroika-azul/15 text-perestroika-preto",
@@ -22,11 +24,15 @@ const ACCESS_STYLE: Record<FlowNode["access"], string> = {
   admin: "bg-perestroika-preto/10 text-perestroika-preto",
 };
 
+type ViewId = "paginas" | "fluxo";
+
 const AdminFluxo = () => {
   const { data: metrics } = useFluxoMetrics();
+  const [view, setView] = useState<ViewId>("paginas");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const selected = selectedId ? nodeById(selectedId) : null;
+
 
   const gargalos = useMemo(() => {
     const vistos = new Set<string>();
@@ -66,6 +72,29 @@ const AdminFluxo = () => {
         </Button>
       </header>
 
+      <div className="flex flex-wrap gap-2" role="tablist" aria-label="visualização">
+        {([
+          { id: "paginas", label: "páginas" },
+          { id: "fluxo", label: "fluxo de páginas" },
+        ] as const).map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={view === t.id}
+            onClick={() => setView(t.id)}
+            className={cn(
+              "rounded-full px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto",
+              view === t.id
+                ? "bg-perestroika-preto text-perestroika-bege"
+                : "bg-perestroika-preto/[0.06] hover:bg-perestroika-preto/[0.12]",
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
       {gargalos.length > 0 && (
         <div className="card-surface p-4 space-y-2 border-perestroika-laranja/40">
           <p className="flex items-center gap-2 text-sm font-medium">
@@ -91,6 +120,12 @@ const AdminFluxo = () => {
         </div>
       )}
 
+      {view === "paginas" && (
+        <FluxoPaginasView metrics={metrics} onSelect={setSelectedId} />
+      )}
+
+      {view === "fluxo" && (
+      <>
       <p className="hidden lg:flex items-center gap-2 text-[11px] text-perestroika-preto/55">
         <span className="inline-block w-8 border-t border-dashed border-perestroika-preto/40" />
         as setas mostram por onde se chega em cada tela. clique num card pra destacar só as
@@ -98,6 +133,7 @@ const AdminFluxo = () => {
       </p>
 
       <div ref={gridRef} className="relative grid gap-4 lg:gap-x-14 lg:grid-cols-4">
+
         <FluxoConnections containerRef={gridRef} selectedId={selectedId} />
         {LANES.map((lane) => (
           <section key={lane.id} className="relative z-10 space-y-3 min-w-0">
@@ -169,6 +205,40 @@ const AdminFluxo = () => {
           </section>
         ))}
       </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        {[
+          { title: "sem entrada", hint: "ninguém aponta pra cá, só link direto ou menu", list: SEM_ENTRADA },
+          { title: "sem saída", hint: "beco: a tela não leva a nenhum próximo passo", list: SEM_SAIDA },
+          { title: "ilhadas", hint: "sem entrada e sem saída no mapa", list: ILHADAS },
+        ].map((bloco) => (
+          <div key={bloco.title} className="card-surface p-4 space-y-2">
+            <p className="eyebrow text-perestroika-preto/55">{bloco.title}</p>
+            <p className="text-[11px] text-perestroika-preto/55">{bloco.hint}</p>
+            {bloco.list.length === 0 ? (
+              <p className="text-sm text-perestroika-preto/60">nenhuma. rede fechada aqui.</p>
+            ) : (
+              <ul className="flex flex-wrap gap-1.5">
+                {bloco.list.map((n) => (
+                  <li key={n.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedId(n.id)}
+                      className="rounded-full bg-perestroika-preto/[0.06] px-2.5 py-1 text-xs hover:bg-perestroika-preto/[0.12] transition-colors"
+                    >
+                      {n.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+      </>
+      )}
+
+
 
       {selected && (
         <aside
