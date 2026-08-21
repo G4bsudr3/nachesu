@@ -176,6 +176,40 @@ const AdminFluxo = () => {
         ))}
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-3">
+        {[
+          { title: "sem entrada", hint: "ninguém aponta pra cá, só link direto ou menu", list: SEM_ENTRADA },
+          { title: "sem saída", hint: "beco: a tela não leva a nenhum próximo passo", list: SEM_SAIDA },
+          { title: "ilhadas", hint: "sem entrada e sem saída no mapa", list: ILHADAS },
+        ].map((bloco) => (
+          <div key={bloco.title} className="card-surface p-4 space-y-2">
+            <p className="eyebrow text-perestroika-preto/55">{bloco.title}</p>
+            <p className="text-[11px] text-perestroika-preto/55">{bloco.hint}</p>
+            {bloco.list.length === 0 ? (
+              <p className="text-sm text-perestroika-preto/60">nenhuma. rede fechada aqui.</p>
+            ) : (
+              <ul className="flex flex-wrap gap-1.5">
+                {bloco.list.map((n) => (
+                  <li key={n.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedId(n.id)}
+                      className="rounded-full bg-perestroika-preto/[0.06] px-2.5 py-1 text-xs hover:bg-perestroika-preto/[0.12] transition-colors"
+                    >
+                      {n.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+      </>
+      )}
+
+
+
       {selected && (
         <aside
           className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-perestroika-bege border-l border-perestroika-preto/15 shadow-xl overflow-y-auto p-5 space-y-4"
