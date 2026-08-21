@@ -101,7 +101,7 @@ const AdminFluxo = () => {
 
 
 
-      {selected && (
+      {view === "paginas" && selected && (
         <aside
           className="fixed inset-y-0 right-0 z-40 w-full sm:w-96 bg-perestroika-bege border-l border-perestroika-preto/15 shadow-xl overflow-y-auto p-5 space-y-4"
           aria-label={`detalhes de ${selected.title}`}
