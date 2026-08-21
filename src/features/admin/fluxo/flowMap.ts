@@ -4,7 +4,7 @@
  * e apontar onde o estudante costuma travar.
  */
 
-export type LaneId = "publico" | "entrada" | "estudante" | "admin";
+export type LaneId = "publico" | "entrada" | "estudante" | "escola" | "admin";
 
 export type MetricKey =
   | "pendentes"
@@ -59,6 +59,12 @@ export const LANES: Lane[] = [
     accent: "text-perestroika-rosa",
   },
   {
+    id: "escola",
+    title: "painel da escola",
+    hint: "coordenação, acesso por senha",
+    accent: "text-perestroika-azul",
+  },
+  {
     id: "admin",
     title: "educador e admin",
     hint: "quem opera a plataforma",
@@ -90,7 +96,7 @@ export const FLOW_NODES: FlowNode[] = [
   },
   {
     id: "acompanhamento",
-    lane: "publico",
+    lane: "escola",
     title: "painel da escola",
     route: "/acompanhamento",
     access: "público",

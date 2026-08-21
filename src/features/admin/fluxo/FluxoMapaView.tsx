@@ -21,6 +21,7 @@ const LANE_DOT: Record<FlowNode["lane"], string> = {
   publico: "bg-perestroika-azul",
   entrada: "bg-perestroika-laranja",
   estudante: "bg-perestroika-rosa",
+  escola: "bg-perestroika-vermelho",
   admin: "bg-perestroika-preto/70",
 };
 
