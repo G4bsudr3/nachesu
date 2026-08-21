@@ -1,19 +1,15 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, TriangleAlert, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-  FLOW_NODES,
-  LANES,
-  METRIC_ALERT_ABOVE,
   METRIC_LABEL,
-  
   nodeById,
   type FlowNode,
 } from "@/features/admin/fluxo/flowMap";
 import { useFluxoMetrics } from "@/features/admin/fluxo/useFluxoMetrics";
-import { FluxoConnections } from "@/features/admin/fluxo/FluxoConnections";
+import { FluxoMapaView } from "@/features/admin/fluxo/FluxoMapaView";
 import { FluxoPaginasView } from "@/features/admin/fluxo/FluxoPaginasView";
 import { SEM_ENTRADA, SEM_SAIDA, ILHADAS } from "@/features/admin/fluxo/flowAnalysis";
 
@@ -29,7 +25,6 @@ const AdminFluxo = () => {
   const { data: metrics } = useFluxoMetrics();
   const [view, setView] = useState<ViewId>("paginas");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
   const selected = selectedId ? nodeById(selectedId) : null;
 
 
@@ -76,85 +71,7 @@ const AdminFluxo = () => {
 
       {view === "fluxo" && (
       <>
-      <p className="hidden lg:flex items-center gap-2 text-[11px] text-perestroika-preto/55">
-        <span className="inline-block w-8 border-t border-dashed border-perestroika-preto/40" />
-        as setas mostram por onde se chega em cada tela. clique num card pra destacar só as
-        conexões dele.
-      </p>
-
-      <div ref={gridRef} className="relative grid gap-4 lg:gap-x-14 lg:grid-cols-4">
-
-        <FluxoConnections containerRef={gridRef} selectedId={selectedId} />
-        {LANES.map((lane) => (
-          <section key={lane.id} className="relative z-10 space-y-3 min-w-0">
-            <div className="space-y-0.5">
-              <h2 className={cn("font-display uppercase text-2xl leading-none", lane.accent)}>
-                {lane.title}
-              </h2>
-              <p className="text-[11px] text-perestroika-preto/55">{lane.hint}</p>
-            </div>
-
-            <ol className="space-y-2">
-              {FLOW_NODES.filter((n) => n.lane === lane.id).map((n) => {
-                const value = n.metric ? metrics?.[n.metric] : undefined;
-                const limit = n.metric ? METRIC_ALERT_ABOVE[n.metric] : undefined;
-                const alert = limit !== undefined && (value ?? 0) > limit;
-                return (
-                  <li key={n.id}>
-                    <button
-                      type="button"
-                      data-flow-node={n.id}
-                      onClick={() => setSelectedId(n.id)}
-                      aria-expanded={selectedId === n.id}
-                      className={cn(
-                        "card-surface relative w-full text-left p-3 space-y-1.5 bg-perestroika-bege transition-colors hover:bg-perestroika-preto/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto",
-                        selectedId === n.id &&
-                          "bg-perestroika-preto/[0.06] ring-2 ring-perestroika-laranja",
-                        alert && "border-perestroika-laranja/50",
-                      )}
-                    >
-
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="font-medium text-sm leading-tight">{n.title}</span>
-                        <span
-                          className={cn(
-                            "shrink-0 rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide",
-                            ACCESS_STYLE[n.access],
-                          )}
-                        >
-                          {n.access}
-                        </span>
-                      </div>
-                      <p className="font-mono text-[11px] text-perestroika-preto/55 break-all">
-                        {n.route}
-                      </p>
-                      {value !== undefined && (
-                        <p
-                          className={cn(
-                            "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px]",
-                            alert
-                              ? "bg-perestroika-laranja/25"
-                              : "bg-perestroika-preto/[0.06] text-perestroika-preto/70",
-                          )}
-                        >
-                          <span className="font-semibold tabular-nums">{value}</span>
-                          {METRIC_LABEL[n.metric!]}
-                        </p>
-                      )}
-                      {n.risco && (
-                        <p className="flex items-start gap-1.5 text-[11px] text-perestroika-preto/60">
-                          <TriangleAlert className="w-3 h-3 mt-0.5 shrink-0 text-perestroika-laranja" />
-                          {n.risco}
-                        </p>
-                      )}
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
-        ))}
-      </div>
+      <FluxoMapaView selectedId={selectedId} onSelect={setSelectedId} />
 
       <div className="grid gap-3 sm:grid-cols-3">
         {[
