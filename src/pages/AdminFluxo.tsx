@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Copy, TriangleAlert, X } from "lucide-react";
 import { toast } from "sonner";
@@ -32,19 +32,6 @@ const AdminFluxo = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const selected = selectedId ? nodeById(selectedId) : null;
-
-
-  const gargalos = useMemo(() => {
-    const vistos = new Set<string>();
-    return FLOW_NODES.filter((n) => {
-      if (!n.metric || vistos.has(n.metric)) return false;
-      const limit = METRIC_ALERT_ABOVE[n.metric];
-      if (limit === undefined) return false;
-      if ((metrics?.[n.metric] ?? 0) <= limit) return false;
-      vistos.add(n.metric);
-      return true;
-    });
-  }, [metrics]);
 
   const copyMarkdown = () => {
     navigator.clipboard.writeText(flowToMarkdown(metrics)).then(
@@ -95,30 +82,6 @@ const AdminFluxo = () => {
         ))}
       </div>
 
-      {gargalos.length > 0 && (
-        <div className="card-surface p-4 space-y-2 border-perestroika-laranja/40">
-          <p className="flex items-center gap-2 text-sm font-medium">
-            <TriangleAlert className="w-4 h-4 text-perestroika-laranja" />
-            pontos com gente parada agora
-          </p>
-          <ul className="flex flex-wrap gap-2">
-            {gargalos.map((n) => (
-              <li key={n.id}>
-                <button
-                  type="button"
-                  onClick={() => setSelectedId(n.id)}
-                  className="inline-flex items-center gap-2 rounded-full bg-perestroika-laranja/20 px-3 py-1.5 text-xs hover:bg-perestroika-laranja/35 transition-colors"
-                >
-                  <span className="font-semibold tabular-nums">
-                    {metrics?.[n.metric!] ?? 0}
-                  </span>
-                  {METRIC_LABEL[n.metric!]}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       {view === "paginas" && <FluxoPaginasView onSelect={setSelectedId} />}
 
