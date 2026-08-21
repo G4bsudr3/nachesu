@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Copy, TriangleAlert, X } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowUpRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,10 +52,6 @@ const AdminFluxo = () => {
             que mostram onde as pessoas param.
           </p>
         </div>
-        <Button variant="outline" onClick={copyMarkdown} className="gap-2">
-          <Copy className="w-4 h-4" />
-          copiar como texto
-        </Button>
       </header>
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="visualização">
