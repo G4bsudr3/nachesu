@@ -1,23 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, TriangleAlert, X } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   METRIC_LABEL,
   nodeById,
-  type FlowNode,
 } from "@/features/admin/fluxo/flowMap";
 import { useFluxoMetrics } from "@/features/admin/fluxo/useFluxoMetrics";
 import { FluxoMapaView } from "@/features/admin/fluxo/FluxoMapaView";
 import { FluxoPaginasView } from "@/features/admin/fluxo/FluxoPaginasView";
 import { SEM_ENTRADA, SEM_SAIDA, ILHADAS } from "@/features/admin/fluxo/flowAnalysis";
 
-const ACCESS_STYLE: Record<FlowNode["access"], string> = {
-  público: "bg-perestroika-azul/15 text-perestroika-preto",
-  logado: "bg-perestroika-rosa/20 text-perestroika-preto",
-  admin: "bg-perestroika-preto/10 text-perestroika-preto",
-};
 
 type ViewId = "paginas" | "fluxo";
 
