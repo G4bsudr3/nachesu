@@ -26,16 +26,23 @@ export const ORGANIC_POSITIONS: Record<string, Point> = (() => {
   const ids = FLOW_NODES.map((n) => n.id);
   const pos: Record<string, Point> = {};
 
-  // semente em anel, agrupando por lane pra não nascer tudo embolado
-  const lanes = ["publico", "entrada", "estudante", "admin"];
-  ids.forEach((id) => {
+  // cada faixa tem uma área própria no canvas: escola e admin ficam separados
+  const LANE_ANCHOR: Record<string, Point> = {
+    publico: { x: CANVAS_W * 0.16, y: CANVAS_H * 0.28 },
+    entrada: { x: CANVAS_W * 0.4, y: CANVAS_H * 0.62 },
+    estudante: { x: CANVAS_W * 0.7, y: CANVAS_H * 0.3 },
+    escola: { x: CANVAS_W * 0.14, y: CANVAS_H * 0.86 },
+    admin: { x: CANVAS_W * 0.82, y: CANVAS_H * 0.85 },
+  };
+  const anchorOf = (id: string) => {
     const node = FLOW_NODES.find((n) => n.id === id)!;
-    const laneIdx = Math.max(0, lanes.indexOf(node.lane));
-    const angle = (laneIdx / lanes.length) * Math.PI * 2 + rand() * 1.4;
-    const radius = 200 + rand() * 300;
+    return LANE_ANCHOR[node.lane] ?? { x: CANVAS_W / 2, y: CANVAS_H / 2 };
+  };
+  ids.forEach((id) => {
+    const a = anchorOf(id);
     pos[id] = {
-      x: CANVAS_W / 2 + Math.cos(angle) * radius * 1.25,
-      y: CANVAS_H / 2 + Math.sin(angle) * radius,
+      x: a.x + (rand() - 0.5) * 220,
+      y: a.y + (rand() - 0.5) * 200,
     };
   });
 
@@ -88,8 +95,9 @@ export const ORGANIC_POSITIONS: Record<string, Point> = (() => {
     const damp = 0.9 * (1 - step / 900);
     for (const id of ids) {
       const p = pos[id];
-      p.x += force[id].x * damp * 0.02 + (CANVAS_W / 2 - p.x) * 0.004;
-      p.y += force[id].y * damp * 0.02 + (CANVAS_H / 2 - p.y) * 0.004;
+      const a = anchorOf(id);
+      p.x += force[id].x * damp * 0.02 + (a.x - p.x) * 0.018;
+      p.y += force[id].y * damp * 0.02 + (a.y - p.y) * 0.018;
     }
   }
 
