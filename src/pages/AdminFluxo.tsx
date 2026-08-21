@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Copy, TriangleAlert, X } from "lucide-react";
 import { toast } from "sonner";
@@ -32,19 +32,6 @@ const AdminFluxo = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const selected = selectedId ? nodeById(selectedId) : null;
-
-
-  const gargalos = useMemo(() => {
-    const vistos = new Set<string>();
-    return FLOW_NODES.filter((n) => {
-      if (!n.metric || vistos.has(n.metric)) return false;
-      const limit = METRIC_ALERT_ABOVE[n.metric];
-      if (limit === undefined) return false;
-      if ((metrics?.[n.metric] ?? 0) <= limit) return false;
-      vistos.add(n.metric);
-      return true;
-    });
-  }, [metrics]);
 
   const copyMarkdown = () => {
     navigator.clipboard.writeText(flowToMarkdown(metrics)).then(
