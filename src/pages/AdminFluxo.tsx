@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Copy, TriangleAlert, X } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowUpRight, TriangleAlert, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +8,7 @@ import {
   LANES,
   METRIC_ALERT_ABOVE,
   METRIC_LABEL,
-  flowToMarkdown,
+  
   nodeById,
   type FlowNode,
 } from "@/features/admin/fluxo/flowMap";
@@ -33,12 +32,6 @@ const AdminFluxo = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const selected = selectedId ? nodeById(selectedId) : null;
 
-  const copyMarkdown = () => {
-    navigator.clipboard.writeText(flowToMarkdown(metrics)).then(
-      () => toast.success("mapa copiado como texto"),
-      () => toast.error("não consegui copiar"),
-    );
-  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
@@ -53,10 +46,6 @@ const AdminFluxo = () => {
             que mostram onde as pessoas param.
           </p>
         </div>
-        <Button variant="outline" onClick={copyMarkdown} className="gap-2">
-          <Copy className="w-4 h-4" />
-          copiar como texto
-        </Button>
       </header>
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="visualização">
