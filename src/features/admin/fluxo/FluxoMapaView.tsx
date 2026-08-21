@@ -5,6 +5,7 @@ import { FLOW_NODES, LANES, nodeById, type FlowNode } from "./flowMap";
 import { FLOW_EDGES } from "./flowEdges";
 import {
   ORGANIC_POSITIONS,
+  LAYOUT_COLUMNS,
   organicPath,
   CANVAS_H,
   CANVAS_W,
@@ -69,7 +70,7 @@ export const FluxoMapaView = ({ selectedId, onSelect }: Props) => {
               {l.title}
             </span>
           ))}
-          <span className="hidden sm:inline">arraste pra navegar, clique num card pra isolar</span>
+          <span className="hidden sm:inline">o fluxo corre da esquerda pra direita, clique num card pra isolar</span>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -124,6 +125,19 @@ export const FluxoMapaView = ({ selectedId, onSelect }: Props) => {
             marginRight: CANVAS_W * (zoom - 1),
           }}
         >
+          {LAYOUT_COLUMNS.map((c) => (
+            <div
+              key={c.x}
+              className="absolute top-5 text-[11px] text-perestroika-preto/45"
+              style={{ left: c.x, width: CARD_W }}
+            >
+              <span className="block truncate font-medium">{c.label}</span>
+              <span className="block text-[10px] text-perestroika-preto/35">
+                {c.count} {c.count === 1 ? "página" : "páginas"}
+              </span>
+            </div>
+          ))}
+
           <svg
             aria-hidden="true"
             className="absolute inset-0 pointer-events-none"
