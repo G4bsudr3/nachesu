@@ -25,19 +25,19 @@ export const FluxoPaginasView = ({ onSelect }: Props) => {
             </div>
 
             <div className="overflow-x-auto rounded-lg border border-perestroika-preto/10 bg-perestroika-bege">
-              <table className="w-full text-left min-w-[520px]">
+              <table className="w-full text-left min-w-[520px] table-fixed">
                 <thead>
                   <tr className="border-b border-perestroika-preto/10 bg-perestroika-preto/[0.03]">
-                    <th className="px-4 py-3 text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
+                    <th className="w-[40%] px-4 py-3 text-left text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
                       página
                     </th>
-                    <th className="px-4 py-3 text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
+                    <th className="w-[28%] px-4 py-3 text-left text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
                       rota
                     </th>
-                    <th className="px-4 py-3 text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
+                    <th className="w-[17%] px-4 py-3 text-center text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
                       acesso
                     </th>
-                    <th className="px-4 py-3 text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold text-right">
+                    <th className="w-[15%] px-4 py-3 text-right text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
                       ação
                     </th>
                   </tr>
@@ -59,14 +59,16 @@ export const FluxoPaginasView = ({ onSelect }: Props) => {
                           >
                             {n.title}
                           </button>
-                          <p className="text-[11px] text-perestroika-preto/60 mt-1">{n.role}</p>
+                          <p className="text-[11px] text-perestroika-preto/60 mt-1 leading-snug line-clamp-2">
+                            {n.role}
+                          </p>
                         </td>
 
-                        <td className="px-4 py-3 align-top font-mono text-[11px] text-perestroika-preto/55 break-all">
+                        <td className="px-4 py-3 align-top font-mono text-[11px] text-perestroika-preto/55 break-all leading-snug">
                           {n.route}
                         </td>
 
-                        <td className="px-4 py-3 align-top">
+                        <td className="px-4 py-3 align-top text-center">
                           <span
                             className={cn(
                               "shrink-0 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide",
