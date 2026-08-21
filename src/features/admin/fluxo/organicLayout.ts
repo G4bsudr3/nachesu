@@ -107,9 +107,45 @@ export const ORGANIC_POSITIONS: Record<string, Point> = (() => {
   const out: Record<string, Point> = {};
   for (const id of ids) {
     out[id] = {
-      x: Math.round(margin + (pos[id].x - minX) * sx),
-      y: Math.round(margin + (pos[id].y - minY) * sy),
+      x: margin + (pos[id].x - minX) * sx,
+      y: margin + (pos[id].y - minY) * sy,
     };
+  }
+
+  // separação de caixas: nenhum card pode encostar no outro
+  const PAD_X = 34;
+  const PAD_Y = 30;
+  for (let step = 0; step < 260; step++) {
+    let moved = false;
+    for (let i = 0; i < ids.length; i++) {
+      for (let j = i + 1; j < ids.length; j++) {
+        const a = out[ids[i]];
+        const b = out[ids[j]];
+        const ox = CARD_W + PAD_X - Math.abs(a.x - b.x);
+        const oy = CARD_H + PAD_Y - Math.abs(a.y - b.y);
+        if (ox <= 0 || oy <= 0) continue;
+        moved = true;
+        if (ox / (CARD_W + PAD_X) < oy / (CARD_H + PAD_Y)) {
+          const push = (ox / 2) * (a.x <= b.x ? -1 : 1);
+          a.x += push;
+          b.x -= push;
+        } else {
+          const push = (oy / 2) * (a.y <= b.y ? -1 : 1);
+          a.y += push;
+          b.y -= push;
+        }
+      }
+    }
+    for (const id of ids) {
+      const q = out[id];
+      q.x = Math.min(CANVAS_W - CARD_W - 24, Math.max(24, q.x));
+      q.y = Math.min(CANVAS_H - CARD_H - 24, Math.max(24, q.y));
+    }
+    if (!moved) break;
+  }
+
+  for (const id of ids) {
+    out[id] = { x: Math.round(out[id].x), y: Math.round(out[id].y) };
   }
   return out;
 })();
