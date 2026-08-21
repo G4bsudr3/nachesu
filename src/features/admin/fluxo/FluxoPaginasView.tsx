@@ -1,20 +1,13 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Lock, Globe, TriangleAlert } from "lucide-react";
+import { ArrowUpRight, Lock, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  FLOW_NODES,
-  LANES,
-  METRIC_ALERT_ABOVE,
-  METRIC_LABEL,
-  type MetricKey,
-} from "./flowMap";
+import { FLOW_NODES, LANES } from "./flowMap";
 
 interface Props {
-  metrics?: Partial<Record<MetricKey, number>>;
   onSelect: (id: string) => void;
 }
 
-export const FluxoPaginasView = ({ metrics, onSelect }: Props) => {
+export const FluxoPaginasView = ({ onSelect }: Props) => {
   return (
     <div className="space-y-10">
       {LANES.map((lane) => {
@@ -32,7 +25,7 @@ export const FluxoPaginasView = ({ metrics, onSelect }: Props) => {
             </div>
 
             <div className="overflow-x-auto rounded-lg border border-perestroika-preto/10 bg-perestroika-bege">
-              <table className="w-full text-left min-w-[720px]">
+              <table className="w-full text-left min-w-[520px]">
                 <thead>
                   <tr className="border-b border-perestroika-preto/10 bg-perestroika-preto/[0.03]">
                     <th className="px-4 py-3 text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
@@ -44,9 +37,6 @@ export const FluxoPaginasView = ({ metrics, onSelect }: Props) => {
                     <th className="px-4 py-3 text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
                       acesso
                     </th>
-                    <th className="px-4 py-3 text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold">
-                      métrica / alerta
-                    </th>
                     <th className="px-4 py-3 text-[11px] uppercase tracking-wide text-perestroika-preto/60 font-semibold text-right">
                       ação
                     </th>
@@ -54,9 +44,6 @@ export const FluxoPaginasView = ({ metrics, onSelect }: Props) => {
                 </thead>
                 <tbody>
                   {nodes.map((n) => {
-                    const value = n.metric ? metrics?.[n.metric] : undefined;
-                    const limit = n.metric ? METRIC_ALERT_ABOVE[n.metric] : undefined;
-                    const alert = limit !== undefined && (value ?? 0) > limit;
                     const publica = n.access === "público";
                     const abrivel = !n.route.includes(":");
                     return (
@@ -95,30 +82,6 @@ export const FluxoPaginasView = ({ metrics, onSelect }: Props) => {
                             )}
                             {publica ? "pública" : n.access === "admin" ? "admin" : "logada"}
                           </span>
-                        </td>
-
-                        <td className="px-4 py-3 align-top">
-                          <div className="space-y-1.5">
-                            {value !== undefined && (
-                              <p
-                                className={cn(
-                                  "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px]",
-                                  alert
-                                    ? "bg-perestroika-laranja/25"
-                                    : "bg-perestroika-preto/[0.06] text-perestroika-preto/70",
-                                )}
-                              >
-                                <span className="font-semibold tabular-nums">{value}</span>
-                                {METRIC_LABEL[n.metric!]}
-                              </p>
-                            )}
-                            {n.risco && (
-                              <p className="flex items-start gap-1.5 text-[11px] text-perestroika-preto/60">
-                                <TriangleAlert className="w-3 h-3 mt-0.5 shrink-0 text-perestroika-laranja" />
-                                {n.risco}
-                              </p>
-                            )}
-                          </div>
                         </td>
 
                         <td className="px-4 py-3 align-top text-right">
