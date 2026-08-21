@@ -7,7 +7,7 @@ interface Props {
   onSelect: (id: string) => void;
 }
 
-export const FluxoPaginasView = ({ metrics, onSelect }: Props) => {
+export const FluxoPaginasView = ({ onSelect }: Props) => {
   return (
     <div className="space-y-10">
       {LANES.map((lane) => {
