@@ -72,6 +72,29 @@ const AdminFluxo = () => {
         </Button>
       </header>
 
+      <div className="flex flex-wrap gap-2" role="tablist" aria-label="visualização">
+        {([
+          { id: "paginas", label: "páginas" },
+          { id: "fluxo", label: "fluxo de páginas" },
+        ] as const).map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={view === t.id}
+            onClick={() => setView(t.id)}
+            className={cn(
+              "rounded-full px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto",
+              view === t.id
+                ? "bg-perestroika-preto text-perestroika-bege"
+                : "bg-perestroika-preto/[0.06] hover:bg-perestroika-preto/[0.12]",
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
       {gargalos.length > 0 && (
         <div className="card-surface p-4 space-y-2 border-perestroika-laranja/40">
           <p className="flex items-center gap-2 text-sm font-medium">
@@ -97,6 +120,12 @@ const AdminFluxo = () => {
         </div>
       )}
 
+      {view === "paginas" && (
+        <FluxoPaginasView metrics={metrics} onSelect={setSelectedId} />
+      )}
+
+      {view === "fluxo" && (
+      <>
       <p className="hidden lg:flex items-center gap-2 text-[11px] text-perestroika-preto/55">
         <span className="inline-block w-8 border-t border-dashed border-perestroika-preto/40" />
         as setas mostram por onde se chega em cada tela. clique num card pra destacar só as
@@ -104,6 +133,7 @@ const AdminFluxo = () => {
       </p>
 
       <div ref={gridRef} className="relative grid gap-4 lg:gap-x-14 lg:grid-cols-4">
+
         <FluxoConnections containerRef={gridRef} selectedId={selectedId} />
         {LANES.map((lane) => (
           <section key={lane.id} className="relative z-10 space-y-3 min-w-0">
