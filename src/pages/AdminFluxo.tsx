@@ -120,9 +120,7 @@ const AdminFluxo = () => {
         </div>
       )}
 
-      {view === "paginas" && (
-        <FluxoPaginasView metrics={metrics} onSelect={setSelectedId} />
-      )}
+      {view === "paginas" && <FluxoPaginasView onSelect={setSelectedId} />}
 
       {view === "fluxo" && (
       <>
