@@ -1,5 +1,9 @@
-// retorna se um email pode entrar via @edu.sebrae.com.br e se já tem convite/conta
-// usado pelo Auth.tsx pra decidir se pergunta qual eletiva no signup.
+// retorna se o email é do domínio da escola e a lista de eletivas publicadas.
+// usado pelo Auth.tsx pra decidir se pergunta qual eletiva no primeiro acesso.
+//
+// SEC-06/SEC-07: esta rota é pública e NÃO faz nenhum lookup por email
+// (convite, conta auth, perfil). qualquer resposta que variasse por email
+// existente transformava o login em oráculo de enumeração de estudantes.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
@@ -28,43 +32,23 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
 
-    // rate limit por IP (fail-open) — trava enumeração de contas
+    // rate limit por IP (fail-open)
     if (!(await checkRateLimit(admin, `cse:${clientIp(req)}`, 30, 60))) {
       return tooManyRequests(cors)
     }
 
-    // tem convite prévio?
-    const { data: invite } = await admin
-      .from('course_invites')
-      .select('course_id, courses:course_id(slug, title)')
-      .eq('email_normalized', clean)
-      .limit(1)
-      .maybeSingle()
-
-    const hasPreInvite = !!invite
-
-    // já tem conta auth?
-    let accountExists = false
-    try {
-      const { data: lookup } = await admin.rpc('lookup_user_by_email', { _email: clean })
-      accountExists = Array.isArray(lookup) && lookup.length > 0
-    } catch { /* noop */ }
-
-    // lista de cursos disponíveis (pra exibir seletor)
+    // lista de cursos publicados (informação pública, não depende do email)
     const { data: courses } = await admin
       .from('courses')
       .select('id, slug, title')
       .eq('published', true)
       .order('order_index')
 
-    // SEC-06: não expomos mais `account_exists` cru (era um oráculo de enumeração).
-    // `needs_course_choice` já carrega a decisão de UX que o frontend consome.
+    // a escolha de eletiva é perguntada pra todo email do domínio da escola.
+    // se a pessoa já tem convite ou conta, o send-access-link ignora a escolha.
     return new Response(JSON.stringify({
-      is_sebrae: isSebrae,
-      allowed: isSebrae || hasPreInvite,
-      has_pre_invite: hasPreInvite,
-      needs_course_choice: isSebrae && !hasPreInvite && !accountExists,
-      courses: courses ?? [],
+      needs_course_choice: isSebrae,
+      courses: isSebrae ? (courses ?? []) : [],
     }), {
       status: 200, headers: { ...cors, 'Content-Type': 'application/json' },
     })

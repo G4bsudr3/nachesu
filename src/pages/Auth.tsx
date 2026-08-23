@@ -17,37 +17,16 @@ import { resolveAuthError, readAuthErrorFromUrl, t } from "@/lib/authErrors";
 const EMAIL_LS_KEY = "nachesu.lastEmail";
 const LEGACY_EMAIL_LS_KEY = "chora.lastEmail";
 
-const NOT_ALLOWED_MESSAGE =
-  "esse email ainda não está na lista liberada da escola. fala com o suporte pra liberar seu acesso.";
-
-interface EmailValidationResult {
-  can_enter: boolean;
-  account_exists: boolean;
-}
-
-/** Consulta edge function pra ver se email pode entrar e qual o status da conta */
-const validateEmail = async (email: string): Promise<EmailValidationResult> => {
-  try {
-    const { data, error } = await supabase.functions.invoke("validate-public-email", {
-      body: { email },
-    });
-    if (error) return { can_enter: false, account_exists: false };
-    const d = data as Partial<EmailValidationResult>;
-    return {
-      can_enter: Boolean(d?.can_enter),
-      account_exists: Boolean(d?.account_exists),
-    };
-  } catch {
-    return { can_enter: false, account_exists: false };
-  }
-};
+// resposta uniforme: nunca dizemos se o email existe ou está na lista
+// (evita usar o login como oráculo de enumeração de estudantes).
+const UNIFORM_SENT_MESSAGE =
+  "se esse email estiver liberado pela escola, o link de acesso chega em instantes. confere a caixa de entrada e o spam.";
 
 interface SebraeEligibility {
-  is_sebrae: boolean;
-  has_pre_invite: boolean;
   needs_course_choice: boolean;
   courses: Array<{ id: string; slug: string; title: string }>;
 }
+
 
 const checkSebrae = async (email: string): Promise<SebraeEligibility | null> => {
   try {
@@ -95,6 +74,7 @@ const Auth = () => {
   const [aliasHint, setAliasHint] = useState<string | null>(null);
   const [sebraeChoice, setSebraeChoice] = useState<SebraeEligibility | null>(null);
   const [chosenCourseSlug, setChosenCourseSlug] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const [searchParams] = useSearchParams();
   const fromCarta = searchParams.get("from") === "carta";
@@ -149,6 +129,8 @@ const Auth = () => {
       nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/app";
     // enviado pelo nosso próprio pipeline (notify.frattz.com), em português,
     // em vez do email padrão do auth que sai em inglês e cai no spam.
+    // o gate de acesso (lista liberada, criação de conta) roda dentro da função,
+    // e a resposta é sempre igual: aqui nunca sabemos se o email existe.
     const { data, error } = await supabase.functions.invoke("send-access-link", {
       body: { email: targetEmail, type: "magiclink", next: safeNext, courseSlug },
     });
@@ -158,7 +140,7 @@ const Auth = () => {
     }
     localStorage.setItem(EMAIL_LS_KEY, targetEmail);
     setSent(true);
-    toast.success("link mágico enviado para o seu email");
+    toast.success(UNIFORM_SENT_MESSAGE, { duration: 8000 });
   };
 
 
@@ -170,7 +152,9 @@ const Auth = () => {
       await sendMagicLink(cleanEmail, chosenCourseSlug);
       setSebraeChoice(null);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "não consegui enviar o link");
+      const message = err instanceof Error ? err.message : "não consegui enviar o link";
+      setFormError(message);
+      toast.error(message);
     } finally {
       setPhase("idle");
     }
@@ -179,50 +163,36 @@ const Auth = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const cleanEmail = email.trim().toLowerCase();
-    if (!cleanEmail) return;
+    setFormError(null);
+    if (!cleanEmail) {
+      setFormError("digita seu email pra continuar.");
+      return;
+    }
     const hasPassword = password.trim().length > 0;
     setPhase(hasPassword ? "logging-in" : "checking");
     try {
       const isAllowed = ALLOWED_EMAILS.has(cleanEmail);
-      // valida no banco antes (admins pulam, já têm conta garantida)
-      let validation: EmailValidationResult = {
-        can_enter: true,
-        account_exists: true,
-      };
       if (!isAllowed) {
-        // antes de validar conta, checa se digitou um alias de outro email oficial
+        // antes de seguir, checa se digitou um alias de outro email oficial
         const canonical = await lookupCanonicalEmail(cleanEmail);
         if (canonical && canonical.isAlias && canonical.canonical !== cleanEmail) {
           setAliasHint(canonical.canonical);
           return;
         }
 
-        // sebrae sem convite prévio: oferece escolher a eletiva antes de enviar o link
+        // email da escola sem senha: pergunta a eletiva antes de mandar o link.
+        // a pergunta aparece pra qualquer email do domínio, sem consultar o banco,
+        // pra não virar oráculo de quem já tem conta ou convite.
         if (cleanEmail.endsWith("@edu.sebrae.com.br") && !hasPassword) {
           const sebrae = await checkSebrae(cleanEmail);
-          if (sebrae && sebrae.needs_course_choice) {
+          if (sebrae && sebrae.needs_course_choice && sebrae.courses.length > 0) {
             setSebraeChoice(sebrae);
             setChosenCourseSlug(sebrae.courses[0]?.slug ?? null);
             return;
           }
         }
-
-        validation = await validateEmail(cleanEmail);
-        if (!validation.can_enter) {
-          toast.info(NOT_ALLOWED_MESSAGE, { duration: 7000 });
-          return;
-        }
       }
 
-      // CASO 1: pode entrar mas ainda não tem conta auth → manda link mágico (cria conta)
-      if (!validation.account_exists) {
-        setPhase("sending");
-        await sendMagicLink(cleanEmail);
-        toast.info(t("no_account_creating"), { duration: 8000 });
-        return;
-      }
-
-      // CASO 2: fluxo normal
       if (hasPassword) {
         const { error } = await supabase.auth.signInWithPassword({
           email: cleanEmail,
@@ -230,11 +200,14 @@ const Auth = () => {
         });
         if (error) {
           if (error.message.toLowerCase().includes("invalid")) {
-            toast.error("senha incorreta. quer entrar com link mágico?", {
+            // mensagem genérica: não diferencia "senha errada" de "conta não existe"
+            setFormError("email ou senha não conferem. quer entrar com link mágico?");
+            toast.error("email ou senha não conferem. quer entrar com link mágico?", {
               action: {
                 label: "enviar link",
                 onClick: () => {
                   setPassword("");
+                  setFormError(null);
                   setPhase("sending");
                   sendMagicLink(cleanEmail)
                     .catch((err) =>
@@ -255,6 +228,7 @@ const Auth = () => {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "não foi possível entrar agora";
+      setFormError(message);
       toast.error(message);
     } finally {
       setPhase("idle");
@@ -263,33 +237,16 @@ const Auth = () => {
 
   const handleForgotPassword = async () => {
     const cleanEmail = email.trim().toLowerCase();
+    setFormError(null);
     if (!cleanEmail) {
+      setFormError(t("forgot_email_required"));
       toast.error(t("forgot_email_required"));
       return;
     }
-    setPhase("checking");
+    setPhase("resetting");
     try {
-      const isAllowed = ALLOWED_EMAILS.has(cleanEmail);
-      let validation: EmailValidationResult = {
-        can_enter: true,
-        account_exists: true,
-      };
-      if (!isAllowed) {
-        validation = await validateEmail(cleanEmail);
-        if (!validation.can_enter) {
-          toast.info(NOT_ALLOWED_MESSAGE, { duration: 7000 });
-          return;
-        }
-      }
-
-      if (!validation.account_exists) {
-        setPhase("sending");
-        await sendMagicLink(cleanEmail);
-        toast.info(t("no_account_creating"), { duration: 8000 });
-        return;
-      }
-
-      setPhase("resetting");
+      // resposta uniforme do servidor: manda o email só se a conta existir,
+      // mas a UI mostra sempre a mesma mensagem.
       const { data, error } = await supabase.functions.invoke("send-access-link", {
         body: { email: cleanEmail, type: "recovery" },
       });
@@ -299,13 +256,19 @@ const Auth = () => {
       }
       localStorage.setItem(EMAIL_LS_KEY, cleanEmail);
       setSent(true);
-      toast.success(t("forgot_link_sent"), { duration: 7000 });
+      toast.success(
+        "se existir uma conta com esse email, o link de recuperação chega em instantes.",
+        { duration: 8000 },
+      );
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t("forgot_generic_error"));
+      const message = err instanceof Error ? err.message : t("forgot_generic_error");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setPhase("idle");
     }
   };
+
 
   return (
     <div className="min-h-dvh bg-perestroika-bege text-perestroika-preto font-body flex flex-col">
@@ -359,13 +322,16 @@ const Auth = () => {
                     autoComplete="email"
                     placeholder="seu@email.com"
                     aria-label="email"
+                    aria-invalid={formError ? true : undefined}
+                    aria-describedby={formError ? "auth-form-error" : undefined}
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
                       if (aliasHint) setAliasHint(null);
+                      if (formError) setFormError(null);
                     }}
                     disabled={submitting}
-                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
+                    className={`w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border-2 focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors ${formError ? "border-perestroika-vermelho focus:border-perestroika-vermelho" : "border-perestroika-preto/15 focus:border-perestroika-preto"}`}
                   />
                 </div>
 
@@ -437,10 +403,15 @@ const Auth = () => {
                     autoComplete="current-password"
                     placeholder="senha"
                     aria-label="senha"
+                    aria-invalid={formError ? true : undefined}
+                    aria-describedby={formError ? "auth-form-error" : undefined}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (formError) setFormError(null);
+                    }}
                     disabled={submitting}
-                    className="w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
+                    className={`w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border-2 focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors ${formError ? "border-perestroika-vermelho focus:border-perestroika-vermelho" : "border-perestroika-preto/15 focus:border-perestroika-preto"}`}
                   />
                   <button
                     type="button"
@@ -452,6 +423,17 @@ const Auth = () => {
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
+
+                <p
+                  id="auth-form-error"
+                  role="alert"
+                  aria-live="polite"
+                  className={`font-body text-sm text-perestroika-vermelho leading-snug ${formError ? "" : "sr-only"}`}
+                >
+                  {formError ?? ""}
+                </p>
+
+
 
                 <button
                   type="submit"
@@ -495,10 +477,12 @@ const Auth = () => {
                 o email
               </h1>
               <p className="font-body text-base text-perestroika-preto/70 mb-2">
-                mandamos um link mágico para <span className="font-semibold text-perestroika-preto">{email}</span>.
+                se <span className="font-semibold text-perestroika-preto">{email}</span> estiver
+                liberado pela escola, o link mágico chega em instantes.
               </p>
               <p className="font-body text-sm text-perestroika-preto/60">
-                abre o link e cai direto na eletiva. olha o spam se demorar.
+                abre o link e cai direto na eletiva. olha o spam se demorar. se nada chegar, fala
+                com a coordenação pra confirmar seu email.
               </p>
               <button
                 type="button"

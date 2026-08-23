@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Play, ChevronDown, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ChevronDown, ArrowRight, CheckCircle2 } from "lucide-react";
+
 import {
   Accordion,
   AccordionContent,
@@ -46,8 +46,8 @@ export function PillAbertura({
   isCompleted,
   isCompleting,
 }: Props) {
-  const [tried, setTried] = useState(false);
   const transcript = (schema.transcript ?? "").trim();
+
   const url = (schema.video_url ?? "").trim();
   const ctaLabel = schema.completion?.label ?? "começar o módulo";
 
@@ -83,37 +83,17 @@ export function PillAbertura({
           )}
         </div>
       ) : (
-        <div
-          className="relative aspect-video w-full overflow-hidden rounded-2xl bg-perestroika-preto/95"
-          role="img"
-          aria-label="vídeo de abertura ainda não enviado"
-        >
-          <button
-            type="button"
-            onClick={() => setTried(true)}
-            className="absolute inset-0 flex items-center justify-center group"
-            aria-label="vídeo ainda não enviado"
-          >
-            <span
-              className="flex h-20 w-20 items-center justify-center rounded-full transition-transform group-hover:scale-110 active:scale-95"
-              style={{ backgroundColor: accent }}
-            >
-              <Play className="h-8 w-8 text-perestroika-bege fill-perestroika-bege" aria-hidden="true" />
-            </span>
-          </button>
-          <p className="absolute bottom-3 right-4 font-body text-[11px] uppercase tracking-wider text-perestroika-bege/70">
-            sem vídeo enviado
+        <div className="rounded-2xl border-2 border-dashed border-perestroika-preto/20 bg-perestroika-preto/[0.03] p-5 sm:p-6">
+          <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
+            abertura em texto
           </p>
-          {tried && (
-            <p
-              className="absolute bottom-3 left-4 font-body text-[11px] uppercase tracking-wider text-perestroika-bege/85"
-              role="status"
-            >
-              o vídeo entra por aqui quando for enviado no admin.
-            </p>
-          )}
+          <p className="mt-2 font-body text-sm sm:text-base text-perestroika-preto/80 leading-relaxed">
+            o vídeo desta abertura ainda não está no ar. o conteúdo dela está escrito acima e no
+            resto do módulo, então nada fica faltando pra você seguir.
+          </p>
         </div>
       )}
+
 
       {/* transcrição em accordion fechado por padrão */}
       {transcript && (
