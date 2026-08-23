@@ -598,6 +598,28 @@ mensagem do estudante:
     }
 
     const trail = trailRes.data;
+
+    // segurança: só serve o conteúdo da trilha (título/descrição/pbl_prompt e
+    // módulos) a quem tem matrícula no curso dela — ou admin. antes, qualquer
+    // logado puxava por trail_id, furando o escopo de enrollment da RLS.
+    if (trail.course_id) {
+      const [enrollRes, adminRes] = await Promise.all([
+        admin
+          .from("enrollments")
+          .select("user_id")
+          .eq("user_id", userId)
+          .eq("course_id", trail.course_id)
+          .maybeSingle(),
+        admin.rpc("has_role", { _user_id: userId, _role: "admin" }),
+      ]);
+      if (!enrollRes.data && adminRes.data !== true) {
+        return new Response(
+          JSON.stringify({ error: "você não tem matrícula nesta eletiva" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+    }
+
     const modules = modulesRes.data ?? [];
     const progressByModuleId = new Map<string, { completed_at: string | null; started_at: string | null }>();
     (progressRes.data ?? []).forEach((p) =>
