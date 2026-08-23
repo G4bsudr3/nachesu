@@ -39,7 +39,6 @@ export async function isCronCaller(req: Request): Promise<boolean> {
     { auth: { persistSession: false } },
   )
   const { data } = await admin
-    .schema('private')
     .from('job_secrets')
     .select('secret')
     .eq('name', 'cron')
