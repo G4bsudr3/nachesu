@@ -6,11 +6,12 @@
 // { dry_run: true, only_user_id?: uuid } pra testes.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { isAdminCaller, isTrustedJobCaller } from '../_shared/jobAuth.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+    'authorization, x-client-info, apikey, content-type, x-cron-secret',
 }
 
 interface RiskRow {
@@ -38,6 +39,16 @@ Deno.serve(async (req) => {
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   const supabase = createClient(supabaseUrl, serviceKey)
+
+  // ---- autorização: só service_role, cron interno ou admin logado ----------
+  const trusted = await isTrustedJobCaller(req)
+  const admin = trusted ? false : await isAdminCaller(req)
+  if (!trusted && !admin) {
+    return new Response(JSON.stringify({ error: 'unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
 
   let dryRun = false
   let onlyUser: string | null = null
@@ -167,7 +178,13 @@ Deno.serve(async (req) => {
     }
 
     if (dryRun) {
-      results.push({ user_id: r.user_id, course_id: r.course_id, level, email })
+      // nunca devolve e-mail na resposta; só confirma que há destinatário
+      results.push({
+        user_id: r.user_id,
+        course_id: r.course_id,
+        level,
+        has_email: Boolean(email),
+      })
       continue
     }
 

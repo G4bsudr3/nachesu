@@ -1490,6 +1490,24 @@ export type Database = {
         }
         Relationships: []
       }
+      job_secrets: {
+        Row: {
+          created_at: string
+          name: string
+          secret: string
+        }
+        Insert: {
+          created_at?: string
+          name: string
+          secret?: string
+        }
+        Update: {
+          created_at?: string
+          name?: string
+          secret?: string
+        }
+        Relationships: []
+      }
       mascote_votes: {
         Row: {
           candidate_index: number
