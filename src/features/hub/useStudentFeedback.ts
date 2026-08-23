@@ -111,7 +111,7 @@ export function useStudentFeedback(opts?: { moduleId?: string | null }) {
       );
       if (reviewerIds.length === 0) return list as StudentFeedbackRow[];
       const { data: profs } = await supabase
-        .from("profiles")
+        .from("profiles_public")
         .select("user_id, display_name, nickname")
         .in("user_id", reviewerIds);
       const profMap = new Map<string, { display_name: string | null; nickname: string | null }>(

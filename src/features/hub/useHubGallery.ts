@@ -34,7 +34,7 @@ export const useHubGallery = () => {
       try {
         // 1. profiles ativos
         const { data: profiles, error: pErr } = await supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("user_id, slug, display_name, nickname, cidade, status")
           .eq("status", "active");
 

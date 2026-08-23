@@ -29,7 +29,7 @@ export const useMascoteVoting = ({ insightId, status, candidatosCount, isAdmin }
     let cancel = false;
     (async () => {
       const { count } = await supabase
-        .from("profiles")
+        .from("profiles_public")
         .select("user_id", { count: "exact", head: true })
         .eq("status", "active");
       if (!cancel && typeof count === "number") setTotalElegiveis(count);

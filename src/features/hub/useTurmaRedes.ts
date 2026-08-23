@@ -18,7 +18,7 @@ export function useTurmaRedes() {
     let alive = true;
     setLoading(true);
     supabase
-      .from("profiles")
+      .from("profiles_public")
       .select("user_id, display_name, nickname, avatar_url, instagram, linkedin")
       .eq("status", "active")
       .order("display_name", { ascending: true })

@@ -71,7 +71,7 @@ export const useHubAlbum = () => {
     if (!rows.length) return [];
     const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
     const { data: profiles } = await supabase
-      .from("profiles")
+      .from("profiles_public")
       .select("user_id, nickname, display_name")
       .in("user_id", userIds);
     const map = new Map((profiles ?? []).map((p) => [p.user_id, p]));

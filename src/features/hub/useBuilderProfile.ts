@@ -60,7 +60,7 @@ export const useBuilderProfile = (slug: string | undefined) => {
           | null = null;
 
         const { data: bySlug } = await supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("user_id, slug, display_name, nickname, cidade")
           .eq("slug", slug)
           .maybeSingle();
@@ -70,7 +70,7 @@ export const useBuilderProfile = (slug: string | undefined) => {
         } else {
           // fallback: prefixo de user_id (8 chars)
           const { data: byPrefix } = await supabase
-            .from("profiles")
+            .from("profiles_public")
             .select("user_id, slug, display_name, nickname, cidade")
             .ilike("user_id", `${slug}%`)
             .limit(1)

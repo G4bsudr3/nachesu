@@ -82,7 +82,7 @@ export const useHubFeed = () => {
         ? supabase.from("missions").select("id, titulo").in("id", missionIds)
         : Promise.resolve({ data: [] }),
       userIds.length > 0
-        ? supabase.from("profiles").select("user_id, nickname, display_name, slug").in("user_id", userIds)
+        ? supabase.from("profiles_public").select("user_id, nickname, display_name, slug").in("user_id", userIds)
         : Promise.resolve({ data: [] }),
     ]);
 

@@ -61,7 +61,7 @@ export const useComments = (
 
     const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
     const { data: authors } = await supabase
-      .from("profiles")
+      .from("profiles_public")
       .select("user_id, nickname, display_name, slug")
       .in("user_id", userIds);
 
