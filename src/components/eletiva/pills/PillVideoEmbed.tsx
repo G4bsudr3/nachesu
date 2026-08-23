@@ -1,4 +1,5 @@
 import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { VideoFacade } from "./VideoFacade";
 
 type Schema = {
   type?: "video_embed";
@@ -62,13 +63,7 @@ export function PillVideoEmbed({
 
       {url && (
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/95">
-          <iframe
-            src={url}
-            title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            allowFullScreen
-            className="absolute inset-0 h-full w-full"
-          />
+          <VideoFacade url={url} title={title} accent={accent} />
         </div>
       )}
 
