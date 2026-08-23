@@ -2894,6 +2894,42 @@ export type Database = {
       }
     }
     Views: {
+      profiles_public: {
+        Row: {
+          avatar_url: string | null
+          cidade: string | null
+          display_name: string | null
+          instagram: string | null
+          linkedin: string | null
+          nickname: string | null
+          slug: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          cidade?: string | null
+          display_name?: string | null
+          instagram?: string | null
+          linkedin?: string | null
+          nickname?: string | null
+          slug?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          cidade?: string | null
+          display_name?: string | null
+          instagram?: string | null
+          linkedin?: string | null
+          nickname?: string | null
+          slug?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       student_activation_pending: {
         Row: {
           course_id: string | null

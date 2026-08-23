@@ -57,7 +57,7 @@ export function useDeliverableThread(deliverableId: string | null | undefined) {
       const authorIds = Array.from(new Set(list.map((m) => m.author_id)));
       if (authorIds.length === 0) return list;
       const { data: profs } = await supabase
-        .from("profiles")
+        .from("profiles_public")
         .select("user_id, display_name, nickname")
         .in("user_id", authorIds);
       const map = new Map<string, string>();
