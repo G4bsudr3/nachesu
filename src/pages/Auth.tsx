@@ -74,6 +74,7 @@ const Auth = () => {
   const [aliasHint, setAliasHint] = useState<string | null>(null);
   const [sebraeChoice, setSebraeChoice] = useState<SebraeEligibility | null>(null);
   const [chosenCourseSlug, setChosenCourseSlug] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const [searchParams] = useSearchParams();
   const fromCarta = searchParams.get("from") === "carta";
