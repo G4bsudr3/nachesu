@@ -5,6 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureSession } from "@/lib/ensureSession";
+import { completeModuleWithDeliverable } from "@/lib/moduleCompletion";
+
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
