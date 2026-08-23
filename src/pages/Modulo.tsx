@@ -267,18 +267,14 @@ const Modulo = () => {
           throw new Error("termine as pílulas obrigatórias primeiro");
         }
       }
-      const now = new Date().toISOString();
-      const { error } = await supabase.from("student_module_progress").upsert(
-        {
-          user_id: user.id,
-          module_id: moduleRow.id,
-          started_at: progress?.started_at ?? now,
-          completed_at: now,
-        },
-        { onConflict: "user_id,module_id" },
-      );
-      if (error) throw error;
-      await submitDeliverableIfExists();
+      // entrega primeiro, progresso depois: se o envio falhar, o módulo não
+      // pode contar como concluído (senão vira progresso/certificado fantasma).
+      await completeModuleWithDeliverable(supabase, {
+        userId: user.id,
+        moduleId: moduleRow.id,
+        startedAt: progress?.started_at ?? null,
+      });
+
     },
     onSuccess: () => {
       const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
