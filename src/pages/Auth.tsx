@@ -477,10 +477,12 @@ const Auth = () => {
                 o email
               </h1>
               <p className="font-body text-base text-perestroika-preto/70 mb-2">
-                mandamos um link mágico para <span className="font-semibold text-perestroika-preto">{email}</span>.
+                se <span className="font-semibold text-perestroika-preto">{email}</span> estiver
+                liberado pela escola, o link mágico chega em instantes.
               </p>
               <p className="font-body text-sm text-perestroika-preto/60">
-                abre o link e cai direto na eletiva. olha o spam se demorar.
+                abre o link e cai direto na eletiva. olha o spam se demorar. se nada chegar, fala
+                com a coordenação pra confirmar seu email.
               </p>
               <button
                 type="button"
