@@ -36,6 +36,26 @@ serve(async (req) => {
       });
     }
 
+    // gate de consentimento: o áudio do aluno (menor) é enviado a serviço de IA
+    // fora do país pra transcrição. só transcreve quem já aceitou o aviso de
+    // privacidade. RLS deixa o usuário ler o próprio profile.
+    const { data: profileRow } = await userClient
+      .from("profiles")
+      .select("tutor_consent_at")
+      .eq("user_id", userData.user.id)
+      .maybeSingle();
+    if (!profileRow?.tutor_consent_at) {
+      // 200 com `error` pra que o front (TextareaWithVoice) mostre a mensagem
+      // como toast, sem dead-end genérico. o aviso liga a política de privacidade.
+      return new Response(
+        JSON.stringify({
+          needs_consent: true,
+          error: "pra transcrever áudio por voz, aceite antes o aviso de privacidade (abra o tutor uma vez).",
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       return new Response(

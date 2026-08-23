@@ -237,6 +237,18 @@ Deno.serve(async (req) => {
         .slice(0, 500);
     const redactedEarly = redactPii(message);
 
+    // redação conservadora do que SAI pro modelo (o LLM roda fora do país):
+    // tira identificadores diretos (email, telefone, cpf) SEM truncar, sem tocar
+    // em @-menções/código (o curso ensina a programar) nem em nomes soltos —
+    // ao contrário de redactPii, que serve pro excerpt curto guardado em safety.
+    // NÃO se aplica ao classificador de segurança: lá o texto cru é necessário
+    // pra detectar risco (automutilação/bullying/abuso) e proteger o menor.
+    const redactForLlm = (text: string): string =>
+      (text ?? "")
+        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[email]")
+        .replace(/(?:\+?55\s*)?\(?\d{2}\)?\s*9?\d{4}[-\s]?\d{4}/g, "[telefone]")
+        .replace(/\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, "[cpf]");
+
 
     // helper BRT
     const brtDate = () => {
@@ -682,8 +694,8 @@ mensagem do estudante:
 
     const messagesForAI = [
       { role: "system", content: finalSystemPrompt },
-      ...trimmedHistory,
-      { role: "user", content: message },
+      ...trimmedHistory.map((m) => ({ role: m.role, content: redactForLlm(m.content) })),
+      { role: "user", content: redactForLlm(message) },
     ];
 
     const primaryModel = settings.model || "google/gemini-2.5-flash";
