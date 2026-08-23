@@ -40,6 +40,16 @@ Deno.serve(async (req) => {
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   const supabase = createClient(supabaseUrl, serviceKey)
 
+  // ---- autorização: só service_role, cron interno ou admin logado ----------
+  const trusted = await isTrustedJobCaller(req)
+  const admin = trusted ? false : await isAdminCaller(req)
+  if (!trusted && !admin) {
+    return new Response(JSON.stringify({ error: 'unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
   let dryRun = false
   let onlyUser: string | null = null
   try {
