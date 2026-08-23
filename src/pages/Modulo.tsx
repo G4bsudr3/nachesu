@@ -401,24 +401,33 @@ const Modulo = () => {
           toast.error("sua sessão expirou. entra de novo pra salvar seu progresso");
           return;
         }
-        const now = new Date().toISOString();
-        const { error: progErr } = await supabase.from("student_module_progress").upsert(
-          {
-            user_id: user.id,
-            module_id: moduleRow.id,
-            started_at: progress?.started_at ?? now,
-            completed_at: now,
-          },
-          { onConflict: "user_id,module_id" },
-        );
-        if (progErr) {
+        // entrega primeiro, progresso depois: fechar o módulo é o mesmo gesto
+        // de entregar. se o envio falhar, nada é marcado como concluído.
+        try {
+          if (filled) {
+            await completeModuleWithDeliverable(supabase, {
+              userId: user.id,
+              moduleId: moduleRow.id,
+              startedAt: progress?.started_at ?? null,
+            });
+          } else {
+            const now = new Date().toISOString();
+            const { error: progErr } = await supabase.from("student_module_progress").upsert(
+              {
+                user_id: user.id,
+                module_id: moduleRow.id,
+                started_at: progress?.started_at ?? now,
+                completed_at: now,
+              },
+              { onConflict: "user_id,module_id" },
+            );
+            if (progErr) throw progErr;
+          }
+        } catch {
           toast.error("não deu pra salvar a conclusão agora. tenta de novo em instantes");
           return;
         }
 
-        // entrega com conteúdo vai junto: fechar o módulo é o mesmo gesto de
-        // entregar. rascunho vazio continua rascunho.
-        if (filled) await submitDeliverableIfExists();
         const next = snapshot?.modules.find((m) => m.number === moduleNumber + 1) ?? null;
         const nextWasLocked =
           next && snapshot?.sequentialUnlock && !snapshot?.unlockedModuleIds.has(next.id);
