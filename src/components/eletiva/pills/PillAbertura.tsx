@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, ChevronDown, ArrowRight } from "lucide-react";
+import { Play, ChevronDown, ArrowRight, CheckCircle2 } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
