@@ -49,19 +49,8 @@ const PHASE_LABELS: Record<Exclude<AuthPhase, "idle">, string> = {
   resetting: "preparando recuperação…",
 };
 
-/** Verifica se o email digitado é alias de outro convidado oficial */
-const lookupCanonicalEmail = async (
-  email: string,
-): Promise<{ canonical: string; isAlias: boolean } | null> => {
-  try {
-    const { data, error } = await supabase.rpc("lookup_invited_canonical", { _email: email });
-    if (error || !data || data.length === 0) return null;
-    const row = data[0] as { canonical_email: string; is_alias: boolean };
-    return { canonical: row.canonical_email, isAlias: Boolean(row.is_alias) };
-  } catch {
-    return null;
-  }
-};
+
+
 
 const Auth = () => {
   const { user, loading } = useAuth();
@@ -173,12 +162,7 @@ const Auth = () => {
     try {
       const isAllowed = ALLOWED_EMAILS.has(cleanEmail);
       if (!isAllowed) {
-        // antes de seguir, checa se digitou um alias de outro email oficial
-        const canonical = await lookupCanonicalEmail(cleanEmail);
-        if (canonical && canonical.isAlias && canonical.canonical !== cleanEmail) {
-          setAliasHint(canonical.canonical);
-          return;
-        }
+
 
         // email da escola sem senha: pergunta a eletiva antes de mandar o link.
         // a pergunta aparece pra qualquer email do domínio, sem consultar o banco,
@@ -327,7 +311,7 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
-                      if (aliasHint) setAliasHint(null);
+                      if (formError) setFormError(null);
                       if (formError) setFormError(null);
                     }}
                     disabled={submitting}
@@ -335,25 +319,8 @@ const Auth = () => {
                   />
                 </div>
 
-                {aliasHint && (
-                  <div className="rounded-2xl border border-perestroika-laranja/40 bg-perestroika-laranja/10 p-4 space-y-3 animate-fade-up">
-                    <p className="font-body text-sm text-perestroika-preto leading-snug">
-                      esse email tá vinculado a outro endereço.
-                      <br />
-                      você entra com <span className="font-semibold">{aliasHint}</span>.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEmail(aliasHint);
-                        setAliasHint(null);
-                      }}
-                      className="inline-flex items-center min-h-11 px-4 rounded-xl bg-perestroika-preto text-perestroika-bege font-body text-sm uppercase tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-transform"
-                    >
-                      usar esse email
-                    </button>
-                  </div>
-                )}
+
+
 
                 {sebraeChoice && sebraeChoice.needs_course_choice && (
                   <div className="rounded-2xl border-2 border-perestroika-preto/15 bg-perestroika-preto/5 p-4 space-y-3 animate-fade-up">
