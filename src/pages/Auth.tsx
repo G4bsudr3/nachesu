@@ -322,13 +322,16 @@ const Auth = () => {
                     autoComplete="email"
                     placeholder="seu@email.com"
                     aria-label="email"
+                    aria-invalid={formError ? true : undefined}
+                    aria-describedby={formError ? "auth-form-error" : undefined}
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
                       if (aliasHint) setAliasHint(null);
+                      if (formError) setFormError(null);
                     }}
                     disabled={submitting}
-                    className="w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
+                    className={`w-full pl-11 pr-4 h-14 rounded-2xl bg-transparent border-2 focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors ${formError ? "border-perestroika-vermelho focus:border-perestroika-vermelho" : "border-perestroika-preto/15 focus:border-perestroika-preto"}`}
                   />
                 </div>
 
