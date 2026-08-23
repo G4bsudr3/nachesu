@@ -178,7 +178,13 @@ Deno.serve(async (req) => {
     }
 
     if (dryRun) {
-      results.push({ user_id: r.user_id, course_id: r.course_id, level, email })
+      // nunca devolve e-mail na resposta; só confirma que há destinatário
+      results.push({
+        user_id: r.user_id,
+        course_id: r.course_id,
+        level,
+        has_email: Boolean(email),
+      })
       continue
     }
 
