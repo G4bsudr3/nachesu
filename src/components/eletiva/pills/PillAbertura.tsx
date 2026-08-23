@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { VideoFacade } from "./VideoFacade";
 
 type Schema = {
   type?: "video_with_transcript";
@@ -78,13 +79,7 @@ export function PillAbertura({
               seu navegador não suporta vídeo embedado.
             </video>
           ) : (
-            <iframe
-              src={url}
-              title={title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full"
-            />
+            <VideoFacade url={url} title={title} accent={accent} poster={schema.video_poster} />
           )}
         </div>
       ) : (
