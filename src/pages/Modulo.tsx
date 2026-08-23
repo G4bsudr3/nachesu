@@ -207,16 +207,8 @@ const Modulo = () => {
   }, [pillsLoading, moduleRow?.id]);
 
 
-  const submitDeliverableIfExists = async () => {
-    if (!user || !moduleRow) return;
-    // se existe deliverable em rascunho/enviado, marca submitted_at
-    await supabase
-      .from("module_deliverables")
-      .update({ status: "enviado", submitted_at: new Date().toISOString() })
-      .eq("user_id", user.id)
-      .eq("module_id", moduleRow.id)
-      .is("reviewed_at", null);
-  };
+
+
 
   const completeMutation = useMutation({
     mutationFn: async () => {
