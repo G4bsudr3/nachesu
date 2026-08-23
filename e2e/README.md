@@ -36,8 +36,9 @@ Relatório HTML: `npm run report`.
 - link do rodapé navega pra `/privacidade`
 - rota inexistente não dá tela branca
 
-### Autenticado (`tests/authenticated.spec.ts`) — só leitura, desligado por padrão
-Só roda se `E2E_ACCESS_TOKEN` estiver setado. **Não clica em nada que escreva no banco.**
+### Autenticado (`tests/authenticated.spec.ts`) — TODAS as telas, só leitura, desligado por padrão
+Só roda se `E2E_ACCESS_TOKEN` (token de **admin**) estiver setado. **Não clica em nada que escreva no banco.**
+Cada tela é aberta num navegador real e o teste confere: renderizou, não caiu no login e **não houve erro de JS (crash/tela branca)**.
 
 ```bash
 E2E_ACCESS_TOKEN="<access_token>" npm test
@@ -48,7 +49,10 @@ Como pegar o token: abra a plataforma logada → F12 → Application → Local S
 chave `sb-jrzahsjrzaaktuelnsaw-auth-token` (campo `access_token`), ou o `Authorization`
 de um *Copy as cURL*. O token expira em ~1h.
 
-Cobre: `/app` (dashboard), `/app/eletivas`, `/app/conta` carregam logado.
+Cobre **13 telas do aluno** (dashboard, minhas eletivas, eletiva home dos 2 cursos,
+trilhas, notificações, glossário, módulo, certificado, conta, hub, hub materiais, tutor)
+e **10 telas de admin** (home, risco, fluxo, notificações, entregas, pulso, respostas,
+vídeos, módulos, turma).
 
 ## Próximos passos sugeridos
 - Conta de teste dedicada (com senha) para automatizar o login de verdade em vez
