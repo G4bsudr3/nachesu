@@ -35,13 +35,13 @@ Deno.serve(async (req) => {
 
   const admin = createClient(supabaseUrl, serviceKey)
 
-  // permite chamada via service-role (server-to-server) OU usuário admin logado
+  // permite chamada via service-role (server-to-server) OU usuário admin logado.
+  // server-to-server = posse da CHAVE service_role REAL (match exato). NÃO
+  // decodificar o payload do JWT: a assinatura não é verificada, então confiar
+  // em role=service_role decodificado deixaria forjar um token e pular o check
+  // de admin (disparando o blaster de convites). ver _shared/jobAuth.ts.
   const tokenOnly = auth.replace(/^Bearer\s+/i, '').trim()
-  let isServiceRole = false
-  try {
-    const payload = JSON.parse(atob(tokenOnly.split('.')[1] || ''))
-    isServiceRole = payload?.role === 'service_role'
-  } catch { /* not a jwt */ }
+  const isServiceRole = tokenOnly.length > 0 && tokenOnly === serviceKey
 
   if (!isServiceRole) {
     const { data: { user }, error: userErr } = await userClient.auth.getUser()

@@ -8,25 +8,29 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-function decodeRole(jwt: string): string | null {
-  try {
-    const payload = JSON.parse(
-      atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')),
-    )
-    return typeof payload?.role === 'string' ? payload.role : null
-  } catch {
-    return null
-  }
+/** comparação de strings em tempo constante (evita timing oracle no segredo) */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false
+  let diff = 0
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  return diff === 0
 }
 
-/** true quando o Authorization traz o JWT de service_role do próprio projeto */
+/**
+ * true SOMENTE quando o Authorization traz o service_role key REAL do projeto.
+ *
+ * ATENÇÃO: NÃO decodificar o payload do JWT pra checar role==='service_role'.
+ * A assinatura NÃO é verificada aqui (e o gateway não valida quando
+ * verify_jwt=false), então confiar no payload decodificado deixaria qualquer
+ * um forjar `xxx.<base64({"role":"service_role"})>.xxx` e passar. A única prova
+ * de chamador server-to-server é possuir a chave secreta real (match exato).
+ */
 export function isServiceRoleCaller(req: Request): boolean {
   const header = req.headers.get('Authorization') ?? ''
   if (!header.startsWith('Bearer ')) return false
   const token = header.slice(7).trim()
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-  if (serviceKey && token === serviceKey) return true
-  return decodeRole(token) === 'service_role'
+  return serviceKey.length > 0 && timingSafeEqual(token, serviceKey)
 }
 
 /** compara o header x-cron-secret com o segredo interno (timing-safe o bastante) */
