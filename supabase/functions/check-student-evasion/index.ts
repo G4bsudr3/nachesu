@@ -6,6 +6,7 @@
 // { dry_run: true, only_user_id?: uuid } pra testes.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { isAdminCaller, isTrustedJobCaller } from '../_shared/jobAuth.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
