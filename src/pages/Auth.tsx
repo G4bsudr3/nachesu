@@ -60,7 +60,7 @@ const Auth = () => {
   const [phase, setPhase] = useState<AuthPhase>("idle");
   const submitting = phase !== "idle";
   const [sent, setSent] = useState(false);
-  const [aliasHint, setAliasHint] = useState<string | null>(null);
+  
   const [sebraeChoice, setSebraeChoice] = useState<SebraeEligibility | null>(null);
   const [chosenCourseSlug, setChosenCourseSlug] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
