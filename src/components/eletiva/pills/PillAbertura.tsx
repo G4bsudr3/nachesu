@@ -135,17 +135,28 @@ export function PillAbertura({
       )}
 
       <div className="flex justify-end pt-2">
-        <button
-          type="button"
-          onClick={onComplete}
-          disabled={isCompleted || isCompleting}
-          aria-busy={isCompleting}
-          className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
-          style={{ backgroundColor: accent }}
-        >
-          {isCompleted ? "passo concluído" : ctaLabel}
-          {!isCompleted && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
-        </button>
+        {isCompleted ? (
+          <p
+            className="inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/15 px-5 py-2.5 font-body text-sm uppercase tracking-wide text-perestroika-preto/70"
+            role="status"
+          >
+            <CheckCircle2 className="h-4 w-4" style={{ color: accent }} aria-hidden="true" />
+            você já concluiu este passo
+          </p>
+        ) : (
+          <button
+            type="button"
+            onClick={onComplete}
+            disabled={isCompleting}
+            aria-busy={isCompleting}
+            className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-body font-medium text-sm uppercase tracking-wide text-perestroika-bege transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{ backgroundColor: accent }}
+          >
+            {ctaLabel}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
+
       </div>
     </div>
   );
