@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { TUTOR_CONSENT_VERSION } from "@/lib/consent";
 
 
 /**
- * fase A · modal de consentimento LGPD. abre 1x por estudante e persiste a aceitação
- * em profiles.tutor_consent_at. enquanto não aceitar, o backend devolve 412.
+ * fase A · modal de consentimento LGPD. abre 1x por estudante (ou de novo quando
+ * a versão do aviso muda) e persiste a aceitação em profiles.tutor_consent_at +
+ * tutor_consent_version. enquanto não aceitar, o backend devolve 412.
  */
 type Props = {
   open: boolean;
@@ -25,19 +28,31 @@ export const TutorConsentModal = ({ open, onAccepted }: Props) => {
     if (!user) return;
     setLoading(true);
     const now = new Date().toISOString();
-    const { error } = await supabase
+    // grava data + versão do aviso aceito (prova de consentimento versionado).
+    let { error } = await supabase
       .from("profiles")
       .upsert(
-        { user_id: user.id, tutor_consent_at: now },
+        { user_id: user.id, tutor_consent_at: now, tutor_consent_version: TUTOR_CONSENT_VERSION },
         { onConflict: "user_id" },
       );
+    // defensivo: se a coluna de versão ainda não existir (migration não rodada),
+    // não trava o aluno — registra ao menos a data, como antes.
+    if (error && /tutor_consent_version/i.test(error.message ?? "")) {
+      ({ error } = await supabase
+        .from("profiles")
+        .upsert({ user_id: user.id, tutor_consent_at: now }, { onConflict: "user_id" }));
+    }
     setLoading(false);
     if (error) {
       toast.error("não consegui registrar agora, tenta de novo");
       return;
     }
     // fecha o modal imediatamente atualizando o cache antes do refetch
-    queryClient.setQueryData(["tutor-consent", user.id], { accepted: true, at: now });
+    queryClient.setQueryData(["tutor-consent", user.id], {
+      accepted: true,
+      at: now,
+      version: TUTOR_CONSENT_VERSION,
+    });
     onAccepted();
   };
 
@@ -59,6 +74,16 @@ export const TutorConsentModal = ({ open, onAccepted }: Props) => {
             </span>
             <span className="block text-sm text-foreground/60">
               o tutor não é terapeuta nem amigo. pra desabafo de verdade, fala com gente. tô aqui pra te ajudar a aprender.
+            </span>
+            <span className="block text-sm text-foreground/60">
+              detalhes completos na nossa{" "}
+              <Link to="/privacidade" target="_blank" className="underline underline-offset-2 hover:text-foreground">
+                política de privacidade
+              </Link>{" "}
+              e nos{" "}
+              <Link to="/termos" target="_blank" className="underline underline-offset-2 hover:text-foreground">
+                termos de uso
+              </Link>.
             </span>
           </DialogDescription>
         </DialogHeader>

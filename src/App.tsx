@@ -55,6 +55,8 @@ const AdminTurma = lazy(() => import("./pages/AdminTurma.tsx"));
 const AdminStudentProfile = lazy(() => import("./pages/AdminStudentProfile.tsx"));
 const Marco = lazy(() => import("./pages/Marco.tsx"));
 const Comecar = lazy(() => import("./pages/Comecar.tsx"));
+const PoliticaPrivacidade = lazy(() => import("./pages/PoliticaPrivacidade.tsx"));
+const TermosDeUso = lazy(() => import("./pages/TermosDeUso.tsx"));
 const Acompanhamento = lazy(() => import("./pages/Acompanhamento.tsx"));
 const OAuthConsent = lazy(() => import("./pages/OAuthConsent.tsx"));
 const AdminEletivaModulos = lazy(() => import("./pages/AdminEletivaModulos.tsx"));
@@ -125,6 +127,9 @@ const App = () => (
               <Route path="/eletivas" element={<Eletivas />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/comecar" element={<Comecar />} />
+              {/* documentos legais: públicos, sem auth */}
+              <Route path="/privacidade" element={<PoliticaPrivacidade />} />
+              <Route path="/termos" element={<TermosDeUso />} />
               {/* painel público da coordenação: senha própria, fora do auth do app */}
               <Route path="/acompanhamento" element={<Acompanhamento />} />
               <Route path="/reset-password" element={<ResetPassword />} />

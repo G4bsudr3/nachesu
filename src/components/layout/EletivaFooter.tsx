@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface EletivaFooterProps {
@@ -34,6 +35,14 @@ export const EletivaFooter = ({ className, tone = "muted" }: EletivaFooterProps)
       <span className="whitespace-nowrap">uma plataforma naches</span>
       <span aria-hidden className="opacity-50">·</span>
       <span className="whitespace-nowrap">em parceria com escola sebrae</span>
+      <span aria-hidden className="opacity-50">·</span>
+      <Link to="/privacidade" className="whitespace-nowrap underline underline-offset-2 hover:opacity-80">
+        privacidade
+      </Link>
+      <span aria-hidden className="opacity-50">·</span>
+      <Link to="/termos" className="whitespace-nowrap underline underline-offset-2 hover:opacity-80">
+        termos
+      </Link>
     </div>
   );
 };
