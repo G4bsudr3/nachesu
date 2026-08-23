@@ -54,7 +54,18 @@ trilhas, notificações, glossário, módulo, certificado, conta, hub, hub mater
 e **10 telas de admin** (home, risco, fluxo, notificações, entregas, pulso, respostas,
 vídeos, módulos, turma).
 
+### Interações (`tests/interactions.spec.ts`) — clica/preenche, só na conta do próprio usuário
+Só roda com `E2E_ACCESS_TOKEN`. Escreve **apenas** na conta do token (a RLS garante
+isolamento — impossível tocar dado de outro usuário). Não posta em espaços
+compartilhados (hub) e usa mensagem benigna no tutor.
+- **tutor**: aceita o aviso LGPD → digita uma pergunta → envia → confirma que a **IA responde**.
+- **hub**: navega por clique até Materiais (leitura).
+
 ## Próximos passos sugeridos
+- **Fluxo de concluir módulo pela UI** (preencher pílulas → "marcar como concluído"):
+  é o teste de interação mais completo mas o mais frágil — os módulos têm 5+ pílulas
+  obrigatórias de tipos variados (quiz, PBL, registro). Exige resetar um módulo da
+  conta de teste (só dados dela) e depois recompletá-lo. Fazer como peça dedicada.
 - Conta de teste dedicada (com senha) para automatizar o login de verdade em vez
   de injetar sessão.
 - Fluxos de escrita (concluir módulo, reenviar entrega) num ambiente de staging,
