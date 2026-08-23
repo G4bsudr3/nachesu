@@ -45,7 +45,20 @@ export const TextareaWithVoice = forwardRef<HTMLTextAreaElement, Props>(function
       );
 
       if (error) {
-        toast.error(error.message || "erro ao transcrever áudio.");
+        // erros não-2xx do edge function chegam como FunctionsHttpError com o
+        // Response em `error.context`. tenta ler a mensagem amigável do corpo
+        // (ex.: "áudio muito grande", "créditos esgotados") antes do fallback.
+        let msg = "erro ao transcrever áudio.";
+        const ctx = (error as { context?: Response }).context;
+        if (ctx && typeof ctx.json === "function") {
+          try {
+            const body = await ctx.clone().json();
+            if (body?.error) msg = body.error;
+          } catch {
+            /* corpo não-JSON ou já consumido: usa fallback */
+          }
+        }
+        toast.error(msg);
         return;
       }
       if (data?.error) {

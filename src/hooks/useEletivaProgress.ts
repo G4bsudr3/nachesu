@@ -181,7 +181,12 @@ export const useEletivaProgress = (courseId?: string | null) => {
       // publicados com release futuro, que o aluno ainda vai concluir). módulos
       // em rascunho (published=false) NÃO entram: senão um rascunho preso numa
       // trilha travaria a % em <100% e impediria o certificado de todos.
-      const totalPublished = allModules.filter((m) => m.published).length;
+      // ...mas módulo escondido pra ESTE aluno via override (visible=false) sai do
+      // denominador: ele nunca vai conseguir concluí-lo (isReleased=false), então
+      // mantê-lo travaria a % abaixo de 100% e o certificado dele pra sempre.
+      const totalPublished = allModules.filter(
+        (m) => m.published && resolveOverride(m) !== false,
+      ).length;
 
 
       // navegação livre é a regra em TODAS as eletivas: o que gate o módulo é

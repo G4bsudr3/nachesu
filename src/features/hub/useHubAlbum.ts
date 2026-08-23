@@ -123,9 +123,8 @@ export const useHubAlbum = () => {
         { event: "INSERT", schema: "public", table: "hub_album_photos" },
         async (payload) => {
           const row = payload.new as Omit<AlbumPhoto, "url" | "author">;
-          // evita duplicar se já adicionado pelo upload local
-          setPhotos((prev) => (prev.some((p) => p.id === row.id) ? prev : prev));
           const [enriched] = await enrich([row]);
+          // evita duplicar se já adicionado pelo upload local
           setPhotos((prev) => (prev.some((p) => p.id === enriched.id) ? prev : [enriched, ...prev]));
         },
       )

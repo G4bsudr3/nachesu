@@ -33,7 +33,6 @@ import { FloatingSumario } from "@/components/eletiva/modulo/FloatingSumario";
 import { ModuloProgressBar } from "@/components/eletiva/modulo/ModuloProgressBar";
 import { ModuloFeedbackCard } from "@/components/eletiva/modulo/ModuloFeedbackCard";
 import { ModuloLockedHero } from "@/components/eletiva/modulo/ModuloLockedHero";
-import { DeliverableStatusPill } from "@/components/eletiva/modulo/DeliverableStatusPill";
 import { TrailTransitionBanner } from "@/components/eletiva/modulo/TrailTransitionBanner";
 import { scopeModuleNavigation } from "@/lib/moduleNavigation";
 import { resolvePill } from "@/features/admin/deliverableRendering/resolvers";

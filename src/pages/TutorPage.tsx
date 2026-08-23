@@ -323,7 +323,9 @@ const TutorPage = () => {
   return (
     <>
     <TutorConsentModal
-      open={showConsent || consent?.accepted === false}
+      // se a escola desligou o tutor, não força o consentimento por cima do aviso
+      // de "tutor desativado" (o aluno não teria o que fazer com ele).
+      open={tutorSettings?.enabled !== false && (showConsent || consent?.accepted === false)}
       onAccepted={() => {
         setShowConsent(false);
         refetchConsent();
