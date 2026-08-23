@@ -2025,6 +2025,7 @@ export type Database = {
           slug: string | null
           status: string
           tutor_consent_at: string | null
+          tutor_consent_version: string | null
           updated_at: string
           user_id: string
         }
@@ -2047,6 +2048,7 @@ export type Database = {
           slug?: string | null
           status?: string
           tutor_consent_at?: string | null
+          tutor_consent_version?: string | null
           updated_at?: string
           user_id: string
         }
@@ -2069,6 +2071,7 @@ export type Database = {
           slug?: string | null
           status?: string
           tutor_consent_at?: string | null
+          tutor_consent_version?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -3000,6 +3003,7 @@ export type Database = {
           slug: string | null
           status: string
           tutor_consent_at: string | null
+          tutor_consent_version: string | null
           updated_at: string
           user_id: string
         }
@@ -3309,6 +3313,7 @@ export type Database = {
           slug: string | null
           status: string
           tutor_consent_at: string | null
+          tutor_consent_version: string | null
           updated_at: string
           user_id: string
         }
