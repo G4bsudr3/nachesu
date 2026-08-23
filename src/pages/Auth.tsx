@@ -17,37 +17,16 @@ import { resolveAuthError, readAuthErrorFromUrl, t } from "@/lib/authErrors";
 const EMAIL_LS_KEY = "nachesu.lastEmail";
 const LEGACY_EMAIL_LS_KEY = "chora.lastEmail";
 
-const NOT_ALLOWED_MESSAGE =
-  "esse email ainda não está na lista liberada da escola. fala com o suporte pra liberar seu acesso.";
-
-interface EmailValidationResult {
-  can_enter: boolean;
-  account_exists: boolean;
-}
-
-/** Consulta edge function pra ver se email pode entrar e qual o status da conta */
-const validateEmail = async (email: string): Promise<EmailValidationResult> => {
-  try {
-    const { data, error } = await supabase.functions.invoke("validate-public-email", {
-      body: { email },
-    });
-    if (error) return { can_enter: false, account_exists: false };
-    const d = data as Partial<EmailValidationResult>;
-    return {
-      can_enter: Boolean(d?.can_enter),
-      account_exists: Boolean(d?.account_exists),
-    };
-  } catch {
-    return { can_enter: false, account_exists: false };
-  }
-};
+// resposta uniforme: nunca dizemos se o email existe ou está na lista
+// (evita usar o login como oráculo de enumeração de estudantes).
+const UNIFORM_SENT_MESSAGE =
+  "se esse email estiver liberado pela escola, o link de acesso chega em instantes. confere a caixa de entrada e o spam.";
 
 interface SebraeEligibility {
-  is_sebrae: boolean;
-  has_pre_invite: boolean;
   needs_course_choice: boolean;
   courses: Array<{ id: string; slug: string; title: string }>;
 }
+
 
 const checkSebrae = async (email: string): Promise<SebraeEligibility | null> => {
   try {
