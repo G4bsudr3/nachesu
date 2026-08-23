@@ -528,7 +528,10 @@ const Modulo = () => {
   }).length;
   const effectiveDoneRequired = doneRequired + contentAutoComplete;
   const pillsRemaining = Math.max(0, requiredPills.length - effectiveDoneRequired);
-  const canCompleteModule = requiredPills.length > 0 && pillsRemaining === 0;
+  // módulo sem pílula obrigatória (só conteúdo/bônus) também é concluível:
+  // pillsRemaining já é 0 nesse caso. sem isso o botão ficaria travado e o
+  // módulo nunca concluiria — bloqueando o certificado do curso inteiro.
+  const canCompleteModule = pillsRemaining === 0;
 
   return (
     <div

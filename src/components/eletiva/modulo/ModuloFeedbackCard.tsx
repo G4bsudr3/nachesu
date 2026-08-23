@@ -83,17 +83,28 @@ export const ModuloFeedbackCard = ({ moduleId, trailColor }: Props) => {
       if (!fb || !user) throw new Error("sem contexto");
       const { error } = await supabase
         .from("module_deliverables")
-        // limpa também os marcadores de revisão: sem isso o reenvio do aluno
-        // (submitDeliverableIfExists usa `.is("reviewed_at", null)`) casa 0 linhas
-        // e a entrega fica presa em rascunho, sumindo das filas do educador.
+        // limpa os marcadores de revisão junto (espelha submitModuleDeliverable).
         .update({ status: "rascunho", submitted_at: null, reviewed_at: null, reviewer_id: null })
         .eq("id", fb.id);
       if (error) throw error;
+      // reabrir a entrega tem que reabrir o MÓDULO também. sem zerar completed_at,
+      // isCompleted continua true → o botão "marcar como concluído" (único caminho
+      // de reenvio do aluno) some, e a entrega fica presa em rascunho, fora da fila
+      // do educador. zerar aqui reexibe o CTA e reabre o loop revisar→reenviar.
+      const { error: progErr } = await supabase
+        .from("student_module_progress")
+        .update({ completed_at: null })
+        .eq("user_id", user.id)
+        .eq("module_id", moduleId);
+      if (progErr) throw progErr;
     },
     onSuccess: () => {
       toast.success("entrega reaberta. edite as respostas e envie de novo.");
       qc.invalidateQueries({ queryKey: ["student-feedback"] });
       qc.invalidateQueries({ queryKey: ["module-deliverable-status"] });
+      // reflete o módulo reaberto na tela sem reload: conteúdo da entrega + progresso.
+      qc.invalidateQueries({ queryKey: ["module-deliverable"] });
+      qc.invalidateQueries({ queryKey: ["eletiva-progress"] });
       // rola pra cima pra pessoa ver as pílulas pra editar
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
