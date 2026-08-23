@@ -279,12 +279,16 @@ export const useCertificateDownload = () => {
             "upload do certificado",
           );
           if (!upErr) {
-            const { data: pub } = supabase.storage
+            // bucket privado: guarda o CAMINHO no banco (não expira) e gera uma
+            // URL assinada só pra uso imediato na sessão. o download em si usa o
+            // blob local; nada renderiza file_url como imagem.
+            const { data: signed } = await supabase.storage
               .from("hub-certificates")
-              .getPublicUrl(path);
-            const fileUrl = pub.publicUrl;
-            setPublicUrl(fileUrl);
-            persistedUrl = fileUrl;
+              .createSignedUrl(path, 60 * 60 * 24);
+            const signedUrl = signed?.signedUrl ?? null;
+            const fileUrl = path;
+            setPublicUrl(signedUrl);
+            persistedUrl = signedUrl;
 
             // upsert manual em hub_certificates (1 por user)
             const { data: existing } = await withTimeout(

@@ -21,6 +21,9 @@ export interface AlbumPhoto {
 const BUCKET = "hub-album";
 const MAX_DIM = 1600;
 const QUALITY = 0.85;
+// bucket é privado: fotos de menores só via URL assinada (exige login). TTL de
+// algumas horas cobre a sessão; o refresh regenera as URLs a cada visita.
+const SIGNED_TTL = 60 * 60 * 4;
 
 /** comprime imagem client-side: webp <=1600px, fallback jpeg */
 async function compressImage(file: File): Promise<{ blob: Blob; width: number; height: number; ext: string }> {
@@ -76,12 +79,16 @@ export const useHubAlbum = () => {
       .in("user_id", userIds);
     const map = new Map((profiles ?? []).map((p) => [p.user_id, p]));
 
+    // URLs assinadas em lote (bucket privado). mapeia de volta por caminho.
+    const paths = rows.map((r) => r.storage_path);
+    const { data: signed } = await supabase.storage.from(BUCKET).createSignedUrls(paths, SIGNED_TTL);
+    const urlByPath = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
+
     return rows.map((r) => {
-      const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(r.storage_path);
       const prof = map.get(r.user_id);
       return {
         ...r,
-        url: pub.publicUrl,
+        url: urlByPath.get(r.storage_path) ?? "",
         author: prof ? { nickname: prof.nickname, display_name: prof.display_name } : undefined,
       };
     });
