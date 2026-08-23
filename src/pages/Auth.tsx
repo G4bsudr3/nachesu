@@ -403,10 +403,15 @@ const Auth = () => {
                     autoComplete="current-password"
                     placeholder="senha"
                     aria-label="senha"
+                    aria-invalid={formError ? true : undefined}
+                    aria-describedby={formError ? "auth-form-error" : undefined}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (formError) setFormError(null);
+                    }}
                     disabled={submitting}
-                    className="w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border-2 border-perestroika-preto/15 focus:border-perestroika-preto focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors"
+                    className={`w-full pl-11 pr-12 h-14 rounded-2xl bg-transparent border-2 focus:outline-none font-body text-base placeholder:text-perestroika-preto/60 transition-colors ${formError ? "border-perestroika-vermelho focus:border-perestroika-vermelho" : "border-perestroika-preto/15 focus:border-perestroika-preto"}`}
                   />
                   <button
                     type="button"
@@ -418,6 +423,17 @@ const Auth = () => {
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
+
+                <p
+                  id="auth-form-error"
+                  role="alert"
+                  aria-live="polite"
+                  className={`font-body text-sm text-perestroika-vermelho leading-snug ${formError ? "" : "sr-only"}`}
+                >
+                  {formError ?? ""}
+                </p>
+
+
 
                 <button
                   type="submit"
