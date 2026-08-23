@@ -33,6 +33,36 @@ Deno.serve(async (req) => {
       return tooManyRequests(cors)
     }
 
+    // SEC-06/SEC-07: nenhum lookup por email aqui. qualquer consulta a convite
+    // ou conta existente transformava esta rota em oráculo de enumeração.
+    // a escolha de eletiva é perguntada pra todo email do domínio da escola;
+    // se a pessoa já tem convite, o `send-access-link` ignora a escolha.
+
+    // lista de cursos disponíveis (pra exibir seletor)
+    const { data: courses } = await admin
+      .from('courses')
+      .select('id, slug, title')
+      .eq('published', true)
+      .order('order_index')
+
+    return new Response(JSON.stringify({ error: 'email obrigatório' }), {
+        status: 400, headers: { ...cors, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const clean = email.trim().toLowerCase()
+    const isSebrae = clean.endsWith('@edu.sebrae.com.br')
+
+    const admin = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    )
+
+    // rate limit por IP (fail-open) — trava enumeração de contas
+    if (!(await checkRateLimit(admin, `cse:${clientIp(req)}`, 30, 60))) {
+      return tooManyRequests(cors)
+    }
+
     // tem convite prévio?
     const { data: invite } = await admin
       .from('course_invites')
@@ -60,11 +90,8 @@ Deno.serve(async (req) => {
     // SEC-06: não expomos mais `account_exists` cru (era um oráculo de enumeração).
     // `needs_course_choice` já carrega a decisão de UX que o frontend consome.
     return new Response(JSON.stringify({
-      is_sebrae: isSebrae,
-      allowed: isSebrae || hasPreInvite,
-      has_pre_invite: hasPreInvite,
-      needs_course_choice: isSebrae && !hasPreInvite && !accountExists,
-      courses: courses ?? [],
+      needs_course_choice: isSebrae,
+      courses: isSebrae ? (courses ?? []) : [],
     }), {
       status: 200, headers: { ...cors, 'Content-Type': 'application/json' },
     })
