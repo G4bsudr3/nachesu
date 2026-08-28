@@ -424,11 +424,18 @@ function isFilled(ev?: Evidencia): boolean {
   return false;
 }
 
+function hasEvidenceAttachment(v?: EvidenceValue): boolean {
+  if (!v) return false;
+  if (v.evidence_kind === "file" && v.evidence_path) return true;
+  if (v.evidence_kind === "link" && /^https?:\/\/\S+/i.test(v.evidence_link ?? "")) return true;
+  return false;
+}
+
 function hasRealOrigin(ev?: Evidencia): boolean {
   if (!ev) return false;
-  if (ev.foto?.evidence_kind === "file" && ev.foto.evidence_path) return true;
-  if (ev.audio?.evidence_kind === "file" && ev.audio.evidence_path) return true;
-  if (ev.tipo === "coleta" && ev.link && /^https?:\/\//i.test(ev.link)) return true;
+  if (hasEvidenceAttachment(ev.foto)) return true;
+  if (hasEvidenceAttachment(ev.audio)) return true;
+  if (ev.link && /^https?:\/\/\S+/i.test(ev.link)) return true;
   return false;
 }
 
