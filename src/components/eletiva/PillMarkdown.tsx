@@ -98,7 +98,7 @@ export function PillMarkdown({ children, accent, className, glossario = true }: 
           img: () => null,
         }}
       >
-        {children}
+        {texto}
       </ReactMarkdown>
     </div>
   );
