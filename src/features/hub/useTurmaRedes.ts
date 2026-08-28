@@ -53,7 +53,7 @@ export function useTurmaRedes() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [user]);
 
   return { people, loading };
 }
