@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ArrowRight, Check, Circle, Link as LinkIcon, Loader2, Mic, Sparkles, Trash2, Upload, Video } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, Circle, ExternalLink, Link as LinkIcon, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -77,9 +77,6 @@ const HOOK_TIPOS: Array<{ id: NonNullable<PitchRoteiroValue["hook_tipo"]>; label
 
 const HOOK_PROIBIDOS = ["olá", "ola", "meu nome é", "meu nome e", "hoje vou apresentar", "hoje eu vou apresentar", "bom dia meu nome", "boa tarde meu nome"];
 
-const BUCKET = "radar-evidences";
-const MAX_MB = 50;
-const MAX_DUR_S = 200; // 3 min + folga
 
 function countWords(s: string) {
   return (s ?? "").trim().split(/\s+/).filter(Boolean).length;
@@ -292,10 +289,9 @@ export function PillPitchRoteiro({ pillId, schema, accent, initial, pitchMap, sa
         <SectionHeader
           n={2}
           title="PRIMEIRO TAKE"
-          hint="rascunho. grava uma vez, sem ensaio. depois assiste. semana que vem: versão final."
+          hint="rascunho. grava no celular, sobe num link público e cola aqui. depois assiste. semana que vem: versão final."
         />
         <TakeUploader
-          userId={user?.id ?? null}
           value={{ url: value.take_url ?? null, path: value.take_path ?? null, name: value.take_name ?? null, duracao: value.take_duracao_s ?? null }}
           onChange={(next) => setValue((p) => ({ ...p, take_url: next.url, take_path: next.path, take_name: next.name, take_duracao_s: next.duracao }))}
           accent={accent}
@@ -422,332 +418,112 @@ function RefCard({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-// ------------- take uploader com gravação + upload -------------
+// ------------- take por link público -------------
 type TakeState = { url: string | null; path: string | null; name: string | null; duracao: number | null };
 
-type Diagnostico = { causa: string; detalhe: string; acao: string };
-
-function diagnosticar(input: { blob?: Blob; filename?: string; raw?: string }): Diagnostico {
-  const { blob, filename, raw } = input;
-  if (blob && blob.size > MAX_MB * 1024 * 1024) {
-    const mb = Math.round(blob.size / (1024 * 1024));
-    return {
-      causa: "vídeo grande demais",
-      detalhe: `seu arquivo tem ${mb}mb e o limite de upload é ${MAX_MB}mb.`,
-      acao: "grava um take mais curto, ou sobe pro youtube/drive e cola o link no campo abaixo.",
-    };
+function isPublicUrl(raw: string) {
+  try {
+    const u = new URL(raw.trim());
+    return (u.protocol === "https:" || u.protocol === "http:") && u.hostname.includes(".");
+  } catch {
+    return false;
   }
-  const ext = filename?.split(".").pop()?.toLowerCase();
-  const tipoOk = (blob?.type || "").startsWith("video/") || (ext ? /^(mp4|webm|mov|m4v|ogg)$/.test(ext) : false);
-  if ((blob || filename) && !tipoOk) {
-    return {
-      causa: "tipo de arquivo inválido",
-      detalhe: `só entra vídeo (mp4, mov, webm). o que você escolheu${ext ? ` é .${ext}` : ""} não é vídeo.`,
-      acao: "escolhe o arquivo de vídeo direto da galeria, ou grava aqui pelo botão de gravação.",
-    };
-  }
-  const r = raw ?? "";
-  if (/row-level security|not authorized|permission|jwt|401|403/i.test(r)) {
-    return {
-      causa: "sessão expirada",
-      detalhe: "o envio foi recusado porque seu login caiu enquanto você gravava.",
-      acao: "recarrega a página, entra de novo e reenvia o take. o texto do roteiro fica salvo.",
-    };
-  }
-  if (/exceeded the maximum|payload too large|413/i.test(r)) {
-    return {
-      causa: "upload recusado pelo servidor",
-      detalhe: `o arquivo passou do limite de ${MAX_MB}mb no meio do envio.`,
-      acao: "sobe o vídeo pro youtube ou drive e cola o link no campo abaixo.",
-    };
-  }
-  if (/network|failed to fetch|timeout|aborted|load failed/i.test(r)) {
-    return {
-      causa: "upload falhou no meio do caminho",
-      detalhe: "a conexão caiu durante o envio, comum em wi-fi instável ou 4g fraco.",
-      acao: "tenta de novo numa rede melhor. se travar de novo, cola o link do vídeo no campo abaixo.",
-    };
-  }
-  return {
-    causa: "upload falhou",
-    detalhe: r || "não deu pra concluir o envio.",
-    acao: "tenta enviar de novo. se insistir, cola o link do vídeo no campo abaixo que vale igual.",
-  };
 }
 
-function TakeUploader({ userId, value, onChange, accent }: { userId: string | null; value: TakeState; onChange: (v: TakeState) => void; accent: string }) {
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState<string | null>(null);
+function TakeUploader({ value, onChange, accent }: { value: TakeState; onChange: (v: TakeState) => void; accent: string }) {
+  // takes antigos ficaram salvos como arquivo no storage: mantém o player
+  const legacyFile = !!value.path;
+  const [draft, setDraft] = useState(legacyFile ? "" : (value.url ?? ""));
   const [erro, setErro] = useState<string | null>(null);
-  const [diag, setDiag] = useState<Diagnostico | null>(null);
-  const [link, setLink] = useState("");
 
-  // gravação
-  const [recording, setRecording] = useState(false);
-  const [recTime, setRecTime] = useState(0);
-  const videoLiveRef = useRef<HTMLVideoElement | null>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const startedAtRef = useRef<number>(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-
-  useEffect(() => () => {
-    // cleanup no unmount
-    if (timerRef.current) clearInterval(timerRef.current);
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-  }, []);
-
-  async function uploadBlob(blob: Blob, filename: string, duracao: number | null) {
-    if (!userId) {
-      setErro(null);
-      setDiag({
-        causa: "você não está logado",
-        detalhe: "o take precisa de login pra ficar salvo com você.",
-        acao: "entra de novo na plataforma e volta pro módulo 19. o roteiro escrito continua salvo.",
-      });
-      toast.error("precisa estar logado pra enviar o take.");
+  function salvar() {
+    const url = draft.trim();
+    if (!isPublicUrl(url)) {
+      setErro("cola um link completo, começando com https://");
       return;
     }
-    const pre = diagnosticar({ blob, filename });
-    if (pre.causa === "vídeo grande demais" || pre.causa === "tipo de arquivo inválido") {
-      setErro(null); setDiag(pre); toast.error(pre.causa); return;
-    }
-    setErro(null); setDiag(null); setUploading(true); setProgress("subindo...");
-    try {
-      if (value.path) {
-        await supabase.storage.from(BUCKET).remove([value.path]).catch(() => {});
-      }
-      const extGuess = filename.split(".").pop()?.toLowerCase();
-      const ext = extGuess && /^(mp4|webm|mov|m4v|ogg)$/.test(extGuess) ? extGuess : (blob.type.includes("mp4") ? "mp4" : "webm");
-      const path = `${userId}/pitch-aula19-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from(BUCKET).upload(path, blob, { upsert: false, contentType: blob.type || `video/${ext}`, cacheControl: "3600" });
-      if (error) throw error;
-      const { data: signed } = await supabase.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24 * 30);
-      onChange({ url: signed?.signedUrl ?? null, path, name: filename, duracao });
-      setProgress("take salvo."); toast.success("take salvo.");
-      setTimeout(() => setProgress(null), 1500);
-    } catch (e) {
-      const raw = e instanceof Error ? e.message : "erro no upload";
-      const d = diagnosticar({ raw });
-      setDiag(d); setProgress(null); toast.error(d.causa);
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  async function startRecording() {
     setErro(null);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: true });
-      streamRef.current = stream;
-      if (videoLiveRef.current) {
-        videoLiveRef.current.srcObject = stream;
-        await videoLiveRef.current.play().catch(() => {});
-      }
-      const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
-        ? "video/webm;codecs=vp9,opus"
-        : MediaRecorder.isTypeSupported("video/webm")
-        ? "video/webm"
-        : "";
-      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
-      recorderRef.current = rec;
-      chunksRef.current = [];
-      rec.ondataavailable = (ev) => { if (ev.data && ev.data.size > 0) chunksRef.current.push(ev.data); };
-      rec.onstop = async () => {
-        const blob = new Blob(chunksRef.current, { type: rec.mimeType || "video/webm" });
-        const dur = Math.round((Date.now() - startedAtRef.current) / 1000);
-        streamRef.current?.getTracks().forEach((t) => t.stop());
-        streamRef.current = null;
-        if (videoLiveRef.current) videoLiveRef.current.srcObject = null;
-        await uploadBlob(blob, `take-navegador.${(rec.mimeType || "video/webm").includes("mp4") ? "mp4" : "webm"}`, dur);
-      };
-      rec.start(1000);
-      startedAtRef.current = Date.now();
-      setRecording(true);
-      setRecTime(0);
-      timerRef.current = setInterval(() => {
-        const s = Math.round((Date.now() - startedAtRef.current) / 1000);
-        setRecTime(s);
-        if (s >= MAX_DUR_S) stopRecording();
-      }, 500);
-    } catch (e) {
-      const raw = e instanceof Error ? e.message : String(e);
-      setErro("não deu acesso à câmera/microfone. use o upload.");
-      console.warn("[PillPitchRoteiro] getUserMedia fail:", raw);
-    }
+    onChange({ url, path: null, name: "link do take", duracao: null });
+    toast.success("link do take salvo.");
   }
 
-  function stopRecording() {
-    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-    if (recorderRef.current && recorderRef.current.state !== "inactive") {
-      recorderRef.current.stop();
-    }
-    setRecording(false);
-  }
-
-  async function clear() {
-    if (value.path) await supabase.storage.from(BUCKET).remove([value.path]).catch(() => {});
+  function limpar() {
+    setDraft("");
+    setErro(null);
     onChange({ url: null, path: null, name: null, duracao: null });
   }
 
-  if (value.url) {
-    const isLink = !value.path;
-    return (
-      <div className="space-y-2">
-        {isLink ? (
-          <a
-            href={value.url}
-            target="_blank"
-            rel="noreferrer"
-            className="block rounded-2xl border-2 p-4 font-body text-sm text-perestroika-preto underline underline-offset-4 break-all"
-            style={{ borderColor: `${accent}55`, backgroundColor: `${accent}10` }}
-          >
-            {value.url}
-          </a>
-        ) : (
-          <div className="rounded-2xl border-2 overflow-hidden bg-black/90" style={{ borderColor: `${accent}55` }}>
-            <video src={value.url} controls className="w-full aspect-video bg-black" />
-          </div>
-        )}
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <p className="font-body text-xs text-perestroika-preto/70">
-            {value.name || (isLink ? "link do take" : "take enviado")} {value.duracao ? `· ${Math.floor(value.duracao / 60)}:${String(value.duracao % 60).padStart(2, "0")}` : null}
-          </p>
-          <button
-            type="button"
-            onClick={clear}
-            className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50"
-          >
-            <Trash2 className="h-3.5 w-3.5" aria-hidden /> trocar take
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+  const salvo = !!value.url && !legacyFile && value.url === draft.trim();
 
   return (
     <div className="space-y-3">
-      {recording && (
-        <div className="rounded-2xl border-2 overflow-hidden bg-black" style={{ borderColor: "#fd4644" }}>
-          <div className="relative">
-            <video ref={videoLiveRef} muted className="w-full aspect-video bg-black" playsInline />
-            <div className="absolute top-2 left-2 inline-flex items-center gap-1.5 rounded-full bg-[#fd4644] px-2.5 py-1 font-body text-[11px] uppercase tracking-wider text-white">
-              <Circle className="h-2.5 w-2.5 fill-white" aria-hidden /> rec · {Math.floor(recTime / 60)}:{String(recTime % 60).padStart(2, "0")}
-            </div>
-          </div>
+      {legacyFile && value.url && (
+        <div className="rounded-2xl border-2 overflow-hidden bg-black" style={{ borderColor: `${accent}55` }}>
+          <video src={value.url} controls className="w-full aspect-video bg-black" />
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2">
-        {!recording ? (
+      <div className="rounded-xl border-2 border-perestroika-preto/15 bg-white p-3 space-y-2">
+        <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60" htmlFor="pitch-take-link">
+          link público do take
+        </label>
+        <div className="flex gap-2 flex-wrap">
+          <input
+            id="pitch-take-link"
+            type="url"
+            inputMode="url"
+            value={draft}
+            onChange={(e) => { setDraft(e.target.value); setErro(null); }}
+            placeholder="https://drive.google.com/..."
+            className="flex-1 min-w-[220px] rounded-xl border border-perestroika-preto/15 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none"
+          />
           <button
             type="button"
-            onClick={startRecording}
-            disabled={uploading}
-            className="inline-flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm text-perestroika-preto hover:-translate-y-0.5 transition-transform disabled:opacity-50"
+            onClick={salvar}
+            disabled={!draft.trim() || salvo}
+            className="inline-flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm text-perestroika-preto hover:-translate-y-0.5 transition-transform disabled:opacity-40 disabled:hover:translate-y-0"
             style={{ borderColor: accent, backgroundColor: `${accent}12` }}
           >
-            <Video className="h-4 w-4" aria-hidden /> gravar direto no navegador
+            <LinkIcon className="h-4 w-4" aria-hidden /> {salvo ? "link salvo" : "salvar link"}
           </button>
-        ) : (
-          <button
-            type="button"
-            onClick={stopRecording}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white bg-[#fd4644] hover:brightness-110"
-          >
-            <Mic className="h-4 w-4" aria-hidden /> parar e enviar
-          </button>
+        </div>
+
+        <p className="font-body text-[11px] text-perestroika-preto/60">
+          grava pelo celular, sobe no drive (ou youtube não listado) e deixa o acesso pra qualquer pessoa com o link. testa numa aba anônima antes de colar aqui.
+        </p>
+
+        {erro && (
+          <p role="alert" className="font-body text-[11px]" style={{ color: "#fd4644" }}>{erro}</p>
         )}
 
-        <label
-          className={`inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2 font-body text-sm text-perestroika-preto cursor-pointer hover:border-perestroika-preto/50 ${uploading ? "opacity-60 cursor-wait" : ""}`}
-        >
-          {uploading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Upload className="h-4 w-4" aria-hidden />}
-          {uploading ? "subindo..." : `ou upload de vídeo (até ${MAX_MB}mb)`}
-          <input
-            type="file"
-            accept="video/*"
-            className="sr-only"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) void uploadBlob(f, f.name, null);
-              e.target.value = "";
-            }}
-            disabled={uploading || recording}
-          />
-        </label>
+        {value.url && (
+          <div className="flex items-center gap-2 flex-wrap pt-1">
+            <a
+              href={value.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-body text-[12px] underline text-perestroika-preto/80 break-all"
+            >
+              <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" aria-hidden /> abrir o take enviado
+            </a>
+            <button
+              type="button"
+              onClick={limpar}
+              className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50"
+            >
+              <Trash2 className="h-3.5 w-3.5" aria-hidden /> trocar link
+            </button>
+          </div>
+        )}
       </div>
-
-      {diag && (
-        <div role="alert" className="space-y-2 rounded-2xl border-2 p-3" style={{ borderColor: "#fd4644", backgroundColor: "#fd464412" }}>
-          <p className="flex items-start gap-2 font-body text-sm font-semibold text-perestroika-preto">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" style={{ color: "#fd4644" }} aria-hidden />
-            {diag.causa}
-          </p>
-          <p className="font-body text-[13px] leading-snug text-perestroika-preto/75">{diag.detalhe}</p>
-          <p className="font-body text-[13px] leading-snug text-perestroika-preto">
-            <span className="font-semibold">o que fazer: </span>{diag.acao}
-          </p>
-          <button
-            type="button"
-            onClick={() => setDiag(null)}
-            className="inline-flex min-h-[36px] items-center rounded-full border-2 border-perestroika-preto/20 px-3 font-body text-xs text-perestroika-preto hover:border-perestroika-preto/50"
-          >
-            entendi
-          </button>
-        </div>
-      )}
-
-      <div className="space-y-1.5 rounded-2xl border-2 border-perestroika-preto/15 p-3">
-        <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/55">
-          vídeo grande ou upload travando? cola o link
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <input
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-            inputMode="url"
-            placeholder="link do youtube, drive ou whatsapp"
-            className="flex-1 min-w-[200px] rounded-xl border-2 border-perestroika-preto/15 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none"
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const v = link.trim();
-              if (!/^https?:\/\/\S+\.\S+/.test(v)) {
-                setErro("cola um link completo, começando com https://");
-                return;
-              }
-              setErro(null);
-              onChange({ url: v, path: null, name: "link do take", duracao: null });
-              setLink("");
-            }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-perestroika-bege"
-            style={{ backgroundColor: accent }}
-          >
-            <LinkIcon className="h-4 w-4" aria-hidden /> usar link
-          </button>
-        </div>
-        <p className="font-body text-[11px] text-perestroika-preto/55">
-          deixa o link aberto pra quem tem o endereço, senão o educador não consegue assistir.
-        </p>
-      </div>
-
-      {(progress || erro) && (
-        <p role={erro ? "alert" : "status"} className="font-body text-[11px]" style={{ color: erro ? "#fd4644" : "#75BF9C" }}>
-          {erro ?? progress}
-        </p>
-      )}
 
       <p className="font-body text-[11px] text-perestroika-preto/55 leading-snug">
-        não precisa estar bom. é rascunho. o take fica salvo com você, só você e os educadores veem. semana que vem: versão final.
+        não precisa estar bom. é rascunho. só você e os educadores abrem o link. semana que vem: versão final.
       </p>
-
     </div>
   );
 }
+
 
 function SectionHeader({ n, title, hint }: { n: number; title: string; hint?: string }) {
   return (
