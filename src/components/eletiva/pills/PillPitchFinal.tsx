@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ArrowRight, Check, Circle, Loader2, Mic, RotateCcw, Trash2, Upload, Video } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, Circle, ExternalLink, Link as LinkIcon, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import type { PitchRoteiroValue } from "./PillPitchRoteiro";
+
 
 /**
  * pílula da MÓDULO 20 — PBL parte 1 + 2:
