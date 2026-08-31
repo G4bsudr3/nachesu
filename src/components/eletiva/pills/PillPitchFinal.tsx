@@ -96,7 +96,6 @@ function readVideoDuration(file: Blob): Promise<number | null> {
       };
       el.preload = "metadata";
       el.muted = true;
-      // @ts-expect-error atributo só existe em safari/ios
       el.playsInline = true;
       el.onloadedmetadata = () => {
         if (tryRead()) return;
