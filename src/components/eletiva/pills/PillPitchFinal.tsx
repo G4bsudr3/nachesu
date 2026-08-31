@@ -67,6 +67,40 @@ function countWords(s: string) {
   return (s ?? "").trim().split(/\s+/).filter(Boolean).length;
 }
 
+/**
+ * mede a duração de um arquivo de vídeo no próprio navegador.
+ * devolve null quando o navegador não consegue ler os metadados
+ * (formato exótico, mp4 fragmentado do celular, etc) — nesse caso a entrega
+ * segue permitida, só com aviso leve.
+ */
+function readVideoDuration(file: Blob): Promise<number | null> {
+  return new Promise((resolve) => {
+    try {
+      const url = URL.createObjectURL(file);
+      const el = document.createElement("video");
+      let done = false;
+      const finish = (v: number | null) => {
+        if (done) return;
+        done = true;
+        URL.revokeObjectURL(url);
+        resolve(v);
+      };
+      el.preload = "metadata";
+      el.onloadedmetadata = () => {
+        const d = el.duration;
+        finish(Number.isFinite(d) && d > 0 ? Math.round(d) : null);
+      };
+      el.onerror = () => finish(null);
+      // safety net: metadados que nunca chegam não podem travar o upload
+      setTimeout(() => finish(null), 8000);
+      el.src = url;
+    } catch {
+      resolve(null);
+    }
+  });
+}
+
+
 function useAula19Pull(schema: Schema) {
   const { user } = useAuth();
   const q = useQuery({
@@ -132,7 +166,12 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
     [value]
   );
 
-  const durationOk = !!value.video_duracao_s && value.video_duracao_s >= MIN_DUR_S && value.video_duracao_s <= MAX_DUR_S;
+  // duração não medida (o navegador não leu os metadados do arquivo) não bloqueia:
+  // o estudante confirma no olho. só bloqueia quando a medição existe e está fora da faixa.
+  const durationUnknown = !value.video_duracao_s;
+  const durationOk =
+    durationUnknown ||
+    (value.video_duracao_s! >= MIN_DUR_S && value.video_duracao_s! <= MAX_DUR_S);
   const ready = blocosOk && !!value.roteiro_pronto && !!value.video_url && !!value.confirmada_final && durationOk;
 
   const previousTake = pull.take?.take_url ?? null;
@@ -218,7 +257,13 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
               {!durationOk && (
                 <p className="font-body text-[12px] text-[#fd4644] flex items-start gap-1.5">
                   <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
-                  duração {value.video_duracao_s ? `${value.video_duracao_s}s` : "desconhecida"} — precisa ficar entre 90s e 4min. regrava.
+                  duração {value.video_duracao_s}s — precisa ficar entre 90s e 4min. regrava.
+                </p>
+              )}
+              {durationUnknown && (
+                <p className="font-body text-[12px] text-perestroika-preto/70 flex items-start gap-1.5">
+                  <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
+                  não deu pra medir a duração desse arquivo aqui no navegador. confere no player acima se o vídeo tem entre 90s e 4min e segue.
                 </p>
               )}
               <label className={`flex items-center gap-2 cursor-pointer ${!durationOk ? "opacity-50 pointer-events-none" : ""}`}>
@@ -279,7 +324,9 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
   const streamRef = useRef<MediaStream | null>(null);
 
   const tentativas = value.tentativas ?? 0;
-  const podeMais = tentativas < MAX_TENTATIVAS;
+  // o limite só vale enquanto existe um vídeo salvo. sem nenhum vídeo no ar,
+  // o estudante nunca fica sem saída (era o beco sem saída do contador antigo).
+  const podeMais = !value.video_url || tentativas < MAX_TENTATIVAS;
 
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -314,7 +361,12 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
       setTimeout(() => setProgress(null), 1500);
     } catch (e) {
       const raw = e instanceof Error ? e.message : "erro no upload";
-      setErro(raw); setProgress(null); toast.error(raw);
+      const amigavel = /size|large|payload|body/i.test(raw)
+        ? `o arquivo passou do limite de ${MAX_MB}mb. exporta o vídeo em qualidade menor e tenta de novo.`
+        : /network|fetch|timeout/i.test(raw)
+          ? "a conexão caiu no meio do envio. tenta de novo, essa tentativa não foi contada."
+          : `${raw}. essa tentativa não foi contada, pode enviar de novo.`;
+      setErro(amigavel); setProgress(null); toast.error(amigavel);
     } finally {
       setUploading(false);
     }
@@ -361,7 +413,16 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
 
   async function clear() {
     if (value.video_path) await supabase.storage.from(BUCKET).remove([value.video_path]).catch(() => {});
-    onChange((v) => ({ ...v, video_url: null, video_path: null, video_name: null, video_duracao_s: null, confirmada_final: false }));
+    // apagar devolve a tentativa: sem vídeo salvo, nenhuma tentativa fica "gasta"
+    onChange((v) => ({
+      ...v,
+      video_url: null,
+      video_path: null,
+      video_name: null,
+      video_duracao_s: null,
+      confirmada_final: false,
+      tentativas: Math.max(0, (v.tentativas ?? 1) - 1),
+    }));
   }
 
   return (
@@ -413,7 +474,16 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
               type="file"
               accept="video/*"
               className="sr-only"
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) void uploadBlob(f, f.name, null); e.target.value = ""; }}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                e.target.value = "";
+                if (!f) return;
+                void (async () => {
+                  setProgress("lendo o vídeo...");
+                  const dur = await readVideoDuration(f);
+                  await uploadBlob(f, f.name, dur);
+                })();
+              }}
               disabled={uploading || recording || !podeMais}
             />
           </label>
