@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ArrowRight, Check, Circle, Loader2, Mic, RotateCcw, Trash2, Upload, Video } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, Circle, ExternalLink, Link as LinkIcon, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { SaveIndicator } from "./SaveIndicator";
 import { useAutoSaveField, type DeliverableContent } from "./useDeliverable";
 import type { PitchRoteiroValue } from "./PillPitchRoteiro";
+
 
 /**
  * pílula da MÓDULO 20 — PBL parte 1 + 2:
@@ -56,64 +57,14 @@ const BLOCOS: Array<{ key: keyof PitchFinalValue; numero: number; titulo: string
   { key: "chamada", numero: 6, titulo: "CHAMADA", duracao: "10-15s", maxPalavras: 30 },
 ];
 
-const BUCKET = "radar-evidences";
-const MAX_MB = 500;
 const MIN_DUR_S = 90;
 const MAX_DUR_S = 240;
-const MAX_REC_S = 260;
-const MAX_TENTATIVAS = 3;
 
 function countWords(s: string) {
   return (s ?? "").trim().split(/\s+/).filter(Boolean).length;
 }
 
-/**
- * mede a duração de um arquivo de vídeo no próprio navegador.
- * devolve null quando o navegador não consegue ler os metadados
- * (formato exótico, mp4 fragmentado do celular, etc) — nesse caso a entrega
- * segue permitida, só com aviso leve.
- */
-function readVideoDuration(file: Blob): Promise<number | null> {
-  return new Promise((resolve) => {
-    try {
-      const url = URL.createObjectURL(file);
-      const el = document.createElement("video");
-      let done = false;
-      const finish = (v: number | null) => {
-        if (done) return;
-        done = true;
-        URL.revokeObjectURL(url);
-        el.removeAttribute("src");
-        resolve(v);
-      };
-      const tryRead = () => {
-        const d = el.duration;
-        if (Number.isFinite(d) && d > 0) {
-          finish(Math.round(d));
-          return true;
-        }
-        return false;
-      };
-      el.preload = "metadata";
-      el.muted = true;
-      el.playsInline = true;
-      el.onloadedmetadata = () => {
-        if (tryRead()) return;
-        // webm/mov gravado no celular às vezes vem com duration = Infinity:
-        // forçar um seek pro fim faz o navegador recalcular
-        el.currentTime = 1e6;
-      };
-      el.ondurationchange = () => { tryRead(); };
-      el.onloadeddata = () => { tryRead(); };
-      el.onseeked = () => { tryRead(); };
-      el.onerror = () => finish(null);
-      setTimeout(() => finish(null), 12000);
-      el.src = url;
-    } catch {
-      resolve(null);
-    }
-  });
-}
+
 
 
 
@@ -139,8 +90,8 @@ function useAula19Pull(schema: Schema) {
 }
 
 export function PillPitchFinal({ pillId, title, schema, accent, initial, save, onComplete, isCompleted, isCompleting }: Props) {
-  const { user } = useAuth();
   const pull = useAula19Pull(schema);
+
 
   const [value, setValue] = useState<PitchFinalValue>(() => {
     // se ainda não editou, começa com o roteiro do módulo 19 (rascunho)
@@ -250,23 +201,18 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
         </label>
       </section>
 
-      {/* PARTE 2 — Gravar versão final */}
+      {/* PARTE 2 — Enviar link do vídeo final */}
       {value.roteiro_pronto && (
         <section className="space-y-3">
-          <SectionHeader n={2} title="gravar versão final" hint="90s a 4min · máx 3 tentativas" />
+          <SectionHeader n={2} title="enviar a versão final" hint="90s a 4min · link público do vídeo" />
 
           <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege p-3">
             <p className="font-body text-xs text-perestroika-preto/75 leading-relaxed">
-              silêncio ao redor. luz na cara. celular na horizontal ou webcam. se errar, começa de novo. perfeccionismo aqui é fuga — máximo {MAX_TENTATIVAS} tentativas, depois escolhe a menos ruim.
+              grava do jeito que preferir (celular na horizontal, webcam, o que tiver). depois sobe pro seu drive, youtube não listado ou onedrive, deixa o link público pra quem tem o endereço e cola aqui embaixo.
             </p>
           </div>
 
-          <VideoRecorderFinal
-            userId={user?.id ?? null}
-            accent={accent}
-            value={value}
-            onChange={setValue}
-          />
+          <VideoLinkFinal accent={accent} value={value} onChange={setValue} />
 
           {value.video_url && (
             <>
@@ -274,12 +220,6 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
                 <p className="font-body text-[12px] text-[#fd4644] flex items-start gap-1.5">
                   <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
                   duração {value.video_duracao_s}s. o ideal é entre 1min30 e 4min. regrava.
-                </p>
-              )}
-              {durationUnknown && (
-                <p className="font-body text-[12px] text-perestroika-preto/70 flex items-start gap-1.5">
-                  <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
-                  o vídeo subiu certinho. só não deu pra medir a duração nesse navegador, então segue normal: marca a confirmação abaixo e entrega.
                 </p>
               )}
 
@@ -291,12 +231,13 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
                   className="h-4 w-4"
                   style={{ accentColor: accent }}
                 />
-                <span className="font-body text-sm text-perestroika-preto">essa é a versão final. tá honesto.</span>
+                <span className="font-body text-sm text-perestroika-preto">testei o link numa aba anônima, abre pra qualquer pessoa. essa é a versão final.</span>
               </label>
             </>
           )}
         </section>
       )}
+
 
       {/* Status + CTA */}
       <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/15">
@@ -321,116 +262,47 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
   );
 }
 
-// -------- recorder com contador de tentativas --------
-function VideoRecorderFinal({ userId, accent, value, onChange }: {
-  userId: string | null;
+// -------- envio por link público --------
+function isPublicUrl(raw: string) {
+  try {
+    const u = new URL(raw.trim());
+    return (u.protocol === "https:" || u.protocol === "http:") && !!u.hostname.includes(".");
+  } catch {
+    return false;
+  }
+}
+
+function VideoLinkFinal({ accent, value, onChange }: {
   accent: string;
   value: PitchFinalValue;
   onChange: (v: PitchFinalValue | ((prev: PitchFinalValue) => PitchFinalValue)) => void;
 }) {
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState<string | null>(null);
+  // entregas antigas ficaram salvas como arquivo no storage: mantém o player
+  const legacyFile = !!value.video_path;
+  const [draft, setDraft] = useState(legacyFile ? "" : (value.video_url ?? ""));
   const [erro, setErro] = useState<string | null>(null);
-  const [recording, setRecording] = useState(false);
-  const [recTime, setRecTime] = useState(0);
-  const videoLiveRef = useRef<HTMLVideoElement | null>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const startedAtRef = useRef<number>(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
 
-  const tentativas = value.tentativas ?? 0;
-  // o limite só vale enquanto existe um vídeo salvo. sem nenhum vídeo no ar,
-  // o estudante nunca fica sem saída (era o beco sem saída do contador antigo).
-  const podeMais = !value.video_url || tentativas < MAX_TENTATIVAS;
-
-  useEffect(() => () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-  }, []);
-
-  async function uploadBlob(blob: Blob, filename: string, duracao: number | null) {
-    if (!userId) { toast.error("faz login pra enviar."); return; }
-    if (blob.size > MAX_MB * 1024 * 1024) { toast.error(`arquivo > ${MAX_MB}mb.`); return; }
-    setErro(null); setUploading(true); setProgress("subindo...");
-    try {
-      if (value.video_path) {
-        await supabase.storage.from(BUCKET).remove([value.video_path]).catch(() => {});
-      }
-      const extGuess = filename.split(".").pop()?.toLowerCase();
-      const ext = extGuess && /^(mp4|webm|mov|m4v|ogg)$/.test(extGuess) ? extGuess : (blob.type.includes("mp4") ? "mp4" : "webm");
-      const path = `${userId}/pitch-final-aula20-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from(BUCKET).upload(path, blob, { upsert: false, contentType: blob.type || `video/${ext}`, cacheControl: "3600" });
-      if (error) throw error;
-      const { data: signed } = await supabase.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24 * 365);
-      onChange((v) => ({
-        ...v,
-        video_url: signed?.signedUrl ?? null,
-        video_path: path,
-        video_name: filename,
-        video_duracao_s: duracao,
-        tentativas: (v.tentativas ?? 0) + 1,
-        confirmada_final: false,
-      }));
-      setProgress("versão final salva.");
-      toast.success("versão final salva.");
-      setTimeout(() => setProgress(null), 1500);
-    } catch (e) {
-      const raw = e instanceof Error ? e.message : "erro no upload";
-      const amigavel = /size|large|payload|body/i.test(raw)
-        ? `o arquivo passou do limite de ${MAX_MB}mb. exporta o vídeo em qualidade menor e tenta de novo.`
-        : /network|fetch|timeout/i.test(raw)
-          ? "a conexão caiu no meio do envio. tenta de novo, essa tentativa não foi contada."
-          : `${raw}. essa tentativa não foi contada, pode enviar de novo.`;
-      setErro(amigavel); setProgress(null); toast.error(amigavel);
-    } finally {
-      setUploading(false);
+  function salvar() {
+    const url = draft.trim();
+    if (!isPublicUrl(url)) {
+      setErro("cola um link completo, começando com https://");
+      return;
     }
-  }
-
-  async function startRecording() {
     setErro(null);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 720, height: 480 }, audio: true });
-      streamRef.current = stream;
-      if (videoLiveRef.current) { videoLiveRef.current.srcObject = stream; await videoLiveRef.current.play().catch(() => {}); }
-      const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus") ? "video/webm;codecs=vp9,opus"
-        : MediaRecorder.isTypeSupported("video/webm") ? "video/webm" : "";
-      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
-      recorderRef.current = rec;
-      chunksRef.current = [];
-      rec.ondataavailable = (ev) => { if (ev.data && ev.data.size > 0) chunksRef.current.push(ev.data); };
-      rec.onstop = async () => {
-        const blob = new Blob(chunksRef.current, { type: rec.mimeType || "video/webm" });
-        const dur = Math.round((Date.now() - startedAtRef.current) / 1000);
-        streamRef.current?.getTracks().forEach((t) => t.stop());
-        streamRef.current = null;
-        if (videoLiveRef.current) videoLiveRef.current.srcObject = null;
-        await uploadBlob(blob, `pitch-final.${(rec.mimeType || "video/webm").includes("mp4") ? "mp4" : "webm"}`, dur);
-      };
-      rec.start(1000);
-      startedAtRef.current = Date.now();
-      setRecording(true); setRecTime(0);
-      timerRef.current = setInterval(() => {
-        const s = Math.round((Date.now() - startedAtRef.current) / 1000);
-        setRecTime(s);
-        if (s >= MAX_REC_S) stopRecording();
-      }, 500);
-    } catch {
-      setErro("não deu acesso à câmera. usa o upload.");
-    }
+    onChange((v) => ({
+      ...v,
+      video_url: url,
+      video_path: null,
+      video_name: null,
+      video_duracao_s: null,
+      confirmada_final: false,
+    }));
+    toast.success("link do vídeo salvo.");
   }
 
-  function stopRecording() {
-    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-    if (recorderRef.current && recorderRef.current.state !== "inactive") recorderRef.current.stop();
-    setRecording(false);
-  }
-
-  async function clear() {
-    if (value.video_path) await supabase.storage.from(BUCKET).remove([value.video_path]).catch(() => {});
-    // apagar devolve a tentativa: sem vídeo salvo, nenhuma tentativa fica "gasta"
+  function limpar() {
+    setDraft("");
+    setErro(null);
     onChange((v) => ({
       ...v,
       video_url: null,
@@ -438,99 +310,76 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
       video_name: null,
       video_duracao_s: null,
       confirmada_final: false,
-      tentativas: Math.max(0, (v.tentativas ?? 1) - 1),
     }));
   }
 
+  const salvo = !!value.video_url && !legacyFile && value.video_url === draft.trim();
+
   return (
     <div className="space-y-3">
-      {recording && (
-        <div className="rounded-2xl border-2 overflow-hidden bg-black" style={{ borderColor: "#fd4644" }}>
-          <div className="relative">
-            <video ref={videoLiveRef} muted className="w-full aspect-video bg-black" playsInline />
-            <div className="absolute top-2 left-2 inline-flex items-center gap-1.5 rounded-full bg-[#fd4644] px-2.5 py-1 font-body text-[11px] uppercase tracking-wider text-white">
-              <Circle className="h-2.5 w-2.5 fill-white" aria-hidden /> rec · {Math.floor(recTime / 60)}:{String(recTime % 60).padStart(2, "0")}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {value.video_url && !recording && (
+      {legacyFile && value.video_url && (
         <div className="rounded-2xl border-2 overflow-hidden bg-black" style={{ borderColor: `${accent}55` }}>
           <video src={value.video_url} controls className="w-full aspect-video bg-black" />
         </div>
       )}
 
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex flex-wrap gap-2">
-          {!recording ? (
-            <button
-              type="button"
-              onClick={startRecording}
-              disabled={uploading || !podeMais}
-              className="inline-flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm text-perestroika-preto hover:-translate-y-0.5 transition-transform disabled:opacity-40"
-              style={{ borderColor: accent, backgroundColor: `${accent}12` }}
-            >
-              <Video className="h-4 w-4" aria-hidden />
-              {value.video_url ? "regravar" : "gravar versão final"}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={stopRecording}
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white bg-[#fd4644]"
-            >
-              <Mic className="h-4 w-4" aria-hidden /> parar e enviar
-            </button>
-          )}
-
-          <label className={`inline-flex items-center gap-2 rounded-full border-2 border-perestroika-preto/20 px-4 py-2 font-body text-sm text-perestroika-preto cursor-pointer hover:border-perestroika-preto/50 ${(uploading || !podeMais) ? "opacity-40 cursor-not-allowed" : ""}`}>
-            {uploading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Upload className="h-4 w-4" aria-hidden />}
-            {uploading ? "subindo..." : "upload de vídeo"}
-            <input
-              type="file"
-              accept="video/*"
-              className="sr-only"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                e.target.value = "";
-                if (!f) return;
-                void (async () => {
-                  setProgress("lendo o vídeo...");
-                  const dur = await readVideoDuration(f);
-                  await uploadBlob(f, f.name, dur);
-                })();
-              }}
-              disabled={uploading || recording || !podeMais}
-            />
-          </label>
-
-          {value.video_url && (
-            <button type="button" onClick={clear} className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50">
-              <Trash2 className="h-3.5 w-3.5" aria-hidden /> apagar
-            </button>
-          )}
+      <div className="rounded-xl border-2 border-perestroika-preto/15 bg-white p-3 space-y-2">
+        <label className="block font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60" htmlFor="pitch-final-link">
+          link público do vídeo
+        </label>
+        <div className="flex gap-2 flex-wrap">
+          <input
+            id="pitch-final-link"
+            type="url"
+            inputMode="url"
+            value={draft}
+            onChange={(e) => { setDraft(e.target.value); setErro(null); }}
+            placeholder="https://drive.google.com/..."
+            className="flex-1 min-w-[220px] rounded-xl border border-perestroika-preto/15 bg-white px-3 py-2 font-body text-sm text-perestroika-preto placeholder:text-perestroika-preto/35 focus:border-perestroika-preto focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={salvar}
+            disabled={!draft.trim() || salvo}
+            className="inline-flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm text-perestroika-preto hover:-translate-y-0.5 transition-transform disabled:opacity-40 disabled:hover:translate-y-0"
+            style={{ borderColor: accent, backgroundColor: `${accent}12` }}
+          >
+            <LinkIcon className="h-4 w-4" aria-hidden /> {salvo ? "link salvo" : "salvar link"}
+          </button>
         </div>
 
-        <span className="inline-flex items-center gap-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60">
-          <RotateCcw className="h-3 w-3" aria-hidden /> tentativa {Math.min(tentativas, MAX_TENTATIVAS)}/{MAX_TENTATIVAS}
-        </span>
-      </div>
-
-      {(progress || erro) && (
-        <p role={erro ? "alert" : "status"} className="font-body text-[11px]" style={{ color: erro ? "#fd4644" : "#75BF9C" }}>
-          {erro ?? progress}
-        </p>
-      )}
-
-      {!podeMais && !value.confirmada_final && (
         <p className="font-body text-[11px] text-perestroika-preto/60">
-          usou as {MAX_TENTATIVAS} tentativas. escolhe a menos ruim e confirma abaixo.
+          no google drive: botão compartilhar, acesso geral pra qualquer pessoa com o link, depois copiar link.
         </p>
-      )}
+
+        {erro && (
+          <p role="alert" className="font-body text-[11px]" style={{ color: "#fd4644" }}>{erro}</p>
+        )}
+
+        {value.video_url && (
+          <div className="flex items-center gap-2 flex-wrap pt-1">
+            <a
+              href={value.video_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-body text-[12px] underline text-perestroika-preto/80 break-all"
+            >
+              <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" aria-hidden /> abrir o vídeo enviado
+            </a>
+            <button
+              type="button"
+              onClick={limpar}
+              className="inline-flex items-center gap-1 rounded-full border-2 border-perestroika-preto/15 px-3 py-1 font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70 hover:border-perestroika-preto/50"
+            >
+              <Trash2 className="h-3.5 w-3.5" aria-hidden /> trocar link
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
 
 function SectionHeader({ n, title, hint }: { n: number; title: string; hint?: string }) {
   return (
