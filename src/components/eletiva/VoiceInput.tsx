@@ -2,7 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2, Mic, Square, X } from "lucide-react";
 import { toast } from "sonner";
 
-const MAX_DURATION = 300; // 5 minutos
+// áudio longo demais estoura o tempo limite da transcrição no servidor (504).
+// 2 min cobre uma reflexão falada e mantém a transcrição rápida e confiável.
+const MAX_DURATION = 120; // 2 minutos
+// gravação minúscula (mic mudo, clique sem querer) é rejeitada pelo modelo.
+const MIN_BLOB_BYTES = 2048;
 
 interface Props {
   onAudioReady: (blob: Blob) => void;
@@ -153,7 +157,11 @@ export function VoiceInput({
         if (chunksRef.current.length > 0) {
           const blob = new Blob(chunksRef.current, { type: mimeType });
           chunksRef.current = [];
-          if (blob.size > 0) onAudioReady(blob);
+          if (blob.size < MIN_BLOB_BYTES) {
+            toast.error("gravação muito curta. segura o microfone e fala por alguns segundos.");
+            return;
+          }
+          onAudioReady(blob);
         }
       };
 
