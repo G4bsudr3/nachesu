@@ -166,7 +166,12 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
     [value]
   );
 
-  const durationOk = !!value.video_duracao_s && value.video_duracao_s >= MIN_DUR_S && value.video_duracao_s <= MAX_DUR_S;
+  // duração não medida (o navegador não leu os metadados do arquivo) não bloqueia:
+  // o estudante confirma no olho. só bloqueia quando a medição existe e está fora da faixa.
+  const durationUnknown = !value.video_duracao_s;
+  const durationOk =
+    durationUnknown ||
+    (value.video_duracao_s! >= MIN_DUR_S && value.video_duracao_s! <= MAX_DUR_S);
   const ready = blocosOk && !!value.roteiro_pronto && !!value.video_url && !!value.confirmada_final && durationOk;
 
   const previousTake = pull.take?.take_url ?? null;
