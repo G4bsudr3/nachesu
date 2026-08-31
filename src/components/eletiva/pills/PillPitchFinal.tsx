@@ -324,7 +324,9 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
   const streamRef = useRef<MediaStream | null>(null);
 
   const tentativas = value.tentativas ?? 0;
-  const podeMais = tentativas < MAX_TENTATIVAS;
+  // o limite só vale enquanto existe um vídeo salvo. sem nenhum vídeo no ar,
+  // o estudante nunca fica sem saída (era o beco sem saída do contador antigo).
+  const podeMais = !value.video_url || tentativas < MAX_TENTATIVAS;
 
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);
