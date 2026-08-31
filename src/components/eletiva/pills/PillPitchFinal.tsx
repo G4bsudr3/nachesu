@@ -250,23 +250,18 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
         </label>
       </section>
 
-      {/* PARTE 2 — Gravar versão final */}
+      {/* PARTE 2 — Enviar link do vídeo final */}
       {value.roteiro_pronto && (
         <section className="space-y-3">
-          <SectionHeader n={2} title="gravar versão final" hint="90s a 4min · máx 3 tentativas" />
+          <SectionHeader n={2} title="enviar a versão final" hint="90s a 4min · link público do vídeo" />
 
           <div className="rounded-xl border border-perestroika-preto/15 bg-perestroika-bege p-3">
             <p className="font-body text-xs text-perestroika-preto/75 leading-relaxed">
-              silêncio ao redor. luz na cara. celular na horizontal ou webcam. se errar, começa de novo. perfeccionismo aqui é fuga — máximo {MAX_TENTATIVAS} tentativas, depois escolhe a menos ruim.
+              grava do jeito que preferir (celular na horizontal, webcam, o que tiver). depois sobe pro seu drive, youtube não listado ou onedrive, deixa o link público pra quem tem o endereço e cola aqui embaixo.
             </p>
           </div>
 
-          <VideoRecorderFinal
-            userId={user?.id ?? null}
-            accent={accent}
-            value={value}
-            onChange={setValue}
-          />
+          <VideoLinkFinal accent={accent} value={value} onChange={setValue} />
 
           {value.video_url && (
             <>
@@ -274,12 +269,6 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
                 <p className="font-body text-[12px] text-[#fd4644] flex items-start gap-1.5">
                   <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
                   duração {value.video_duracao_s}s. o ideal é entre 1min30 e 4min. regrava.
-                </p>
-              )}
-              {durationUnknown && (
-                <p className="font-body text-[12px] text-perestroika-preto/70 flex items-start gap-1.5">
-                  <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
-                  o vídeo subiu certinho. só não deu pra medir a duração nesse navegador, então segue normal: marca a confirmação abaixo e entrega.
                 </p>
               )}
 
@@ -291,12 +280,13 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
                   className="h-4 w-4"
                   style={{ accentColor: accent }}
                 />
-                <span className="font-body text-sm text-perestroika-preto">essa é a versão final. tá honesto.</span>
+                <span className="font-body text-sm text-perestroika-preto">testei o link numa aba anônima, abre pra qualquer pessoa. essa é a versão final.</span>
               </label>
             </>
           )}
         </section>
       )}
+
 
       {/* Status + CTA */}
       <div className="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-perestroika-preto/15">
