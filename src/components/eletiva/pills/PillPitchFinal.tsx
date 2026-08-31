@@ -57,64 +57,14 @@ const BLOCOS: Array<{ key: keyof PitchFinalValue; numero: number; titulo: string
   { key: "chamada", numero: 6, titulo: "CHAMADA", duracao: "10-15s", maxPalavras: 30 },
 ];
 
-const BUCKET = "radar-evidences";
-const MAX_MB = 500;
 const MIN_DUR_S = 90;
 const MAX_DUR_S = 240;
-const MAX_REC_S = 260;
-const MAX_TENTATIVAS = 3;
 
 function countWords(s: string) {
   return (s ?? "").trim().split(/\s+/).filter(Boolean).length;
 }
 
-/**
- * mede a duração de um arquivo de vídeo no próprio navegador.
- * devolve null quando o navegador não consegue ler os metadados
- * (formato exótico, mp4 fragmentado do celular, etc) — nesse caso a entrega
- * segue permitida, só com aviso leve.
- */
-function readVideoDuration(file: Blob): Promise<number | null> {
-  return new Promise((resolve) => {
-    try {
-      const url = URL.createObjectURL(file);
-      const el = document.createElement("video");
-      let done = false;
-      const finish = (v: number | null) => {
-        if (done) return;
-        done = true;
-        URL.revokeObjectURL(url);
-        el.removeAttribute("src");
-        resolve(v);
-      };
-      const tryRead = () => {
-        const d = el.duration;
-        if (Number.isFinite(d) && d > 0) {
-          finish(Math.round(d));
-          return true;
-        }
-        return false;
-      };
-      el.preload = "metadata";
-      el.muted = true;
-      el.playsInline = true;
-      el.onloadedmetadata = () => {
-        if (tryRead()) return;
-        // webm/mov gravado no celular às vezes vem com duration = Infinity:
-        // forçar um seek pro fim faz o navegador recalcular
-        el.currentTime = 1e6;
-      };
-      el.ondurationchange = () => { tryRead(); };
-      el.onloadeddata = () => { tryRead(); };
-      el.onseeked = () => { tryRead(); };
-      el.onerror = () => finish(null);
-      setTimeout(() => finish(null), 12000);
-      el.src = url;
-    } catch {
-      resolve(null);
-    }
-  });
-}
+
 
 
 
