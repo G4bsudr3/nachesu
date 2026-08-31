@@ -90,8 +90,8 @@ function useAula19Pull(schema: Schema) {
 }
 
 export function PillPitchFinal({ pillId, title, schema, accent, initial, save, onComplete, isCompleted, isCompleting }: Props) {
-  const { user } = useAuth();
   const pull = useAula19Pull(schema);
+
 
   const [value, setValue] = useState<PitchFinalValue>(() => {
     // se ainda não editou, começa com o roteiro do módulo 19 (rascunho)
