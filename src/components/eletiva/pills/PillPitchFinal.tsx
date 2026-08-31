@@ -474,7 +474,16 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
               type="file"
               accept="video/*"
               className="sr-only"
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) void uploadBlob(f, f.name, null); e.target.value = ""; }}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                e.target.value = "";
+                if (!f) return;
+                void (async () => {
+                  setProgress("lendo o vídeo...");
+                  const dur = await readVideoDuration(f);
+                  await uploadBlob(f, f.name, dur);
+                })();
+              }}
               disabled={uploading || recording || !podeMais}
             />
           </label>
