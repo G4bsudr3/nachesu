@@ -173,7 +173,7 @@ export function VoiceInput({
         setElapsed((prev) => {
           if (prev + 1 >= MAX_DURATION) {
             stop();
-            toast.info("gravação encerrada · limite de 5 min atingido.");
+            toast.info("gravação encerrada · limite de 2 min atingido.");
             return prev;
           }
           return prev + 1;

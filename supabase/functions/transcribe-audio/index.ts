@@ -110,6 +110,18 @@ serve(async (req) => {
 
     if (!response.ok) {
       const status = response.status;
+      if (status === 400) {
+        // áudio ilegível pro modelo (gravação curta, container quebrado, mic mudo).
+        // devolve 400 com orientação em vez de virar 500 genérico.
+        const detail = await response.text().catch(() => "");
+        console.error("ai gateway 400", detail);
+        return new Response(
+          JSON.stringify({
+            error: "não consegui ler esse áudio. grave de novo, falando por alguns segundos perto do microfone.",
+          }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
       if (status === 429) {
         return new Response(
           JSON.stringify({ error: "muitas requisições. tente em alguns segundos." }),
