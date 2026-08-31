@@ -57,7 +57,7 @@ const BLOCOS: Array<{ key: keyof PitchFinalValue; numero: number; titulo: string
 ];
 
 const BUCKET = "radar-evidences";
-const MAX_MB = 100;
+const MAX_MB = 500;
 const MIN_DUR_S = 90;
 const MAX_DUR_S = 240;
 const MAX_REC_S = 260;
