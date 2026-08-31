@@ -83,22 +83,39 @@ function readVideoDuration(file: Blob): Promise<number | null> {
         if (done) return;
         done = true;
         URL.revokeObjectURL(url);
+        el.removeAttribute("src");
         resolve(v);
       };
-      el.preload = "metadata";
-      el.onloadedmetadata = () => {
+      const tryRead = () => {
         const d = el.duration;
-        finish(Number.isFinite(d) && d > 0 ? Math.round(d) : null);
+        if (Number.isFinite(d) && d > 0) {
+          finish(Math.round(d));
+          return true;
+        }
+        return false;
       };
+      el.preload = "metadata";
+      el.muted = true;
+      // @ts-expect-error atributo só existe em safari/ios
+      el.playsInline = true;
+      el.onloadedmetadata = () => {
+        if (tryRead()) return;
+        // webm/mov gravado no celular às vezes vem com duration = Infinity:
+        // forçar um seek pro fim faz o navegador recalcular
+        el.currentTime = 1e6;
+      };
+      el.ondurationchange = () => { tryRead(); };
+      el.onloadeddata = () => { tryRead(); };
+      el.onseeked = () => { tryRead(); };
       el.onerror = () => finish(null);
-      // safety net: metadados que nunca chegam não podem travar o upload
-      setTimeout(() => finish(null), 8000);
+      setTimeout(() => finish(null), 12000);
       el.src = url;
     } catch {
       resolve(null);
     }
   });
 }
+
 
 
 function useAula19Pull(schema: Schema) {
