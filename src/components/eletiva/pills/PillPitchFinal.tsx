@@ -411,7 +411,16 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
 
   async function clear() {
     if (value.video_path) await supabase.storage.from(BUCKET).remove([value.video_path]).catch(() => {});
-    onChange((v) => ({ ...v, video_url: null, video_path: null, video_name: null, video_duracao_s: null, confirmada_final: false }));
+    // apagar devolve a tentativa: sem vídeo salvo, nenhuma tentativa fica "gasta"
+    onChange((v) => ({
+      ...v,
+      video_url: null,
+      video_path: null,
+      video_name: null,
+      video_duracao_s: null,
+      confirmada_final: false,
+      tentativas: Math.max(0, (v.tentativas ?? 1) - 1),
+    }));
   }
 
   return (
