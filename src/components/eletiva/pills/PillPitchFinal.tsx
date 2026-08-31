@@ -363,7 +363,7 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
         ? `o arquivo passou do limite de ${MAX_MB}mb. exporta o vídeo em qualidade menor e tenta de novo.`
         : /network|fetch|timeout/i.test(raw)
           ? "a conexão caiu no meio do envio. tenta de novo, essa tentativa não foi contada."
-          : `${raw} — essa tentativa não foi contada, pode enviar de novo.`;
+          : `${raw}. essa tentativa não foi contada, pode enviar de novo.`;
       setErro(amigavel); setProgress(null); toast.error(amigavel);
     } finally {
       setUploading(false);
