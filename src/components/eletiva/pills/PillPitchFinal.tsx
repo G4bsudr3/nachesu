@@ -67,6 +67,40 @@ function countWords(s: string) {
   return (s ?? "").trim().split(/\s+/).filter(Boolean).length;
 }
 
+/**
+ * mede a duração de um arquivo de vídeo no próprio navegador.
+ * devolve null quando o navegador não consegue ler os metadados
+ * (formato exótico, mp4 fragmentado do celular, etc) — nesse caso a entrega
+ * segue permitida, só com aviso leve.
+ */
+function readVideoDuration(file: Blob): Promise<number | null> {
+  return new Promise((resolve) => {
+    try {
+      const url = URL.createObjectURL(file);
+      const el = document.createElement("video");
+      let done = false;
+      const finish = (v: number | null) => {
+        if (done) return;
+        done = true;
+        URL.revokeObjectURL(url);
+        resolve(v);
+      };
+      el.preload = "metadata";
+      el.onloadedmetadata = () => {
+        const d = el.duration;
+        finish(Number.isFinite(d) && d > 0 ? Math.round(d) : null);
+      };
+      el.onerror = () => finish(null);
+      // safety net: metadados que nunca chegam não podem travar o upload
+      setTimeout(() => finish(null), 8000);
+      el.src = url;
+    } catch {
+      resolve(null);
+    }
+  });
+}
+
+
 function useAula19Pull(schema: Schema) {
   const { user } = useAuth();
   const q = useQuery({
