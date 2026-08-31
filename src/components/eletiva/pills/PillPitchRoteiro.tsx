@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ArrowRight, Check, Circle, Link as LinkIcon, Loader2, Mic, Sparkles, Trash2, Upload, Video } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, Circle, ExternalLink, Link as LinkIcon, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -77,9 +77,6 @@ const HOOK_TIPOS: Array<{ id: NonNullable<PitchRoteiroValue["hook_tipo"]>; label
 
 const HOOK_PROIBIDOS = ["olá", "ola", "meu nome é", "meu nome e", "hoje vou apresentar", "hoje eu vou apresentar", "bom dia meu nome", "boa tarde meu nome"];
 
-const BUCKET = "radar-evidences";
-const MAX_MB = 50;
-const MAX_DUR_S = 200; // 3 min + folga
 
 function countWords(s: string) {
   return (s ?? "").trim().split(/\s+/).filter(Boolean).length;
@@ -292,10 +289,9 @@ export function PillPitchRoteiro({ pillId, schema, accent, initial, pitchMap, sa
         <SectionHeader
           n={2}
           title="PRIMEIRO TAKE"
-          hint="rascunho. grava uma vez, sem ensaio. depois assiste. semana que vem: versão final."
+          hint="rascunho. grava no celular, sobe num link público e cola aqui. depois assiste. semana que vem: versão final."
         />
         <TakeUploader
-          userId={user?.id ?? null}
           value={{ url: value.take_url ?? null, path: value.take_path ?? null, name: value.take_name ?? null, duracao: value.take_duracao_s ?? null }}
           onChange={(next) => setValue((p) => ({ ...p, take_url: next.url, take_path: next.path, take_name: next.name, take_duracao_s: next.duracao }))}
           accent={accent}
@@ -434,7 +430,7 @@ function isPublicUrl(raw: string) {
   }
 }
 
-function TakeUploader({ userId, value, onChange, accent }: { userId: string | null; value: TakeState; onChange: (v: TakeState) => void; accent: string }) {
+function TakeUploader({ value, onChange, accent }: { value: TakeState; onChange: (v: TakeState) => void; accent: string }) {
   // takes antigos ficaram salvos como arquivo no storage: mantém o player
   const legacyFile = !!value.path;
   const [draft, setDraft] = useState(legacyFile ? "" : (value.url ?? ""));
