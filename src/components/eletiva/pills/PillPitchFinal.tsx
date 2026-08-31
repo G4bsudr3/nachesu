@@ -359,7 +359,12 @@ function VideoRecorderFinal({ userId, accent, value, onChange }: {
       setTimeout(() => setProgress(null), 1500);
     } catch (e) {
       const raw = e instanceof Error ? e.message : "erro no upload";
-      setErro(raw); setProgress(null); toast.error(raw);
+      const amigavel = /size|large|payload|body/i.test(raw)
+        ? `o arquivo passou do limite de ${MAX_MB}mb. exporta o vídeo em qualidade menor e tenta de novo.`
+        : /network|fetch|timeout/i.test(raw)
+          ? "a conexão caiu no meio do envio. tenta de novo, essa tentativa não foi contada."
+          : `${raw} — essa tentativa não foi contada, pode enviar de novo.`;
+      setErro(amigavel); setProgress(null); toast.error(amigavel);
     } finally {
       setUploading(false);
     }
