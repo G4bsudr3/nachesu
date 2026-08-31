@@ -273,15 +273,16 @@ export function PillPitchFinal({ pillId, title, schema, accent, initial, save, o
               {!durationOk && (
                 <p className="font-body text-[12px] text-[#fd4644] flex items-start gap-1.5">
                   <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
-                  duração {value.video_duracao_s}s — precisa ficar entre 90s e 4min. regrava.
+                  duração {value.video_duracao_s}s. o ideal é entre 1min30 e 4min. regrava.
                 </p>
               )}
               {durationUnknown && (
                 <p className="font-body text-[12px] text-perestroika-preto/70 flex items-start gap-1.5">
                   <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
-                  não deu pra medir a duração desse arquivo aqui no navegador. confere no player acima se o vídeo tem entre 90s e 4min e segue.
+                  o vídeo subiu certinho. só não deu pra medir a duração nesse navegador, então segue normal: marca a confirmação abaixo e entrega.
                 </p>
               )}
+
               <label className={`flex items-center gap-2 cursor-pointer ${!durationOk ? "opacity-50 pointer-events-none" : ""}`}>
                 <input
                   type="checkbox"
