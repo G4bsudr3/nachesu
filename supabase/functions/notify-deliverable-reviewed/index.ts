@@ -3,6 +3,8 @@
 // a notificação in-app já é criada por trigger no banco; aqui é só o e-mail.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { sendAndLog } from '../_shared/email-send-log.ts'
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -88,37 +90,29 @@ Deno.serve(async (req) => {
   const idempotencyKey = `deliverable-reviewed-${deliverable.id}-${deliverable.reviewed_at ?? 'x'}`
 
   try {
-    const resp = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${serviceKey}`,
+    const result = await sendAndLog(admin, 'deliverable-reviewed', recipientEmail, {
+      idempotencyKey,
+      templateData: {
+        recipientName: profile?.nickname || profile?.display_name || '',
+        educatorName: course?.professor_name || 'seu educador',
+        courseTitle: course?.title || 'sua eletiva',
+        moduleNumber,
+        moduleTitle: (moduleRow as any)?.title ?? null,
+        feedbackExcerpt: excerpt,
+        verdict,
+        link: `${APP_URL}${path}`,
       },
-      body: JSON.stringify({
-        templateName: 'deliverable-reviewed',
-        recipientEmail,
-        idempotencyKey,
-        templateData: {
-          recipientName: profile?.nickname || profile?.display_name || '',
-          educatorName: course?.professor_name || 'seu educador',
-          courseTitle: course?.title || 'sua eletiva',
-          moduleNumber,
-          moduleTitle: (moduleRow as any)?.title ?? null,
-          feedbackExcerpt: excerpt,
-          verdict,
-          link: `${APP_URL}${path}`,
-        },
-      }),
+      metadata: { deliverable_id: deliverable.id, module_number: moduleNumber },
     })
-    if (!resp.ok) {
-      const detail = await resp.text()
-      console.error(`send-transactional-email failed [${resp.status}]: ${detail}`)
-      return json({ error: 'falha ao enfileirar e-mail', status: resp.status, details: detail }, resp.status)
+    if (!result.sent && result.reason === 'send_failed') {
+      console.error(`envio do e-mail falhou: ${result.error}`)
+      return json({ error: 'falha ao enviar e-mail', details: result.error }, 500)
     }
   } catch (e) {
     console.error('deliverable-reviewed email exception', e)
     return json({ error: String(e) }, 500)
   }
+
 
   return json({ ok: true, recipient: recipientEmail, message_id: idempotencyKey })
 })

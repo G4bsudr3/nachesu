@@ -3,6 +3,8 @@
 // (only_unclaimed=true). admin-only. pode receber emails extras de teste.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { sendAndLog } from '../_shared/email-send-log.ts'
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -115,31 +117,30 @@ Deno.serve(async (req) => {
     const loginUrl = `${LOGIN_BASE}?email=${encodeURIComponent(email)}`
     const idempotencyKey = `course-invite-${courseId}-${email}`
     try {
-      const { error } = await admin.functions.invoke('send-transactional-email', {
-        body: {
-          templateName: 'course-invite',
-          recipientEmail: email,
-          idempotencyKey,
-          templateData: {
-            courseTitle,
-            educatorName,
-            loginUrl,
-          },
-          metadata: {
-            course_id: courseId,
-            course_title: courseTitle,
-          },
+      const result = await sendAndLog(admin, 'course-invite', email, {
+        idempotencyKey,
+        templateData: {
+          courseTitle,
+          educatorName,
+          loginUrl,
+        },
+        metadata: {
+          course_id: courseId,
+          course_title: courseTitle,
         },
       })
-      if (error) {
-        errors.push({ email, error: error.message ?? 'invoke error' })
-      } else {
+      if (result.sent) {
         queued++
+      } else if (result.reason === 'send_failed') {
+        errors.push({ email, error: result.error })
+      } else {
+        errors.push({ email, error: 'destinatário suprimido' })
       }
     } catch (e) {
       errors.push({ email, error: (e as Error).message })
     }
   }
+
 
   return new Response(JSON.stringify({ courseTitle, queued, total: allEmails.length, errors }), {
     status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },

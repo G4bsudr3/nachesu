@@ -1,4 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { sendAndLog } from "../_shared/email-send-log.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -159,35 +161,32 @@ Deno.serve(async (req) => {
 
     // 9. dispara email transacional
     const inviterName = callerEmail.split("@")[0] || "a equipe da nachesu";
-    const { error: sendErr } = await admin.functions.invoke("send-transactional-email", {
-      body: {
-        templateName: "admin-invite",
-        recipientEmail: email,
-        idempotencyKey: `admin-invite-${newUserId}`,
-        templateData: {
-          recipientName: nickname ?? name,
-          invitedBy: inviterName,
-          roleLabel: role === "admin" ? "admin" : "estudante",
-          courses: enrolledTitles,
-          loginUrl: magicLink,
-        },
-        metadata: {
-          invited_by: callerId,
-          invited_user_id: newUserId,
-          role,
-          course_slugs: courseSlugs,
-        },
+    const sendResult = await sendAndLog(admin, "admin-invite", email, {
+      idempotencyKey: `admin-invite-${newUserId}`,
+      templateData: {
+        recipientName: nickname ?? name,
+        invitedBy: inviterName,
+        roleLabel: role === "admin" ? "admin" : "estudante",
+        courses: enrolledTitles,
+        loginUrl: magicLink,
+      },
+      metadata: {
+        invited_by: callerId,
+        invited_user_id: newUserId,
+        role,
+        course_slugs: courseSlugs,
       },
     });
 
-    if (sendErr) {
-      console.error("[admin-invite-user] send email fail", sendErr);
+    if (!sendResult.sent) {
+      console.error("[admin-invite-user] send email fail", sendResult.reason);
       return json({
         ok: true,
         user_id: newUserId,
         warning: "usuário criado mas email pode não ter saído — verifique em Cloud → Emails",
       }, 200);
     }
+
 
     return json({
       ok: true,

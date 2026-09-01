@@ -7,6 +7,8 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { isAdminCaller, isTrustedJobCaller } from '../_shared/jobAuth.ts'
+import { sendAndLog } from '../_shared/email-send-log.ts'
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -222,46 +224,35 @@ Deno.serve(async (req) => {
     // email: usa template do banco via admin-direct-message; senão fallback evasion-nudge
     let emailSent = false
     try {
-      const payload = tmpl
+      const templateName = tmpl ? 'admin-direct-message' : 'evasion-nudge'
+      const templateData = tmpl
         ? {
-            templateName: 'admin-direct-message',
-            recipientEmail: email,
-            idempotencyKey: `evasion-${r.user_id}-${r.course_id}-${level}`,
-            templateData: {
-              recipientName,
-              authorName: course.professor_name,
-              subject: interp(tmpl.email_subject, vars),
-              bodyMd: interp(tmpl.email_body_md, vars),
-              link: `https://nachesu.lovable.app/app/eletiva/${course.slug}`,
-            },
+            recipientName,
+            authorName: course.professor_name,
+            subject: interp(tmpl.email_subject, vars),
+            bodyMd: interp(tmpl.email_body_md, vars),
+            link: `https://nachesu.lovable.app/app/eletiva/${course.slug}`,
           }
         : {
-            templateName: 'evasion-nudge',
-            recipientEmail: email,
-            idempotencyKey: `evasion-${r.user_id}-${r.course_id}-${level}`,
-            templateData: {
-              recipientName,
-              courseTitle: course.title,
-              educatorName: course.professor_name,
-              level,
-              daysInactive: r.days_inactive,
-              resumeUrl: `https://nachesu.lovable.app/app/eletiva/${course.slug}`,
-            },
+            recipientName,
+            courseTitle: course.title,
+            educatorName: course.professor_name,
+            level,
+            daysInactive: r.days_inactive,
+            resumeUrl: `https://nachesu.lovable.app/app/eletiva/${course.slug}`,
           }
 
-      const resp = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${serviceKey}`,
-        },
-        body: JSON.stringify(payload),
+      const result = await sendAndLog(supabase, templateName, email, {
+        idempotencyKey: `evasion-${r.user_id}-${r.course_id}-${level}`,
+        templateData,
+        metadata: { course_id: r.course_id, level, days_inactive: r.days_inactive },
       })
-      emailSent = resp.ok
-      if (!resp.ok) console.warn('email failed', await resp.text())
+      emailSent = result.sent
+      if (!result.sent) console.warn('email failed', result.reason)
     } catch (e) {
       console.error('email exception', e)
     }
+
 
     // registra nudge
     await supabase.from('evasion_nudges').insert({

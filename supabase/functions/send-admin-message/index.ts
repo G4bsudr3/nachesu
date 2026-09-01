@@ -1,9 +1,11 @@
 // envia mensagem manual do educador (admin) pro estudante:
 // - cria notification in-app
-// - opcionalmente dispara e-mail via send-transactional-email
+// - opcionalmente dispara e-mail pelo pipeline gerenciado da Lovable
 // - registra em admin_messages
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { sendAndLog } from '../_shared/email-send-log.ts'
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -98,30 +100,23 @@ Deno.serve(async (req) => {
   let emailSent = false
   if (sendEmail && recipientEmail) {
     try {
-      const resp = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${serviceKey}`,
+      const result = await sendAndLog(admin, 'admin-direct-message', recipientEmail, {
+        idempotencyKey: `admin-msg-${user.id}-${recipientId}-${Date.now()}`,
+        templateData: {
+          recipientName: profile.nickname || profile.display_name || '',
+          authorName,
+          subject,
+          bodyMd,
+          link: link ? `https://nachesu.lovable.app${link.startsWith('/') ? link : `/${link}`}` : 'https://nachesu.lovable.app/app',
         },
-        body: JSON.stringify({
-          templateName: 'admin-direct-message',
-          recipientEmail,
-          idempotencyKey: `admin-msg-${user.id}-${recipientId}-${Date.now()}`,
-          templateData: {
-            recipientName: profile.nickname || profile.display_name || '',
-            authorName,
-            subject,
-            bodyMd,
-            link: link ? `https://nachesu.lovable.app${link.startsWith('/') ? link : `/${link}`}` : 'https://nachesu.lovable.app/app',
-          },
-        }),
+        metadata: { author_id: user.id, recipient_id: recipientId },
       })
-      emailSent = resp.ok
-      if (!resp.ok) console.warn('admin-msg email failed', await resp.text())
+      emailSent = result.sent
+      if (!result.sent) console.warn('admin-msg email failed', result.reason)
     } catch (e) {
       console.error('admin-msg email exception', e)
     }
+
   }
 
   const { data: row, error: insertErr } = await admin
