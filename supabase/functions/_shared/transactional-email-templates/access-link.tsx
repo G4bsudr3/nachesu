@@ -32,9 +32,11 @@ const AccessLinkEmail = ({
         </Section>
 
         <Text style={textMuted}>
-          o link é único e vale por 1 hora. se expirar, peça um novo em{' '}
+          o link é único, vale por 1 hora e só funciona uma vez. se você pediu mais de um, abre
+          sempre o email mais recente. se expirar, peça um novo em{' '}
           <Link href="https://sebrae.frattz.com/auth" style={inlineLink}>sebrae.frattz.com/auth</Link>.
         </Text>
+
         <Text style={textMuted}>
           se você não pediu esse acesso, pode ignorar esse email.
         </Text>
