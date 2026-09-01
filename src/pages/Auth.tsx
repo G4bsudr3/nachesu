@@ -451,6 +451,12 @@ const Auth = () => {
                 abre o link e cai direto na eletiva. olha o spam se demorar. se nada chegar, fala
                 com a coordenação pra confirmar seu email.
               </p>
+              <p className="font-body text-sm text-perestroika-preto/60 mt-2">
+                importante: peça só um link por vez. cada link novo cancela o anterior, então
+                sempre abra o email <span className="font-semibold text-perestroika-preto">mais recente</span>.
+                o link vale por 1 hora e só funciona uma vez.
+              </p>
+
               <button
                 type="button"
                 onClick={() => { setSent(false); setPassword(""); }}
