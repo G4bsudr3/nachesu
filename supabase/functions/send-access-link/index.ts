@@ -1,7 +1,7 @@
 // send-access-link
 //
 // Envia magic link e recuperação de senha pelo NOSSO pipeline de email
-// (send-transactional-email → notify.aiu.guru), sem depender do hook de auth
+// (notify.aiu.guru), sem depender do hook de auth
 // do GoTrue, que nunca foi ativado e faz os emails saírem em inglês por um
 // remetente genérico (auth.lovable.cloud) e cair no spam.
 //
@@ -11,6 +11,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 import { checkRateLimit, clientIp, tooManyRequests } from "../_shared/rate-limit.ts";
+import { sendAndLog } from "../_shared/email-send-log.ts";
+
 
 const FN = "send-access-link";
 const APP_BASE = "https://sebrae.frattz.com";
@@ -150,25 +152,22 @@ Deno.serve(async (req: Request) => {
     }
 
     const templateName = type === "recovery" ? "password-reset" : "access-link";
-    const { error: sendErr } = await admin.functions.invoke("send-transactional-email", {
-      body: {
-        templateName,
-        recipientEmail: rawEmail,
-        idempotencyKey: `${templateName}-${userId}-${Date.now()}`,
-        templateData: type === "recovery"
-          ? { recipientName, resetUrl: actionLink }
-          : { recipientName, loginUrl: actionLink },
-        metadata: { flow: type, user_id: userId },
-      },
+    const sendResult = await sendAndLog(admin, templateName, rawEmail, {
+      idempotencyKey: `${templateName}-${userId}-${Date.now()}`,
+      templateData: type === "recovery"
+        ? { recipientName, resetUrl: actionLink }
+        : { recipientName, loginUrl: actionLink },
+      metadata: { flow: type, user_id: userId },
     });
 
-    if (sendErr) {
-      console.error(`[${FN}] envio falhou`, sendErr);
+    if (!sendResult.sent && sendResult.reason === "send_failed") {
+      console.error(`[${FN}] envio falhou`, sendResult.error);
       return new Response(
         JSON.stringify({ error: "send_failed", message: "não consegui enviar o email agora" }),
         { status: 500, headers: { ...cors, "Content-Type": "application/json" } },
       );
     }
+
 
     return ok();
   } catch (err) {

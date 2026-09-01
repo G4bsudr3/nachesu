@@ -2,6 +2,8 @@
 // um evento de safety severo é registrado. cria a linha em
 // tutor_safety_escalations pra fila do admin acompanhar.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import { sendAndLog } from '../_shared/email-send-log.ts'
+
 
 // CORS local. O import anterior ('npm:@supabase/supabase-js@2/cors') NÃO existe
 // como subpath do pacote e impedia o módulo inteiro de carregar — quebrando a
@@ -130,26 +132,26 @@ Deno.serve(async (req) => {
 
     // 5. dispara email pra cada destinatário
     const sendPromises = recipients.map((to) =>
-      supabase.functions.invoke('send-transactional-email', {
-        body: {
-          templateName: 'tutor-safety-alert',
-          recipientEmail: to,
-          idempotencyKey: `tutor-safety-${escalation?.id ?? ev.id}-${to}`,
-          templateData: {
-            studentLabel,
-            category,
-            severity,
-            redactedMessage: redacted,
-            trailTitle,
-            occurredAt: ev.created_at,
-            adminUrl,
-            slaHours,
-          },
+      sendAndLog(supabase, 'tutor-safety-alert', to, {
+        idempotencyKey: `tutor-safety-${escalation?.id ?? ev.id}-${to}`,
+        templateData: {
+          studentLabel,
+          category,
+          severity,
+          redactedMessage: redacted,
+          trailTitle,
+          occurredAt: ev.created_at,
+          adminUrl,
+          slaHours,
         },
+        metadata: { escalation_id: escalation?.id ?? null, event_id: ev.id },
       }),
     )
     const results = await Promise.allSettled(sendPromises)
-    const failed = results.filter((r) => r.status === 'rejected').length
+    const failed = results.filter(
+      (r) => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.sent),
+    ).length
+
 
     return json({
       ok: true,
