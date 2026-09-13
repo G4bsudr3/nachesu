@@ -300,6 +300,22 @@ export const AdminFeedbackInbox = ({
           </label>
           <button
             type="button"
+            onClick={() => triage.run(40)}
+            disabled={triage.running || triage.pending === 0}
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-rosa text-white px-4 py-2 text-xs uppercase tracking-wide hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+            title="a ia lê as entregas pendentes e marca ok, revisar ou atenção. ela nunca aprova nada sozinha."
+          >
+            {triage.running ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5" />
+            )}
+            {triage.running && triage.progress
+              ? `triando ${triage.progress.done}/${triage.progress.total}`
+              : `triar com ia${triage.pending > 0 ? ` (${triage.pending})` : ""}`}
+          </button>
+          <button
+            type="button"
             onClick={() => setBulkConfirmOpen(true)}
             disabled={bulkCandidates.length === 0 || bulkSubmitMutation.isPending}
             className="inline-flex items-center gap-2 rounded-full bg-perestroika-azul text-white px-4 py-2 text-xs uppercase tracking-wide hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
