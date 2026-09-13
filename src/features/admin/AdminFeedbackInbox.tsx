@@ -443,6 +443,7 @@ export const AdminFeedbackInbox = ({
               <TableHead className="uppercase text-xs tracking-wide">módulo</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">enviado</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">status</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">triagem ia</TableHead>
               <TableHead className="sticky right-0 bg-perestroika-bege shadow-[-8px_0_8px_-8px_rgba(9,9,9,0.15)]" />
             </TableRow>
           </TableHeader>
