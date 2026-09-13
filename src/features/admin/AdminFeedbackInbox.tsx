@@ -590,6 +590,9 @@ export const AdminFeedbackInbox = ({
                         </Badge>
                       )}
                     </TableCell>
+                    <TableCell>
+                      <AiTriageBadge review={aiReviews.get(d.id)} />
+                    </TableCell>
                     <TableCell className="text-right sticky right-0 bg-perestroika-bege shadow-[-8px_0_8px_-8px_rgba(9,9,9,0.15)]">
                       <button
                         type="button"
