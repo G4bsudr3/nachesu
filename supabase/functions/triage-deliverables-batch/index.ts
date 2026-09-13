@@ -48,15 +48,17 @@ Deno.serve(async (req) => {
   const moduleId = typeof body.module_id === "string" ? body.module_id : null;
   const batchSize = Math.min(Number(body.batch_size) || 5, MAX_BATCH);
 
-  // candidatas: entregas enviadas, ainda não revisadas, sem triagem guardada
-  const { data: candidates, error: candErr } = await admin.rpc("admin_triage_candidates", {
+  // candidatas: entregas enviadas, ainda não revisadas, sem triagem guardada.
+  // as rpcs checam has_role(auth.uid()), então precisam rodar com o jwt do admin,
+  // não com a service role (onde auth.uid() é nulo e o resultado vem sempre vazio).
+  const { data: candidates, error: candErr } = await userClient.rpc("admin_triage_candidates", {
     p_course_id: courseId,
     p_module_id: moduleId,
     p_limit: batchSize,
   });
   if (candErr) return json({ error: candErr.message }, 500);
 
-  const { data: remainingRow } = await admin.rpc("admin_triage_pending_count", {
+  const { data: remainingRow } = await userClient.rpc("admin_triage_pending_count", {
     p_course_id: courseId,
     p_module_id: moduleId,
   });
