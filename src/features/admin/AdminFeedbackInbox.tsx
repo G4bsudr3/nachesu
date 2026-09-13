@@ -450,14 +450,14 @@ export const AdminFeedbackInbox = ({
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
                   carregando entregas…
                 </TableCell>
               </TableRow>
             )}
             {!isLoading && filteredData.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
                   {searchTerm
                     ? "nenhum estudante bate com essa busca."
                     : "nada por aqui. fila vazia é boa notícia."}
