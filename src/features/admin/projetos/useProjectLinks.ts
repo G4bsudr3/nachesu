@@ -40,10 +40,13 @@ export function useProjectLinks(courseId: string | null) {
       const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id, display_name, nickname")
-        .in("id", userIds);
+        .select("user_id, display_name, nickname")
+        .in("user_id", userIds);
       const byId = new Map(
-        (profiles ?? []).map((p) => [p.id, p as { id: string; display_name: string | null; nickname: string | null }]),
+        (profiles ?? []).map((p) => [
+          p.user_id as string,
+          p as { user_id: string; display_name: string | null; nickname: string | null },
+        ]),
       );
 
       const grouped = new Map<string, ProjectLinkRow[]>();
