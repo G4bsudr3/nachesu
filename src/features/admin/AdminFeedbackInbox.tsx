@@ -126,7 +126,9 @@ export const AdminFeedbackInbox = ({
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
   const [search, setSearch] = useState("");
   const [includeTest, setIncludeTest] = useState(false);
+  const [verdictFilter, setVerdictFilter] = useState<TriageVerdict | "todos">("todos");
   const { lookupByCode } = useStudentRoster();
+  const triage = useAiTriage({ courseId, moduleId });
 
 
   const { data: courses } = useQuery({
