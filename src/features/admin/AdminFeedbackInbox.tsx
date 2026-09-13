@@ -357,7 +357,7 @@ export const AdminFeedbackInbox = ({
       </div>
 
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <Select
           value={courseId ?? "todos"}
           onValueChange={(v) => {
@@ -404,6 +404,20 @@ export const AdminFeedbackInbox = ({
             <SelectItem value="ajuste">em ajuste</SelectItem>
             <SelectItem value="revisados">revisados</SelectItem>
             <SelectItem value="todos">todos</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select
+          value={verdictFilter}
+          onValueChange={(v) => setVerdictFilter(v as TriageVerdict | "todos")}
+        >
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/15">
+            <SelectValue placeholder="triagem ia" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">toda triagem ia</SelectItem>
+            <SelectItem value="atencao">ia: atenção</SelectItem>
+            <SelectItem value="revisar">ia: revisar</SelectItem>
+            <SelectItem value="ok">ia: ok</SelectItem>
           </SelectContent>
         </Select>
       </div>
