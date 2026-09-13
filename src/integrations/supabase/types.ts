@@ -3254,6 +3254,21 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_triage_candidates: {
+        Args: { p_course_id?: string; p_limit?: number; p_module_id?: string }
+        Returns: {
+          content: Json
+          deliverable_description: string
+          deliverable_id: string
+          module_number: number
+          module_objective: string
+          module_title: string
+        }[]
+      }
+      admin_triage_pending_count: {
+        Args: { p_course_id?: string; p_module_id?: string }
+        Returns: number
+      }
       admin_unsubmit_deliverable: {
         Args: { p_id: string; p_reason?: string }
         Returns: {
