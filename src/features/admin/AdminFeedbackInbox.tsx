@@ -248,9 +248,14 @@ export const AdminFeedbackInbox = ({
   }, [refetch]);
 
   const searchTerm = search.trim().toLowerCase();
+  const aiReviews = triage.reviews;
   const filteredData = useMemo(() => {
-    if (!searchTerm) return data;
-    return data.filter((d) => {
+    let list = data;
+    if (verdictFilter !== "todos") {
+      list = list.filter((d) => aiReviews.get(d.id)?.verdict === verdictFilter);
+    }
+    if (!searchTerm) return list;
+    return list.filter((d) => {
       const roster = lookupByCode(d.profile?.nickname ?? d.profile?.display_name ?? null);
       const haystack = [
         d.profile?.display_name,
@@ -261,13 +266,12 @@ export const AdminFeedbackInbox = ({
         d.module?.title,
         d.user_id,
       ]
-
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
       return haystack.includes(searchTerm);
     });
-  }, [data, searchTerm, lookupByCode]);
+  }, [data, searchTerm, lookupByCode, verdictFilter, aiReviews]);
 
   return (
     <div>
