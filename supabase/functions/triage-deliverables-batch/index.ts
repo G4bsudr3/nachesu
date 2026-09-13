@@ -184,7 +184,10 @@ async function triage(key: string, prompt: string): Promise<TriageResult> {
   const verdict = obj.verdict === "ok" || obj.verdict === "revisar" || obj.verdict === "atencao"
     ? obj.verdict
     : "revisar";
-  const rawScore = Number(obj.suggested_score);
+  // null/"" não viram 0: sem nota sugerida é ausência de nota, não nota zero
+  const rawScore = obj.suggested_score == null || obj.suggested_score === ""
+    ? NaN
+    : Number(obj.suggested_score);
   return {
     verdict,
     summary: String(obj.summary ?? "").trim().slice(0, 400),
