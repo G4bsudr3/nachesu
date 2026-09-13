@@ -617,6 +617,56 @@ export type Database = {
         }
         Relationships: []
       }
+      deliverable_ai_reviews: {
+        Row: {
+          content_hash: string | null
+          created_at: string
+          deliverable_id: string
+          id: string
+          model: string | null
+          reasons: Json
+          score_max: number | null
+          suggested_score: number | null
+          summary: string
+          updated_at: string
+          verdict: string
+        }
+        Insert: {
+          content_hash?: string | null
+          created_at?: string
+          deliverable_id: string
+          id?: string
+          model?: string | null
+          reasons?: Json
+          score_max?: number | null
+          suggested_score?: number | null
+          summary?: string
+          updated_at?: string
+          verdict: string
+        }
+        Update: {
+          content_hash?: string | null
+          created_at?: string
+          deliverable_id?: string
+          id?: string
+          model?: string | null
+          reasons?: Json
+          score_max?: number | null
+          suggested_score?: number | null
+          summary?: string
+          updated_at?: string
+          verdict?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliverable_ai_reviews_deliverable_id_fkey"
+            columns: ["deliverable_id"]
+            isOneToOne: true
+            referencedRelation: "module_deliverables"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deliverable_messages: {
         Row: {
           author_id: string
@@ -2982,6 +3032,10 @@ export type Database = {
           user_agent: string
         }[]
       }
+      admin_bulk_review_deliverables: {
+        Args: { p_feedback: string; p_ids: string[]; p_score?: number }
+        Returns: number
+      }
       admin_get_profile: {
         Args: { _user_id: string }
         Returns: {
@@ -3158,6 +3212,19 @@ export type Database = {
       admin_module9_impactos_stats: {
         Args: { _course_slug?: string; _module_number?: number }
         Returns: Json
+      }
+      admin_project_links: {
+        Args: { p_course_id: string }
+        Returns: {
+          deliverable_id: string
+          module_number: number
+          module_title: string
+          reviewed_at: string
+          status: string
+          submitted_at: string
+          url: string
+          user_id: string
+        }[]
       }
       admin_set_profile_status: {
         Args: { _status: string; _user_id: string }
