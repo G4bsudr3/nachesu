@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Download, Inbox, Loader2, RefreshCcw, Search, Send } from "lucide-react";
+import { Download, Inbox, Loader2, RefreshCcw, Search, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +39,8 @@ import {
   type InboxFilter,
 } from "./usePendingDeliverables";
 import { FeedbackReviewDrawer } from "./FeedbackReviewDrawer";
+import { useAiTriage, type TriageVerdict } from "./useAiTriage";
+import { AiTriageBadge } from "./AiTriageBadge";
 
 const timeAgo = (iso: string | null) => {
   if (!iso) return "–";
@@ -124,7 +126,9 @@ export const AdminFeedbackInbox = ({
   const [selected, setSelected] = useState<DeliverableInbox | null>(null);
   const [search, setSearch] = useState("");
   const [includeTest, setIncludeTest] = useState(false);
+  const [verdictFilter, setVerdictFilter] = useState<TriageVerdict | "todos">("todos");
   const { lookupByCode } = useStudentRoster();
+  const triage = useAiTriage({ courseId, moduleId });
 
 
   const { data: courses } = useQuery({
@@ -244,9 +248,14 @@ export const AdminFeedbackInbox = ({
   }, [refetch]);
 
   const searchTerm = search.trim().toLowerCase();
+  const aiReviews = triage.reviews;
   const filteredData = useMemo(() => {
-    if (!searchTerm) return data;
-    return data.filter((d) => {
+    let list = data;
+    if (verdictFilter !== "todos") {
+      list = list.filter((d) => aiReviews.get(d.id)?.verdict === verdictFilter);
+    }
+    if (!searchTerm) return list;
+    return list.filter((d) => {
       const roster = lookupByCode(d.profile?.nickname ?? d.profile?.display_name ?? null);
       const haystack = [
         d.profile?.display_name,
@@ -257,13 +266,12 @@ export const AdminFeedbackInbox = ({
         d.module?.title,
         d.user_id,
       ]
-
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
       return haystack.includes(searchTerm);
     });
-  }, [data, searchTerm, lookupByCode]);
+  }, [data, searchTerm, lookupByCode, verdictFilter, aiReviews]);
 
   return (
     <div>
@@ -290,6 +298,22 @@ export const AdminFeedbackInbox = ({
             />
             incluir teste{testCount > 0 ? ` (${testCount})` : ""}
           </label>
+          <button
+            type="button"
+            onClick={() => triage.run(40)}
+            disabled={triage.running || triage.pending === 0}
+            className="inline-flex items-center gap-2 rounded-full bg-perestroika-rosa text-white px-4 py-2 text-xs uppercase tracking-wide hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+            title="a ia lê as entregas pendentes e marca ok, revisar ou atenção. ela nunca aprova nada sozinha."
+          >
+            {triage.running ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5" />
+            )}
+            {triage.running && triage.progress
+              ? `triando ${triage.progress.done}/${triage.progress.total}`
+              : `triar com ia${triage.pending > 0 ? ` (${triage.pending})` : ""}`}
+          </button>
           <button
             type="button"
             onClick={() => setBulkConfirmOpen(true)}
@@ -333,7 +357,7 @@ export const AdminFeedbackInbox = ({
       </div>
 
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <Select
           value={courseId ?? "todos"}
           onValueChange={(v) => {
@@ -382,6 +406,20 @@ export const AdminFeedbackInbox = ({
             <SelectItem value="todos">todos</SelectItem>
           </SelectContent>
         </Select>
+        <Select
+          value={verdictFilter}
+          onValueChange={(v) => setVerdictFilter(v as TriageVerdict | "todos")}
+        >
+          <SelectTrigger className="bg-perestroika-bege/60 border-perestroika-preto/15">
+            <SelectValue placeholder="triagem ia" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">toda triagem ia</SelectItem>
+            <SelectItem value="atencao">ia: atenção</SelectItem>
+            <SelectItem value="revisar">ia: revisar</SelectItem>
+            <SelectItem value="ok">ia: ok</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="relative mb-4">
@@ -405,20 +443,21 @@ export const AdminFeedbackInbox = ({
               <TableHead className="uppercase text-xs tracking-wide">módulo</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">enviado</TableHead>
               <TableHead className="uppercase text-xs tracking-wide">status</TableHead>
+              <TableHead className="uppercase text-xs tracking-wide">triagem ia</TableHead>
               <TableHead className="sticky right-0 bg-perestroika-bege shadow-[-8px_0_8px_-8px_rgba(9,9,9,0.15)]" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
                   carregando entregas…
                 </TableCell>
               </TableRow>
             )}
             {!isLoading && filteredData.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-perestroika-preto/50">
+                <TableCell colSpan={6} className="text-center py-12 text-perestroika-preto/50">
                   {searchTerm
                     ? "nenhum estudante bate com essa busca."
                     : "nada por aqui. fila vazia é boa notícia."}
@@ -550,6 +589,9 @@ export const AdminFeedbackInbox = ({
                           pendente
                         </Badge>
                       )}
+                    </TableCell>
+                    <TableCell>
+                      <AiTriageBadge review={aiReviews.get(d.id)} />
                     </TableCell>
                     <TableCell className="text-right sticky right-0 bg-perestroika-bege shadow-[-8px_0_8px_-8px_rgba(9,9,9,0.15)]">
                       <button

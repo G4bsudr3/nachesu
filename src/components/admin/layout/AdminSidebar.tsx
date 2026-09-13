@@ -22,6 +22,7 @@ import {
   History,
   Workflow,
   Star,
+  Rocket,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,7 @@ const SECTIONS: Section[] = [
     title: "entregas dos estudantes",
     items: [
       { to: "/admin/entregas", label: "entregas", icon: Inbox, badge: "pendentes" },
+      { to: "/admin/projetos", label: "projetos reais", icon: Rocket },
       { to: "/admin/respostas", label: "respostas · inspeção", icon: ClipboardList },
       { to: "/admin/pending", label: "pendentes", icon: Hourglass },
       { to: "/admin/risco", label: "risco", icon: AlertTriangle },
