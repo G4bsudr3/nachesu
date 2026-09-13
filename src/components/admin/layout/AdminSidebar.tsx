@@ -22,6 +22,7 @@ import {
   History,
   Workflow,
   Star,
+  Rocket,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
