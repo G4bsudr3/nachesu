@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, Circle, Download } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Circle, Download, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 
@@ -20,6 +20,7 @@ type ReportRow = {
   final_delivered: boolean;
   final_status: string | null;
   final_submitted_at: string | null;
+  final_link: string | null;
 };
 
 type CohortRow = { id: string; name: string; starts_on: string | null; ends_on: string | null };
@@ -52,6 +53,7 @@ const exportCsv = (rows: ReportRow[], cohortName: string) => {
     "entregou_projeto_final",
     "status_entrega",
     "enviado_em",
+    "link_do_projeto",
   ];
   const lines = rows.map((r) =>
     [
@@ -66,6 +68,7 @@ const exportCsv = (rows: ReportRow[], cohortName: string) => {
       r.final_delivered ? "sim" : "não",
       r.final_status ?? "",
       r.final_submitted_at ?? "",
+      r.final_link ?? "",
     ]
       .map(csvCell)
       .join(","),
@@ -175,22 +178,24 @@ const AdminTurmaRelatorio = () => {
         const iniciaramSemM20 = g.rows.filter(
           (r) => r.modules_completed > 0 && !r.reached_m20,
         ).length;
+        const comLink = g.rows.filter((r) => !!r.final_link).length;
         const pct = (n: number) => Math.round((n / total) * 100);
         const stats = [
           { label: "chegaram no módulo 20", qtd: chegaram, valor: pct(chegaram), cor: "bg-perestroika-azul" },
           { label: "iniciaram sem chegar no módulo 20", qtd: iniciaramSemM20, valor: pct(iniciaramSemM20), cor: "bg-perestroika-laranja" },
           { label: "não iniciaram", qtd: naoIniciaram, valor: pct(naoIniciaram), cor: "bg-perestroika-vermelho" },
+          { label: "enviaram link do projeto", qtd: comLink, valor: pct(comLink), cor: "bg-perestroika-rosa" },
         ];
         return (
           <section key={g.title} className="space-y-3">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <h2 className="font-display text-2xl uppercase leading-none">{g.title}</h2>
               <p className="text-[12px] text-perestroika-preto/60">
-                {g.rows.length} estudantes · {chegaram} chegaram no módulo 20 · {entregaram} entregaram o projeto final
+                {g.rows.length} estudantes · {chegaram} chegaram no módulo 20 · {entregaram} entregaram o projeto final · {comLink} com link do projeto
               </p>
             </div>
 
-            <div className="rounded-2xl border border-perestroika-preto/15 p-4 sm:p-5 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl border border-perestroika-preto/15 p-4 sm:p-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((s) => (
                 <div key={s.label} className="space-y-2">
                   <div className="flex items-end justify-between gap-2">
@@ -207,6 +212,7 @@ const AdminTurmaRelatorio = () => {
               ))}
             </div>
 
+
             <div className="rounded-2xl border border-perestroika-preto/15 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -215,6 +221,7 @@ const AdminTurmaRelatorio = () => {
                     <th className="py-2 px-4 font-medium">progresso</th>
                     <th className="py-2 px-4 font-medium">chegou no módulo 20</th>
                     <th className="py-2 px-4 font-medium">projeto final</th>
+                    <th className="py-2 px-4 font-medium">link do projeto</th>
                     <th className="py-2 px-4 font-medium">enviado em</th>
                   </tr>
                 </thead>
@@ -248,6 +255,24 @@ const AdminTurmaRelatorio = () => {
                             </Badge>
                           )}
                         </div>
+                      </td>
+                      <td className="py-2 px-4">
+                        {r.final_link ? (
+                          <a
+                            href={r.final_link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-perestroika-azul hover:underline underline-offset-2 break-all"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden />
+                            <span className="text-[12px]">
+                              {r.final_link.replace(/^https?:\/\//, "").slice(0, 38)}
+                              {r.final_link.replace(/^https?:\/\//, "").length > 38 ? "…" : ""}
+                            </span>
+                          </a>
+                        ) : (
+                          <span className="text-perestroika-preto/35 text-[12px]">–</span>
+                        )}
                       </td>
                       <td className="py-2 px-4 text-perestroika-preto/65">
                         {fmtDateTime(r.final_submitted_at)}
