@@ -133,6 +133,10 @@ const AdminTurmaRelatorio = () => {
     return [...map.values()].sort((a, b) => a.title.localeCompare(b.title));
   }, [data]);
 
+  const [activeCourse, setActiveCourse] = useState<string | null>(null);
+  const activeTab = activeCourse ?? groups[0]?.course_id ?? null;
+  const activeGroup = groups.find((g) => g.course_id === activeTab) ?? null;
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 font-body text-perestroika-preto">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -168,6 +172,36 @@ const AdminTurmaRelatorio = () => {
         <p className="text-sm text-perestroika-preto/60">
           essa turma ainda não tem estudante matriculado em nenhuma eletiva.
         </p>
+      )}
+
+      {!isLoading && groups.length > 1 && (
+        <div role="tablist" className="flex flex-wrap gap-2 border-b border-perestroika-preto/10">
+          {groups.map((g) => {
+            const isActive = g.course_id === activeTab;
+            return (
+              <button
+                key={g.course_id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActiveCourse(g.course_id)}
+                className={`relative px-4 py-2 text-[12px] uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto/30 ${
+                  isActive
+                    ? "text-perestroika-preto"
+                    : "text-perestroika-preto/50 hover:text-perestroika-preto/80"
+                }`}
+              >
+                {g.title}
+                <span className="ml-1.5 tabular-nums text-[10px] text-perestroika-preto/40">
+                  {g.rows.length}
+                </span>
+                {isActive && (
+                  <span className="absolute inset-x-0 -bottom-px h-0.5 bg-perestroika-preto" />
+                )}
+              </button>
+            );
+          })}
+        </div>
       )}
 
       {groups.map((g) => {
