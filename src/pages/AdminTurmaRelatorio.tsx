@@ -178,22 +178,24 @@ const AdminTurmaRelatorio = () => {
         const iniciaramSemM20 = g.rows.filter(
           (r) => r.modules_completed > 0 && !r.reached_m20,
         ).length;
+        const comLink = g.rows.filter((r) => !!r.final_link).length;
         const pct = (n: number) => Math.round((n / total) * 100);
         const stats = [
           { label: "chegaram no módulo 20", qtd: chegaram, valor: pct(chegaram), cor: "bg-perestroika-azul" },
           { label: "iniciaram sem chegar no módulo 20", qtd: iniciaramSemM20, valor: pct(iniciaramSemM20), cor: "bg-perestroika-laranja" },
           { label: "não iniciaram", qtd: naoIniciaram, valor: pct(naoIniciaram), cor: "bg-perestroika-vermelho" },
+          { label: "enviaram link do projeto", qtd: comLink, valor: pct(comLink), cor: "bg-perestroika-rosa" },
         ];
         return (
           <section key={g.title} className="space-y-3">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <h2 className="font-display text-2xl uppercase leading-none">{g.title}</h2>
               <p className="text-[12px] text-perestroika-preto/60">
-                {g.rows.length} estudantes · {chegaram} chegaram no módulo 20 · {entregaram} entregaram o projeto final
+                {g.rows.length} estudantes · {chegaram} chegaram no módulo 20 · {entregaram} entregaram o projeto final · {comLink} com link do projeto
               </p>
             </div>
 
-            <div className="rounded-2xl border border-perestroika-preto/15 p-4 sm:p-5 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl border border-perestroika-preto/15 p-4 sm:p-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((s) => (
                 <div key={s.label} className="space-y-2">
                   <div className="flex items-end justify-between gap-2">
@@ -209,6 +211,7 @@ const AdminTurmaRelatorio = () => {
                 </div>
               ))}
             </div>
+
 
             <div className="rounded-2xl border border-perestroika-preto/15 overflow-x-auto">
               <table className="w-full text-sm">
