@@ -259,6 +259,24 @@ const AdminTurmaRelatorio = () => {
                       <td className="py-2 px-4 text-perestroika-preto/65">
                         {fmtDateTime(r.final_submitted_at)}
                       </td>
+                      <td className="py-2 px-4">
+                        {r.final_link ? (
+                          <a
+                            href={r.final_link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-perestroika-azul hover:underline underline-offset-2 break-all"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden />
+                            <span className="text-[12px]">
+                              {r.final_link.replace(/^https?:\/\//, "").slice(0, 38)}
+                              {r.final_link.replace(/^https?:\/\//, "").length > 38 ? "…" : ""}
+                            </span>
+                          </a>
+                        ) : (
+                          <span className="text-perestroika-preto/35 text-[12px]">–</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
