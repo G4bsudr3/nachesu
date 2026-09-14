@@ -290,6 +290,7 @@ const App = () => (
                 <Route path="/dossie/:userId" element={<DossieAluno />} />
                 <Route path="/admin/entregas" element={<AdminEntregas />} />
                 <Route path="/admin/projetos" element={<AdminProjetos />} />
+                <Route path="/admin/turmas" element={<AdminTurmas />} />
                 <Route path="/admin/pulso" element={<AdminPulso />} />
                 <Route path="/admin/correcoes" element={<Navigate to="/admin/entregas" replace />} />
                 <Route path="/admin/respostas" element={<AdminRespostas />} />
