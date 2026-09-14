@@ -256,9 +256,6 @@ const AdminTurmaRelatorio = () => {
                           )}
                         </div>
                       </td>
-                      <td className="py-2 px-4 text-perestroika-preto/65">
-                        {fmtDateTime(r.final_submitted_at)}
-                      </td>
                       <td className="py-2 px-4">
                         {r.final_link ? (
                           <a
@@ -276,6 +273,9 @@ const AdminTurmaRelatorio = () => {
                         ) : (
                           <span className="text-perestroika-preto/35 text-[12px]">–</span>
                         )}
+                      </td>
+                      <td className="py-2 px-4 text-perestroika-preto/65">
+                        {fmtDateTime(r.final_submitted_at)}
                       </td>
                     </tr>
                   ))}
