@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarRange, ChevronDown, ChevronRight, GraduationCap, Users } from "lucide-react";
+import { CalendarRange, ChevronDown, ChevronRight, FileText, GraduationCap, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 
