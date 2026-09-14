@@ -3118,6 +3118,7 @@ export type Database = {
           display_name: string
           email: string
           final_delivered: boolean
+          final_link: string
           final_status: string
           final_submitted_at: string
           full_name: string
