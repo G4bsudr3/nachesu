@@ -20,6 +20,7 @@ type ReportRow = {
   final_delivered: boolean;
   final_status: string | null;
   final_submitted_at: string | null;
+  final_link: string | null;
 };
 
 type CohortRow = { id: string; name: string; starts_on: string | null; ends_on: string | null };
