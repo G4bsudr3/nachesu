@@ -3109,6 +3109,25 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_cohort_report: {
+        Args: { _cohort_id: string }
+        Returns: {
+          completed_m20: boolean
+          course_id: string
+          course_title: string
+          display_name: string
+          email: string
+          final_delivered: boolean
+          final_status: string
+          final_submitted_at: string
+          full_name: string
+          modules_completed: number
+          modules_total: number
+          reached_m20: boolean
+          turma: string
+          user_id: string
+        }[]
+      }
       admin_cohorts: {
         Args: never
         Returns: {
