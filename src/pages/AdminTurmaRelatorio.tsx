@@ -319,7 +319,7 @@ const AdminTurmaRelatorio = () => {
             </div>
           </section>
         );
-      })}
+      })()
     </div>
   );
 };
