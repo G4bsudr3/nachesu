@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarRange, ChevronDown, ChevronRight, GraduationCap, Users } from "lucide-react";
+import { CalendarRange, ChevronDown, ChevronRight, FileText, GraduationCap, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 
@@ -188,6 +188,16 @@ const AdminTurmas = () => {
                   </div>
                 </div>
               </button>
+
+              <div className="px-4 pb-4 -mt-1">
+                <Link
+                  to={`/admin/turmas/${c.id}/relatorio`}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-perestroika-preto/20 px-3 py-1.5 text-[12px] hover:bg-perestroika-preto/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto/30"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  abrir relatório da turma
+                </Link>
+              </div>
 
               {isOpen && (
                 <div className="border-t border-perestroika-preto/10 bg-perestroika-bege/70">
