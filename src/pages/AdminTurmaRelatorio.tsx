@@ -124,9 +124,9 @@ const AdminTurmaRelatorio = () => {
   const cohort = cohorts?.find((c) => c.id === cohortId);
 
   const groups = useMemo(() => {
-    const map = new Map<string, { title: string; rows: ReportRow[] }>();
+    const map = new Map<string, { course_id: string; title: string; rows: ReportRow[] }>();
     (data ?? []).forEach((r) => {
-      const g = map.get(r.course_id) ?? { title: r.course_title, rows: [] };
+      const g = map.get(r.course_id) ?? { course_id: r.course_id, title: r.course_title, rows: [] };
       g.rows.push(r);
       map.set(r.course_id, g);
     });
