@@ -221,6 +221,7 @@ const AdminTurmaRelatorio = () => {
                     <th className="py-2 px-4 font-medium">progresso</th>
                     <th className="py-2 px-4 font-medium">chegou no módulo 20</th>
                     <th className="py-2 px-4 font-medium">projeto final</th>
+                    <th className="py-2 px-4 font-medium">link do projeto</th>
                     <th className="py-2 px-4 font-medium">enviado em</th>
                   </tr>
                 </thead>
