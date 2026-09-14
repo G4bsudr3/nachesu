@@ -168,8 +168,19 @@ const AdminTurmaRelatorio = () => {
       )}
 
       {groups.map((g) => {
+        const total = g.rows.length || 1;
         const chegaram = g.rows.filter((r) => r.reached_m20).length;
         const entregaram = g.rows.filter((r) => r.final_delivered).length;
+        const naoIniciaram = g.rows.filter((r) => r.modules_completed === 0).length;
+        const iniciaramSemM20 = g.rows.filter(
+          (r) => r.modules_completed > 0 && !r.reached_m20,
+        ).length;
+        const pct = (n: number) => Math.round((n / total) * 100);
+        const stats = [
+          { label: "chegaram no módulo 20", qtd: chegaram, valor: pct(chegaram), cor: "bg-perestroika-azul" },
+          { label: "iniciaram sem chegar no módulo 20", qtd: iniciaramSemM20, valor: pct(iniciaramSemM20), cor: "bg-perestroika-laranja" },
+          { label: "não iniciaram", qtd: naoIniciaram, valor: pct(naoIniciaram), cor: "bg-perestroika-vermelho" },
+        ];
         return (
           <section key={g.title} className="space-y-3">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -177,6 +188,23 @@ const AdminTurmaRelatorio = () => {
               <p className="text-[12px] text-perestroika-preto/60">
                 {g.rows.length} estudantes · {chegaram} chegaram no módulo 20 · {entregaram} entregaram o projeto final
               </p>
+            </div>
+
+            <div className="rounded-2xl border border-perestroika-preto/15 p-4 sm:p-5 grid gap-4 sm:grid-cols-3">
+              {stats.map((s) => (
+                <div key={s.label} className="space-y-2">
+                  <div className="flex items-end justify-between gap-2">
+                    <span className="text-[11px] uppercase tracking-wide text-perestroika-preto/60">{s.label}</span>
+                    <span className="font-display text-3xl leading-none tabular-nums">{s.valor}%</span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-perestroika-preto/10 overflow-hidden">
+                    <div className={`h-full ${s.cor}`} style={{ width: `${s.valor}%` }} />
+                  </div>
+                  <p className="text-[11px] text-perestroika-preto/50 tabular-nums">
+                    {s.qtd} de {g.rows.length} estudantes
+                  </p>
+                </div>
+              ))}
             </div>
 
             <div className="rounded-2xl border border-perestroika-preto/15 overflow-x-auto">
