@@ -204,7 +204,8 @@ const AdminTurmaRelatorio = () => {
         </div>
       )}
 
-      {groups.map((g) => {
+      {activeGroup && (() => {
+        const g = activeGroup;
         const total = g.rows.length || 1;
         const chegaram = g.rows.filter((r) => r.reached_m20).length;
         const entregaram = g.rows.filter((r) => r.final_delivered).length;
