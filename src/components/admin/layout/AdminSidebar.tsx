@@ -23,6 +23,7 @@ import {
   Workflow,
   Star,
   Rocket,
+  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -70,6 +71,7 @@ const SECTIONS: Section[] = [
       { to: "/admin/pending", label: "pendentes", icon: Hourglass },
       { to: "/admin/risco", label: "risco", icon: AlertTriangle },
       { to: "/admin/pulso", label: "pulso · feedback", icon: Star },
+      { to: "/admin/turmas", label: "turmas", icon: GraduationCap },
     ],
   },
 

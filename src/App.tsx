@@ -64,6 +64,7 @@ const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
 const AdminAvaliacaoModulos = lazy(() => import("./pages/AdminAvaliacaoModulos.tsx"));
 const AdminEntregas = lazy(() => import("./pages/AdminEntregas.tsx"));
 const AdminProjetos = lazy(() => import("./pages/AdminProjetos.tsx"));
+const AdminTurmas = lazy(() => import("./pages/AdminTurmas.tsx"));
 const AdminRespostas = lazy(() => import("./pages/AdminRespostas.tsx"));
 const AdminVideos = lazy(() => import("./pages/AdminVideos.tsx"));
 const AdminPulso = lazy(() => import("./pages/AdminPulso.tsx"));
@@ -289,6 +290,7 @@ const App = () => (
                 <Route path="/dossie/:userId" element={<DossieAluno />} />
                 <Route path="/admin/entregas" element={<AdminEntregas />} />
                 <Route path="/admin/projetos" element={<AdminProjetos />} />
+                <Route path="/admin/turmas" element={<AdminTurmas />} />
                 <Route path="/admin/pulso" element={<AdminPulso />} />
                 <Route path="/admin/correcoes" element={<Navigate to="/admin/entregas" replace />} />
                 <Route path="/admin/respostas" element={<AdminRespostas />} />
