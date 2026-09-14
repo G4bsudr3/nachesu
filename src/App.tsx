@@ -64,6 +64,7 @@ const AdminModuloDetalhe = lazy(() => import("./pages/AdminModuloDetalhe.tsx"));
 const AdminAvaliacaoModulos = lazy(() => import("./pages/AdminAvaliacaoModulos.tsx"));
 const AdminEntregas = lazy(() => import("./pages/AdminEntregas.tsx"));
 const AdminProjetos = lazy(() => import("./pages/AdminProjetos.tsx"));
+const AdminTurmas = lazy(() => import("./pages/AdminTurmas.tsx"));
 const AdminRespostas = lazy(() => import("./pages/AdminRespostas.tsx"));
 const AdminVideos = lazy(() => import("./pages/AdminVideos.tsx"));
 const AdminPulso = lazy(() => import("./pages/AdminPulso.tsx"));
