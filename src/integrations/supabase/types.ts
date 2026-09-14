@@ -528,6 +528,68 @@ export type Database = {
         }
         Relationships: []
       }
+      cohort_members: {
+        Row: {
+          cohort_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          cohort_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          cohort_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohort_members_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cohorts: {
+        Row: {
+          created_at: string
+          description: string | null
+          ends_on: string | null
+          id: string
+          name: string
+          slug: string
+          starts_on: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          ends_on?: string | null
+          id?: string
+          name: string
+          slug: string
+          starts_on?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          ends_on?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          starts_on?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       course_invites: {
         Row: {
           claimed_at: string | null
@@ -3035,6 +3097,30 @@ export type Database = {
       admin_bulk_review_deliverables: {
         Args: { p_feedback: string; p_ids: string[]; p_score?: number }
         Returns: number
+      }
+      admin_cohort_members: {
+        Args: { _cohort_id: string }
+        Returns: {
+          courses: string[]
+          display_name: string
+          email: string
+          full_name: string
+          turma: string
+          user_id: string
+        }[]
+      }
+      admin_cohorts: {
+        Args: never
+        Returns: {
+          courses: string[]
+          description: string
+          ends_on: string
+          id: string
+          name: string
+          slug: string
+          starts_on: string
+          student_count: number
+        }[]
       }
       admin_get_profile: {
         Args: { _user_id: string }
