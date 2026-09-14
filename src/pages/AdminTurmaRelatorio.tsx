@@ -53,6 +53,7 @@ const exportCsv = (rows: ReportRow[], cohortName: string) => {
     "entregou_projeto_final",
     "status_entrega",
     "enviado_em",
+    "link_do_projeto",
   ];
   const lines = rows.map((r) =>
     [
@@ -67,6 +68,7 @@ const exportCsv = (rows: ReportRow[], cohortName: string) => {
       r.final_delivered ? "sim" : "não",
       r.final_status ?? "",
       r.final_submitted_at ?? "",
+      r.final_link ?? "",
     ]
       .map(csvCell)
       .join(","),
