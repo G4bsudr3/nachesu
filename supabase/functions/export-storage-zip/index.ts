@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
     // level 0 = store: sem compressão, streaming direto, uso mínimo de memória.
     const zip = new ZipWriter(writable, { zip64: true, level: 0, bufferedWrite: false });
     const failures: string[] = [];
-    for (const { bucket, path } of files) {
+    for (const { bucket, path } of selected) {
       try {
         const { data: signed, error } = await admin.storage
           .from(bucket)
