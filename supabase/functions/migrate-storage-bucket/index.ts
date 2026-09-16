@@ -1,4 +1,5 @@
-import { createClient, corsHeaders } from "npm:@supabase/supabase-js@2.104.0";
+import { createClient } from "npm:@supabase/supabase-js@2.104.0";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { MigrationRequestSchema } from "./schema.ts";
 
 const respond = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
@@ -55,7 +56,7 @@ Deno.serve(async (req) => {
     return respond({ error: "invalid_input", fields: parsed.error.flatten().fieldErrors }, 400);
   }
 
-  const { bucket, cursor, batch_size: batchSize } = parsed.data;
+  const { bucket, cursor, batch_size: batchSize, list_only: listOnly, skip_existing: skipExisting } = parsed.data;
   const { data: sourceBuckets, error: sourceBucketsError } = await source.storage.listBuckets();
   const sourceBucket = sourceBuckets?.find((item) => item.name === bucket);
   if (sourceBucketsError || !sourceBucket) return respond({ error: "source_bucket_not_found" }, 404);
@@ -98,17 +99,30 @@ Deno.serve(async (req) => {
 
   let paths: string[];
   try {
-    paths = (await listAll()).sort((a, b) => a.localeCompare(b));
+    paths = (await listAll()).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   } catch (error) {
     return respond({ error: "source_list_failed", details: String(error) }, 500);
   }
-  const start = cursor ? Math.max(paths.findIndex((path) => path > cursor), 0) : 0;
+  if (listOnly) return respond({ bucket, total: paths.length, paths });
+  const cursorIndex = cursor ? paths.findIndex((path) => path > cursor) : 0;
+  const start = cursorIndex < 0 ? paths.length : cursorIndex;
   const batch = paths.slice(start, start + batchSize);
   const copied: string[] = [];
+  const skipped: string[] = [];
   const failures: { path: string; error: string }[] = [];
 
   for (const path of batch) {
     try {
+      if (skipExisting) {
+        const head = await fetch(objectUrl(destinationUrl, bucket, path), {
+          method: "HEAD",
+          headers: { Authorization: `Bearer ${destinationServiceKey}`, apikey: destinationServiceKey },
+        });
+        if (head.ok) {
+          skipped.push(path);
+          continue;
+        }
+      }
       const { data: signed, error: signedError } = await source.storage.from(bucket).createSignedUrl(path, 3600);
       if (signedError || !signed?.signedUrl) throw new Error(signedError?.message ?? "signed_url_failed");
       const sourceResponse = await fetch(signed.signedUrl);
@@ -136,6 +150,7 @@ Deno.serve(async (req) => {
     bucket,
     total: paths.length,
     copied,
+    skipped,
     failures,
     processed_until: lastPath ?? cursor ?? null,
     next_cursor: done ? null : lastPath,
