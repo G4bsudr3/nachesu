@@ -1,4 +1,4 @@
-import { z } from "npm:zod@4.1.12";
+import { z } from "npm:zod@4.4.3";
 
 export const MigrationRequestSchema = z.object({
   bucket: z.string().min(3).max(63).regex(/^[a-z0-9][a-z0-9-]*[a-z0-9]$/),
