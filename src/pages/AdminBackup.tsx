@@ -7,9 +7,12 @@ import { toast } from "sonner";
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/export-storage-zip`;
 
+const PART_SIZE = 150;
+
 type DryRun = {
   buckets: string[];
   total_files: number;
+  per_bucket?: Record<string, number>;
   sample: string[];
 };
 
@@ -39,12 +42,16 @@ const AdminBackup = () => {
   const { data, isLoading, error } = useInventory();
   const [baixando, setBaixando] = useState<string | null>(null);
 
-  const baixar = async (bucket?: string) => {
+  const baixar = async (bucket?: string, part?: number) => {
     try {
-      setBaixando(bucket ?? "__all__");
+      setBaixando(`${bucket ?? "__all__"}:${part ?? 0}`);
       const token = await getToken();
       const qs = new URLSearchParams({ token });
       if (bucket) qs.set("bucket", bucket);
+      if (part) {
+        qs.set("part", String(part));
+        qs.set("part_size", String(PART_SIZE));
+      }
       window.location.href = `${FN_URL}?${qs.toString()}`;
       toast.success("download iniciado", {
         description: "arquivos grandes podem levar alguns minutos pra começar.",
@@ -91,7 +98,7 @@ const AdminBackup = () => {
               disabled={baixando !== null}
               className="w-full sm:w-auto"
             >
-              {baixando === "__all__" ? (
+              {baixando === "__all__:0" ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : (
                 <Download className="w-4 h-4 mr-2" />
@@ -99,33 +106,69 @@ const AdminBackup = () => {
               baixar tudo num zip
             </Button>
             <p className="text-xs text-perestroika-preto/55">
-              o pacote completo passa de 4 gb. se a conexão cair no meio, baixe por bucket
-              abaixo, o conteúdo e os caminhos continuam idênticos.
+              o pacote completo passa de 4 gb e costuma cair no meio do caminho, o que gera
+              um arquivo que não abre. em bucket grande, baixe parte por parte abaixo:
+              cada parte é um zip válido e os caminhos continuam idênticos.
             </p>
           </div>
 
           <div className="rounded-2xl border border-perestroika-preto/15 divide-y divide-perestroika-preto/10">
-            {data.buckets.map((b) => (
-              <div
-                key={b}
-                className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
-              >
-                <span className="font-mono text-sm break-all">{b}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => baixar(b)}
-                  disabled={baixando !== null}
-                >
-                  {baixando === b ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Download className="w-4 h-4 mr-2" />
+            {data.buckets.map((b) => {
+              const count = data.per_bucket?.[b] ?? 0;
+              const parts = count > PART_SIZE ? Math.ceil(count / PART_SIZE) : 0;
+              return (
+                <div key={b} className="px-4 py-3 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="font-mono text-sm break-all">
+                      {b}
+                      {count > 0 && (
+                        <span className="ml-2 text-perestroika-preto/50">
+                          {count} arquivos
+                        </span>
+                      )}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => baixar(b)}
+                      disabled={baixando !== null}
+                    >
+                      {baixando === `${b}:0` ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Download className="w-4 h-4 mr-2" />
+                      )}
+                      baixar bucket
+                    </Button>
+                  </div>
+
+                  {parts > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs text-perestroika-preto/55">
+                        bucket grande, recomendo baixar em {parts} partes de até {PART_SIZE}{" "}
+                        arquivos cada.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {Array.from({ length: parts }, (_, i) => i + 1).map((p) => (
+                          <Button
+                            key={p}
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => baixar(b, p)}
+                            disabled={baixando !== null}
+                          >
+                            {baixando === `${b}:${p}` ? (
+                              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                            ) : null}
+                            parte {p}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
                   )}
-                  baixar bucket
-                </Button>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </>
       )}
