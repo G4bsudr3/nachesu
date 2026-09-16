@@ -42,12 +42,16 @@ const AdminBackup = () => {
   const { data, isLoading, error } = useInventory();
   const [baixando, setBaixando] = useState<string | null>(null);
 
-  const baixar = async (bucket?: string) => {
+  const baixar = async (bucket?: string, part?: number) => {
     try {
-      setBaixando(bucket ?? "__all__");
+      setBaixando(`${bucket ?? "__all__"}:${part ?? 0}`);
       const token = await getToken();
       const qs = new URLSearchParams({ token });
       if (bucket) qs.set("bucket", bucket);
+      if (part) {
+        qs.set("part", String(part));
+        qs.set("part_size", String(PART_SIZE));
+      }
       window.location.href = `${FN_URL}?${qs.toString()}`;
       toast.success("download iniciado", {
         description: "arquivos grandes podem levar alguns minutos pra começar.",
