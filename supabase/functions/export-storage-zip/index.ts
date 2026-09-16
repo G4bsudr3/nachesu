@@ -101,18 +101,41 @@ Deno.serve(async (req) => {
     return json({ error: "list_failed", message: String(e) }, 500);
   }
 
+  // Contagem por bucket, pra UI conseguir dividir em partes.
+  const perBucket: Record<string, number> = {};
+  for (const f of files) perBucket[f.bucket] = (perBucket[f.bucket] ?? 0) + 1;
+
+  const partSizeRaw = Number(url.searchParams.get("part_size") ?? "150");
+  const partSize = Number.isFinite(partSizeRaw)
+    ? Math.min(Math.max(Math.trunc(partSizeRaw), 1), 500)
+    : 150;
+  const partRaw = Number(url.searchParams.get("part") ?? "0");
+  const part = Number.isFinite(partRaw) && partRaw > 0 ? Math.trunc(partRaw) : 0;
+
   if (dryRun) {
     return json({
       buckets: targets,
       total_files: files.length,
+      per_bucket: perBucket,
+      part_size: partSize,
       sample: files.slice(0, 20).map((f) => `${f.bucket}/${f.path}`),
     });
   }
 
+  let selected = files;
+  if (part > 0) {
+    const start = (part - 1) * partSize;
+    selected = files.slice(start, start + partSize);
+    if (selected.length === 0) {
+      return json({ error: "empty_part", message: "essa parte não tem arquivos" }, 404);
+    }
+  }
+
   const stamp = new Date().toISOString().slice(0, 10);
+  const partSuffix = part > 0 ? `-parte${String(part).padStart(2, "0")}` : "";
   const filename = onlyBucket
-    ? `storage-${onlyBucket}-${stamp}.zip`
-    : `storage-nachesu-${stamp}.zip`;
+    ? `storage-${onlyBucket}${partSuffix}-${stamp}.zip`
+    : `storage-nachesu${partSuffix}-${stamp}.zip`;
 
   const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
 
