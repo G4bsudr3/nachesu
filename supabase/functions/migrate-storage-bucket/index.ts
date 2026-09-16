@@ -45,6 +45,29 @@ Deno.serve(async (req) => {
     .maybeSingle();
   if (!adminRole) return respond({ error: "forbidden" }, 403);
 
+  // Modo proxy: envia um arquivo já recomprimido direto pro destino.
+  const uploadPath = req.headers.get("x-upload-path");
+  const uploadBucket = req.headers.get("x-upload-bucket");
+  if (uploadPath && uploadBucket) {
+    if (!/^[a-z0-9][a-z0-9-]{1,62}$/.test(uploadBucket) || uploadPath.includes("..") || uploadPath.length > 1024) {
+      return respond({ error: "invalid_upload_target" }, 400);
+    }
+    const uploadResponse = await fetch(objectUrl(destinationUrl, uploadBucket, uploadPath), {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${destinationServiceKey}`,
+        apikey: destinationServiceKey,
+        "Content-Type": req.headers.get("x-upload-content-type") ?? "application/octet-stream",
+        "x-upsert": "true",
+      },
+      body: req.body,
+    });
+    if (!uploadResponse.ok) {
+      return respond({ error: "destination_upload_failed", status: uploadResponse.status, details: await uploadResponse.text() }, 502);
+    }
+    return respond({ ok: true, path: uploadPath });
+  }
+
   let rawBody: unknown;
   try {
     rawBody = await req.json();
