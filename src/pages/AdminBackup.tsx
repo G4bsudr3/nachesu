@@ -7,9 +7,12 @@ import { toast } from "sonner";
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/export-storage-zip`;
 
+const PART_SIZE = 150;
+
 type DryRun = {
   buckets: string[];
   total_files: number;
+  per_bucket?: Record<string, number>;
   sample: string[];
 };
 
