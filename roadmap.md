@@ -4,4 +4,5 @@
 - [x] iniciar atualização de envio de email (versão gerenciada)
 - [x] aplicar a atualização de envio de email (pronta para revisão e publicação)
 - [ ] corrigir partes vazias no backup de arquivos grandes
+- [ ] preparar migração protegida do bucket para outro projeto, aguardando credenciais e destino
 
