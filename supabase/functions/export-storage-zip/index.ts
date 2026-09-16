@@ -57,6 +57,7 @@ Deno.serve(async (req) => {
 
   const onlyBucket = url.searchParams.get("bucket");
   const dryRun = url.searchParams.get("dry_run") === "1";
+  const manifest = url.searchParams.get("manifest") === "1";
 
   const { data: buckets, error: bucketsErr } = await admin.storage.listBuckets();
   if (bucketsErr || !buckets) {
@@ -136,6 +137,24 @@ Deno.serve(async (req) => {
   const filename = onlyBucket
     ? `storage-${onlyBucket}${partSuffix}-${stamp}.zip`
     : `storage-nachesu${partSuffix}-${stamp}.zip`;
+
+  // Para partes grandes, o navegador monta o ZIP. Isso evita que o runtime
+  // encerre o stream antes do diretório central do arquivo ser gravado.
+  if (manifest) {
+    const signedFiles: { name: string; url: string }[] = [];
+    const failures: string[] = [];
+    for (const { bucket, path } of selected) {
+      const { data: signed, error } = await admin.storage
+        .from(bucket)
+        .createSignedUrl(path, 60 * 60);
+      if (error || !signed?.signedUrl) {
+        failures.push(`${bucket}/${path}`);
+      } else {
+        signedFiles.push({ name: `${bucket}/${path}`, url: signed.signedUrl });
+      }
+    }
+    return json({ filename, files: signedFiles, failures });
+  }
 
   const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
 

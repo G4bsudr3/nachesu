@@ -4,6 +4,7 @@ import { Download, HardDrive, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { BlobReader, BlobWriter, TextReader, ZipWriter } from "@zip.js/zip.js";
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/export-storage-zip`;
 
@@ -14,6 +15,12 @@ type DryRun = {
   total_files: number;
   per_bucket?: Record<string, number>;
   sample: string[];
+};
+
+type ExportManifest = {
+  filename: string;
+  files: { name: string; url: string }[];
+  failures: string[];
 };
 
 async function getToken() {
@@ -46,20 +53,52 @@ const AdminBackup = () => {
     try {
       setBaixando(`${bucket ?? "__all__"}:${part ?? 0}`);
       const token = await getToken();
-      const qs = new URLSearchParams({ token });
+      const qs = new URLSearchParams({ manifest: "1" });
       if (bucket) qs.set("bucket", bucket);
       if (part) {
         qs.set("part", String(part));
         qs.set("part_size", String(PART_SIZE));
       }
-      window.location.href = `${FN_URL}?${qs.toString()}`;
-      toast.success("download iniciado", {
-        description: "arquivos grandes podem levar alguns minutos pra começar.",
+      const manifestRes = await fetch(`${FN_URL}?${qs.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!manifestRes.ok) throw new Error(await manifestRes.text());
+      const manifest = (await manifestRes.json()) as ExportManifest;
+      if (manifest.files.length === 0) throw new Error("essa parte não tem arquivos disponíveis");
+
+      const zip = new ZipWriter(new BlobWriter("application/zip"), {
+        level: 0,
+        bufferedWrite: false,
+      });
+      const failures = [...manifest.failures];
+      for (const file of manifest.files) {
+        try {
+          const response = await fetch(file.url);
+          if (!response.ok) throw new Error(`erro ${response.status}`);
+          await zip.add(file.name, new BlobReader(await response.blob()));
+        } catch (downloadError) {
+          failures.push(`${file.name} :: ${String(downloadError)}`);
+        }
+      }
+      if (failures.length > 0) {
+        await zip.add("_falhas.txt", new TextReader(failures.join("\n")));
+      }
+      const blob = await zip.close();
+      const href = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = href;
+      anchor.download = manifest.filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(href);
+      toast.success("zip concluído", {
+        description: `${manifest.files.length - failures.length} arquivos incluídos.`,
       });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "não consegui iniciar o download");
+      toast.error(e instanceof Error ? e.message : "não consegui montar o arquivo");
     } finally {
-      setTimeout(() => setBaixando(null), 4000);
+      setBaixando(null);
     }
   };
 
@@ -103,12 +142,11 @@ const AdminBackup = () => {
               ) : (
                 <Download className="w-4 h-4 mr-2" />
               )}
-              baixar tudo num zip
+              montar tudo num zip
             </Button>
             <p className="text-xs text-perestroika-preto/55">
-              o pacote completo passa de 4 gb e costuma cair no meio do caminho, o que gera
-              um arquivo que não abre. em bucket grande, baixe parte por parte abaixo:
-              cada parte é um zip válido e os caminhos continuam idênticos.
+              o navegador monta e valida o zip antes de salvar. mantenha esta página aberta.
+              em bucket grande, baixe parte por parte abaixo para reduzir o uso de memória.
             </p>
           </div>
 
