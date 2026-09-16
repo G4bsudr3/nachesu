@@ -65,6 +65,7 @@ const AdminAvaliacaoModulos = lazy(() => import("./pages/AdminAvaliacaoModulos.t
 const AdminEntregas = lazy(() => import("./pages/AdminEntregas.tsx"));
 const AdminProjetos = lazy(() => import("./pages/AdminProjetos.tsx"));
 const AdminTurmas = lazy(() => import("./pages/AdminTurmas.tsx"));
+const AdminBackup = lazy(() => import("./pages/AdminBackup.tsx"));
 const AdminTurmaRelatorio = lazy(() => import("./pages/AdminTurmaRelatorio.tsx"));
 const AdminRespostas = lazy(() => import("./pages/AdminRespostas.tsx"));
 const AdminVideos = lazy(() => import("./pages/AdminVideos.tsx"));
@@ -297,6 +298,7 @@ const App = () => (
                 <Route path="/admin/correcoes" element={<Navigate to="/admin/entregas" replace />} />
                 <Route path="/admin/respostas" element={<AdminRespostas />} />
                 <Route path="/admin/videos" element={<AdminVideos />} />
+                <Route path="/admin/backup" element={<AdminBackup />} />
 
                 <Route path="/admin/eletiva/:slug/modulos" element={<AdminEletivaModulos />} />
                 <Route path="/admin/eletiva/:slug/modulo/:number" element={<AdminModuloDetalhe />} />
