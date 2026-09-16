@@ -24,6 +24,7 @@ import {
   Star,
   Rocket,
   GraduationCap,
+  HardDrive,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
