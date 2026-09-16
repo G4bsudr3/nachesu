@@ -90,6 +90,7 @@ const SECTIONS: Section[] = [
       { to: "/admin/usuarios", label: "usuários", icon: Users },
       { to: "/admin/rubricas", label: "rubricas", icon: ClipboardList },
       { to: "/admin/tutor", label: "tutor IA", icon: Brain },
+      { to: "/admin/backup", label: "backup de arquivos", icon: HardDrive },
       { to: "/admin/eletiva", label: "settings", icon: Settings },
     ],
   },
