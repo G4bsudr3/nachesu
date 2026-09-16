@@ -4,7 +4,7 @@ import { Download, HardDrive, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { BlobReader, BlobWriter, TextReader, ZipWriter } from "@zip.js/zip.js";
+import { BlobWriter, HttpReader, TextReader, ZipWriter } from "@zip.js/zip.js";
 
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/export-storage-zip`;
 
@@ -73,9 +73,10 @@ const AdminBackup = () => {
       const failures = [...manifest.failures];
       for (const file of manifest.files) {
         try {
-          const response = await fetch(file.url);
-          if (!response.ok) throw new Error(`erro ${response.status}`);
-          await zip.add(file.name, new BlobReader(await response.blob()));
+          await zip.add(file.name, new HttpReader(file.url, {
+            useRangeHeader: false,
+            preventHeadRequest: true,
+          }));
         } catch (downloadError) {
           failures.push(`${file.name} :: ${String(downloadError)}`);
         }
