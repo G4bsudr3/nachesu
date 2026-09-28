@@ -131,14 +131,24 @@ Deno.serve(async (req: Request) => {
       options: { redirectTo },
     });
 
-    const actionLink = linkData?.properties?.action_link;
-    if (linkErr || !actionLink) {
+    // Não mandamos o action_link cru (/verify GET): scanners de email abrem
+    // o link antes do estudante e queimam o token. Mandamos pra uma página
+    // nossa que só consome o token quando a pessoa clica no botão.
+    const hashedToken = linkData?.properties?.hashed_token;
+    if (linkErr || !hashedToken) {
       console.error(`[${FN}] generateLink falhou`, linkErr);
       return new Response(
         JSON.stringify({ error: "link_failed", message: "não consegui gerar o link agora" }),
         { status: 500, headers: { ...cors, "Content-Type": "application/json" } },
       );
     }
+    const confirmParams = new URLSearchParams({
+      token_hash: hashedToken,
+      type,
+      next: type === "recovery" ? "/reset-password" : nextPath,
+      email: rawEmail,
+    });
+    const actionLink = `${APP_BASE}/auth/confirmar?${confirmParams.toString()}`;
 
     // nome pra saudação (opcional)
     let recipientName = "";
