@@ -34,6 +34,7 @@ const AdminLayout = lazy(() =>
 const AdminAula = lazy(() => import("./pages/AdminAula.tsx"));
 const DossieAluno = lazy(() => import("./pages/DossieAluno.tsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
+const AuthConfirmar = lazy(() => import("./pages/AuthConfirmar.tsx"));
 const HubIndex = lazy(() => import("./pages/HubIndex.tsx"));
 const HubMateriais = lazy(() => import("./pages/HubMateriais.tsx"));
 
@@ -129,6 +130,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/eletivas" element={<Eletivas />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/auth/confirmar" element={<AuthConfirmar />} />
               <Route path="/comecar" element={<Comecar />} />
               {/* documentos legais: públicos, sem auth */}
               <Route path="/privacidade" element={<PoliticaPrivacidade />} />

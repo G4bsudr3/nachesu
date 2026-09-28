@@ -9,6 +9,7 @@ import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { PasswordStrength, evaluatePasswordStrength } from "@/components/PasswordStrength";
 import { t } from "@/lib/authErrors";
+import { RequestNewLink } from "@/components/auth/RequestNewLink";
 
 /**
  * Página pública de redefinição de senha.
@@ -105,9 +106,10 @@ const ResetPassword = () => {
               <p className="font-body text-base text-perestroika-preto/70 mb-8">
                 {t("reset_link_invalid_body")}
               </p>
+              <RequestNewLink type="recovery" initialEmail={localStorage.getItem("nachesu.lastEmail") ?? ""} />
               <Link
                 to="/auth"
-                className="inline-flex items-center gap-2 h-14 px-6 rounded-2xl bg-perestroika-preto text-perestroika-bege font-body font-medium uppercase tracking-wide hover:scale-[1.01] transition-transform"
+                className="mt-4 inline-flex items-center gap-2 min-h-11 font-body text-sm uppercase tracking-wide underline underline-offset-4"
               >
                 voltar pra entrar
                 <ArrowRight className="h-4 w-4" />
