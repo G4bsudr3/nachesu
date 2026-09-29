@@ -4,6 +4,7 @@ import { useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { moduloHref } from "@/lib/moduleHref";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
 import duduAsset from "@/assets/facilitadores/dudu.png.asset.json";
 
@@ -163,6 +164,15 @@ const EletivaJourneyCard = ({ courseId, slug, title, info, featured = false }: C
           </p>
         </div>
       </div>
+
+      {concluida && (
+        <div className="flex items-center gap-3 mb-4 rounded-2xl border-2 px-4 py-3" style={{ borderColor: info.accent }}>
+          <EletivaSymbol size={48} pose="celebrating" />
+          <p className="font-display uppercase text-2xl leading-none text-perestroika-preto">
+            você concluiu. certificado liberado
+          </p>
+        </div>
+      )}
 
       {/* título em destaque */}
       <h3
