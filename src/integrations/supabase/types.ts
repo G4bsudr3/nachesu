@@ -3471,6 +3471,7 @@ export type Database = {
           submitted_at: string
         }[]
       }
+      get_my_official_name: { Args: never; Returns: string }
       get_my_profile: {
         Args: never
         Returns: {
