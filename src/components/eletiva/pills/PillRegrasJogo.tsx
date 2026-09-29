@@ -457,6 +457,7 @@ function PrincipioBlock({
 
       <div>
         <select
+          id={`rj-p${n}-sel`}
           value={value}
           onChange={(e) => onChangePrincipio(e.target.value)}
           className="w-full rounded-xl border border-perestroika-preto/15 bg-perestroika-bege p-2 font-body text-sm h-[42px]"
@@ -470,7 +471,7 @@ function PrincipioBlock({
         </select>
       </div>
 
-      <div>
+      <div id={`rj-p${n}-just`}>
         <label className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 block mb-1">
           por que esse ({justificativa.trim().length}/{minJust})
         </label>
@@ -483,7 +484,7 @@ function PrincipioBlock({
         />
       </div>
 
-      <div>
+      <div id={`rj-p${n}-ex`}>
         <label className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 block mb-1">
           exemplo aplicado ao meu projeto ({exemplo.trim().length}/{minEx})
         </label>
