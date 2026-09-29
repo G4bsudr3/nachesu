@@ -365,6 +365,26 @@ export function PillMatrizValor({
         )}
       </div>
 
+      {!ready && !isCompleted && (
+        <div
+          aria-live="polite"
+          className="rounded-2xl border-2 border-dashed p-3 font-body text-sm text-perestroika-preto space-y-1"
+          style={{ borderColor: accent, backgroundColor: `${accent}10` }}
+        >
+          <p className="text-[11px] uppercase tracking-wider text-perestroika-preto/70">pra liberar o botão, falta:</p>
+          {linhasCompletas.length < minLinhas && (
+            <p>completar mais {minLinhas - linhasCompletas.length} linha{minLinhas - linhasCompletas.length > 1 ? "s" : ""}</p>
+          )}
+          {tiposDiferentes < minTipos && (
+            <p>
+              usar mais {minTipos - tiposDiferentes} tipo{minTipos - tiposDiferentes > 1 ? "s" : ""} diferente{minTipos - tiposDiferentes > 1 ? "s" : ""} no campo "tipo" de alguma linha
+            </p>
+          )}
+          {temGenerico && <p>trocar o beneficiário genérico por alguém específico</p>}
+        </div>
+      )}
+
+
       {/* footer */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
         <SaveIndicator status={status} />
