@@ -190,6 +190,26 @@ export function PillRegrasJogo({
     [p1, p2, sameError, j1, j2, e1, e2, rs, como, minJust, minEx, minComo],
   );
 
+  const falta = (n: number) => `mais ${n} ${n === 1 ? "letra" : "letras"}`;
+  const missing: { text: string; target: string }[] = [];
+  if (!p1) missing.push({ text: "escolher o princípio 1", target: "rj-p1-sel" });
+  if (!p2) missing.push({ text: "escolher o princípio 2", target: "rj-p2-sel" });
+  if (sameError) missing.push({ text: "escolher 2 princípios diferentes", target: "rj-p2-sel" });
+  if (j1.length < minJust) missing.push({ text: `escrever ${falta(minJust - j1.length)} no "por que esse" do princípio 1`, target: "rj-p1-just" });
+  if (e1.length < minEx) missing.push({ text: `escrever ${falta(minEx - e1.length)} no exemplo do princípio 1`, target: "rj-p1-ex" });
+  if (j2.length < minJust) missing.push({ text: `escrever ${falta(minJust - j2.length)} no "por que esse" do princípio 2`, target: "rj-p2-just" });
+  if (e2.length < minEx) missing.push({ text: `escrever ${falta(minEx - e2.length)} no exemplo do princípio 2`, target: "rj-p2-ex" });
+  if (rs.length < 1) missing.push({ text: "escolher 1 ou 2 R's", target: "rj-rs" });
+  if (como.length < minComo) missing.push({ text: `escrever ${falta(minComo - como.length)} em "como esses R's ajudam"`, target: "rj-como" });
+
+  const goTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    const field = (el.matches("textarea,select") ? el : el.querySelector("textarea,select,button")) as HTMLElement | null;
+    window.setTimeout(() => field?.focus({ preventScroll: true }), 350);
+  };
+
   const optsFor = (excludeVal?: string) =>
     principios.filter((p) => !excludeVal || p.value !== excludeVal);
 
@@ -275,6 +295,7 @@ export function PillRegrasJogo({
 
       {/* R's táticos */}
       <section
+        id="rj-rs"
         className="rounded-2xl border-2 p-4 sm:p-5 space-y-3"
         style={{ borderColor: "rgba(9,9,9,0.15)" }}
       >
@@ -320,7 +341,7 @@ export function PillRegrasJogo({
             );
           })}
         </div>
-        <div>
+        <div id="rj-como">
           <label className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 block mb-1">
             como esses R's ajudam meu projeto ({como.length}/{minComo})
           </label>
@@ -333,6 +354,31 @@ export function PillRegrasJogo({
           />
         </div>
       </section>
+
+      {!ready && !isCompleted && missing.length > 0 && (
+        <div
+          aria-live="polite"
+          className="rounded-2xl border-2 border-dashed p-3 space-y-1.5"
+          style={{ borderColor: accent, backgroundColor: `${accent}10` }}
+        >
+          <p className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/70">
+            pra liberar o botão, falta:
+          </p>
+          <ul className="space-y-1">
+            {missing.slice(0, 3).map((m) => (
+              <li key={m.text}>
+                <button
+                  type="button"
+                  onClick={() => goTo(m.target)}
+                  className="min-h-[44px] w-full text-left font-body text-sm text-perestroika-preto underline decoration-dotted underline-offset-4 rounded-lg px-1 focus-visible:outline focus-visible:outline-2"
+                >
+                  {m.text} <span aria-hidden>↑</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* footer */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
@@ -411,6 +457,7 @@ function PrincipioBlock({
 
       <div>
         <select
+          id={`rj-p${n}-sel`}
           value={value}
           onChange={(e) => onChangePrincipio(e.target.value)}
           className="w-full rounded-xl border border-perestroika-preto/15 bg-perestroika-bege p-2 font-body text-sm h-[42px]"
@@ -424,7 +471,7 @@ function PrincipioBlock({
         </select>
       </div>
 
-      <div>
+      <div id={`rj-p${n}-just`}>
         <label className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 block mb-1">
           por que esse ({justificativa.trim().length}/{minJust})
         </label>
@@ -437,7 +484,7 @@ function PrincipioBlock({
         />
       </div>
 
-      <div>
+      <div id={`rj-p${n}-ex`}>
         <label className="font-body text-[11px] uppercase tracking-wider text-perestroika-preto/60 block mb-1">
           exemplo aplicado ao meu projeto ({exemplo.trim().length}/{minEx})
         </label>
