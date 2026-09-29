@@ -4,6 +4,7 @@ import { useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useActiveEletiva } from "@/hooks/useActiveEletiva";
 import { moduloHref } from "@/lib/moduleHref";
+import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import frattzAsset from "@/assets/facilitadores/frattz.png.asset.json";
 import duduAsset from "@/assets/facilitadores/dudu.png.asset.json";
 
@@ -107,23 +108,29 @@ const EletivaJourneyCard = ({ courseId, slug, title, info, featured = false }: C
   const pct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
 
   const started = totalCompleted > 0;
-  const ctaLabel = !moduleToShow
-    ? "REVISAR"
-    : started
-      ? "CONTINUAR"
-      : "COMEÇAR";
+  const concluida = totalPublished >= 20 && totalCompleted >= totalPublished;
+  const ctaLabel = concluida
+    ? "BAIXAR CERTIFICADO"
+    : !moduleToShow
+      ? "REVISAR"
+      : started
+        ? "CONTINUAR"
+        : "COMEÇAR";
   // no modo featured (1 eletiva), CTA vai direto pro módulo atual.
   // no modo grid (2 eletivas), CTA leva pra home da eletiva pra dar o overview.
-  const ctaHref =
-    featured && moduleToShow
+  const ctaHref = concluida
+    ? `/app/eletiva/${slug}/certificado`
+    : featured && moduleToShow
       ? moduloHref(slug, moduleToShow.number)
       : `/app/eletiva/${slug}`;
 
-  const pitch = moduleToShow
-    ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a eletiva").toLowerCase()}`
-    : totalPublished === 0
-      ? "o primeiro módulo abre em breve. você recebe um aviso por aqui."
-      : "você tá em dia. revise materiais ou aguarde o próximo abrir.";
+  const pitch = concluida
+    ? "você concluiu os 20 módulos. seu certificado tá pronto, leva 1 min pra baixar."
+    : moduleToShow
+      ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a eletiva").toLowerCase()}`
+      : totalPublished === 0
+        ? "o primeiro módulo abre em breve. você recebe um aviso por aqui."
+        : "você tá em dia. revise materiais ou aguarde o próximo abrir.";
 
   return (
     <article
@@ -157,6 +164,15 @@ const EletivaJourneyCard = ({ courseId, slug, title, info, featured = false }: C
           </p>
         </div>
       </div>
+
+      {concluida && (
+        <div className="flex items-center gap-3 mb-4 rounded-2xl border-2 px-4 py-3" style={{ borderColor: info.accent }}>
+          <EletivaSymbol size={48} pose="celebrating" />
+          <p className="font-display uppercase text-2xl leading-none text-perestroika-preto">
+            você concluiu. certificado liberado
+          </p>
+        </div>
+      )}
 
       {/* título em destaque */}
       <h3
