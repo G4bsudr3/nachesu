@@ -8,6 +8,7 @@ import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AuthedHeaderActions } from "@/components/layout/AuthedHeaderActions";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
@@ -39,6 +40,7 @@ const paperFor = (_slug: string) => PAPER;
 const CertificadoEletiva = () => {
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
+  const { isAdmin } = useUserRole();
   const { data: course, isLoading: courseLoading } = useCourseBySlug(slug);
   const { data: enrollments, isLoading: enrollLoading } = useMyEnrollments();
   const { data: snapshot, isLoading: snapLoading } = useEletivaProgress(course?.id ?? null);
@@ -97,7 +99,10 @@ const CertificadoEletiva = () => {
   const totalPublished = snapshot?.totalPublished ?? 0;
   const totalCompleted = snapshot?.totalCompleted ?? 0;
   const pct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
-  const isComplete = totalPublished > 0 && totalCompleted >= totalPublished;
+  // admin pode simular a emissão com ?simular=1, sem precisar concluir os módulos
+  const isSimulation =
+    isAdmin && typeof window !== "undefined" && new URLSearchParams(window.location.search).get("simular") === "1";
+  const isComplete = isSimulation || (totalPublished > 0 && totalCompleted >= totalPublished);
   const canDownload = isComplete && fullName.trim().length >= 2;
 
   const accent = useMemo(() => accentFor(slug), [slug]);
