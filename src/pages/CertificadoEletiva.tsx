@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, Award, Download, Loader2, Lock } from "lucide-react";
 import { toPng } from "html-to-image";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useCourseBySlug, useMyEnrollments } from "@/hooks/useCourses";
 import { useEletivaProgress } from "@/hooks/useEletivaProgress";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -52,7 +54,19 @@ const CertificadoEletiva = () => {
 
   const loading = courseLoading || enrollLoading || (!!course?.id && snapLoading && !snapshot);
 
+  const { data: officialName } = useQuery({
+    queryKey: ["my-official-name", user?.id],
+    enabled: !!user?.id,
+    staleTime: Infinity,
+    queryFn: async () => {
+      const { data, error } = await (supabase.rpc as any)("get_my_official_name");
+      if (error) return null;
+      return (data as string | null)?.trim() || null;
+    },
+  });
+
   const defaultName =
+    officialName ||
     dashData?.profile?.display_name?.trim() ||
     dashData?.nicknameDisplay ||
     user?.email?.split("@")[0] ||

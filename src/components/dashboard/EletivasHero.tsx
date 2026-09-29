@@ -107,23 +107,29 @@ const EletivaJourneyCard = ({ courseId, slug, title, info, featured = false }: C
   const pct = totalPublished > 0 ? Math.round((totalCompleted / totalPublished) * 100) : 0;
 
   const started = totalCompleted > 0;
-  const ctaLabel = !moduleToShow
-    ? "REVISAR"
-    : started
-      ? "CONTINUAR"
-      : "COMEÇAR";
+  const concluida = totalPublished >= 20 && totalCompleted >= totalPublished;
+  const ctaLabel = concluida
+    ? "BAIXAR CERTIFICADO"
+    : !moduleToShow
+      ? "REVISAR"
+      : started
+        ? "CONTINUAR"
+        : "COMEÇAR";
   // no modo featured (1 eletiva), CTA vai direto pro módulo atual.
   // no modo grid (2 eletivas), CTA leva pra home da eletiva pra dar o overview.
-  const ctaHref =
-    featured && moduleToShow
+  const ctaHref = concluida
+    ? `/app/eletiva/${slug}/certificado`
+    : featured && moduleToShow
       ? moduloHref(slug, moduleToShow.number)
       : `/app/eletiva/${slug}`;
 
-  const pitch = moduleToShow
-    ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a eletiva").toLowerCase()}`
-    : totalPublished === 0
-      ? "o primeiro módulo abre em breve. você recebe um aviso por aqui."
-      : "você tá em dia. revise materiais ou aguarde o próximo abrir.";
+  const pitch = concluida
+    ? "você concluiu os 20 módulos. seu certificado tá pronto, leva 1 min pra baixar."
+    : moduleToShow
+      ? `próximo passo: ${(moduleToShow.title || moduleToShow.objective || "abra a eletiva").toLowerCase()}`
+      : totalPublished === 0
+        ? "o primeiro módulo abre em breve. você recebe um aviso por aqui."
+        : "você tá em dia. revise materiais ou aguarde o próximo abrir.";
 
   return (
     <article
