@@ -219,10 +219,8 @@ export function PillMiniDossie({ pillId, schema, accent, initial, save, onComple
             </div>
 
             <a
-              href={dossieUrl + "?certificado=1"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-perestroika-preto/15 px-4 py-2 font-body text-sm text-perestroika-preto hover:border-perestroika-preto/50"
+              href="/app/eletiva/economia-circular/certificado"
+              className="w-full inline-flex items-center justify-center gap-2 min-h-11 rounded-full border-2 border-perestroika-preto/15 px-4 py-2 font-body text-sm text-perestroika-preto hover:border-perestroika-preto/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-preto"
             >
               <Award className="h-4 w-4" aria-hidden /> ver certificado
             </a>

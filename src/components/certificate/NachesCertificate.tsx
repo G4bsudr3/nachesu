@@ -12,6 +12,8 @@ export interface NachesCertificateProps {
   paperColor?: string;
   /** data curta (ex: "março de 2026"). se ausente, usa hoje. */
   issuedAt?: string;
+  /** carga horária cumprida. padrão: 16h40min (20 módulos × 50 min). */
+  workload?: string;
 }
 
 const formatDatePtBr = (d = new Date()) =>
@@ -19,12 +21,8 @@ const formatDatePtBr = (d = new Date()) =>
 
 /**
  * certificado oficial da eletiva NachesU × Sebrae.
- *
- * princípios:
- *  - nome do estudante é protagonista absoluto (League Gothic gigante)
- *  - cor da eletiva vira faixa superior + inferior + accent no nome do curso
- *  - assinatura NachesU no rodapé
- *  - dimensão landscape A4 (1414x1000) pra impressão nítida
+ * nome protagonista, cor da eletiva nas faixas, assinatura NachesU no rodapé,
+ * landscape A4 (1414x1000).
  */
 export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificateProps>(
   (
@@ -36,6 +34,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
       accentColor,
       paperColor = "#f2e4d8",
       issuedAt,
+      workload = "16h40min",
     },
     ref,
   ) => {
@@ -188,7 +187,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             >
               <span>guiado por {professorName.toLowerCase()}</span>
               <span style={{ opacity: 0.4 }}>·</span>
-              <span>carga horária 20h</span>
+              <span>carga horária cumprida {workload}</span>
               <span style={{ opacity: 0.4 }}>·</span>
               <span>{dateLabel}</span>
             </div>
