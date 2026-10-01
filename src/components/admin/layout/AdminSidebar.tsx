@@ -24,6 +24,7 @@ import {
   Star,
   Rocket,
   GraduationCap,
+  Award,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -72,6 +73,7 @@ const SECTIONS: Section[] = [
       { to: "/admin/risco", label: "risco", icon: AlertTriangle },
       { to: "/admin/pulso", label: "pulso · feedback", icon: Star },
       { to: "/admin/turmas", label: "turmas", icon: GraduationCap },
+      { to: "/admin/certificados", label: "certificados", icon: Award },
     ],
   },
 
