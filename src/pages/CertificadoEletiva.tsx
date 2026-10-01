@@ -21,6 +21,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { logger } from "@/lib/logger";
 import { accentFor, PAPER } from "@/lib/eletivaTheme";
+import { certificateCode } from "@/components/certificate/renderNachesCertificatePdf";
 
 const slugify = (s: string) =>
   s
@@ -66,6 +67,29 @@ const CertificadoEletiva = () => {
       return (data as string | null)?.trim() || null;
     },
   });
+
+  const { data: completedAt } = useQuery({
+    queryKey: ["my-course-completed-at", user?.id, course?.id],
+    enabled: !!user?.id && !!course?.id,
+    queryFn: async () => {
+      const { data: trails } = await supabase.from("trails").select("id").eq("course_id", course!.id);
+      const trailIds = (trails ?? []).map((t) => t.id);
+      if (!trailIds.length) return null;
+      const { data: mods } = await supabase.from("modules").select("id").in("trail_id", trailIds);
+      const modIds = (mods ?? []).map((m) => m.id);
+      if (!modIds.length) return null;
+      const { data } = await supabase
+        .from("student_module_progress")
+        .select("completed_at")
+        .eq("user_id", user!.id)
+        .in("module_id", modIds)
+        .not("completed_at", "is", null)
+        .order("completed_at", { ascending: false })
+        .limit(1);
+      return data?.[0]?.completed_at ?? null;
+    },
+  });
+  const verificationCode = user?.id && slug ? certificateCode(slug, user.id) : null;
 
   const defaultName =
     officialName ||
@@ -355,6 +379,8 @@ const CertificadoEletiva = () => {
                     professorName={course.professor_name}
                     accentColor={accent}
                     paperColor={paper}
+                    completedAt={completedAt}
+                    verificationCode={verificationCode}
                   />
                 </div>
               </div>
@@ -411,6 +437,8 @@ const CertificadoEletiva = () => {
                 professorName={course.professor_name}
                 accentColor={accent}
                 paperColor={paper}
+                completedAt={completedAt}
+                verificationCode={verificationCode}
               />
             </div>
           </>

@@ -3098,6 +3098,18 @@ export type Database = {
         Args: { p_feedback: string; p_ids: string[]; p_score?: number }
         Returns: number
       }
+      admin_certificate_candidates: {
+        Args: { _course_id: string }
+        Returns: {
+          completed_at: string
+          display_name: string
+          email: string
+          full_name: string
+          ra: string
+          turma: string
+          user_id: string
+        }[]
+      }
       admin_cohort_members: {
         Args: { _cohort_id: string }
         Returns: {

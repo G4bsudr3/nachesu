@@ -14,6 +14,10 @@ export interface NachesCertificateProps {
   issuedAt?: string;
   /** carga horária cumprida. padrão: 16h40min (20 módulos × 50 min). */
   workload?: string;
+  /** data real de conclusão (último módulo concluído). tem prioridade sobre issuedAt. */
+  completedAt?: string | Date | null;
+  /** código curto pra identificar o documento (ex: NU-EC-1A2B3C4D). */
+  verificationCode?: string | null;
 }
 
 const formatDatePtBr = (d = new Date()) =>
@@ -35,10 +39,15 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
       paperColor = "#f2e4d8",
       issuedAt,
       workload = "16h40min",
+      completedAt,
+      verificationCode,
     },
     ref,
   ) => {
-    const dateLabel = issuedAt ?? formatDatePtBr();
+    const dateLabel = completedAt
+      ? formatDatePtBr(new Date(completedAt))
+      : issuedAt ?? formatDatePtBr();
+    const year = completedAt ? new Date(completedAt).getFullYear() : new Date().getFullYear();
 
     return (
       <div
@@ -124,7 +133,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
                 marginBottom: 18,
               }}
             >
-              certifica-se que
+              certificamos que
             </div>
 
             <h1
@@ -155,7 +164,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
                 fontWeight: 400,
               }}
             >
-              concluiu 100% da eletiva{" "}
+              concluiu a eletiva{" "}
               <strong
                 className="font-display uppercase"
                 style={{
@@ -168,8 +177,8 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               >
                 {courseTitle.toLowerCase()}
               </strong>
-              , com 20H de prática em turma online do 1º ano do ensino médio na escola sebrae.
-              {courseSubtitle ? ` ${courseSubtitle.toLowerCase()}.` : ""}
+              , com carga horária de {workload}, cursada na modalidade online no primeiro ano do ensino
+              médio técnico da escola sebrae, em {year}.
             </p>
 
             {/* metadados alinhados à esquerda, mesmo eixo do miolo */}
@@ -178,18 +187,21 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 18,
-                fontSize: 14,
-                letterSpacing: "0.26em",
+                flexWrap: "wrap",
+                whiteSpace: "nowrap",
+                columnGap: 14,
+                rowGap: 8,
+                fontSize: 13,
+                letterSpacing: "0.16em",
                 color: "rgba(9,9,9,0.6)",
                 fontWeight: 600,
               }}
             >
-              <span>guiado por {professorName.toLowerCase()}</span>
+              <span>educador responsável: {professorName.toLowerCase()}</span>
               <span style={{ opacity: 0.4 }}>·</span>
-              <span>carga horária cumprida {workload}</span>
+              <span>carga horária {workload}</span>
               <span style={{ opacity: 0.4 }}>·</span>
-              <span>{dateLabel}</span>
+              <span>concluído em {dateLabel}</span>
             </div>
           </div>
 
@@ -198,7 +210,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: verificationCode ? "space-between" : "center",
               paddingTop: 22,
               borderTop: "1px solid rgba(9,9,9,0.14)",
             }}
@@ -214,6 +226,14 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
             >
               uma realização naches · em parceria com escola sebrae
             </span>
+            {verificationCode ? (
+              <span
+                className="font-body uppercase"
+                style={{ fontSize: 13, letterSpacing: "0.2em", color: "rgba(9,9,9,0.6)", fontWeight: 600 }}
+              >
+                código {verificationCode}
+              </span>
+            ) : null}
           </div>
         </div>
       </div>
