@@ -177,7 +177,7 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               >
                 {courseTitle.toLowerCase()}
               </strong>
-              , com carga horária de {workload}, cursada na modalidade online no 1º ano do ensino
+              , com carga horária de {workload}, cursada na modalidade online no primeiro ano do ensino
               médio técnico da escola sebrae, em {year}.
             </p>
 
