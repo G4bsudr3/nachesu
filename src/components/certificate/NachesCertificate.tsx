@@ -187,9 +187,12 @@ export const NachesCertificate = forwardRef<HTMLDivElement, NachesCertificatePro
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 18,
-                fontSize: 14,
-                letterSpacing: "0.26em",
+                flexWrap: "wrap",
+                whiteSpace: "nowrap",
+                columnGap: 14,
+                rowGap: 8,
+                fontSize: 13,
+                letterSpacing: "0.16em",
                 color: "rgba(9,9,9,0.6)",
                 fontWeight: 600,
               }}
