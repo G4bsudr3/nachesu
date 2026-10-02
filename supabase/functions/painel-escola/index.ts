@@ -35,7 +35,8 @@ function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-type Client = ReturnType<typeof createClient>;
+// deno-lint-ignore no-explicit-any
+type Client = any;
 
 /** pagina resultados pra passar do limite padrão de 1000 linhas do PostgREST */
 async function fetchAll<T = Record<string, unknown>>(
