@@ -6,6 +6,13 @@ import { useSeo } from "@/hooks/useSeo";
 import { cn } from "@/lib/utils";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { accentFor, PAPER } from "@/lib/eletivaTheme";
+import { renderNachesCertificatePdf } from "@/components/certificate/renderNachesCertificatePdf";
+import {
+  buildCertificatesZip,
+  certificateFileName,
+  downloadBlob,
+} from "@/components/certificate/certificateBatch";
 
 /* ------------------------------------------------------------------ */
 /* tipos                                                               */
@@ -39,28 +46,54 @@ type TurmaResumo = {
   media_modulos: number;
 };
 
+type Resumo = {
+  convidados: number;
+  entraram: number;
+  nunca_entraram: number;
+  entrou_sem_comecar: number;
+  em_andamento: number;
+  parados: number;
+  concluiram: number;
+  ativos_7d: number;
+  media_modulos: number;
+  modulos_publicados: number;
+  pilulas_publicadas: number;
+  por_turma: (TurmaResumo & { concluiram?: number })[];
+};
+
+/** visão usada pelo bloco de acompanhamento (uma eletiva num semestre) */
 type Eletiva = {
   slug: string;
   titulo: string;
   professor: string;
   alunos: Aluno[];
-  resumo: {
-    convidados: number;
-    entraram: number;
-    nunca_entraram: number;
-    entrou_sem_comecar: number;
-    em_andamento: number;
-    parados: number;
-    concluiram: number;
-    ativos_7d: number;
-    media_modulos: number;
-    modulos_publicados: number;
-    pilulas_publicadas: number;
-    por_turma: TurmaResumo[];
-  };
+  resumo: Resumo;
 };
 
-type Painel = { gerado_em: string; eletivas: Eletiva[] };
+type AlunoSemestre = Aluno & { ra: string | null; concluido_em: string | null };
+
+type Certificado = {
+  nome: string;
+  nome_oficial: boolean;
+  ra: string | null;
+  turma: string | null;
+  concluido_em: string;
+  semestre: 1 | 2;
+  codigo: string;
+};
+
+type EletivaPainel = {
+  slug: string;
+  titulo: string;
+  subtitulo: string;
+  professor: string;
+  modulos_publicados: number;
+  semestre1: { alunos: AlunoSemestre[]; resumo: Resumo };
+  semestre2: { alunos: AlunoSemestre[]; resumo: Resumo };
+  certificados: Certificado[];
+};
+
+type Painel = { gerado_em: string; eletivas: EletivaPainel[] };
 
 /* ------------------------------------------------------------------ */
 /* sessão (12h, por aba)                                               */
@@ -792,8 +825,392 @@ function EletivaBloco({ eletiva }: { eletiva: Eletiva }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* abas pequenas (eletiva)                                             */
+/* ------------------------------------------------------------------ */
+
+function EletivaTabs({
+  eletivas,
+  aba,
+  onChange,
+  contagem,
+}: {
+  eletivas: EletivaPainel[];
+  aba: number;
+  onChange: (i: number) => void;
+  contagem: (el: EletivaPainel) => number;
+}) {
+  return (
+    <div role="tablist" aria-label="eletivas" className="flex flex-wrap gap-2 mb-8">
+      {eletivas.map((el, i) => (
+        <button
+          key={el.slug}
+          role="tab"
+          aria-selected={i === aba}
+          type="button"
+          onClick={() => onChange(i)}
+          className={cn(
+            "min-h-11 rounded-full px-4 py-2 font-body text-sm lowercase transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa",
+            i === aba
+              ? "bg-perestroika-preto text-perestroika-bege"
+              : "border border-perestroika-preto/15 text-perestroika-preto/70 hover:border-perestroika-preto",
+          )}
+        >
+          {el.titulo}
+          <span className="tabular-nums opacity-60"> · {contagem(el)}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* 1º semestre: fechamento                                             */
+/* ------------------------------------------------------------------ */
+
+function Semestre1({ eletivas }: { eletivas: EletivaPainel[] }) {
+  return (
+    <section className="space-y-10">
+      <p className="font-body text-sm lowercase text-perestroika-preto/70 max-w-2xl">
+        cada estudante fez uma eletiva no 1º semestre. quem concluiu já está fazendo a outra no
+        2º semestre. os certificados de quem concluiu ficam na aba certificados.
+      </p>
+      <div className="grid gap-6 md:grid-cols-2">
+        {eletivas.map((el) => {
+          const r = el.semestre1.resumo;
+          const pct = r.convidados ? Math.round((r.concluiram / r.convidados) * 100) : 0;
+          return (
+            <article key={el.slug} className="rounded-3xl border-2 border-perestroika-preto/15 p-5 sm:p-6">
+              <p className="font-body text-[11px] lowercase tracking-wide text-perestroika-preto/55">
+                com {el.professor}
+              </p>
+              <h3 className="font-display uppercase text-3xl leading-none mt-1">{el.titulo}</h3>
+              <div className="mt-5 flex items-end gap-3">
+                <span className="font-display text-7xl leading-[0.8] tabular-nums text-perestroika-azul">
+                  {pct}%
+                </span>
+                <span className="font-body text-sm lowercase text-perestroika-preto/70 pb-1">
+                  concluíram os {el.modulos_publicados} módulos
+                </span>
+              </div>
+              <div className="mt-4 h-2 rounded-full bg-perestroika-preto/10 overflow-hidden">
+                <div className="h-full bg-perestroika-azul" style={{ width: `${pct}%` }} />
+              </div>
+              <dl className="mt-5 grid grid-cols-3 gap-3 font-body text-sm lowercase">
+                <div>
+                  <dt className="text-[11px] text-perestroika-preto/55">matriculados</dt>
+                  <dd className="font-display text-3xl tabular-nums">{r.convidados}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] text-perestroika-preto/55">concluíram</dt>
+                  <dd className="font-display text-3xl tabular-nums">{r.concluiram}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] text-perestroika-preto/55">não concluíram</dt>
+                  <dd className="font-display text-3xl tabular-nums">{r.convidados - r.concluiram}</dd>
+                </div>
+              </dl>
+              <table className="mt-6 w-full font-body text-sm lowercase">
+                <thead>
+                  <tr className="text-left text-[11px] text-perestroika-preto/55 border-b border-perestroika-preto/15">
+                    <th className="py-2 font-normal">turma</th>
+                    <th className="py-2 font-normal text-right">concluíram</th>
+                    <th className="py-2 font-normal text-right">%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {r.por_turma.map((t) => (
+                    <tr key={t.turma} className="border-b border-perestroika-preto/10">
+                      <td className="py-2 uppercase">{t.turma}</td>
+                      <td className="py-2 text-right tabular-nums">
+                        {t.concluiram ?? 0} de {t.total}
+                      </td>
+                      <td className="py-2 text-right tabular-nums">
+                        {t.total ? Math.round(((t.concluiram ?? 0) / t.total) * 100) : 0}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <NaoConcluiram
+                total={el.modulos_publicados}
+                alunos={el.semestre1.alunos.filter((a) => a.status !== "concluiu")}
+              />
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function NaoConcluiram({ alunos, total }: { alunos: AlunoSemestre[]; total: number }) {
+  if (!alunos.length) return null;
+  return (
+    <details className="mt-5 group">
+      <summary className="cursor-pointer min-h-11 flex items-center font-body text-sm lowercase underline underline-offset-4">
+        ver quem não concluiu ({alunos.length})
+      </summary>
+      <ul className="mt-2 space-y-1 font-body text-sm lowercase max-h-72 overflow-y-auto">
+        {[...alunos]
+          .sort((a, b) => (a.turma ?? "").localeCompare(b.turma ?? "") || a.nome.localeCompare(b.nome))
+          .map((a, i) => (
+            <li key={i} className="flex justify-between gap-3 border-b border-perestroika-preto/10 py-1">
+              <span className="normal-case">{a.nome}</span>
+              <span className="tabular-nums text-perestroika-preto/60 shrink-0">
+                {a.turma ?? "sem turma"} · {a.modulos_concluidos}/{total} módulos
+              </span>
+            </li>
+          ))}
+      </ul>
+    </details>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* certificados                                                        */
+/* ------------------------------------------------------------------ */
+
+const fmtData = (d: string) => new Date(d).toLocaleDateString("pt-BR");
+
+function Certificados({ eletiva }: { eletiva: EletivaPainel }) {
+  const [busca, setBusca] = useState("");
+  const [turma, setTurma] = useState("todas");
+  const [sel, setSel] = useState<Set<string>>(new Set());
+  const [prog, setProg] = useState<{ done: number; total: number } | null>(null);
+  const [aviso, setAviso] = useState<string | null>(null);
+  const lista = eletiva.certificados;
+
+  const turmas = useMemo(
+    () => [...new Set(lista.map((c) => c.turma ?? "sem turma"))].sort(),
+    [lista],
+  );
+  const filtrados = lista.filter((c) => {
+    if (turma !== "todas" && (c.turma ?? "sem turma") !== turma) return false;
+    const t = semAcento(busca.trim().toLowerCase());
+    if (!t) return true;
+    return semAcento(`${c.nome} ${c.ra ?? ""}`.toLowerCase()).includes(t);
+  });
+  const todosMarcados = filtrados.length > 0 && filtrados.every((c) => sel.has(c.codigo));
+  const semNome = lista.filter((c) => !c.nome_oficial).length;
+
+  const props = (c: Certificado) => ({
+    fullName: c.nome,
+    courseTitle: eletiva.titulo,
+    courseSubtitle: eletiva.subtitulo,
+    professorName: eletiva.professor,
+    accentColor: accentFor(eletiva.slug),
+    paperColor: PAPER,
+    completedAt: c.concluido_em,
+    verificationCode: c.codigo,
+  });
+
+  const umPdf = async (c: Certificado) => {
+    setAviso(null);
+    setProg({ done: 0, total: 1 });
+    try {
+      downloadBlob(await renderNachesCertificatePdf(props(c)), certificateFileName(c.nome, c.ra));
+    } catch {
+      setAviso(`não consegui gerar o certificado de ${c.nome}. tenta de novo.`);
+    } finally {
+      setProg(null);
+    }
+  };
+
+  const zip = async (items: Certificado[]) => {
+    if (!items.length) return;
+    setAviso(null);
+    const { blob, failed } = await buildCertificatesZip(
+      items.map((c) => ({
+        key: c.codigo,
+        nome: c.nome,
+        ra: c.ra,
+        turma: c.turma,
+        props: props(c),
+        csv: [c.nome, c.ra ?? "", c.turma ?? "", eletiva.titulo, fmtData(c.concluido_em), c.codigo],
+      })),
+      ["nome", "ra", "turma", "eletiva", "concluído em", "código"],
+      (done, total) => setProg({ done, total }),
+    );
+    downloadBlob(blob, `certificados-${eletiva.slug}-2026.zip`);
+    setProg(null);
+    setAviso(
+      failed.length
+        ? `${items.length - failed.length} certificados no zip. não consegui gerar: ${failed.join(", ")}. baixa esses um por um.`
+        : `${items.length} certificados no zip. pronto pra arquivar.`,
+    );
+  };
+
+  const toggle = (k: string) =>
+    setSel((s) => {
+      const n = new Set(s);
+      if (n.has(k)) n.delete(k);
+      else n.add(k);
+      return n;
+    });
+  const busy = !!prog;
+  const selecionados = lista.filter((c) => sel.has(c.codigo));
+
+  return (
+    <section>
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="font-display uppercase text-4xl leading-none tabular-nums">
+            {lista.length} certificados
+          </p>
+          <p className="font-body text-sm lowercase text-perestroika-preto/65 mt-2 max-w-lg">
+            quem concluiu os {eletiva.modulos_publicados} módulos. cada pdf tem nome completo,
+            carga horária de 16h40min, data de conclusão e código de verificação.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            disabled={busy || selecionados.length === 0}
+            onClick={() => zip(selecionados)}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-perestroika-preto px-4 font-body text-sm lowercase text-perestroika-bege disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa"
+          >
+            <Download className="h-4 w-4" /> baixar selecionados (zip) · {selecionados.length}
+          </button>
+        </div>
+      </div>
+
+      {prog && (
+        <div className="mt-5 rounded-2xl border-2 border-perestroika-preto/15 p-4" aria-live="polite">
+          <p className="font-body text-sm lowercase mb-2">
+            gerando {prog.done} de {prog.total}. deixa essa aba aberta.
+          </p>
+          <div className="h-2 rounded-full bg-perestroika-preto/10 overflow-hidden">
+            <div
+              className="h-full bg-perestroika-preto transition-all"
+              style={{ width: `${(prog.done / Math.max(prog.total, 1)) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+      {aviso && !prog && (
+        <p className="mt-5 rounded-2xl border border-perestroika-preto/15 px-4 py-3 font-body text-sm lowercase" role="status">
+          {aviso}
+        </p>
+      )}
+      {semNome > 0 && (
+        <p className="mt-5 font-body text-xs lowercase text-perestroika-preto/65">
+          {semNome} {semNome === 1 ? "estudante não está" : "estudantes não estão"} na lista oficial da
+          escola. o certificado sai com o nome cadastrado na plataforma, marcado abaixo.
+        </p>
+      )}
+
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <label className="relative flex-1">
+          <span className="sr-only">buscar por nome ou ra</span>
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-perestroika-preto/45" />
+          <input
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="buscar por nome ou ra"
+            className="w-full min-h-11 rounded-xl border-2 border-perestroika-preto/15 bg-transparent pl-9 pr-3 font-body text-sm focus:border-perestroika-preto focus:outline-none"
+          />
+        </label>
+        <select
+          aria-label="filtrar por turma"
+          value={turma}
+          onChange={(e) => setTurma(e.target.value)}
+          className="min-h-11 rounded-xl border-2 border-perestroika-preto/15 bg-transparent px-3 font-body text-sm lowercase"
+        >
+          <option value="todas">todas as turmas</option>
+          {turmas.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mt-4 overflow-x-auto rounded-2xl border-2 border-perestroika-preto/15">
+        <table className="w-full font-body text-sm">
+          <thead>
+            <tr className="text-left text-[11px] lowercase text-perestroika-preto/55 border-b border-perestroika-preto/15">
+              <th className="p-3 w-10">
+                <input
+                  type="checkbox"
+                  aria-label="selecionar todos da lista"
+                  className="h-5 w-5 accent-perestroika-preto"
+                  checked={todosMarcados}
+                  onChange={() =>
+                    setSel((s) => {
+                      const n = new Set(s);
+                      filtrados.forEach((c) => (todosMarcados ? n.delete(c.codigo) : n.add(c.codigo)));
+                      return n;
+                    })
+                  }
+                />
+              </th>
+              <th className="p-3 font-normal">nome</th>
+              <th className="p-3 font-normal">ra</th>
+              <th className="p-3 font-normal">turma</th>
+              <th className="p-3 font-normal">concluiu em</th>
+              <th className="p-3 font-normal text-right">pdf</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtrados.map((c) => (
+              <tr key={c.codigo} className="border-b border-perestroika-preto/10 last:border-0">
+                <td className="p-3">
+                  <input
+                    type="checkbox"
+                    aria-label={`selecionar ${c.nome}`}
+                    className="h-5 w-5 accent-perestroika-preto"
+                    checked={sel.has(c.codigo)}
+                    onChange={() => toggle(c.codigo)}
+                  />
+                </td>
+                <td className="p-3">
+                  {c.nome}
+                  {!c.nome_oficial && (
+                    <span className="ml-2 rounded-full border border-perestroika-vermelho px-2 py-0.5 text-[10px] lowercase text-perestroika-vermelho">
+                      fora da lista oficial
+                    </span>
+                  )}
+                </td>
+                <td className="p-3 tabular-nums">{c.ra ?? "–"}</td>
+                <td className="p-3 uppercase">{c.turma ?? "–"}</td>
+                <td className="p-3 tabular-nums">{fmtData(c.concluido_em)}</td>
+                <td className="p-3 text-right">
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => umPdf(c)}
+                    aria-label={`baixar certificado de ${c.nome}`}
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-xl border-2 border-perestroika-preto/15 px-3 lowercase hover:border-perestroika-preto disabled:opacity-40"
+                  >
+                    <Download className="h-4 w-4" /> pdf
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {filtrados.length === 0 && (
+              <tr>
+                <td colSpan={6} className="p-6 text-center font-body text-sm lowercase text-perestroika-preto/60">
+                  {lista.length ? "ninguém com esse filtro. limpa a busca ou troca a turma." : "ainda ninguém concluiu essa eletiva."}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* página                                                              */
 /* ------------------------------------------------------------------ */
+
+type Secao = "s1" | "s2" | "cert";
+const SECOES: { id: Secao; rotulo: string; detalhe: string }[] = [
+  { id: "s1", rotulo: "1º semestre", detalhe: "concluído" },
+  { id: "s2", rotulo: "2º semestre", detalhe: "em andamento" },
+  { id: "cert", rotulo: "certificados", detalhe: "baixar pdf ou zip" },
+];
 
 export default function Acompanhamento() {
   useSeo({
@@ -806,6 +1223,7 @@ export default function Acompanhamento() {
   const [senha, setSenha] = useState<string | null>(() => loadSession());
   const [agora, setAgora] = useState(Date.now());
   const [aba, setAba] = useState(0);
+  const [secao, setSecao] = useState<Secao>("s2");
 
   const query = useQuery({
     queryKey: ["painel-escola"],
@@ -845,12 +1263,13 @@ export default function Acompanhamento() {
           <div>
             <NachesULogo variant="ink" height={26} showSelo={false} />
             <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.85] mt-5 text-perestroika-preto">
-              quem está
+              painel da
               <br />
-              fazendo
+              coordenação
             </h1>
             <p className="font-body text-sm lowercase text-perestroika-preto/65 mt-3 max-w-md">
-              acompanhamento dos estudantes nas duas eletivas. atualiza sozinho a cada minuto.
+              o que foi o 1º semestre, como está o 2º e os certificados de quem concluiu. atualiza
+              sozinho a cada minuto.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -908,35 +1327,70 @@ export default function Acompanhamento() {
 
         {atual && (
           <div className="mt-12">
-            {/* abas: uma eletiva por vez, sem rolagem infinita */}
-            {eletivas.length > 1 && (
-              <div
-                role="tablist"
-                aria-label="eletivas"
-                className="flex flex-wrap gap-2 border-b-2 border-perestroika-preto/15 pb-3 mb-8"
-              >
-                {eletivas.map((el, i) => (
-                  <button
-                    key={el.slug}
-                    role="tab"
-                    aria-selected={i === aba}
-                    type="button"
-                    onClick={() => setAba(i)}
-                    className={cn(
-                      "rounded-full px-4 py-2 font-body text-sm lowercase transition-colors",
-                      i === aba
-                        ? "bg-perestroika-preto text-perestroika-bege"
-                        : "border border-perestroika-preto/15 text-perestroika-preto/70 hover:border-perestroika-preto",
-                    )}
-                  >
-                    {el.titulo}
-                    <span className="tabular-nums opacity-60"> · {el.resumo.convidados}</span>
-                  </button>
-                ))}
-              </div>
+            {/* seções principais: o que foi, o que está sendo, e certificados */}
+            <div
+              role="tablist"
+              aria-label="seções do painel"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2 border-b-2 border-perestroika-preto/15 pb-4 mb-8"
+            >
+              {SECOES.map((s) => (
+                <button
+                  key={s.id}
+                  role="tab"
+                  type="button"
+                  aria-selected={secao === s.id}
+                  onClick={() => setSecao(s.id)}
+                  className={cn(
+                    "min-h-11 rounded-2xl px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa",
+                    secao === s.id
+                      ? "bg-perestroika-preto text-perestroika-bege"
+                      : "border-2 border-perestroika-preto/15 text-perestroika-preto hover:border-perestroika-preto",
+                  )}
+                >
+                  <span className="block font-display uppercase text-2xl leading-none">{s.rotulo}</span>
+                  <span className="block font-body text-xs lowercase opacity-70 mt-1">{s.detalhe}</span>
+                </button>
+              ))}
+            </div>
+
+            {secao === "s1" && <Semestre1 eletivas={eletivas} />}
+
+            {secao === "s2" && (
+              <>
+                <p className="font-body text-sm lowercase text-perestroika-preto/70 max-w-2xl mb-6">
+                  no 2º semestre cada estudante faz a eletiva que ainda não fez. aqui só entra quem
+                  começou essa eletiva a partir de 24/09.
+                </p>
+                <EletivaTabs
+                  eletivas={eletivas}
+                  aba={aba}
+                  onChange={setAba}
+                  contagem={(el) => el.semestre2.resumo.convidados}
+                />
+                <EletivaBloco
+                  key={`s2-${atual.slug}`}
+                  eletiva={{
+                    slug: atual.slug,
+                    titulo: atual.titulo,
+                    professor: atual.professor,
+                    alunos: atual.semestre2.alunos,
+                    resumo: atual.semestre2.resumo,
+                  }}
+                />
+              </>
             )}
 
-            <EletivaBloco key={atual.slug} eletiva={atual} />
+            {secao === "cert" && (
+              <>
+                <EletivaTabs
+                  eletivas={eletivas}
+                  aba={aba}
+                  onChange={setAba}
+                  contagem={(el) => el.certificados.length}
+                />
+                <Certificados key={`c-${atual.slug}`} eletiva={atual} />
+              </>
+            )}
 
             <p className="font-body text-[11px] lowercase text-perestroika-preto/45 mt-16 border-t border-perestroika-preto/15 pt-4">
               dados gerados em{" "}

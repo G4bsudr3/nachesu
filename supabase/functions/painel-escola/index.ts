@@ -35,7 +35,8 @@ function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-type Client = ReturnType<typeof createClient>;
+// deno-lint-ignore no-explicit-any
+type Client = any;
 
 /** pagina resultados pra passar do limite padrão de 1000 linhas do PostgREST */
 async function fetchAll<T = Record<string, unknown>>(
@@ -63,8 +64,26 @@ const maxDate = (...vals: (string | null | undefined)[]) => {
 };
 
 const DAY = 24 * 60 * 60 * 1000;
+// dia em que todos ganharam acesso à outra eletiva: começo do 2º semestre
+const SEMESTRE2_INICIO = Date.UTC(2026, 8, 24, 3);
 
-async function buildCourse(admin: Client, courseId: string) {
+async function listEmails(admin: Client) {
+  const map = new Map<string, string>();
+  for (let page = 1; page < 50; page++) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw error;
+    for (const u of data.users) if (u.email) map.set(u.id, u.email.toLowerCase());
+    if (data.users.length < 1000) break;
+  }
+  return map;
+}
+
+async function buildCourse(
+  admin: Client,
+  courseId: string,
+  slug: string,
+  emailByUser: Map<string, string>,
+) {
   // trilhas -> módulos -> pílulas do curso
   const trails = await fetchAll<{ id: string }>((f, t) =>
     admin.from("trails").select("id").eq("course_id", courseId).range(f, t),
@@ -91,7 +110,7 @@ async function buildCourse(admin: Client, courseId: string) {
   const pillsTotal = pillIds.size;
 
 
-  // lista base: convites do curso (inclui quem nunca entrou)
+  // convites do curso (inclui quem nunca entrou)
   const invites = await fetchAll<{
     email_normalized: string;
     claimed_at: string | null;
@@ -104,16 +123,61 @@ async function buildCourse(admin: Client, courseId: string) {
       .range(f, t),
   );
 
+  // matrículas ativas: a troca de eletiva do 2º semestre criou matrículas sem convite
+  const enrollments = await fetchAll<{ user_id: string; created_at: string }>((f, t) =>
+    admin
+      .from("enrollments")
+      .select("user_id, created_at")
+      .eq("course_id", courseId)
+      .eq("status", "active")
+      .range(f, t),
+  );
+
   const roster = await fetchAll<{
     email_normalized: string;
     full_name: string | null;
     turma: string | null;
+    ra: string | null;
   }>((f, t) =>
-    admin.from("student_roster").select("email_normalized, full_name, turma").range(f, t),
+    admin.from("student_roster").select("email_normalized, full_name, turma, ra").range(f, t),
   );
   const rosterByEmail = new Map(roster.map((r) => [r.email_normalized.toLowerCase(), r]));
 
-  const userIds = [...new Set(invites.map((i) => i.claimed_by).filter(Boolean))] as string[];
+  // lista base: 1 linha por estudante, com o semestre da matrícula
+  type Base = {
+    email: string;
+    claimed_at: string | null;
+    claimed_by: string | null;
+    semestre: 1 | 2;
+  };
+  const base: Base[] = [];
+  const seenUsers = new Set<string>();
+  const inviteByUser = new Map(
+    invites.filter((i) => i.claimed_by).map((i) => [i.claimed_by as string, i]),
+  );
+  for (const e of enrollments) {
+    if (seenUsers.has(e.user_id)) continue;
+    seenUsers.add(e.user_id);
+    const inv = inviteByUser.get(e.user_id);
+    base.push({
+      email: (inv?.email_normalized ?? emailByUser.get(e.user_id) ?? "").toLowerCase(),
+      claimed_at: inv?.claimed_at ?? e.created_at,
+      claimed_by: e.user_id,
+      semestre: new Date(e.created_at).getTime() >= SEMESTRE2_INICIO ? 2 : 1,
+    });
+  }
+  for (const inv of invites) {
+    if (inv.claimed_by && seenUsers.has(inv.claimed_by)) continue;
+    if (inv.claimed_by) seenUsers.add(inv.claimed_by);
+    base.push({
+      email: (inv.email_normalized ?? "").toLowerCase(),
+      claimed_at: inv.claimed_at,
+      claimed_by: inv.claimed_by,
+      semestre: 1,
+    });
+  }
+
+  const userIds = [...seenUsers];
 
   const profiles = userIds.length
     ? await fetchAll<{ user_id: string; display_name: string | null; is_test: boolean }>((f, t) =>
@@ -198,12 +262,13 @@ async function buildCourse(admin: Client, courseId: string) {
     pilulas: number;
     entregas: number;
     ultimo: string | null;
+    concluidoEm: string | null;
   };
   const agg = new Map<string, Agg>();
   const get = (uid: string): Agg => {
     let a = agg.get(uid);
     if (!a) {
-      a = { concluidos: 0, ultimoModulo: null, pilulas: 0, entregas: 0, ultimo: null };
+      a = { concluidos: 0, ultimoModulo: null, pilulas: 0, entregas: 0, ultimo: null, concluidoEm: null };
       agg.set(uid, a);
     }
     return a;
@@ -212,6 +277,7 @@ async function buildCourse(admin: Client, courseId: string) {
   for (const r of modProgress) {
     const a = get(r.user_id);
     if (r.completed_at) a.concluidos += 1;
+    a.concluidoEm = maxDate(a.concluidoEm, r.completed_at);
     const n = moduleNumber.get(r.module_id) ?? null;
     if (n !== null && (a.ultimoModulo === null || n > a.ultimoModulo)) a.ultimoModulo = n;
     a.ultimo = maxDate(a.ultimo, r.completed_at, r.started_at);
@@ -234,9 +300,10 @@ async function buildCourse(admin: Client, courseId: string) {
   }
 
   const now = Date.now();
-  const alunos = invites
+  const certificados: Record<string, unknown>[] = [];
+  const alunos = base
     .map((inv) => {
-      const email = (inv.email_normalized ?? "").toLowerCase();
+      const email = inv.email;
       const rost = rosterByEmail.get(email);
       const prof = inv.claimed_by ? profileByUser.get(inv.claimed_by) : null;
       if (prof?.is_test) return null;
@@ -281,10 +348,45 @@ async function buildCourse(admin: Client, courseId: string) {
         // (nenhum registro de acesso e nenhuma atividade)
         app_nao_abriu: entrou && !ultimo,
         status,
+        semestre: inv.semestre,
+        ra: rost?.ra ?? null,
+        concluido_em: status === "concluiu" ? a?.concluidoEm ?? null : null,
+        _cert:
+          status === "concluiu" && inv.claimed_by && a?.concluidoEm
+            ? {
+                nome,
+                nome_oficial: !!rost?.full_name?.trim(),
+                ra: rost?.ra ?? null,
+                turma: rost?.turma ?? null,
+                concluido_em: a.concluidoEm,
+                semestre: inv.semestre,
+                codigo: `NU-${slug.startsWith("economia") ? "EC" : "IA"}-${inv.claimed_by
+                  .replace(/-/g, "")
+                  .slice(0, 8)
+                  .toUpperCase()}`,
+              }
+            : null,
       };
     })
     .filter(Boolean) as Record<string, unknown>[];
 
+  for (const al of alunos) {
+    if (al._cert) certificados.push(al._cert as Record<string, unknown>);
+    delete al._cert;
+  }
+  certificados.sort((x, y) => String(x.nome).localeCompare(String(y.nome)));
+
+  const s1 = alunos.filter((a) => a.semestre === 1);
+  const s2 = alunos.filter((a) => a.semestre === 2);
+  return {
+    modulos_publicados: publishedCount,
+    semestre1: { alunos: s1, resumo: resumir(s1, publishedCount, pillsTotal) },
+    semestre2: { alunos: s2, resumo: resumir(s2, publishedCount, pillsTotal) },
+    certificados,
+  };
+}
+
+function resumir(alunos: Record<string, unknown>[], publishedCount: number, pillsTotal: number) {
   const count = (s: string) => alunos.filter((a) => a.status === s).length;
   const turmas = new Map<
     string,
@@ -295,6 +397,7 @@ async function buildCourse(admin: Client, courseId: string) {
       nao_entraram: number;
       em_andamento: number;
       parados: number;
+      concluiram: number;
       ativos_7d: number;
       media_modulos: number;
     }
@@ -310,6 +413,7 @@ async function buildCourse(admin: Client, courseId: string) {
         nao_entraram: 0,
         em_andamento: 0,
         parados: 0,
+        concluiram: 0,
         ativos_7d: 0,
         media_modulos: 0,
       };
@@ -320,31 +424,27 @@ async function buildCourse(admin: Client, courseId: string) {
     else t.nao_entraram += 1;
     if (al.status === "em_andamento") t.em_andamento += 1;
     if (al.status === "parado") t.parados += 1;
+    if (al.status === "concluiu") t.concluiram += 1;
     if (al.ativo_7d) t.ativos_7d += 1;
     t.media_modulos += al.modulos_concluidos as number;
   }
   for (const t of turmas.values()) {
     t.media_modulos = t.total ? Number((t.media_modulos / t.total).toFixed(1)) : 0;
   }
-
   const somaConcluidos = alunos.reduce((s, a) => s + (a.modulos_concluidos as number), 0);
-
   return {
-    alunos,
-    resumo: {
-      convidados: alunos.length,
-      entraram: alunos.filter((a) => a.entrou).length,
-      nunca_entraram: count("nao_entrou"),
-      entrou_sem_comecar: count("entrou_sem_comecar"),
-      em_andamento: count("em_andamento"),
-      parados: count("parado"),
-      concluiram: count("concluiu"),
-      ativos_7d: alunos.filter((a) => a.ativo_7d).length,
-      media_modulos: alunos.length ? Number((somaConcluidos / alunos.length).toFixed(1)) : 0,
-      modulos_publicados: publishedCount,
-      pilulas_publicadas: pillsTotal,
-      por_turma: [...turmas.values()].sort((a, b) => a.turma.localeCompare(b.turma)),
-    },
+    convidados: alunos.length,
+    entraram: alunos.filter((a) => a.entrou).length,
+    nunca_entraram: count("nao_entrou"),
+    entrou_sem_comecar: count("entrou_sem_comecar"),
+    em_andamento: count("em_andamento"),
+    parados: count("parado"),
+    concluiram: count("concluiu"),
+    ativos_7d: alunos.filter((a) => a.ativo_7d).length,
+    media_modulos: alunos.length ? Number((somaConcluidos / alunos.length).toFixed(1)) : 0,
+    modulos_publicados: publishedCount,
+    pilulas_publicadas: pillsTotal,
+    por_turma: [...turmas.values()].sort((a, b) => a.turma.localeCompare(b.turma)),
   };
 }
 
@@ -366,9 +466,10 @@ Deno.serve(async (req) => {
       return json(cors, { error: "senha inválida" }, 401);
     }
 
+    const emails = await listEmails(admin);
     const [ec, ia] = await Promise.all([
-      buildCourse(admin, COURSES[0].id),
-      buildCourse(admin, COURSES[1].id),
+      buildCourse(admin, COURSES[0].id, COURSES[0].slug, emails),
+      buildCourse(admin, COURSES[1].id, COURSES[1].slug, emails),
     ]);
 
     return json(cors, {
@@ -377,12 +478,14 @@ Deno.serve(async (req) => {
         {
           slug: "economia-circular",
           titulo: "Economia Circular & Negócios Regenerativos",
+          subtitulo: "enxergar, entender, criar e validar negócios regenerativos",
           professor: 'Eduardo "Dudu" Obregon',
           ...ec,
         },
         {
           slug: "ia-na-pratica",
           titulo: "IA na Prática",
+          subtitulo: "do problema ao app que funciona",
           professor: "frattz",
           ...ia,
         },
