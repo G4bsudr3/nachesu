@@ -1263,12 +1263,13 @@ export default function Acompanhamento() {
           <div>
             <NachesULogo variant="ink" height={26} showSelo={false} />
             <h1 className="font-display uppercase text-5xl sm:text-7xl leading-[0.85] mt-5 text-perestroika-preto">
-              quem está
+              painel da
               <br />
-              fazendo
+              coordenação
             </h1>
             <p className="font-body text-sm lowercase text-perestroika-preto/65 mt-3 max-w-md">
-              acompanhamento dos estudantes nas duas eletivas. atualiza sozinho a cada minuto.
+              o que foi o 1º semestre, como está o 2º e os certificados de quem concluiu. atualiza
+              sozinho a cada minuto.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -1326,35 +1327,70 @@ export default function Acompanhamento() {
 
         {atual && (
           <div className="mt-12">
-            {/* abas: uma eletiva por vez, sem rolagem infinita */}
-            {eletivas.length > 1 && (
-              <div
-                role="tablist"
-                aria-label="eletivas"
-                className="flex flex-wrap gap-2 border-b-2 border-perestroika-preto/15 pb-3 mb-8"
-              >
-                {eletivas.map((el, i) => (
-                  <button
-                    key={el.slug}
-                    role="tab"
-                    aria-selected={i === aba}
-                    type="button"
-                    onClick={() => setAba(i)}
-                    className={cn(
-                      "rounded-full px-4 py-2 font-body text-sm lowercase transition-colors",
-                      i === aba
-                        ? "bg-perestroika-preto text-perestroika-bege"
-                        : "border border-perestroika-preto/15 text-perestroika-preto/70 hover:border-perestroika-preto",
-                    )}
-                  >
-                    {el.titulo}
-                    <span className="tabular-nums opacity-60"> · {el.resumo.convidados}</span>
-                  </button>
-                ))}
-              </div>
+            {/* seções principais: o que foi, o que está sendo, e certificados */}
+            <div
+              role="tablist"
+              aria-label="seções do painel"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2 border-b-2 border-perestroika-preto/15 pb-4 mb-8"
+            >
+              {SECOES.map((s) => (
+                <button
+                  key={s.id}
+                  role="tab"
+                  type="button"
+                  aria-selected={secao === s.id}
+                  onClick={() => setSecao(s.id)}
+                  className={cn(
+                    "min-h-11 rounded-2xl px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-perestroika-rosa",
+                    secao === s.id
+                      ? "bg-perestroika-preto text-perestroika-bege"
+                      : "border-2 border-perestroika-preto/15 text-perestroika-preto hover:border-perestroika-preto",
+                  )}
+                >
+                  <span className="block font-display uppercase text-2xl leading-none">{s.rotulo}</span>
+                  <span className="block font-body text-xs lowercase opacity-70 mt-1">{s.detalhe}</span>
+                </button>
+              ))}
+            </div>
+
+            {secao === "s1" && <Semestre1 eletivas={eletivas} />}
+
+            {secao === "s2" && (
+              <>
+                <p className="font-body text-sm lowercase text-perestroika-preto/70 max-w-2xl mb-6">
+                  no 2º semestre cada estudante faz a eletiva que ainda não fez. aqui só entra quem
+                  começou essa eletiva a partir de 24/09.
+                </p>
+                <EletivaTabs
+                  eletivas={eletivas}
+                  aba={aba}
+                  onChange={setAba}
+                  contagem={(el) => el.semestre2.resumo.convidados}
+                />
+                <EletivaBloco
+                  key={`s2-${atual.slug}`}
+                  eletiva={{
+                    slug: atual.slug,
+                    titulo: atual.titulo,
+                    professor: atual.professor,
+                    alunos: atual.semestre2.alunos,
+                    resumo: atual.semestre2.resumo,
+                  }}
+                />
+              </>
             )}
 
-            <EletivaBloco key={atual.slug} eletiva={atual} />
+            {secao === "cert" && (
+              <>
+                <EletivaTabs
+                  eletivas={eletivas}
+                  aba={aba}
+                  onChange={setAba}
+                  contagem={(el) => el.certificados.length}
+                />
+                <Certificados key={`c-${atual.slug}`} eletiva={atual} />
+              </>
+            )}
 
             <p className="font-body text-[11px] lowercase text-perestroika-preto/45 mt-16 border-t border-perestroika-preto/15 pt-4">
               dados gerados em{" "}
