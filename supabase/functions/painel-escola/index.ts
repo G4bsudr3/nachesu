@@ -281,9 +281,10 @@ async function buildCourse(admin: Client, courseId: string) {
   }
 
   const now = Date.now();
-  const alunos = invites
+  const certificados: Record<string, unknown>[] = [];
+  const alunos = base
     .map((inv) => {
-      const email = (inv.email_normalized ?? "").toLowerCase();
+      const email = inv.email;
       const rost = rosterByEmail.get(email);
       const prof = inv.claimed_by ? profileByUser.get(inv.claimed_by) : null;
       if (prof?.is_test) return null;
@@ -328,10 +329,45 @@ async function buildCourse(admin: Client, courseId: string) {
         // (nenhum registro de acesso e nenhuma atividade)
         app_nao_abriu: entrou && !ultimo,
         status,
+        semestre: inv.semestre,
+        ra: rost?.ra ?? null,
+        concluido_em: status === "concluiu" ? a?.concluidoEm ?? null : null,
+        _cert:
+          status === "concluiu" && inv.claimed_by && a?.concluidoEm
+            ? {
+                nome,
+                nome_oficial: !!rost?.full_name?.trim(),
+                ra: rost?.ra ?? null,
+                turma: rost?.turma ?? null,
+                concluido_em: a.concluidoEm,
+                semestre: inv.semestre,
+                codigo: `NU-${slug.startsWith("economia") ? "EC" : "IA"}-${inv.claimed_by
+                  .replace(/-/g, "")
+                  .slice(0, 8)
+                  .toUpperCase()}`,
+              }
+            : null,
       };
     })
     .filter(Boolean) as Record<string, unknown>[];
 
+  for (const al of alunos) {
+    if (al._cert) certificados.push(al._cert as Record<string, unknown>);
+    delete al._cert;
+  }
+  certificados.sort((x, y) => String(x.nome).localeCompare(String(y.nome)));
+
+  const s1 = alunos.filter((a) => a.semestre === 1);
+  const s2 = alunos.filter((a) => a.semestre === 2);
+  return {
+    modulos_publicados: publishedCount,
+    semestre1: { alunos: s1, resumo: resumir(s1, publishedCount, pillsTotal) },
+    semestre2: { alunos: s2, resumo: resumir(s2, publishedCount, pillsTotal) },
+    certificados,
+  };
+}
+
+function resumir(alunos: Record<string, unknown>[], publishedCount: number, pillsTotal: number) {
   const count = (s: string) => alunos.filter((a) => a.status === s).length;
   const turmas = new Map<
     string,
@@ -342,6 +378,7 @@ async function buildCourse(admin: Client, courseId: string) {
       nao_entraram: number;
       em_andamento: number;
       parados: number;
+      concluiram: number;
       ativos_7d: number;
       media_modulos: number;
     }
@@ -357,6 +394,7 @@ async function buildCourse(admin: Client, courseId: string) {
         nao_entraram: 0,
         em_andamento: 0,
         parados: 0,
+        concluiram: 0,
         ativos_7d: 0,
         media_modulos: 0,
       };
@@ -367,31 +405,27 @@ async function buildCourse(admin: Client, courseId: string) {
     else t.nao_entraram += 1;
     if (al.status === "em_andamento") t.em_andamento += 1;
     if (al.status === "parado") t.parados += 1;
+    if (al.status === "concluiu") t.concluiram += 1;
     if (al.ativo_7d) t.ativos_7d += 1;
     t.media_modulos += al.modulos_concluidos as number;
   }
   for (const t of turmas.values()) {
     t.media_modulos = t.total ? Number((t.media_modulos / t.total).toFixed(1)) : 0;
   }
-
   const somaConcluidos = alunos.reduce((s, a) => s + (a.modulos_concluidos as number), 0);
-
   return {
-    alunos,
-    resumo: {
-      convidados: alunos.length,
-      entraram: alunos.filter((a) => a.entrou).length,
-      nunca_entraram: count("nao_entrou"),
-      entrou_sem_comecar: count("entrou_sem_comecar"),
-      em_andamento: count("em_andamento"),
-      parados: count("parado"),
-      concluiram: count("concluiu"),
-      ativos_7d: alunos.filter((a) => a.ativo_7d).length,
-      media_modulos: alunos.length ? Number((somaConcluidos / alunos.length).toFixed(1)) : 0,
-      modulos_publicados: publishedCount,
-      pilulas_publicadas: pillsTotal,
-      por_turma: [...turmas.values()].sort((a, b) => a.turma.localeCompare(b.turma)),
-    },
+    convidados: alunos.length,
+    entraram: alunos.filter((a) => a.entrou).length,
+    nunca_entraram: count("nao_entrou"),
+    entrou_sem_comecar: count("entrou_sem_comecar"),
+    em_andamento: count("em_andamento"),
+    parados: count("parado"),
+    concluiram: count("concluiu"),
+    ativos_7d: alunos.filter((a) => a.ativo_7d).length,
+    media_modulos: alunos.length ? Number((somaConcluidos / alunos.length).toFixed(1)) : 0,
+    modulos_publicados: publishedCount,
+    pilulas_publicadas: pillsTotal,
+    por_turma: [...turmas.values()].sort((a, b) => a.turma.localeCompare(b.turma)),
   };
 }
 
