@@ -6,6 +6,13 @@ import { useSeo } from "@/hooks/useSeo";
 import { cn } from "@/lib/utils";
 import { NachesULogo } from "@/components/brand/NachesULogo";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
+import { accentFor, PAPER } from "@/lib/eletivaTheme";
+import { renderNachesCertificatePdf } from "@/components/certificate/renderNachesCertificatePdf";
+import {
+  buildCertificatesZip,
+  certificateFileName,
+  downloadBlob,
+} from "@/components/certificate/certificateBatch";
 
 /* ------------------------------------------------------------------ */
 /* tipos                                                               */
@@ -924,7 +931,10 @@ function Semestre1({ eletivas }: { eletivas: EletivaPainel[] }) {
                   ))}
                 </tbody>
               </table>
-              <NaoConcluiram alunos={el.semestre1.alunos.filter((a) => a.status !== "concluiu")} />
+              <NaoConcluiram
+                total={el.modulos_publicados}
+                alunos={el.semestre1.alunos.filter((a) => a.status !== "concluiu")}
+              />
             </article>
           );
         })}
@@ -933,7 +943,7 @@ function Semestre1({ eletivas }: { eletivas: EletivaPainel[] }) {
   );
 }
 
-function NaoConcluiram({ alunos }: { alunos: AlunoSemestre[] }) {
+function NaoConcluiram({ alunos, total }: { alunos: AlunoSemestre[]; total: number }) {
   if (!alunos.length) return null;
   return (
     <details className="mt-5 group">
@@ -947,7 +957,7 @@ function NaoConcluiram({ alunos }: { alunos: AlunoSemestre[] }) {
             <li key={i} className="flex justify-between gap-3 border-b border-perestroika-preto/10 py-1">
               <span className="normal-case">{a.nome}</span>
               <span className="tabular-nums text-perestroika-preto/60 shrink-0">
-                {a.turma ?? "sem turma"} · {a.modulos_concluidos}/{a.resumoTotal ?? ""}
+                {a.turma ?? "sem turma"} · {a.modulos_concluidos}/{total} módulos
               </span>
             </li>
           ))}
