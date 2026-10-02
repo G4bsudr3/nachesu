@@ -39,28 +39,54 @@ type TurmaResumo = {
   media_modulos: number;
 };
 
+type Resumo = {
+  convidados: number;
+  entraram: number;
+  nunca_entraram: number;
+  entrou_sem_comecar: number;
+  em_andamento: number;
+  parados: number;
+  concluiram: number;
+  ativos_7d: number;
+  media_modulos: number;
+  modulos_publicados: number;
+  pilulas_publicadas: number;
+  por_turma: (TurmaResumo & { concluiram?: number })[];
+};
+
+/** visão usada pelo bloco de acompanhamento (uma eletiva num semestre) */
 type Eletiva = {
   slug: string;
   titulo: string;
   professor: string;
   alunos: Aluno[];
-  resumo: {
-    convidados: number;
-    entraram: number;
-    nunca_entraram: number;
-    entrou_sem_comecar: number;
-    em_andamento: number;
-    parados: number;
-    concluiram: number;
-    ativos_7d: number;
-    media_modulos: number;
-    modulos_publicados: number;
-    pilulas_publicadas: number;
-    por_turma: TurmaResumo[];
-  };
+  resumo: Resumo;
 };
 
-type Painel = { gerado_em: string; eletivas: Eletiva[] };
+type AlunoSemestre = Aluno & { ra: string | null; concluido_em: string | null };
+
+type Certificado = {
+  nome: string;
+  nome_oficial: boolean;
+  ra: string | null;
+  turma: string | null;
+  concluido_em: string;
+  semestre: 1 | 2;
+  codigo: string;
+};
+
+type EletivaPainel = {
+  slug: string;
+  titulo: string;
+  subtitulo: string;
+  professor: string;
+  modulos_publicados: number;
+  semestre1: { alunos: AlunoSemestre[]; resumo: Resumo };
+  semestre2: { alunos: AlunoSemestre[]; resumo: Resumo };
+  certificados: Certificado[];
+};
+
+type Painel = { gerado_em: string; eletivas: EletivaPainel[] };
 
 /* ------------------------------------------------------------------ */
 /* sessão (12h, por aba)                                               */
