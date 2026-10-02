@@ -91,7 +91,7 @@ async function buildCourse(admin: Client, courseId: string) {
   const pillsTotal = pillIds.size;
 
 
-  // lista base: convites do curso (inclui quem nunca entrou)
+  // convites do curso (inclui quem nunca entrou)
   const invites = await fetchAll<{
     email_normalized: string;
     claimed_at: string | null;
@@ -104,16 +104,61 @@ async function buildCourse(admin: Client, courseId: string) {
       .range(f, t),
   );
 
+  // matrículas ativas: a troca de eletiva do 2º semestre criou matrículas sem convite
+  const enrollments = await fetchAll<{ user_id: string; created_at: string }>((f, t) =>
+    admin
+      .from("enrollments")
+      .select("user_id, created_at")
+      .eq("course_id", courseId)
+      .eq("status", "active")
+      .range(f, t),
+  );
+
   const roster = await fetchAll<{
     email_normalized: string;
     full_name: string | null;
     turma: string | null;
+    ra: string | null;
   }>((f, t) =>
-    admin.from("student_roster").select("email_normalized, full_name, turma").range(f, t),
+    admin.from("student_roster").select("email_normalized, full_name, turma, ra").range(f, t),
   );
   const rosterByEmail = new Map(roster.map((r) => [r.email_normalized.toLowerCase(), r]));
 
-  const userIds = [...new Set(invites.map((i) => i.claimed_by).filter(Boolean))] as string[];
+  // lista base: 1 linha por estudante, com o semestre da matrícula
+  type Base = {
+    email: string;
+    claimed_at: string | null;
+    claimed_by: string | null;
+    semestre: 1 | 2;
+  };
+  const base: Base[] = [];
+  const seenUsers = new Set<string>();
+  const inviteByUser = new Map(
+    invites.filter((i) => i.claimed_by).map((i) => [i.claimed_by as string, i]),
+  );
+  for (const e of enrollments) {
+    if (seenUsers.has(e.user_id)) continue;
+    seenUsers.add(e.user_id);
+    const inv = inviteByUser.get(e.user_id);
+    base.push({
+      email: (inv?.email_normalized ?? emailByUser.get(e.user_id) ?? "").toLowerCase(),
+      claimed_at: inv?.claimed_at ?? e.created_at,
+      claimed_by: e.user_id,
+      semestre: new Date(e.created_at).getTime() >= SEMESTRE2_INICIO ? 2 : 1,
+    });
+  }
+  for (const inv of invites) {
+    if (inv.claimed_by && seenUsers.has(inv.claimed_by)) continue;
+    if (inv.claimed_by) seenUsers.add(inv.claimed_by);
+    base.push({
+      email: (inv.email_normalized ?? "").toLowerCase(),
+      claimed_at: inv.claimed_at,
+      claimed_by: inv.claimed_by,
+      semestre: 1,
+    });
+  }
+
+  const userIds = [...seenUsers];
 
   const profiles = userIds.length
     ? await fetchAll<{ user_id: string; display_name: string | null; is_test: boolean }>((f, t) =>
