@@ -477,14 +477,14 @@ Deno.serve(async (req) => {
         {
           slug: "economia-circular",
           titulo: "Economia Circular & Negócios Regenerativos",
-          subtitulo: "e negócios regenerativos",
+          subtitulo: "enxergar, entender, criar e validar negócios regenerativos",
           professor: 'Eduardo "Dudu" Obregon',
-
           ...ec,
         },
         {
           slug: "ia-na-pratica",
           titulo: "IA na Prática",
+          subtitulo: "do problema ao app que funciona",
           professor: "frattz",
           ...ia,
         },
