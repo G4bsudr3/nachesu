@@ -63,8 +63,26 @@ const maxDate = (...vals: (string | null | undefined)[]) => {
 };
 
 const DAY = 24 * 60 * 60 * 1000;
+// dia em que todos ganharam acesso à outra eletiva: começo do 2º semestre
+const SEMESTRE2_INICIO = Date.UTC(2026, 8, 24, 3);
 
-async function buildCourse(admin: Client, courseId: string) {
+async function listEmails(admin: Client) {
+  const map = new Map<string, string>();
+  for (let page = 1; page < 50; page++) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw error;
+    for (const u of data.users) if (u.email) map.set(u.id, u.email.toLowerCase());
+    if (data.users.length < 1000) break;
+  }
+  return map;
+}
+
+async function buildCourse(
+  admin: Client,
+  courseId: string,
+  slug: string,
+  emailByUser: Map<string, string>,
+) {
   // trilhas -> módulos -> pílulas do curso
   const trails = await fetchAll<{ id: string }>((f, t) =>
     admin.from("trails").select("id").eq("course_id", courseId).range(f, t),
@@ -447,9 +465,10 @@ Deno.serve(async (req) => {
       return json(cors, { error: "senha inválida" }, 401);
     }
 
+    const emails = await listEmails(admin);
     const [ec, ia] = await Promise.all([
-      buildCourse(admin, COURSES[0].id),
-      buildCourse(admin, COURSES[1].id),
+      buildCourse(admin, COURSES[0].id, COURSES[0].slug, emails),
+      buildCourse(admin, COURSES[1].id, COURSES[1].slug, emails),
     ]);
 
     return json(cors, {
@@ -458,7 +477,9 @@ Deno.serve(async (req) => {
         {
           slug: "economia-circular",
           titulo: "Economia Circular & Negócios Regenerativos",
+          subtitulo: "e negócios regenerativos",
           professor: 'Eduardo "Dudu" Obregon',
+
           ...ec,
         },
         {
