@@ -243,12 +243,13 @@ async function buildCourse(admin: Client, courseId: string) {
     pilulas: number;
     entregas: number;
     ultimo: string | null;
+    concluidoEm: string | null;
   };
   const agg = new Map<string, Agg>();
   const get = (uid: string): Agg => {
     let a = agg.get(uid);
     if (!a) {
-      a = { concluidos: 0, ultimoModulo: null, pilulas: 0, entregas: 0, ultimo: null };
+      a = { concluidos: 0, ultimoModulo: null, pilulas: 0, entregas: 0, ultimo: null, concluidoEm: null };
       agg.set(uid, a);
     }
     return a;
@@ -257,6 +258,7 @@ async function buildCourse(admin: Client, courseId: string) {
   for (const r of modProgress) {
     const a = get(r.user_id);
     if (r.completed_at) a.concluidos += 1;
+    a.concluidoEm = maxDate(a.concluidoEm, r.completed_at);
     const n = moduleNumber.get(r.module_id) ?? null;
     if (n !== null && (a.ultimoModulo === null || n > a.ultimoModulo)) a.ultimoModulo = n;
     a.ultimo = maxDate(a.ultimo, r.completed_at, r.started_at);
