@@ -1,3 +1,4 @@
+import { translatePasswordError } from "@/lib/authErrors";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
