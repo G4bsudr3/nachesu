@@ -1,3 +1,4 @@
+import { translatePasswordError } from "@/lib/authErrors";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Lock, X, ArrowRight } from "lucide-react";
@@ -56,7 +57,7 @@ export const DefinirSenhaCard = ({ onDefined }: Props) => {
       setOpen(false);
       onDefined();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "erro ao definir senha");
+      toast.error(translatePasswordError(err, "erro ao definir senha"), { duration: 10000 });
     } finally {
       setSubmitting(false);
     }

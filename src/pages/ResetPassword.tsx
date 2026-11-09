@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { EletivaFooter } from "@/components/layout/EletivaFooter";
 import { EletivaSymbol } from "@/components/brand/EletivaSymbol";
 import { PasswordStrength, evaluatePasswordStrength } from "@/components/PasswordStrength";
-import { t } from "@/lib/authErrors";
+import { t, translatePasswordError } from "@/lib/authErrors";
 import { RequestNewLink } from "@/components/auth/RequestNewLink";
 
 /**
@@ -77,7 +77,7 @@ const ResetPassword = () => {
       toast.success(t("reset_success"));
       navigate("/app", { replace: true });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t("reset_save_error"));
+      toast.error(translatePasswordError(err, t("reset_save_error")), { duration: 10000 });
     } finally {
       setSubmitting(false);
     }
@@ -121,7 +121,7 @@ const ResetPassword = () => {
                 nova senha
               </h1>
               <p className="font-body text-base text-perestroika-preto/70 mb-10">
-                escolhe uma senha boa. mínimo 8 caracteres, mistura letra e número.
+                mínimo 8 caracteres, misturando letra, número e símbolo. evite senhas comuns como "senha123" ou seu nome, elas são recusadas.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">

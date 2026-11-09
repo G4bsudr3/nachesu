@@ -64,7 +64,7 @@ const AccountSettings = () => {
       setConfirm("");
       toast.success("senha atualizada");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "erro");
+      toast.error(translatePasswordError(err, "não consegui salvar a senha"), { duration: 10000 });
     } finally {
       setSubmitting(false);
     }

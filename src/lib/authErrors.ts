@@ -233,6 +233,27 @@ export const readAuthErrorFromUrl = (
 };
 
 /**
+ * Traduz erros de troca de senha vindos do servidor (ex.: senha vazada/comum).
+ */
+export const translatePasswordError = (err: unknown, fallback: string): string => {
+  const msg = err instanceof Error ? err.message : "";
+  const low = msg.toLowerCase();
+  if (low.includes("weak") || low.includes("easy to guess") || low.includes("pwned") || low.includes("leaked")) {
+    return "essa senha é muito comum e já apareceu em vazamentos na internet. cria uma diferente, misturando palavras, números e um símbolo (ex.: Jabuti#Sebrae27).";
+  }
+  if (low.includes("should be different") || low.includes("same")) {
+    return "a nova senha precisa ser diferente da atual.";
+  }
+  if (low.includes("at least") || low.includes("characters")) {
+    return "a senha precisa ter pelo menos 8 caracteres.";
+  }
+  if (low.includes("session") || low.includes("jwt") || low.includes("expired")) {
+    return "o link expirou. pede um novo link de recuperação na tela de entrada.";
+  }
+  return msg ? `${fallback}: ${msg}` : fallback;
+};
+
+/**
  * Pega uma string de UI no idioma do navegador.
  */
 export const t = (key: UiMessageKey, locale: AuthErrorLocale = detectLocale()): string => {
